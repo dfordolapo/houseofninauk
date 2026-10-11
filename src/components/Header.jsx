@@ -25,7 +25,7 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
   };
 
   return (
-    <>
+    <div className="header-sticky-wrapper">
       {/* Top Banner */}
       <div className="top-bar">
         <span>{BRAND_INFO.announcement}</span>
@@ -99,6 +99,6 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
           </div>
         </div>
       </header>
-    </>
+    </div>
   );
 }
