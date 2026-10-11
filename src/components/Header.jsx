@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, User, ShoppingBag, Menu } from 'lucide-react';
+import { Search, ShoppingBag, Menu, Heart } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 
 export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpenSearch, onReturnToHero }) {
@@ -68,11 +68,11 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
               <button 
                 type="button" 
                 className="icon-btn" 
-                aria-label="Account"
-                title="Account"
-                onClick={() => alert("Customer account portal will be connected in full store build.")}
+                aria-label="Wishlist"
+                title="Wishlist"
+                onClick={() => { /* TODO: open wishlist drawer */ }}
               >
-                <User size={19} strokeWidth={1.8} />
+                <Heart size={19} strokeWidth={1.8} />
               </button>
 
               <button 

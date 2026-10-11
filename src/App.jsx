@@ -39,6 +39,20 @@ export default function App() {
     }
   ]);
 
+  // Wishlist state (saved looks)
+  const [wishlist, setWishlist] = useState([]);
+
+  // Toggle product in wishlist
+  const handleToggleSave = (post) => {
+    setWishlist(prev => {
+      const exists = prev.find(item => item.id === post.id);
+      if (exists) {
+        return prev.filter(item => item.id !== post.id);
+      }
+      return [...prev, post];
+    });
+  };
+
   // Quick View Modal state
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 

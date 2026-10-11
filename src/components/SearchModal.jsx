@@ -48,7 +48,7 @@ export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelect
         </button>
 
         <div style={{ marginBottom: '24px' }}>
-          <span className="section-label">Explore House of Nina</span>
+
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 600, margin: '4px 0 16px 0' }}>
             Search wigs & silk scarves
           </h2>
