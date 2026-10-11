@@ -7,8 +7,8 @@ export const BRAND_INFO = {
   locationBadge: "United Kingdom",
   currency: "GBP",
   currencySymbol: "£",
-  freeShippingThreshold: 50,
-  announcement: "UK Orders — Free shipping over £50"
+  freeShippingThreshold: 100,
+  announcement: "UK Orders — Free shipping over £100"
 };
 
 export const NAV_LINKS = [

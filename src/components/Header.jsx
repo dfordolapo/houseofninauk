@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, Menu, Heart } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 
-export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpenSearch, onReturnToHero }) {
+export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpenSearch, onReturnToHero, onOpenWishlist }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
                 className="icon-btn" 
                 aria-label="Wishlist"
                 title="Wishlist"
-                onClick={() => { /* TODO: open wishlist drawer */ }}
+                onClick={() => onOpenWishlist()}
               >
                 <Heart size={19} strokeWidth={1.8} />
               </button>

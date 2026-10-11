@@ -13,10 +13,11 @@ import NewsletterSignup from './components/NewsletterSignup';
 import SilkPairingAtelier from './components/SilkPairingAtelier';
 import CinematicVideoBanner from './components/CinematicVideoBanner';
 import Footer from './components/Footer';
+import SearchModal from './components/SearchModal';
 import ProductQuickViewModal from './components/ProductQuickViewModal';
 import CareGuideModal from './components/CareGuideModal';
 import CartDrawer from './components/CartDrawer';
-import SearchModal from './components/SearchModal';
+import WishlistDrawer from './components/WishlistDrawer';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
   
   // Cart state
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [cartItems, setCartItems] = useState([
     {
       id: "hn-01",
@@ -129,6 +131,7 @@ export default function App() {
         cartCount={cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onReturnToHero={handleReturnToHero}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
       />
 
       <main id="main-content">
@@ -142,6 +145,7 @@ export default function App() {
             <StyleCategories 
               onSelectCategory={handleSelectCategory} 
               onQuickView={handleInstagramQuickView}
+              onToggleWishlist={handleToggleSave}
             />
 
             {/* CINEMATIC AUTOPLAY VIDEO BANNER (Movement Without Weight) */}
@@ -197,6 +201,13 @@ export default function App() {
         cartItems={cartItems}
         onRemoveItem={handleRemoveCartItem}
         onClearCart={() => setCartItems([])}
+      />
+
+      <WishlistDrawer
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        wishlist={wishlist}
+        onRemoveItem={(id) => setWishlist(prev => prev.filter(item => item.id !== id))}
       />
 
       <ProductQuickViewModal 

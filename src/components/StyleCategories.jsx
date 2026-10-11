@@ -2,18 +2,22 @@ import React, { useState, useRef } from 'react';
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { INSTA_POSTS, BRAND_INFO } from '../data/wigData';
 
-export default function StyleCategories({ onSelectCategory, onQuickView }) {
+export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist }) {
   const [likedPosts, setLikedPosts] = useState({});
   const [savedPosts, setSavedPosts] = useState({});
   const [activeTagPostId, setActiveTagPostId] = useState(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const sliderRef = useRef(null);
 
-  const toggleLike = (id) => {
+  const toggleLike = (post) => {
+    const id = post.id;
     setLikedPosts(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
+    if (onToggleWishlist) {
+      onToggleWishlist(post);
+    }
   };
 
   const toggleSave = (id) => {
@@ -156,7 +160,7 @@ export default function StyleCategories({ onSelectCategory, onQuickView }) {
                     <button 
                       type="button" 
                       className={`insta-action-btn ${isLiked ? 'liked' : ''}`}
-                      onClick={() => toggleLike(post.id)}
+                      onClick={() => toggleLike(post)}
                       aria-label="Like post"
                     >
                       <Heart size={22} fill={isLiked ? "var(--color-dusty-rose)" : "none"} color={isLiked ? "var(--color-dusty-rose)" : "var(--color-deep-espresso)"} />

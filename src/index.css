@@ -2228,9 +2228,9 @@ button {
 
 .cart-drawer {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
   width: 90%;
   max-width: 420px;
   background-color: var(--color-ivory);
@@ -2238,14 +2238,58 @@ button {
   padding: 28px 24px;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
+  transform: translateX(calc(100% + 16px));
   transition: transform var(--transition-smooth);
   box-shadow: -10px 0 36px rgba(36, 28, 25, 0.2);
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .cart-drawer.open {
   transform: translateX(0);
 }
+
+/* Wishlist Drawer — mirrors cart drawer */
+.wishlist-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(36, 28, 25, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 250;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-smooth);
+}
+
+.wishlist-drawer-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.wishlist-drawer {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: 90%;
+  max-width: 420px;
+  background-color: var(--color-ivory);
+  z-index: 251;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(calc(100% + 16px));
+  transition: transform var(--transition-smooth);
+  box-shadow: -10px 0 36px rgba(36, 28, 25, 0.2);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.wishlist-drawer.open {
+  transform: translateX(0);
+}
+
+
 
 /* ==========================================================================
    RESPONSIVE DESIGN BREAKPOINTS
