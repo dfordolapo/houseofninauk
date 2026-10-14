@@ -7,16 +7,6 @@ const POPULAR_SEARCHES = ['Wigs', 'Scarves', 'Bob', 'Bone Straight', 'Body Wave'
 export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelectCategory }) {
   const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
 
   if (!isOpen) return null;
 

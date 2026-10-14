@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import MobileMenu from './components/MobileMenu';
 import WigverseHero from './components/WigverseHero';
@@ -60,8 +60,12 @@ export default function App() {
   // Search Modal state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // Centralized Modal Background Scroll-Lock:
-  // When ANY modal or drawer is open, lock the document body so nothing else can scroll
+  // Centralized Modal Background Scroll-Lock & Position Preservation:
+  // When ANY modal or drawer is open, freeze the background at the exact scroll position
+  // When closed, restore the exact scroll position seamlessly
+  const scrollPositionRef = useRef(0);
+  const isLockedRef = useRef(false);
+
   const isAnyModalOpen = Boolean(
     isMobileMenuOpen || 
     isCartOpen || 
@@ -75,16 +79,69 @@ export default function App() {
 
   useEffect(() => {
     if (isAnyModalOpen) {
-      document.body.classList.add('modal-scroll-locked');
-      document.documentElement.classList.add('modal-scroll-locked');
+      if (!isLockedRef.current) {
+        // Record the current scroll position before locking
+        const currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+        scrollPositionRef.current = currentScrollY;
+        isLockedRef.current = true;
+
+        // Compensate for scrollbar width to prevent layout shift
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        if (scrollbarWidth > 0) {
+          document.body.style.paddingRight = `${scrollbarWidth}px`;
+        }
+
+        // Freeze body in place at the exact scroll offset
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${currentScrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+        document.body.classList.add('modal-scroll-locked');
+        document.documentElement.classList.add('modal-scroll-locked');
+      }
     } else {
-      document.body.classList.remove('modal-scroll-locked');
-      document.documentElement.classList.remove('modal-scroll-locked');
+      if (isLockedRef.current) {
+        const savedScrollY = scrollPositionRef.current;
+        isLockedRef.current = false;
+
+        // Clear fixed body styles
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        document.body.style.paddingRight = '';
+        document.body.classList.remove('modal-scroll-locked');
+        document.documentElement.classList.remove('modal-scroll-locked');
+
+        // Instantly restore the exact previous scroll position
+        window.scrollTo({
+          top: savedScrollY,
+          left: 0,
+          behavior: 'instant'
+        });
+      }
     }
 
     return () => {
-      document.body.classList.remove('modal-scroll-locked');
-      document.documentElement.classList.remove('modal-scroll-locked');
+      if (isLockedRef.current) {
+        const savedScrollY = scrollPositionRef.current;
+        isLockedRef.current = false;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        document.body.style.paddingRight = '';
+        document.body.classList.remove('modal-scroll-locked');
+        document.documentElement.classList.remove('modal-scroll-locked');
+        window.scrollTo({
+          top: savedScrollY,
+          left: 0,
+          behavior: 'instant'
+        });
+      }
     };
   }, [isAnyModalOpen]);
 
@@ -226,6 +283,9 @@ export default function App() {
 
             {/* SECTION 8: THE WIG CARE GUIDE */}
             <CareFeature onOpenCareGuide={() => setIsCareGuideOpen(true)} />
+
+            {/* SECTION 9: LETTERS FROM THE WIGVERSE (Email Subscription) */}
+            <NewsletterSignup />
 
             {/* SECTION 12: FOOTER */}
             <Footer onOpenCareGuide={() => setIsCareGuideOpen(true)} />

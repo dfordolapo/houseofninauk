@@ -268,7 +268,7 @@ export const FEATURED_PRODUCTS = [
   },
   {
     id: "hn-05",
-    name: "The Atelier Monogram Headscarf",
+    name: "The Signature Monogram Headscarf",
     category: "Scarves",
     price: 35,
     rating: 5.0,

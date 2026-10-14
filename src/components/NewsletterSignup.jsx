@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Check, AlertCircle } from 'lucide-react';
+import { Mail, Send, Check, AlertCircle } from 'lucide-react';
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState('');
@@ -9,7 +9,7 @@ export default function NewsletterSignup() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Basic email validation regex
+    // Strict email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email.trim())) {
       setStatus('error');
@@ -19,65 +19,98 @@ export default function NewsletterSignup() {
 
     setStatus('loading');
 
-    // Simulate marketing service API integration point (e.g. Klaviyo, Mailchimp)
+    // Simulate newsletter dispatch registration
     setTimeout(() => {
       setStatus('success');
       setEmail('');
-    }, 800);
+    }, 750);
   };
 
   return (
-    <section id="contact" className="section-wrapper" aria-label="Newsletter Signup">
-      <div className="container">
+    <section 
+      id="letters-from-the-wigverse" 
+      className="section-wrapper newsletter-section" 
+      aria-label="Letters from the Wigverse Email Subscription"
+    >
+      <div className="container newsletter-container">
         <div className="newsletter-card">
-          <div className="newsletter-icon-wrap" aria-hidden="true">
-            <Mail size={24} />
-          </div>
+          
+          {/* Subtle Ambient Golden Glow Behind Card */}
+          <div className="newsletter-card-glow" aria-hidden="true" />
 
-          <h2 className="newsletter-heading">Letters from the Wigverse.</h2>
+          {/* Main Display Heading */}
+          <h2 className="newsletter-heading">
+            Letters from the Wigverse.
+          </h2>
+
+          {/* Subtitle */}
           <p className="newsletter-subtext">
-            New looks, hair care notes and updates from House of Nina.
+            Private invitations to one-of-one unit drops, new look releases, and masterclass lace care rituals delivered gently to your inbox.
           </p>
 
+          {/* Interactive Form or Success State */}
           {status === 'success' ? (
-            <div className="newsletter-feedback success" style={{ padding: '16px', background: 'var(--color-olive-light)', borderRadius: '12px' }}>
-              <p style={{ margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <Check size={18} /> Welcome to the Wigverse inner circle!
+            <div className="newsletter-success-state" role="status" aria-live="polite">
+              <div className="newsletter-success-badge">
+                <Check size={20} className="newsletter-success-icon" />
+                <span className="newsletter-success-title">Welcome to the Inner Circle</span>
+              </div>
+              <p className="newsletter-success-desc">
+                Your place in the Wigverse dispatch is reserved. Expect our next editorial hair dispatch shortly.
               </p>
-              <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--color-espresso-muted)' }}>
-                You will receive our next editorial hair dispatch shortly.
-              </p>
+              <button 
+                type="button" 
+                className="newsletter-another-btn"
+                onClick={() => setStatus('idle')}
+              >
+                Sign up another email
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="newsletter-form" noValidate>
-              <input
-                type="email"
-                className="newsletter-input"
-                placeholder="Enter your email address..."
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (status === 'error') setStatus('idle');
-                }}
-                aria-label="Email address for newsletter"
-                required
-                disabled={status === 'loading'}
-              />
-              <button 
-                type="submit" 
-                className="newsletter-submit-btn"
-                disabled={status === 'loading'}
-              >
-                {status === 'loading' ? 'Joining...' : 'Subscribe'}
-              </button>
+              <div className="newsletter-input-group">
+                <div className="newsletter-input-icon" aria-hidden="true">
+                  <Mail size={18} />
+                </div>
+                <input
+                  type="email"
+                  className="newsletter-input"
+                  placeholder="Enter your email address..."
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (status === 'error') setStatus('idle');
+                  }}
+                  aria-label="Email address for Letters from the Wigverse"
+                  required
+                  disabled={status === 'loading'}
+                />
+                <button 
+                  type="submit" 
+                  className="newsletter-submit-btn"
+                  disabled={status === 'loading'}
+                  aria-label="Subscribe to Letters from the Wigverse"
+                >
+                  {status === 'loading' ? (
+                    <span className="newsletter-btn-loader">Joining...</span>
+                  ) : (
+                    <>
+                      <span>Join the Circle</span>
+                      <Send size={15} className="newsletter-btn-arrow" />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {status === 'error' && (
+                <div className="newsletter-error-state" role="alert">
+                  <AlertCircle size={15} />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
             </form>
           )}
 
-          {status === 'error' && (
-            <p className="newsletter-feedback error" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-              <AlertCircle size={14} /> {errorMessage}
-            </p>
-          )}
         </div>
       </div>
     </section>

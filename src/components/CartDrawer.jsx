@@ -3,16 +3,6 @@ import { X, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 import { BRAND_INFO } from '../data/wigData';
 
 export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, onClearCart }) {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
   const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - subtotal);

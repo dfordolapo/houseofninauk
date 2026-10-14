@@ -21,7 +21,7 @@ export default function SilkPairingAtelier({ onQuickView, onAddToCart }) {
       onAddToCart({
         ...activeWig,
         id: `${activeWig.id}-paired`,
-        name: `${activeWig.name} + ${activeScarf.name} (Atelier Pair)`,
+        name: `${activeWig.name} + ${activeScarf.name} (Signature Pair)`,
         price: bundleDiscounted
       });
       setIsAdded(true);
@@ -30,7 +30,7 @@ export default function SilkPairingAtelier({ onQuickView, onAddToCart }) {
   };
 
   return (
-    <section id="silk-pairing-atelier" className="section-wrapper pairing-atelier-section" aria-label="Silk & Lace Pairing Atelier">
+    <section id="silk-pairing-atelier" className="section-wrapper pairing-atelier-section" aria-label="Silk &amp; Lace Pairing Studio">
       <div className="container">
         
         {/* Header */}

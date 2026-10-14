@@ -5,17 +5,6 @@ import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 export default function MobileMenu({ isOpen, onClose, onOpenCart, cartCount, onOpenSearch, onSelectNavLink }) {
   const [activeLinkId, setActiveLinkId] = React.useState('shop');
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
 
   const handleLinkClick = (link) => {
     setActiveLinkId(link.id);

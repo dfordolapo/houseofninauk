@@ -2,16 +2,6 @@ import React, { useEffect } from 'react';
 import { X, Heart, ShoppingBag, Trash2, Tag } from 'lucide-react';
 
 export default function WishlistDrawer({ isOpen, onClose, wishlist = [], onRemoveItem, onAddToCart }) {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
 
   const handleAddWishlistItemToBag = (item) => {
     if (onAddToCart) {

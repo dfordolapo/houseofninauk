@@ -99,9 +99,7 @@ body {
 html.modal-scroll-locked,
 body.modal-scroll-locked {
   overflow: hidden !important;
-  height: 100vh !important;
   overscroll-behavior: none !important;
-  touch-action: none;
 }
 
 #root {
@@ -344,15 +342,24 @@ h1, h2, h3, h4, h5, h6 {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: var(--color-hamburger-rose);
+  background-color: var(--color-gold) !important;
+  color: #FFFFFF !important;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--color-gold);
+  box-shadow: 0 2px 8px rgba(197, 160, 89, 0.35);
   transition: transform var(--transition-fast), background-color var(--transition-fast);
 }
 
+.mobile-menu-circle-btn svg {
+  stroke: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
 .mobile-menu-circle-btn:hover {
-  background-color: var(--color-dusty-rose-dark);
+  background-color: var(--color-gold-dark) !important;
+  border-color: var(--color-gold-dark);
   transform: scale(1.05);
 }
 
@@ -610,7 +617,7 @@ h1, h2, h3, h4, h5, h6 {
 .wigverse-circle-path {
   stroke-dasharray: 2400;
   stroke-dashoffset: 2400;
-  animation: drawCircle 0.75s cubic-bezier(0.2, 0.9, 0.3, 1) 0.1s forwards;
+  animation: drawCircle 0.65s cubic-bezier(0.25, 0.95, 0.3, 1) 0.04s forwards;
   opacity: 0.95;
   filter: drop-shadow(0 2px 8px rgba(215, 109, 124, 0.25));
 }
@@ -1865,104 +1872,226 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   SECTION 11: NEWSLETTER SIGNUP
+   SECTION 11: LETTERS FROM THE WIGVERSE (NEWSLETTER)
    ========================================================================== */
-.newsletter-card {
-  background-color: var(--color-white);
-  border-radius: 24px;
-  padding: clamp(40px, 7vw, 72px) clamp(24px, 5vw, 64px);
-  text-align: center;
-  border: 1px solid var(--color-border-light);
-  box-shadow: var(--shadow-subtle);
-  max-width: 860px;
+.newsletter-section {
+  background-color: var(--color-beige);
+  padding-top: clamp(48px, 6vw, 84px);
+  padding-bottom: clamp(56px, 7vw, 92px);
+  position: relative;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+.newsletter-container {
+  max-width: 880px;
   margin: 0 auto;
 }
 
-.newsletter-icon-wrap {
-  width: 52px;
-  height: 52px;
-  background-color: var(--color-soft-blush-light);
-  color: var(--color-dusty-rose);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px auto;
+.newsletter-card {
+  position: relative;
+  background: linear-gradient(160deg, #FFFFFF 0%, #FAF8F5 60%, var(--color-ivory-light) 100%);
+  border-radius: 28px;
+  padding: clamp(44px, 6vw, 68px) clamp(20px, 4.5vw, 56px);
+  text-align: center;
+  border: 1px solid rgba(197, 160, 89, 0.32);
+  box-shadow: 0 20px 48px -12px rgba(36, 28, 25, 0.08), 0 0 0 1px rgba(197, 160, 89, 0.12);
+  overflow: hidden;
 }
 
+/* Ambient Radial Golden Glow Behind Card */
+.newsletter-card-glow {
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 520px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.14) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Main Display Heading */
 .newsletter-heading {
   font-family: var(--font-display);
-  font-size: clamp(28px, 4vw, 42px);
-  font-weight: 800;
+  font-size: clamp(30px, 4.4vw, 48px);
+  font-weight: 900;
   color: var(--color-deep-espresso);
-  margin-bottom: 10px;
+  line-height: 1.15;
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+  position: relative;
+  z-index: 1;
 }
 
+/* Editorial Subtext */
 .newsletter-subtext {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: clamp(14px, 1.5vw, 15.5px);
+  line-height: 1.65;
   color: var(--color-espresso-muted);
-  max-width: 480px;
-  margin: 0 auto 28px auto;
+  max-width: 540px;
+  margin: 0 auto 30px auto;
+  position: relative;
+  z-index: 1;
 }
 
+/* Form Container & Pill Group */
 .newsletter-form {
-  display: flex;
-  max-width: 480px;
+  max-width: 520px;
   margin: 0 auto;
-  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.newsletter-input-group {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(197, 160, 89, 0.38);
+  border-radius: 40px;
+  padding: 5px 5px 5px 16px;
+  box-shadow: 0 4px 18px rgba(36, 28, 25, 0.05);
+  transition: all 250ms ease;
+  gap: 8px;
+}
+
+.newsletter-input-group:focus-within {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.20), 0 8px 24px rgba(36, 28, 25, 0.08);
+}
+
+.newsletter-input-icon {
+  color: var(--color-gold-dark);
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
 }
 
 .newsletter-input {
-  flex-grow: 1;
-  padding: 14px 20px;
-  border-radius: 30px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-ivory);
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 14.5px;
   color: var(--color-deep-espresso);
-  transition: all var(--transition-fast);
+  padding: 8px 4px;
 }
 
-.newsletter-input:focus {
-  outline: none;
-  border-color: var(--color-dusty-rose);
-  background-color: var(--color-white);
-  box-shadow: 0 0 0 3px var(--color-soft-blush);
+.newsletter-input::placeholder {
+  color: #9E8E87;
+  font-size: 14px;
 }
 
 .newsletter-submit-btn {
-  padding: 14px 28px;
-  border-radius: 30px;
   background-color: var(--color-deep-espresso);
-  color: var(--color-white);
+  color: #FFFFFF;
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13.5px;
+  padding: 12px 24px;
+  border-radius: 30px;
+  border: 1px solid var(--color-gold);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 200ms ease;
   white-space: nowrap;
 }
 
-.newsletter-submit-btn:hover {
-  background-color: var(--color-dusty-rose);
+.newsletter-submit-btn:hover:not(:disabled) {
+  background-color: var(--color-gold);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(197, 160, 89, 0.35);
 }
 
-.newsletter-feedback {
-  margin-top: 14px;
-  font-family: var(--font-sans);
+.newsletter-btn-arrow {
+  transition: transform 200ms ease;
+}
+
+.newsletter-submit-btn:hover .newsletter-btn-arrow {
+  transform: translateX(3px);
+}
+
+.newsletter-error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: #C0392B;
   font-size: 13px;
   font-weight: 600;
+  font-family: var(--font-sans);
 }
 
-.newsletter-feedback.success {
-  color: var(--color-muted-olive);
+/* Success State Badge */
+.newsletter-success-state {
+  padding: 22px 26px;
+  background: rgba(197, 160, 89, 0.09);
+  border: 1px solid rgba(197, 160, 89, 0.45);
+  border-radius: 18px;
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
-.newsletter-feedback.error {
-  color: var(--color-dusty-rose-dark);
+.newsletter-success-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--color-gold-dark);
+  margin-bottom: 6px;
+}
+
+.newsletter-success-icon {
+  color: var(--color-gold-dark);
+}
+
+.newsletter-success-desc {
+  font-size: 13.5px;
+  color: var(--color-espresso-muted);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.newsletter-another-btn {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-gold-dark);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.newsletter-another-btn:hover {
+  color: var(--color-deep-espresso);
+}
+
+@media (max-width: 640px) {
+  .newsletter-input-group {
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 18px;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .newsletter-submit-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 18px;
+  }
 }
 
 /* ==========================================================================

@@ -171,23 +171,27 @@ export default function WigverseHero({ onEnterStore }) {
   const [showScrollEnter, setShowScrollEnter] = useState(false);
 
   // Fireworks & Scroll-Enter Sequencing:
-  // 1. Circle draws (0.3s - 1.5s)
-  // 2. Fast, punchy golden fireworks burst (1.5s - 2.1s)
-  // 3. Scroll to enter appears smoothly right after (2.2s)
+  // 1. Circle draws briskly (0.04s - 0.68s)
+  // 2. Fireworks detonate IMMEDIATELY the instant circle finishes drawing
+  // 3. Scroll to enter appears smoothly right after the sparkling burst
   useEffect(() => {
     const fireworkTimer = setTimeout(() => {
       setShowFireworks(true);
-    }, 850);
-
-    const scrollTimer = setTimeout(() => {
-      setShowScrollEnter(true);
-    }, 1350);
+    }, 680);
 
     return () => {
       clearTimeout(fireworkTimer);
-      clearTimeout(scrollTimer);
     };
   }, []);
+
+  useEffect(() => {
+    if (showFireworks) {
+      const scrollTimer = setTimeout(() => {
+        setShowScrollEnter(true);
+      }, 520);
+      return () => clearTimeout(scrollTimer);
+    }
+  }, [showFireworks]);
 
   // Fast scroll trigger: when user scrolls down while on the hero, trigger fast switch to store
   useEffect(() => {
@@ -319,6 +323,7 @@ export default function WigverseHero({ onEnterStore }) {
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                onAnimationEnd={() => setShowFireworks(true)}
               />
             </svg>
 

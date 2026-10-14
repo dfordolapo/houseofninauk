@@ -94,7 +94,7 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
                 <span className="bag-badge">{cartCount}</span>
               </button>
 
-              {/* Mobile Hamburger Pill Button with Dusty Rose Background */}
+              {/* Mobile Hamburger Button with Gold Background and White Icon */}
               <button 
                 type="button" 
                 className="mobile-menu-circle-btn mobile-only" 

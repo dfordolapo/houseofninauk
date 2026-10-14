@@ -5,16 +5,6 @@ import { CARE_GUIDE_DATA } from '../data/wigData';
 const ICONS = [Droplets, Scissors, Wind, Moon];
 
 export default function CareGuideModal({ isOpen, onClose }) {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -39,7 +29,7 @@ export default function CareGuideModal({ isOpen, onClose }) {
 
         <div className="modal-content-inner" style={{ padding: '4px 32px 36px' }}>
           <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <span className="section-label">Atelier Preservation</span>
+          <span className="section-label">Care &amp; Preservation</span>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '32px', fontWeight: 600, color: 'var(--color-deep-espresso)', marginBottom: '8px' }}>
             {CARE_GUIDE_DATA.heading}
           </h2>

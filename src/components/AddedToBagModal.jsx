@@ -12,16 +12,6 @@ export default function AddedToBagModal({
 }) {
   const [addedSuggestions, setAddedSuggestions] = useState({});
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('modal-scroll-locked');
-    } else {
-      document.body.classList.remove('modal-scroll-locked');
-    }
-    return () => {
-      document.body.classList.remove('modal-scroll-locked');
-    };
-  }, [isOpen]);
 
   if (!isOpen || !addedProduct) return null;
 
@@ -39,7 +29,7 @@ export default function AddedToBagModal({
       price: sug.price,
       selectedLength: sug.category === 'Wigs' ? '12"' : 'Standard',
       selectedLace: sug.category === 'Wigs' ? '5x5 HD Closure' : 'Pure Silk',
-      selectedDensity: 'Atelier Spec',
+      selectedDensity: 'Signature Spec',
       image: sug.image,
       quantity: 1
     };
@@ -104,7 +94,7 @@ export default function AddedToBagModal({
         <div className="added-suggestions-wrapper">
           <div className="suggestions-header">
             <div>
-              <span className="suggestions-subheading">Complete Your Atelier Look</span>
+              <span className="suggestions-subheading">Complete Your Look</span>
               <h4 className="suggestions-heading">Frequently Paired Together</h4>
             </div>
             <span className="suggestions-tag">Client Favorites</span>
