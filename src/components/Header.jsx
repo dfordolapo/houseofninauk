@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, Menu, Heart } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 
-export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpenSearch, onReturnToHero, onOpenWishlist }) {
+export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpenSearch, onReturnToHero, onOpenWishlist, wishlistCount = 0 }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -67,12 +67,20 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
 
               <button 
                 type="button" 
-                className="icon-btn" 
-                aria-label="Wishlist"
+                className="icon-btn wishlist-btn" 
+                aria-label={`Wishlist with ${wishlistCount} saved looks`}
                 title="Wishlist"
                 onClick={() => onOpenWishlist()}
               >
-                <Heart size={19} strokeWidth={1.8} />
+                <Heart 
+                  size={19} 
+                  strokeWidth={1.8} 
+                  fill={wishlistCount > 0 ? "var(--color-gold)" : "none"} 
+                  color={wishlistCount > 0 ? "var(--color-gold)" : "currentColor"} 
+                />
+                {wishlistCount > 0 && (
+                  <span className="bag-badge wishlist-badge animate-pop">{wishlistCount}</span>
+                )}
               </button>
 
               <button 

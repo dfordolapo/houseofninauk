@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import MobileMenu from './components/MobileMenu';
 import WigverseHero from './components/WigverseHero';
@@ -18,6 +18,8 @@ import ProductQuickViewModal from './components/ProductQuickViewModal';
 import CareGuideModal from './components/CareGuideModal';
 import CartDrawer from './components/CartDrawer';
 import WishlistDrawer from './components/WishlistDrawer';
+import AddedToBagModal from './components/AddedToBagModal';
+import LookReviewsModal from './components/LookReviewsModal';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
 export default function App() {
@@ -41,6 +43,51 @@ export default function App() {
     }
   ]);
 
+  // Added To Bag Upsell Modal State
+  const [isAddedModalOpen, setIsAddedModalOpen] = useState(false);
+  const [addedProductForModal, setAddedProductForModal] = useState(null);
+
+  // Look Reviews / Comments Modal State
+  const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
+  const [activeReviewPost, setActiveReviewPost] = useState(null);
+
+  // Quick View Modal state
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+  // Care Guide Modal state
+  const [isCareGuideOpen, setIsCareGuideOpen] = useState(false);
+
+  // Search Modal state
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Centralized Modal Background Scroll-Lock:
+  // When ANY modal or drawer is open, lock the document body so nothing else can scroll
+  const isAnyModalOpen = Boolean(
+    isMobileMenuOpen || 
+    isCartOpen || 
+    isWishlistOpen || 
+    quickViewProduct || 
+    isCareGuideOpen || 
+    isSearchOpen || 
+    isAddedModalOpen || 
+    isReviewsModalOpen
+  );
+
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      document.body.classList.add('modal-scroll-locked');
+      document.documentElement.classList.add('modal-scroll-locked');
+    } else {
+      document.body.classList.remove('modal-scroll-locked');
+      document.documentElement.classList.remove('modal-scroll-locked');
+    }
+
+    return () => {
+      document.body.classList.remove('modal-scroll-locked');
+      document.documentElement.classList.remove('modal-scroll-locked');
+    };
+  }, [isAnyModalOpen]);
+
   // Wishlist state (saved looks)
   const [wishlist, setWishlist] = useState([]);
 
@@ -51,18 +98,19 @@ export default function App() {
       if (exists) {
         return prev.filter(item => item.id !== post.id);
       }
-      return [...prev, post];
+      const priceNum = typeof post.price === 'number' 
+        ? post.price 
+        : parseInt(String(post.price).replace(/[^\d]/g, ''), 10) || 245;
+
+      const normalizedItem = {
+        ...post,
+        name: post.productName || post.name || 'House of Nina Unit',
+        price: priceNum,
+        category: post.category || 'Wigs'
+      };
+      return [...prev, normalizedItem];
     });
   };
-
-  // Quick View Modal state
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
-
-  // Care Guide Modal state
-  const [isCareGuideOpen, setIsCareGuideOpen] = useState(false);
-
-  // Search Modal state
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Active Category Filter for Featured Products
   const [activeFilter, setActiveFilter] = useState('All');
@@ -87,7 +135,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, { isSilent = false } = {}) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.cartId === product.cartId);
       if (existing) {
@@ -99,6 +147,12 @@ export default function App() {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
+
+    if (!isSilent) {
+      setQuickViewProduct(null);
+      setAddedProductForModal(product);
+      setIsAddedModalOpen(true);
+    }
   };
 
   const handleRemoveCartItem = (cartId) => {
@@ -129,6 +183,7 @@ export default function App() {
         onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}
         cartCount={cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)}
+        wishlistCount={wishlist.length}
         onOpenSearch={() => setIsSearchOpen(true)}
         onReturnToHero={handleReturnToHero}
         onOpenWishlist={() => setIsWishlistOpen(true)}
@@ -146,6 +201,10 @@ export default function App() {
               onSelectCategory={handleSelectCategory} 
               onQuickView={handleInstagramQuickView}
               onToggleWishlist={handleToggleSave}
+              onOpenReviews={(post) => {
+                setActiveReviewPost(post);
+                setIsReviewsModalOpen(true);
+              }}
             />
 
             {/* CINEMATIC AUTOPLAY VIDEO BANNER (Movement Without Weight) */}
@@ -208,6 +267,7 @@ export default function App() {
         onClose={() => setIsWishlistOpen(false)}
         wishlist={wishlist}
         onRemoveItem={(id) => setWishlist(prev => prev.filter(item => item.id !== id))}
+        onAddToCart={handleAddToCart}
       />
 
       <ProductQuickViewModal 
@@ -227,6 +287,28 @@ export default function App() {
         onClose={() => setIsSearchOpen(false)}
         onSelectProduct={(prod) => setQuickViewProduct(prod)}
         onSelectCategory={handleSelectCategory}
+      />
+
+      {/* ADDED TO BAG UPSELL & CROSS-SELL MODAL */}
+      <AddedToBagModal
+        isOpen={isAddedModalOpen}
+        onClose={() => setIsAddedModalOpen(false)}
+        addedProduct={addedProductForModal}
+        cartItems={cartItems}
+        onAddToCart={handleAddToCart}
+        onOpenCart={() => {
+          setIsAddedModalOpen(false);
+          setIsCartOpen(true);
+        }}
+      />
+
+      {/* INSTAGRAM-STYLE LOOK COMMENTS & REVIEWS MODAL */}
+      <LookReviewsModal
+        isOpen={isReviewsModalOpen}
+        onClose={() => setIsReviewsModalOpen(false)}
+        post={activeReviewPost}
+        onQuickView={handleInstagramQuickView}
+        onAddToCart={handleAddToCart}
       />
     </div>
   );

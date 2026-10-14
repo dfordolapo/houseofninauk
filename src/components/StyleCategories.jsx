@@ -1,30 +1,23 @@
 import React, { useState, useRef } from 'react';
-import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
-import { INSTA_POSTS, BRAND_INFO } from '../data/wigData';
+import { Heart, MessageCircle, Send, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { INSTA_POSTS } from '../data/wigData';
 
-export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist }) {
+export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist, onOpenReviews }) {
   const [likedPosts, setLikedPosts] = useState({});
-  const [savedPosts, setSavedPosts] = useState({});
   const [activeTagPostId, setActiveTagPostId] = useState(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const sliderRef = useRef(null);
 
   const toggleLike = (post) => {
     const id = post.id;
+    const isNowLiked = !likedPosts[id];
     setLikedPosts(prev => ({
       ...prev,
-      [id]: !prev[id]
+      [id]: isNowLiked
     }));
     if (onToggleWishlist) {
       onToggleWishlist(post);
     }
-  };
-
-  const toggleSave = (id) => {
-    setSavedPosts(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
   };
 
   const handleScroll = () => {
@@ -45,15 +38,13 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
 
   const scrollPrev = () => {
     if (!sliderRef.current) return;
-    sliderRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    sliderRef.current.scrollBy({ left: -320, behavior: 'smooth' });
   };
 
   const scrollNext = () => {
     if (!sliderRef.current) return;
-    sliderRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    sliderRef.current.scrollBy({ left: 320, behavior: 'smooth' });
   };
-
-  const filteredPosts = INSTA_POSTS;
 
   return (
     <section id="find-your-next-look" className="section-wrapper instagram-style-section" aria-label="Find Your Next Look Instagram Feed">
@@ -90,9 +81,8 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
           ref={sliderRef}
           onScroll={handleScroll}
         >
-          {filteredPosts.map((post) => {
+          {INSTA_POSTS.map((post) => {
             const isLiked = !!likedPosts[post.id];
-            const isSaved = !!savedPosts[post.id];
             const isTagOpen = activeTagPostId === post.id;
 
             return (
@@ -108,7 +98,12 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
                       <span className="author-location">United Kingdom</span>
                     </div>
                   </div>
-                  <button type="button" className="insta-more-btn" aria-label="Options">
+                  <button 
+                    type="button" 
+                    className="insta-more-btn" 
+                    aria-label="Look reviews & options"
+                    onClick={() => onOpenReviews && onOpenReviews(post)}
+                  >
                     <MoreHorizontal size={18} />
                   </button>
                 </div>
@@ -116,7 +111,7 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
                 {/* Post Image with Product Tagging */}
                 <div 
                   className="insta-image-container"
-                  onDoubleClick={() => toggleLike(post.id)}
+                  onDoubleClick={() => toggleLike(post)}
                 >
                   <img src={post.image} alt={post.productName} className="insta-post-img" loading="lazy" />
                   
@@ -154,7 +149,7 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
                   )}
                 </div>
 
-                {/* Post Action Icons Bar */}
+                {/* Post Action Icons Bar (Saved icon removed, comments icon triggers reviews like Instagram) */}
                 <div className="insta-actions-bar">
                   <div className="insta-left-actions">
                     <button 
@@ -163,29 +158,33 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
                       onClick={() => toggleLike(post)}
                       aria-label="Like post"
                     >
-                      <Heart size={22} fill={isLiked ? "var(--color-dusty-rose)" : "none"} color={isLiked ? "var(--color-dusty-rose)" : "var(--color-deep-espresso)"} />
+                      <Heart 
+                        size={22} 
+                        fill={isLiked ? "var(--color-gold)" : "none"} 
+                        color={isLiked ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
+                      />
                     </button>
-                    <button type="button" className="insta-action-btn" aria-label="Comment on post">
-                      <MessageCircle size={22} />
+                    
+                    {/* Comments icon: direct reviews section trigger */}
+                    <button 
+                      type="button" 
+                      className="insta-action-btn" 
+                      onClick={() => onOpenReviews && onOpenReviews(post)}
+                      aria-label="View and write reviews"
+                      title="Comments & Reviews"
+                    >
+                      <MessageCircle size={22} color="var(--color-deep-espresso)" />
                     </button>
+
                     <button 
                       type="button" 
                       className="insta-action-btn" 
                       aria-label="Share post"
-                      onClick={() => alert("Link copied to clipboard! Share the Wigverse with your friends.")}
+                      onClick={() => alert("Link copied to clipboard! Share this look with friends.")}
                     >
-                      <Send size={20} />
+                      <Send size={20} color="var(--color-deep-espresso)" />
                     </button>
                   </div>
-
-                  <button 
-                    type="button" 
-                    className={`insta-action-btn ${isSaved ? 'saved' : ''}`}
-                    onClick={() => toggleSave(post.id)}
-                    aria-label="Save look"
-                  >
-                    <Bookmark size={22} fill={isSaved ? "var(--color-deep-espresso)" : "none"} color="var(--color-deep-espresso)" />
-                  </button>
                 </div>
 
                 {/* Likes Counter */}
@@ -221,7 +220,7 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
 
         {/* Slideshow Pagination Indicator Dots */}
         <div className="insta-slider-dots">
-          {filteredPosts.map((_, dotIdx) => (
+          {INSTA_POSTS.map((_, dotIdx) => (
             <button
               key={dotIdx}
               type="button"

@@ -18,7 +18,7 @@ export default function CinematicVideoBanner() {
   return (
     <section className="cinematic-video-section" aria-label="Cinematic Silk and Hair Movement">
       <div className="cinematic-video-container">
-        {/* Continuous Autoplay Video Loop */}
+        {/* Continuous Autoplay Video Loop (No thumbnail poster) */}
         <video
           ref={videoRef}
           className="cinematic-video-player"
@@ -27,7 +27,6 @@ export default function CinematicVideoBanner() {
           loop
           playsInline
           preload="auto"
-          poster="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1600&q=80"
         >
           <source 
             src="/videos/15558864_1080_1920_30fps.mp4" 

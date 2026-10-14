@@ -30,17 +30,17 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
         aria-modal="true" 
         aria-label="Shopping Bag"
       >
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: '1px solid var(--color-border)' }}>
+        {/* Sticky Header */}
+        <div className="drawer-sticky-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <ShoppingBag size={20} color="var(--color-dusty-rose)" />
+            <ShoppingBag size={20} color="var(--color-gold)" />
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', margin: 0, fontWeight: 600 }}>
               Shopping Bag ({cartItems.length})
             </h2>
           </div>
           <button 
             type="button" 
-            className="icon-btn" 
+            className="drawer-close-btn" 
             onClick={onClose}
             aria-label="Close shopping bag"
           >

@@ -26,7 +26,7 @@ export default function CareGuideModal({ isOpen, onClose }) {
         role="dialog" 
         aria-modal="true" 
         aria-label="House of Nina Wig Care Guide"
-        style={{ maxWidth: '720px', padding: '36px 32px' }}
+        style={{ maxWidth: '720px' }}
       >
         <button 
           type="button" 
@@ -37,7 +37,8 @@ export default function CareGuideModal({ isOpen, onClose }) {
           <X size={20} strokeWidth={2} />
         </button>
 
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+        <div className="modal-content-inner" style={{ padding: '4px 32px 36px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <span className="section-label">Atelier Preservation</span>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '32px', fontWeight: 600, color: 'var(--color-deep-espresso)', marginBottom: '8px' }}>
             {CARE_GUIDE_DATA.heading}
@@ -98,6 +99,7 @@ export default function CareGuideModal({ isOpen, onClose }) {
           >
             Got it, back to store
           </button>
+        </div>
         </div>
       </div>
     </div>

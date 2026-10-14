@@ -36,7 +36,7 @@ export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelect
         role="dialog" 
         aria-modal="true" 
         aria-label="Search House of Nina"
-        style={{ maxWidth: '640px', padding: '32px' }}
+        style={{ maxWidth: '640px' }}
       >
         <button 
           type="button" 
@@ -47,7 +47,8 @@ export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelect
           <X size={20} />
         </button>
 
-        <div style={{ marginBottom: '24px' }}>
+        <div className="modal-content-inner" style={{ padding: '4px 32px 32px' }}>
+          <div style={{ marginBottom: '24px' }}>
 
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 600, margin: '4px 0 16px 0' }}>
             Search wigs & silk scarves
@@ -133,6 +134,7 @@ export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelect
             )}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

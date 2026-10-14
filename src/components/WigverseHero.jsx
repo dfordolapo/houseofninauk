@@ -1,8 +1,193 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HERO_NINE_TILES } from '../data/wigData';
+
+/* Realistic Golden Sparkler Pyrotechnics Canvas Component - Fast, Snappy & Vibrant */
+function SparklerFireworksCanvas() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const width = rect.width || 560;
+    const height = rect.height || 200;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const particles = [];
+
+    // Rapid, high-velocity pyrotechnic sparkler burst with fast sparkle burn
+    const spawnBurst = (originX, originY, count, minAngle, maxAngle, baseSpeed, options = {}) => {
+      const { gravityMult = 1, speedSpread = 0.75 } = options;
+      for (let i = 0; i < count; i++) {
+        const angle = minAngle + Math.random() * (maxAngle - minAngle);
+        const speed = baseSpeed * (0.65 + Math.random() * speedSpread);
+        // Fast snappy decay: particles live ~16-24 frames for instant crackling burst
+        const decay = 0.045 + Math.random() * 0.030;
+        const size = 1.0 + Math.random() * 2.2;
+
+        // Luxury golden color gradient
+        const roll = Math.random();
+        let colorPrefix, glowColor;
+        if (roll < 0.40) {
+          colorPrefix = 'rgba(255, 255, 245, ';
+          glowColor = 'rgba(255, 245, 205, 0.98)';
+        } else if (roll < 0.78) {
+          colorPrefix = 'rgba(245, 208, 115, ';
+          glowColor = 'rgba(222, 180, 65, 0.90)';
+        } else {
+          colorPrefix = 'rgba(215, 172, 85, ';
+          glowColor = 'rgba(190, 142, 50, 0.82)';
+        }
+
+        particles.push({
+          x: originX,
+          y: originY,
+          prevX: originX,
+          prevY: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          gravity: (0.16 + Math.random() * 0.10) * gravityMult,
+          friction: 0.905 + Math.random() * 0.015, // Snappy air drag
+          alpha: 1.0,
+          decay: decay,
+          size: size,
+          colorPrefix: colorPrefix,
+          glowColor: glowColor,
+          flicker: Math.random() * 20
+        });
+      }
+    };
+
+    // Ultra-Fast Staggered Wave Sequence (compressed into ~150ms total)
+    const timers = [];
+
+    // Wave 1 (t = 0ms): Left apex explosive snap
+    spawnBurst(width * 0.12, height * 0.52, 60, Math.PI * 0.40, Math.PI * 1.60, 15.5);
+
+    // Wave 2 (t = 30ms): Right apex explosive snap
+    timers.push(setTimeout(() => {
+      spawnBurst(width * 0.88, height * 0.52, 60, -Math.PI * 0.60, Math.PI * 0.60, 15.5);
+    }, 30));
+
+    // Wave 3 (t = 65ms): Diagonal flank bursts along lower curves
+    timers.push(setTimeout(() => {
+      spawnBurst(width * 0.26, height * 0.68, 45, Math.PI * 0.20, Math.PI * 1.10, 13.5);
+      spawnBurst(width * 0.74, height * 0.68, 45, -Math.PI * 0.10, Math.PI * 0.80, 13.5);
+    }, 65));
+
+    // Wave 4 (t = 105ms): Grand radiant center-bottom fountain pop
+    timers.push(setTimeout(() => {
+      spawnBurst(width * 0.50, height * 0.80, 60, Math.PI * 0.08, Math.PI * 0.92, 13.0, { gravityMult: 1.2 });
+    }, 105));
+
+    // Wave 5 (t = 150ms): Fast celebratory crackle flourish
+    timers.push(setTimeout(() => {
+      spawnBurst(width * 0.16, height * 0.48, 40, Math.PI * 0.48, Math.PI * 1.52, 12.0);
+      spawnBurst(width * 0.84, height * 0.48, 40, -Math.PI * 0.52, Math.PI * 0.48, 12.0);
+    }, 150));
+
+    let animationId;
+    let isCancelled = false;
+
+    const render = () => {
+      if (isCancelled) return;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.globalCompositeOperation = 'lighter';
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+
+        p.prevX = p.x;
+        p.prevY = p.y;
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= p.friction;
+        p.vy = p.vy * p.friction + p.gravity;
+
+        p.alpha -= p.decay;
+        p.flicker += 0.55;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        // Rapid crackling sparkler twinkle
+        const sparkle = 0.70 + 0.30 * Math.sin(p.flicker * 4.5);
+        const currentAlpha = Math.max(0, p.alpha * sparkle);
+
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = p.glowColor;
+
+        // Trailing spark streak
+        ctx.beginPath();
+        ctx.strokeStyle = `${p.colorPrefix}${currentAlpha})`;
+        ctx.lineWidth = p.size;
+        ctx.lineCap = 'round';
+        ctx.moveTo(p.prevX, p.prevY);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+
+        // White-hot core dot
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, currentAlpha * 1.35)})`;
+        ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.shadowBlur = 0;
+      ctx.globalCompositeOperation = 'source-over';
+
+      if (particles.length > 0) {
+        animationId = requestAnimationFrame(render);
+      }
+    };
+
+    animationId = requestAnimationFrame(render);
+
+    return () => {
+      isCancelled = true;
+      timers.forEach(t => clearTimeout(t));
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="hero-fireworks-canvas" aria-hidden="true" />;
+}
 
 export default function WigverseHero({ onEnterStore }) {
   const [activeImageIndices, setActiveImageIndices] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [showFireworks, setShowFireworks] = useState(false);
+  const [showScrollEnter, setShowScrollEnter] = useState(false);
+
+  // Fireworks & Scroll-Enter Sequencing:
+  // 1. Circle draws (0.3s - 1.5s)
+  // 2. Fast, punchy golden fireworks burst (1.5s - 2.1s)
+  // 3. Scroll to enter appears smoothly right after (2.2s)
+  useEffect(() => {
+    const fireworkTimer = setTimeout(() => {
+      setShowFireworks(true);
+    }, 850);
+
+    const scrollTimer = setTimeout(() => {
+      setShowScrollEnter(true);
+    }, 1350);
+
+    return () => {
+      clearTimeout(fireworkTimer);
+      clearTimeout(scrollTimer);
+    };
+  }, []);
 
   // Fast scroll trigger: when user scrolls down while on the hero, trigger fast switch to store
   useEffect(() => {
@@ -130,12 +315,15 @@ export default function WigverseHero({ onEnterStore }) {
               <path
                 className="wigverse-circle-path"
                 d="M 68,110 C 60,42 220,18 420,16 C 620,14 728,48 732,106 C 736,162 610,196 380,198 C 170,200 48,168 54,98 C 58,48 200,24 370,22"
-                stroke="var(--color-white)"
+                stroke="var(--color-deep-espresso)"
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
+
+            {/* Realistic Golden Sparkler Celebration Burst directly surrounding the circled WIGVERSE */}
+            {showFireworks && <SparklerFireworksCanvas />}
           </div>
         </div>
 
@@ -162,8 +350,8 @@ export default function WigverseHero({ onEnterStore }) {
           })}
         </div>
 
-        {/* Classy & Simple Editorial Scroll Indicator */}
-        <div className="hero-scroll-enter-wrap">
+        {/* Classy & Simple Editorial Scroll Indicator (appears after fireworks) */}
+        <div className={`hero-scroll-enter-wrap ${showScrollEnter ? 'revealed' : 'hidden'}`}>
           <button
             type="button"
             className="classy-scroll-indicator"

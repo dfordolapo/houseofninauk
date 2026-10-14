@@ -130,7 +130,7 @@ export const HERO_NINE_TILES = [
   }
 ];
 
-// INSTAGRAM POST TILES (Realistic aesthetic social posts with product tags)
+// INSTAGRAM POST TILES (Realistic aesthetic social posts with product tags and customer reviews)
 export const INSTA_POSTS = [
   {
     id: "ig-1",
@@ -142,7 +142,12 @@ export const INSTA_POSTS = [
     comments: "84",
     caption: "Sharp blunt perimeter, pure mirror glass reflection. Customised unit ready to wear. 🖤 #HouseOfNina #UKWigs",
     timeAgo: "2 HOURS AGO",
-    isMultiple: false
+    isMultiple: false,
+    reviewsList: [
+      { id: "rev-1-1", author: "Maya T.", rating: 5, time: "35m ago", verified: true, text: "The sharp blunt cut is pure perfection! Lace melted into my scalp like butter." },
+      { id: "rev-1-2", author: "Chloe B.", rating: 5, time: "2h ago", verified: true, text: "Best bob I have ever bought in the UK. Barely needs heat styling to stay pin-straight." },
+      { id: "rev-1-3", author: "Eleanor S.", rating: 5, time: "4h ago", verified: true, text: "Lustre and weight are supreme. Got so many compliments in Mayfair!" }
+    ]
   },
   {
     id: "ig-2",
@@ -154,7 +159,12 @@ export const INSTA_POSTS = [
     comments: "142",
     caption: "Ultra-silky straight hair that moves effortlessly. Hand-finished lace closure. 👑",
     timeAgo: "1 DAY AGO",
-    isMultiple: true
+    isMultiple: true,
+    reviewsList: [
+      { id: "rev-2-1", author: "Zainab K.", rating: 5, time: "1h ago", verified: true, text: "Silky and full all the way to the 26\" tips. Zero tangling even in London wind." },
+      { id: "rev-2-2", author: "Sophia D.", rating: 5, time: "5h ago", verified: true, text: "The HD closure is truly invisible. Nina’s team has outdone themselves." },
+      { id: "rev-2-3", author: "Tasha M.", rating: 5, time: "1d ago", verified: true, text: "10/10 quality. Moves so naturally." }
+    ]
   },
   {
     id: "ig-3",
@@ -166,7 +176,11 @@ export const INSTA_POSTS = [
     comments: "63",
     caption: "Melt your lace seamlessly and protect your edges overnight with 100% pure Mulberry silk. 🤍",
     timeAgo: "2 DAYS AGO",
-    isMultiple: false
+    isMultiple: false,
+    reviewsList: [
+      { id: "rev-3-1", author: "Nia A.", rating: 5, time: "3h ago", verified: true, text: "The only scarf that properly melts lace edges without slipping off overnight." },
+      { id: "rev-3-2", author: "Jessica R.", rating: 5, time: "1d ago", verified: true, text: "Pure silk luxury. My edges have never looked so neat." }
+    ]
   },
   {
     id: "ig-4",
@@ -178,7 +192,11 @@ export const INSTA_POSTS = [
     comments: "95",
     caption: "Soft bounce and effortless body wave. Handcrafted with love in the UK. 💫",
     timeAgo: "3 DAYS AGO",
-    isMultiple: false
+    isMultiple: false,
+    reviewsList: [
+      { id: "rev-4-1", author: "Amara O.", rating: 5, time: "6h ago", verified: true, text: "The bounce stays even after washing! Super soft and minimal shedding." },
+      { id: "rev-4-2", author: "Danielle P.", rating: 5, time: "2d ago", verified: true, text: "Worth every single pound. Feels like my own natural hair." }
+    ]
   }
 ];
 
@@ -263,6 +281,82 @@ export const FEATURED_PRODUCTS = [
     },
     tag: "Silk Scarf",
     description: "Versatile luxury silk square scarf for headwraps, wig protection, and effortless styling."
+  },
+  {
+    id: "hn-06",
+    name: "HD Lace Melt Elastic Band & Edge Brush",
+    category: "Accessories",
+    price: 16,
+    rating: 5.0,
+    reviewsCount: 38,
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+    options: {
+      lengths: ["Adjustable Velcro"],
+      laceTypes: ["Soft Stretch Band"],
+      densities: ["Edge Styling Duo"]
+    },
+    tag: "Essential Add-on",
+    description: "Custom velvet-lined elastic melt band paired with dual-sided edge styling brush for flawless invisible installs."
+  },
+  {
+    id: "hn-07",
+    name: "Pure Mulberry Silk Sleeping Bonnet",
+    category: "Accessories",
+    price: 26,
+    rating: 5.0,
+    reviewsCount: 42,
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80",
+    options: {
+      lengths: ["XL Fit (All Wig Lengths)"],
+      laceTypes: ["22 Momme Silk"],
+      densities: ["Double-Layered"]
+    },
+    tag: "Essential Add-on",
+    description: "Reversible double-lined 100% Mulberry silk bonnet to seal in hydration, eliminate friction, and prolong wig longevity."
+  }
+];
+
+// BAG COMPLEMENTARY SUGGESTIONS (For Cross-sell / Upsell Modal)
+export const BAG_SUGGESTIONS = [
+  {
+    id: "sug-1",
+    name: "The Mulberry Silk Edge Scarf",
+    category: "Scarves",
+    price: 28,
+    rating: 5.0,
+    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=600&q=80",
+    badge: "Must-Have Pairing",
+    reason: "Melts lace edges seamlessly & protects styles overnight."
+  },
+  {
+    id: "sug-2",
+    name: "HD Lace Melt Band & Edge Brush",
+    category: "Accessories",
+    price: 16,
+    rating: 5.0,
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+    badge: "Best Seller",
+    reason: "Locks your lace down in 10 minutes with zero residue."
+  },
+  {
+    id: "sug-3",
+    name: "Pure Mulberry Silk Sleeping Bonnet",
+    category: "Accessories",
+    price: 26,
+    rating: 5.0,
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80",
+    badge: "Hair Preserver",
+    reason: "Prevents tangles and keeps hair silky smooth while sleeping."
+  },
+  {
+    id: "sug-4",
+    name: "The Victoria Glass Bob",
+    category: "Wigs",
+    price: 245,
+    rating: 5.0,
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
+    badge: "Signature Look",
+    reason: "The iconic precision blunt cut that turns heads everywhere."
   }
 ];
 
