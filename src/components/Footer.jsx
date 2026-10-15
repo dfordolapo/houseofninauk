@@ -228,6 +228,9 @@ export default function Footer({ onOpenCareGuide }) {
                   </a>
                 </li>
                 <li><a href="#details" className="footer-nav-link">FAQs</a></li>
+                <li><a href="#privacy" className="footer-nav-link">Privacy Policy</a></li>
+                <li><a href="#terms" className="footer-nav-link">Terms of Service</a></li>
+                <li><a href="#cookies" className="footer-nav-link">Cookies</a></li>
               </ul>
             </div>
 
@@ -322,6 +325,9 @@ export default function Footer({ onOpenCareGuide }) {
                     Care Guide
                   </a>
                   <a href="#details" className="mobile-nav-link">FAQs</a>
+                  <a href="#privacy" className="mobile-nav-link">Privacy Policy</a>
+                  <a href="#terms" className="mobile-nav-link">Terms of Service</a>
+                  <a href="#cookies" className="mobile-nav-link">Cookies</a>
                 </div>
               </div>
             </div>
@@ -371,80 +377,6 @@ export default function Footer({ onOpenCareGuide }) {
 
         </div>
 
-      </div>
-
-      {/* ===================================================================
-          LAYER C: DARK ESPRESSO BOTTOM LEGAL & TRUST BAR
-          =================================================================== */}
-      <div className="footer-layer-c-legal-bar">
-        <div className="container footer-legal-bar-container">
-          
-          {/* Left: Dynamic Copyright */}
-          <div className="legal-bar-col copyright-col">
-            <p className="legal-copyright-text">
-              &copy; {currentYear} House of Nina. All rights reserved.
-            </p>
-          </div>
-
-          {/* Legal Links */}
-          <div className="legal-bar-col links-col">
-            <a href="#terms" className="legal-link">Terms</a>
-            <span className="legal-dot-separator" aria-hidden="true">&bull;</span>
-            <a href="#privacy" className="legal-link">Privacy</a>
-            <span className="legal-dot-separator" aria-hidden="true">&bull;</span>
-            <a href="#cookies" className="legal-link">Cookies</a>
-          </div>
-
-          {/* Right / Centered: Payment Method Badges */}
-          <div className="legal-bar-col payments-col">
-            <div className="payment-badges-row" aria-label="Supported Payment Methods">
-              
-              {/* VISA */}
-              <span className="payment-badge-pill visa-pill" title="Visa">
-                <svg width="38" height="13" viewBox="0 0 60 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M24.5 1.5L16.8 19H12L7.3 4.2C7 3.1 6.8 2.7 5.9 2.2C4.5 1.4 2.1 0.7 0 0.2L0.3 1.5C3.8 2.3 7 3.5 8.8 6.5L13.1 19H18.2L29.3 1.5H24.5Z" fill="#F8F4EE"/>
-                  <path d="M34.5 13.5C34.5 9.2 28.5 9 28.5 7.1C28.5 6.3 29.3 5.4 31 5.2C32.1 5.1 34.2 5 36.5 6L37.2 2.7C35.7 2.2 33.7 1.8 31.2 1.8C25.5 1.8 21.5 4.8 21.5 9.2C21.5 12.4 24.3 14.2 26.5 15.3C28.7 16.4 29.5 17.1 29.5 18.1C29.5 19.6 27.7 20.2 26 20.2C23.6 20.2 21.3 19.5 19.7 18.7L18.8 22.2C20.6 23 23.3 23.6 26.1 23.6C32.1 23.6 34.5 19.8 34.5 13.5Z" fill="#F8F4EE"/>
-                  <path d="M44.7 1.5L40.8 19H45.5L49.4 1.5H44.7Z" fill="#F8F4EE"/>
-                  <path d="M58.7 1.5H54.2C52.8 1.5 51.7 1.9 51.1 3.3L43.8 19H48.7L49.7 16.2H55.7L56.3 19H60.6L58.7 1.5ZM51.1 12.5L53.5 5.8C53.5 5.8 54.2 4 54.5 3.2L55.1 6L56.7 12.5H51.1Z" fill="#F8F4EE"/>
-                </svg>
-              </span>
-
-              {/* Mastercard */}
-              <span className="payment-badge-pill mastercard-pill" title="Mastercard">
-                <svg width="28" height="18" viewBox="0 0 36 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="11" r="10" fill="#EB001B"/>
-                  <circle cx="24" cy="11" r="10" fill="#F79E1B"/>
-                  <path d="M18 3.5C20.2 5.3 21.6 8 21.6 11C21.6 14 20.2 16.7 18 18.5C15.8 16.7 14.4 14 14.4 11C14.4 8 15.8 5.3 18 3.5Z" fill="#FF5F00"/>
-                </svg>
-              </span>
-
-              {/* Apple Pay */}
-              <span className="payment-badge-pill applepay-pill" title="Apple Pay">
-                <svg width="34" height="14" viewBox="0 0 50 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9.2 9.8C9.2 7.7 10.4 6.7 10.5 6.6C9.5 5.1 7.9 4.9 7.4 4.8C6 4.7 4.6 5.7 3.9 5.7C3.1 5.7 2 4.8 0.9 4.8C-0.5 4.8 -1.7 5.7 -2.4 6.9C-3.9 9.5 -2.8 13.4 -1.3 15.5C-0.6 16.6 0.2 17.7 1.3 17.6C2.3 17.5 2.8 16.9 4 16.9C5.2 16.9 5.6 17.6 6.8 17.6C8 17.6 8.7 16.6 9.4 15.5C10.2 14.3 10.6 13.2 10.6 13.1C10.5 13 9.2 12.5 9.2 9.8Z" transform="translate(4, 0)" fill="#F8F4EE"/>
-                  <path d="M7 3.3C7.6 2.5 8 1.4 7.9 0.3C6.9 0.3 5.7 1 5.1 1.7C4.6 2.4 4.1 3.5 4.3 4.6C5.4 4.7 6.4 4 7 3.3Z" transform="translate(4, 0)" fill="#F8F4EE"/>
-                  <text x="21" y="15" fill="#F8F4EE" fontFamily="sans-serif" fontSize="12" fontWeight="600" letterSpacing="-0.3">Pay</text>
-                </svg>
-              </span>
-
-              {/* Klarna */}
-              <span className="payment-badge-pill klarna-pill" title="Klarna">
-                <span className="klarna-text">Klarna.</span>
-              </span>
-
-              {/* PayPal */}
-              <span className="payment-badge-pill paypal-pill" title="PayPal">
-                <svg width="42" height="13" viewBox="0 0 70 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12.8 1.8H5.6C5.1 1.8 4.7 2.2 4.6 2.7L2.1 18.2C2.1 18.5 2.3 18.8 2.6 18.8H5.8C6.3 18.8 6.7 18.4 6.8 17.9L7.5 13.5C7.6 13 8 12.6 8.5 12.6H10.4C14.2 12.6 16.7 10.7 17.3 7C17.6 5.3 17.2 4 16.2 3.1C15.3 2.2 13.9 1.8 12.8 1.8Z" fill="#0079C1"/>
-                  <path d="M15.4 7C14.8 10.7 12.3 12.6 8.5 12.6H6.6C6.1 12.6 5.7 13 5.6 13.5L4.4 20.8C4.3 21.1 4.5 21.4 4.8 21.4H8C8.5 21.4 8.9 21 9 20.5L9.6 16.6C9.7 16.1 10.1 15.7 10.6 15.7H12C15.2 15.7 17.3 14.1 17.9 11C18.2 9.5 17.9 8.3 17.1 7.5C16.5 8 15.8 8.4 15.4 7Z" transform="translate(3, -2)" fill="#00457C"/>
-                  <text x="25" y="14" fill="#F8F4EE" fontFamily="sans-serif" fontSize="12" fontWeight="700" fontStyle="italic">PayPal</text>
-                </svg>
-              </span>
-
-            </div>
-          </div>
-
-        </div>
       </div>
 
     </footer>

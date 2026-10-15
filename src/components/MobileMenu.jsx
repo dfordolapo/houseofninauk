@@ -77,6 +77,13 @@ export default function MobileMenu({ isOpen, onClose, onOpenCart, cartCount, onO
           >
             <Search size={16} /> Search Catalog
           </button>
+          <div className="mobile-drawer-legal-links" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '14px', fontSize: '11px', color: '#8C8074' }}>
+            <a href="#privacy" onClick={onClose} style={{ color: '#5C5146', textDecoration: 'none' }}>Privacy</a>
+            <span>&bull;</span>
+            <a href="#terms" onClick={onClose} style={{ color: '#5C5146', textDecoration: 'none' }}>Terms</a>
+            <span>&bull;</span>
+            <a href="#cookies" onClick={onClose} style={{ color: '#5C5146', textDecoration: 'none' }}>Cookies</a>
+          </div>
         </div>
       </div>
     </>
