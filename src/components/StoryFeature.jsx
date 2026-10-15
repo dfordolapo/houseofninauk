@@ -11,7 +11,7 @@ const SPECIMEN_CARDS = [
     title: 'Born From a Love of Hair',
     subtitle: 'Created for Every Woman',
     image: '/images/about-us.png',
-    imagePosition: 'center 22%',
+    imagePosition: 'center 31%',
     metrics: [
       { label: 'Origin', value: 'Personal Passion' },
       { label: 'Purpose', value: 'Confidence & Joy' },
