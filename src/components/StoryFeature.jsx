@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
+import GoldStroke from './GoldStroke';
 
 const SPECIMEN_CARDS = [
   {
@@ -67,7 +68,7 @@ export default function StoryFeature() {
           <div className="story-text-column">
             
             <h2 className="story-main-heading">
-              A little more about House of Nina.
+              A little more <GoldStroke>about us</GoldStroke>.
             </h2>
 
             <div className="story-paragraphs">

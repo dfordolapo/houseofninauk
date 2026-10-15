@@ -148,6 +148,15 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-deep-espresso);
 }
 
+h1, h2, h3,
+.section-heading,
+.care-heading,
+.story-main-heading,
+.cinematic-headline {
+  text-wrap: balance;
+  -webkit-text-wrap: balance;
+}
+
 .section-heading,
 .care-heading,
 .story-main-heading {
@@ -159,6 +168,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.015em;
   margin-top: 0;
   margin-bottom: clamp(12px, 1.8vw, 18px);
+  text-wrap: balance;
 }
 
 .section-subheading,
@@ -168,6 +178,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-espresso-muted);
   line-height: 1.6;
   margin-top: 0;
+  text-wrap: balance;
 }
 
 .section-label,
@@ -180,6 +191,43 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-gold-dark);
   display: block;
   margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   EDITORIAL GOLD HIGHLIGHT STROKE (DYNAMIC ON-SCREEN APPEARANCE)
+   ========================================================================== */
+.editorial-gold-highlight {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.gold-highlight-text {
+  position: relative;
+  z-index: 2;
+}
+
+.editorial-gold-svg {
+  position: absolute;
+  left: -2%;
+  bottom: -4px;
+  width: 104%;
+  height: 12px;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(197, 160, 89, 0.4));
+}
+
+.editorial-gold-path {
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.editorial-gold-svg.stroke-visible .editorial-gold-path {
+  stroke-dashoffset: 0;
 }
 
 .container {

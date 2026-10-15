@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { CARE_GUIDE_DATA } from '../data/wigData';
+import GoldStroke from './GoldStroke';
 
 export default function CareFeature({ onOpenCareGuide }) {
   return (
@@ -8,7 +9,7 @@ export default function CareFeature({ onOpenCareGuide }) {
       <div className="container-editorial">
         <div className="care-feature-card">
           <div className="care-feature-content">
-            <h2 className="care-heading">Love your wig to keep the look.</h2>
+            <h2 className="care-heading">Love your wig to <GoldStroke>keep the look</GoldStroke>.</h2>
             <p className="care-supporting-copy">{CARE_GUIDE_DATA.supportingCopy}</p>
             
             <button 

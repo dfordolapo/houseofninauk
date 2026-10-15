@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Heart, MessageCircle, Send, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { INSTA_POSTS } from '../data/wigData';
+import GoldStroke from './GoldStroke';
 
 export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist, onOpenReviews, wishlist = [] }) {
   const [activeTagPostId, setActiveTagPostId] = useState(null);
@@ -46,7 +47,7 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
         {/* Editorial Section Header with Carousel Arrows */}
         <header className="section-header insta-carousel-header">
           <div>
-            <h2 className="section-heading">Find your next look.</h2>
+            <h2 className="section-heading">Find your <GoldStroke>next look</GoldStroke>.</h2>
           </div>
           <div className="insta-carousel-nav-btns">
             <button 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, Plus, ArrowRight } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
+import GoldStroke from './GoldStroke';
 
 export default function FeaturedProducts({ onQuickView, onAddToCart, activeFilter, onClearFilter }) {
   const [selectedFilter, setSelectedFilter] = useState(activeFilter || 'All');
@@ -15,7 +16,7 @@ export default function FeaturedProducts({ onQuickView, onAddToCart, activeFilte
     <section id="featured-products" className="section-wrapper" aria-label="Featured Wigs Collection">
       <div className="container">
         <header className="section-header">
-          <h2 className="section-heading">Handcrafted Wigs & Silk Scarves</h2>
+          <h2 className="section-heading">Handcrafted Wigs &amp; <GoldStroke>Silk Scarves</GoldStroke></h2>
           {selectedFilter !== 'All' && (
             <div style={{ marginTop: '12px' }}>
               <span style={{ fontSize: '13px', color: 'var(--color-espresso-muted)' }}>
