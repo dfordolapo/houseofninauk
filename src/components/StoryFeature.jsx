@@ -86,25 +86,6 @@ export default function StoryFeature() {
               </p>
             </div>
 
-            {/* Founder Quote Card — Cloud Speech Bubble */}
-            <div className="cloud-speech-bubble" aria-label="House of Nina Quote">
-              <div className="cloud-puff puff-1" aria-hidden="true" />
-              <div className="cloud-puff puff-2" aria-hidden="true" />
-              <div className="cloud-bubble-content">
-                <div className="cloud-quote-mark" aria-hidden="true">“</div>
-                <p className="cloud-quote-text">
-                  Wear Your Crown. With Confidence.
-                </p>
-                <span className="cloud-quote-author">
-                  House of Nina Studio, United Kingdom
-                </span>
-              </div>
-              <div className="cloud-tail" aria-hidden="true">
-                <span className="cloud-tail-bubble bubble-1" />
-                <span className="cloud-tail-bubble bubble-2" />
-              </div>
-            </div>
-
             {/* Call to Action Buttons */}
             <div className="story-cta-row">
               <a 
