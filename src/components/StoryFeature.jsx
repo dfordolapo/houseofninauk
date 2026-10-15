@@ -134,17 +134,12 @@ export default function StoryFeature() {
                     aria-label={`Card ${card.num}: ${card.title}. Click to view.`}
                     onKeyDown={(e) => { if (e.key === 'Enter') scrollToCard(idx); }}
                   >
-                    {/* Card Content Top Bar (stays visible when stacked) */}
+                    {/* Card Content Top Bar: Clean 'NO. 01' (stays visible when stacked) */}
                     <div className="specimen-card-topbar">
-                      <div className="specimen-topbar-left">
-                        <div className="specimen-number-box">
-                          <span className="specimen-num-label">NO.</span>
-                          <span className="specimen-num-val">{card.num}</span>
-                        </div>
-                        <span className="specimen-topbar-divider" aria-hidden="true">·</span>
-                        <h4 className="specimen-topbar-title">{card.title}</h4>
+                      <div className="specimen-number-box">
+                        <span className="specimen-num-label">NO.</span>
+                        <span className="specimen-num-val">{card.num}</span>
                       </div>
-                      <span className="specimen-status-badge">{card.badge}</span>
                     </div>
 
                     {/* Specimen Visual Image */}
