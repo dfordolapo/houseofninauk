@@ -35,10 +35,10 @@ export default function SilkPairingAtelier({ onQuickView, onAddToCart }) {
         
         {/* Header */}
         <header className="section-header text-center" style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h2 className="section-heading" style={{ fontSize: 'clamp(24px, 4vw, 36px)', marginTop: '0' }}>
+          <h2 className="section-heading">
             Pair Your Unit with 100% Pure Mulberry Silk
           </h2>
-          <p style={{ maxWidth: '580px', margin: '8px auto 0 auto', color: 'var(--color-espresso-muted)', fontSize: '14.5px', lineHeight: 1.55 }}>
+          <p className="section-subheading" style={{ maxWidth: '580px', margin: '8px auto 0 auto', color: 'var(--color-espresso-muted)', fontSize: '14.5px', lineHeight: 1.55 }}>
             Preserve your HD lace melt, lock in overnight moisture, and prevent friction frizz. Save 10% when styled together.
           </p>
         </header>
