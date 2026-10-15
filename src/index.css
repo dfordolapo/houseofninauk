@@ -1821,8 +1821,8 @@ h1, h2, h3,
 
 .story-editorial-grid {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: clamp(40px, 6vw, 76px);
+  grid-template-columns: 1.15fr 0.95fr;
+  gap: clamp(36px, 5vw, 64px);
   align-items: start;
 }
 
@@ -1857,13 +1857,16 @@ h1, h2, h3,
   font-size: clamp(13.5px, 1.05vw, 14.5px);
   color: var(--color-espresso-muted);
   line-height: 1.65;
+  text-wrap: pretty;
 }
 
 .story-p.lead {
-  font-size: clamp(14.5px, 1.15vw, 15.5px);
+  font-size: clamp(14.2px, 1.1vw, 15.2px);
   font-weight: 600;
   color: var(--color-deep-espresso);
   line-height: 1.6;
+  letter-spacing: -0.008em;
+  text-wrap: pretty;
 }
 
 .story-cta-row {
