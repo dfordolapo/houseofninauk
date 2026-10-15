@@ -4,15 +4,6 @@ import React, { useRef, useEffect } from 'react';
  * ============================================================================
  * HOUSE OF NINA — EDITORIAL CAMPAIGN VIDEO LAYER (LAYER B)
  * ============================================================================
- * Configure your campaign looping video asset here.
- * 
- * Instructions:
- * 1. Place your final looping campaign video into the project (e.g. in /public/videos/)
- * 2. Set CAMPAIGN_VIDEO_SRC to your file path below (e.g., "/videos/campaign-hair-loop.mp4")
- *    or pass it via the `videoSrc` prop.
- * 
- * If left empty (""), the component gracefully renders the warm beige editorial
- * canvas with the oversized wordmark remaining 100% visible, crisp, and unbroken.
  */
 export const DEFAULT_CAMPAIGN_VIDEO_SRC = "/videos/footer-video.mp4";
 
@@ -23,18 +14,66 @@ export default function CampaignVideoLayer({
   const videoRef = useRef(null);
 
   useEffect(() => {
-    if (videoSrc && videoRef.current) {
-      const vid = videoRef.current;
-      vid.defaultMuted = true;
-      vid.muted = true;
-      vid.load();
-      const playPromise = vid.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Retry on interaction or when loaded
-        });
+    const vid = videoRef.current;
+    if (!videoSrc || !vid) return;
+
+    // Force strict WebKit / iOS autoplay attributes
+    vid.setAttribute('muted', '');
+    vid.setAttribute('playsinline', '');
+    vid.setAttribute('webkit-playsinline', '');
+    vid.defaultMuted = true;
+    vid.muted = true;
+
+    const playVideo = () => {
+      if (vid && vid.paused) {
+        const p = vid.play();
+        if (p !== undefined) {
+          p.catch(() => {});
+        }
       }
+    };
+
+    // Immediate attempt
+    playVideo();
+
+    // Event listeners on media state
+    vid.addEventListener('loadedmetadata', playVideo);
+    vid.addEventListener('loadeddata', playVideo);
+    vid.addEventListener('canplay', playVideo);
+
+    // Viewport intersection trigger
+    let observer;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              playVideo();
+            }
+          });
+        },
+        { threshold: 0.05 }
+      );
+      observer.observe(vid);
     }
+
+    // Fallback on first user interaction for strict Low Power Mode on mobile
+    const handleInteraction = () => {
+      playVideo();
+    };
+    window.addEventListener('touchstart', handleInteraction, { passive: true, once: true });
+    window.addEventListener('scroll', handleInteraction, { passive: true, once: true });
+    window.addEventListener('click', handleInteraction, { passive: true, once: true });
+
+    return () => {
+      vid.removeEventListener('loadedmetadata', playVideo);
+      vid.removeEventListener('loadeddata', playVideo);
+      vid.removeEventListener('canplay', playVideo);
+      if (observer) observer.disconnect();
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+    };
   }, [videoSrc]);
 
   return (
@@ -45,19 +84,19 @@ export default function CampaignVideoLayer({
       {videoSrc ? (
         <video
           ref={videoRef}
-          src={videoSrc}
           className="campaign-video-element"
           autoPlay
           muted
           loop
           playsInline
+          webkit-playsinline="true"
           preload="auto"
-          onLoadedData={() => {
-            if (videoRef.current) {
-              videoRef.current.play().catch(() => {});
-            }
-          }}
-          aria-label="House of Nina Hair Movement Campaign"
+          controls={false}
+          controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
+          disablePictureInPicture
+          disableRemotePlayback
+          poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          aria-hidden="true"
         >
           <source src={videoSrc} type="video/mp4" />
         </video>
