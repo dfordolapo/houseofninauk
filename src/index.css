@@ -1730,7 +1730,7 @@ h1, h2, h3,
    SECTION 8: THE WIG CARE GUIDE (Editorial Feature)
    ========================================================================== */
 #wig-care-guide {
-  padding-top: clamp(10px, 1.8vw, 18px) !important;
+  padding-top: clamp(36px, 4.5vw, 54px) !important;
 }
 
 .care-feature-card {
@@ -1807,8 +1807,8 @@ h1, h2, h3,
    ========================================================================== */
 .story-section {
   background-color: var(--color-sand-light);
-  padding-top: clamp(44px, 5.5vw, 68px);
-  padding-bottom: 0px !important;
+  padding-top: clamp(48px, 6vw, 76px);
+  padding-bottom: clamp(36px, 4.5vw, 54px) !important;
   position: relative;
   overflow: visible;
   border-top: none !important;
@@ -1932,7 +1932,7 @@ h1, h2, h3,
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px;
+  padding-bottom: 36px;
 }
 
 /* Stacking Card Slots */
@@ -2166,7 +2166,7 @@ h1, h2, h3,
 
   .story-stack-track {
     max-width: 330px;
-    padding-bottom: 16px;
+    padding-bottom: 28px;
     margin: 8px auto 0 auto;
   }
 
