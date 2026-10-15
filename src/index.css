@@ -1928,13 +1928,13 @@ h1, h2, h3,
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: 40px;
+  padding-bottom: 140px;
 }
 
 /* Each card slot is sticky with a staggered top offset and z-index */
 .story-card-slot {
   position: sticky;
-  top: calc(108px + (var(--card-order) * 32px));
+  top: calc(clamp(122px, 14.5vh, 134px) + (var(--card-order) * 44px));
   z-index: calc(var(--card-order) + 1);
   margin-bottom: clamp(70px, 12vh, 140px);
   width: 100%;
@@ -1980,6 +1980,35 @@ h1, h2, h3,
   margin-bottom: 8px;
   position: relative;
   z-index: 2;
+  gap: 8px;
+}
+
+.specimen-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.specimen-topbar-divider {
+  color: var(--color-gold);
+  font-weight: 700;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.specimen-topbar-title {
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-deep-espresso);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .specimen-number-box {
@@ -1990,6 +2019,7 @@ h1, h2, h3,
   font-size: 10.5px;
   font-weight: 800;
   color: var(--color-gold-dark);
+  flex-shrink: 0;
 }
 
 .specimen-num-label {
@@ -2010,6 +2040,7 @@ h1, h2, h3,
   background: var(--color-gold-champagne);
   color: var(--color-gold-dark);
   border: 1px solid rgba(197, 160, 89, 0.3);
+  flex-shrink: 0;
 }
 
 /* Specimen Image Container */
@@ -2158,13 +2189,17 @@ h1, h2, h3,
 
   .story-stack-track {
     max-width: 330px;
-    padding-bottom: 24px;
+    padding-bottom: 90px;
     margin: 8px auto 0 auto;
   }
 
   .story-card-slot {
-    top: calc(clamp(112px, 15vh, 128px) + (var(--card-order) * 24px));
+    top: calc(clamp(116px, 14.5vh, 126px) + (var(--card-order) * 38px));
     margin-bottom: clamp(50px, 9vh, 85px);
+  }
+
+  .specimen-topbar-title {
+    font-size: 11.5px;
   }
 
   .specimen-card.stacking-card {

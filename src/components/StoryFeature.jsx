@@ -136,9 +136,13 @@ export default function StoryFeature() {
                   >
                     {/* Card Content Top Bar (stays visible when stacked) */}
                     <div className="specimen-card-topbar">
-                      <div className="specimen-number-box">
-                        <span className="specimen-num-label">NO.</span>
-                        <span className="specimen-num-val">{card.num}</span>
+                      <div className="specimen-topbar-left">
+                        <div className="specimen-number-box">
+                          <span className="specimen-num-label">NO.</span>
+                          <span className="specimen-num-val">{card.num}</span>
+                        </div>
+                        <span className="specimen-topbar-divider" aria-hidden="true">·</span>
+                        <h4 className="specimen-topbar-title">{card.title}</h4>
                       </div>
                       <span className="specimen-status-badge">{card.badge}</span>
                     </div>
