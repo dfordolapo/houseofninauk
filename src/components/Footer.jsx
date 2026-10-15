@@ -235,8 +235,8 @@ export default function Footer({ onOpenCareGuide }) {
               </ul>
             </div>
 
-            {/* Desktop Social Icons: Placed under the other navigation sections */}
-            <div className="footer-desktop-social-row desktop-only">
+            {/* Desktop Social Icons: Center-aligned across full footer width */}
+            <div id="contact" className="footer-desktop-social-row desktop-only">
               <div className="footer-social-icons-row">
                 {SOCIAL_LINKS.map((item) => (
                   <a
@@ -339,8 +339,17 @@ export default function Footer({ onOpenCareGuide }) {
                 <div className="mobile-accordion-inner">
                   <a href="#our-story" className="mobile-nav-link">Our Story</a>
                   <a href="#hero" className="mobile-nav-link">The Wigverse</a>
-                  <a href="#our-story" className="mobile-nav-link">Sustainability</a>
-                  <a href="#contact" className="mobile-nav-link">Contact</a>
+                  <a 
+                    href="#contact-mobile" 
+                    className="mobile-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const elem = document.getElementById('contact-mobile');
+                      if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Contact
+                  </a>
                 </div>
               </div>
             </div>
@@ -348,7 +357,7 @@ export default function Footer({ onOpenCareGuide }) {
 
 
             {/* Mobile Social Icons Row Under Accordions */}
-            <div className="mobile-social-icons-bar">
+            <div id="contact-mobile" className="mobile-social-icons-bar">
               {SOCIAL_LINKS.map((item) => (
                 <a
                   key={item.name}

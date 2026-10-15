@@ -275,6 +275,26 @@ export default function App() {
     });
   };
 
+  const handleSelectNavLink = (hash) => {
+    let targetId = (hash || '').replace('#', '');
+    if (targetId === 'contact' && window.innerWidth <= 768) {
+      targetId = 'contact-mobile';
+    }
+    const scrollToTarget = () => {
+      const elem = document.getElementById(targetId) || document.getElementById('contact');
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    if (showHero) {
+      setShowHero(false);
+      setTimeout(scrollToTarget, 150);
+    } else {
+      scrollToTarget();
+    }
+  };
+
   return (
     <div className="wigverse-app">
       {/* SECTION 1: NAVIGATION */}
@@ -286,6 +306,7 @@ export default function App() {
         onOpenSearch={() => setIsSearchOpen(true)}
         onReturnToHero={handleReturnToHero}
         onOpenWishlist={() => setIsWishlistOpen(true)}
+        onSelectNavLink={handleSelectNavLink}
       />
 
       <main id="main-content">
@@ -343,18 +364,7 @@ export default function App() {
         onOpenCart={() => { setIsMobileMenuOpen(false); setIsCartOpen(true); }}
         cartCount={cartItems.length}
         onOpenSearch={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }}
-        onSelectNavLink={(hash) => {
-          if (showHero) {
-            setShowHero(false);
-          }
-          setTimeout(() => {
-            const targetId = hash.replace('#', '');
-            const elem = document.getElementById(targetId);
-            if (elem) {
-              elem.scrollIntoView({ behavior: 'smooth' });
-            }
-          }, 100);
-        }}
+        onSelectNavLink={handleSelectNavLink}
       />
 
       <CartDrawer 

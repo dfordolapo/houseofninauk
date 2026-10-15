@@ -84,6 +84,15 @@ html {
   width: 100%;
 }
 
+#contact,
+#contact-mobile,
+#find-your-next-look,
+#featured-products,
+#our-story,
+#wig-care-guide {
+  scroll-margin-top: clamp(75px, 9vw, 95px);
+}
+
 body {
   background-color: var(--color-ivory);
   color: var(--color-deep-espresso);
@@ -2670,16 +2679,16 @@ video::-moz-media-controls {
 /* ── Main Multi-Column Grid (Desktop: Exactly Restored Column Spacing) ── */
 .footer-main-columns-grid {
   display: grid;
-  grid-template-columns: 1.55fr 0.95fr 0.95fr 0.95fr 1.05fr;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
   column-gap: clamp(20px, 2.8vw, 44px);
-  row-gap: 12px;
+  row-gap: 16px;
   align-items: start;
 }
 
 /* Newsletter Column (Col 1) */
 .footer-newsletter-col {
   grid-column: 1;
-  grid-row: 1 / span 2;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -2840,14 +2849,17 @@ video::-moz-media-controls {
   color: #C7A46A;
 }
 
-/* Desktop Social Icons: Positioned strictly under SHOP, HELP, ABOUT (Cols 2-4) clear of the video */
+/* Desktop Social Icons: Center aligned in the full width of the footer, ignoring columns above */
 .footer-desktop-social-row {
-  grid-column: 2 / 5;
+  grid-column: 1 / -1;
   grid-row: 2;
   display: flex;
+  justify-content: center;
   align-items: center;
-  padding-top: 2px;
-  padding-left: clamp(16px, 2.2vw, 32px);
+  width: 100%;
+  padding-left: 0;
+  padding-top: clamp(16px, 2.2vw, 28px);
+  margin-top: 4px;
   position: relative;
   z-index: 15;
 }
@@ -2855,7 +2867,8 @@ video::-moz-media-controls {
 .footer-social-icons-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
+  gap: 16px;
   margin-top: 0;
 }
 

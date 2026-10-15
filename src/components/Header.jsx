@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, Menu, Heart } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 
-export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpenSearch, onReturnToHero, onOpenWishlist, wishlistCount = 0 }) {
+export default function Header({ 
+  onOpenMobileMenu, 
+  onOpenCart, 
+  cartCount, 
+  onOpenSearch, 
+  onReturnToHero, 
+  onOpenWishlist, 
+  wishlistCount = 0,
+  onSelectNavLink
+}) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -47,7 +56,17 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
             {/* Desktop Center Links */}
             <nav className="nav-links desktop-only" aria-label="Primary Navigation">
               {NAV_LINKS.map((link) => (
-                <a key={link.id} href={link.href} className="nav-link">
+                <a 
+                  key={link.id} 
+                  href={link.href} 
+                  className="nav-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onSelectNavLink) {
+                      onSelectNavLink(link.href);
+                    }
+                  }}
+                >
                   {link.label}
                 </a>
               ))}
