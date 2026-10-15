@@ -10,7 +10,8 @@ const SPECIMEN_CARDS = [
     tag: 'THE ORIGIN',
     title: 'Born From a Love of Hair',
     subtitle: 'Created for Every Woman',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80',
+    image: '/images/about-us.png',
+    imagePosition: 'center 22%',
     metrics: [
       { label: 'Origin', value: 'Personal Passion' },
       { label: 'Purpose', value: 'Confidence & Joy' },
@@ -148,6 +149,7 @@ export default function StoryFeature() {
                         src={card.image} 
                         alt={card.title} 
                         className="specimen-card-img" 
+                        style={card.imagePosition ? { objectPosition: card.imagePosition } : undefined}
                         loading="lazy"
                       />
                       <div className="specimen-image-overlay" />
