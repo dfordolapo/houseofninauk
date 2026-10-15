@@ -514,10 +514,10 @@ export const FOOTER_DATA = {
     }
   ],
   socials: [
-    { name: "Instagram", href: "https://instagram.com" },
-    { name: "TikTok", href: "https://tiktok.com" },
-    { name: "Pinterest", href: "https://pinterest.com" },
-    { name: "YouTube", href: "https://youtube.com" }
+    { name: "Instagram", href: "https://www.instagram.com/house_of_nina_uk/" },
+    { name: "WhatsApp", href: "https://wa.me/447776759731" },
+    { name: "TikTok", href: "https://www.tiktok.com/@houseofninaofficial" },
+    { name: "Email", href: "mailto:houseofnina2026@gmail.com" }
   ],
   payments: ["Visa", "Mastercard", "Apple Pay", "Klarna", "Clearpay", "American Express"]
 };

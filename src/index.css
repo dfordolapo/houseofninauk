@@ -5,7 +5,7 @@
 
 :root {
   /* Atelier Beige & Radiant Gold Editorial Palette */
-  --color-beige: #F5EFEB;
+  --color-beige: #F4E7DA;
   --color-beige-light: #FAF6F0;
   --color-beige-warm: #EFE6D8;
   --color-ivory: #F5EFEB;
@@ -2079,21 +2079,41 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 900px) {
   .story-editorial-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 40px;
   }
 
   .story-text-column {
     position: static;
   }
 
+  .story-cta-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin-top: 14px;
+    gap: 16px;
+  }
+
+  .story-primary-btn {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .story-secondary-link {
+    text-align: center;
+  }
+
   .story-stack-track {
     max-width: 330px;
     padding-bottom: 24px;
+    margin: 8px auto 0 auto;
   }
 
   .story-card-slot {
-    top: calc(75px + (var(--card-order) * 26px));
-    margin-bottom: clamp(45px, 8vh, 80px);
+    top: calc(clamp(112px, 15vh, 128px) + (var(--card-order) * 24px));
+    margin-bottom: clamp(50px, 9vh, 85px);
   }
 
   .specimen-card.stacking-card {
@@ -2135,6 +2155,14 @@ h1, h2, h3, h4, h5, h6 {
   .specimen-card-quote {
     font-size: 10.5px;
     line-height: 1.35;
+  }
+}
+
+@media (max-width: 600px) {
+  .story-cta-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
   }
 }
 
@@ -2443,7 +2471,7 @@ h1, h2, h3, h4, h5, h6 {
 .editorial-oversized-footer {
   width: 100%;
   position: relative;
-  background-color: #F3EBDD;
+  background-color: #F4E7DA;
   overflow: hidden;
   color: #30271F;
 }
@@ -2455,7 +2483,7 @@ h1, h2, h3, h4, h5, h6 {
 .footer-canvas-unified {
   position: relative;
   width: 100%;
-  background-color: #F3EBDD;
+  background-color: #F4E7DA;
   overflow: hidden;
   min-height: clamp(640px, 54vw, 880px);
   display: flex;
@@ -2786,7 +2814,7 @@ video::-moz-media-controls {
   text-transform: uppercase;
   color: #30271F;
   margin: 0 0 10px 0;
-  text-shadow: 0 1px 3px rgba(243, 235, 221, 0.7);
+  text-shadow: 0 1px 3px rgba(244, 231, 218, 0.7);
 }
 
 .footer-nav-list {
@@ -2805,7 +2833,7 @@ video::-moz-media-controls {
   text-decoration: none;
   line-height: 1.35;
   transition: color 0.2s ease;
-  text-shadow: 0 1px 3px rgba(243, 235, 221, 0.6);
+  text-shadow: 0 1px 3px rgba(244, 231, 218, 0.6);
 }
 
 .footer-nav-link:hover {
@@ -4272,8 +4300,8 @@ video::-moz-media-controls {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(245, 239, 235, 0.35) 35%,
-    rgba(245, 239, 235, 0.82) 75%,
+    rgba(244, 231, 218, 0.35) 35%,
+    rgba(244, 231, 218, 0.82) 75%,
     var(--color-beige) 100%
   );
   pointer-events: none;
@@ -4299,9 +4327,9 @@ video::-moz-media-controls {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(243, 235, 221, 0.45) 40%,
-    rgba(243, 235, 221, 0.85) 75%,
-    #F3EBDD 100%
+    rgba(244, 231, 218, 0.45) 40%,
+    rgba(244, 231, 218, 0.85) 75%,
+    #F4E7DA 100%
   );
   pointer-events: none;
   z-index: 1; /* STRICTLY behind care guide card, CTA button, and headings */
@@ -4907,7 +4935,7 @@ video::-moz-media-controls {
   left: 6px;
   font-size: 9.5px;
   font-weight: 700;
-  background-color: rgba(245, 239, 235, 0.95);
+  background-color: rgba(244, 231, 218, 0.95);
   color: var(--color-deep-espresso);
   padding: 2px 6px;
   border-radius: 6px;
@@ -5298,7 +5326,7 @@ video::-moz-media-controls {
   font-size: 9.5px;
   font-weight: 700;
   text-transform: uppercase;
-  background-color: rgba(245, 239, 235, 0.95);
+  background-color: rgba(244, 231, 218, 0.95);
   padding: 2px 6px;
   border-radius: 4px;
   color: var(--color-deep-espresso);
@@ -5444,7 +5472,7 @@ video::-moz-media-controls {
 .look-reviews-cat-tag {
   font-size: 11px;
   font-weight: 700;
-  background-color: rgba(245, 239, 235, 0.95);
+  background-color: rgba(244, 231, 218, 0.95);
   color: var(--color-deep-espresso);
   padding: 3px 10px;
   border-radius: 12px;
@@ -5823,8 +5851,8 @@ video::-moz-media-controls {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(245, 239, 235, 0.35) 35%,
-    rgba(245, 239, 235, 0.85) 75%,
+    rgba(244, 231, 218, 0.35) 35%,
+    rgba(244, 231, 218, 0.85) 75%,
     var(--color-beige) 100%
   );
   pointer-events: none;

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import CampaignVideoLayer, { DEFAULT_CAMPAIGN_VIDEO_SRC } from './CampaignVideoLayer';
 
-// Social Destinations
+// Social Destinations (Instagram, WhatsApp, TikTok, Email)
 const SOCIAL_LINKS = [
   { 
     name: 'Instagram', 
-    href: 'https://instagram.com', 
+    href: 'https://www.instagram.com/house_of_nina_uk/', 
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -16,8 +16,18 @@ const SOCIAL_LINKS = [
     )
   },
   { 
+    name: 'WhatsApp', 
+    href: 'https://wa.me/447776759731', 
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
+        <path d="M9 10a0.5 0.5 0 0 0 1 0V9a0.5 0.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a0.5 0.5 0 0 0 0-1h-1a0.5 0.5 0 0 0 0 1" />
+      </svg>
+    )
+  },
+  { 
     name: 'TikTok', 
-    href: 'https://tiktok.com', 
+    href: 'https://www.tiktok.com/@houseofninaofficial', 
     icon: (
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
@@ -25,32 +35,12 @@ const SOCIAL_LINKS = [
     )
   },
   { 
-    name: 'Pinterest', 
-    href: 'https://pinterest.com', 
+    name: 'Email', 
+    href: 'mailto:houseofnina2026@gmail.com', 
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="12" y1="8" x2="12" y2="16"></line>
-        <path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4c0 2-1.3 3.7-3.1 4-0.4 0-0.7-0.2-0.8-0.6l-0.7-2.8"></path>
-        <circle cx="12" cy="12" r="10"></circle>
-      </svg>
-    )
-  },
-  { 
-    name: 'YouTube', 
-    href: 'https://youtube.com', 
-    icon: (
-      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
-        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor"></polygon>
-      </svg>
-    )
-  },
-  { 
-    name: 'X', 
-    href: 'https://x.com', 
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
       </svg>
     )
   }
@@ -252,10 +242,10 @@ export default function Footer({ onOpenCareGuide }) {
                   <a
                     key={item.name}
                     href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                    rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
                     className="footer-social-icon-btn"
-                    aria-label={`Follow House of Nina on ${item.name}`}
+                    aria-label={item.name === 'Email' ? 'Email House of Nina' : item.name === 'WhatsApp' ? 'Chat with House of Nina on WhatsApp' : `Follow House of Nina on ${item.name}`}
                   >
                     {item.icon}
                   </a>
@@ -363,10 +353,10 @@ export default function Footer({ onOpenCareGuide }) {
                 <a
                   key={item.name}
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                  rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
                   className="mobile-social-icon-btn"
-                  aria-label={`Follow House of Nina on ${item.name}`}
+                  aria-label={item.name === 'Email' ? 'Email House of Nina' : item.name === 'WhatsApp' ? 'Chat with House of Nina on WhatsApp' : `Follow House of Nina on ${item.name}`}
                 >
                   {item.icon}
                 </a>
