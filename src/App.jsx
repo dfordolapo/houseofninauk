@@ -9,7 +9,6 @@ import BrandDetails from './components/BrandDetails';
 import CareFeature from './components/CareFeature';
 import StoryFeature from './components/StoryFeature';
 import CustomerReviews from './components/CustomerReviews';
-import NewsletterSignup from './components/NewsletterSignup';
 import SilkPairingAtelier from './components/SilkPairingAtelier';
 import CinematicVideoBanner from './components/CinematicVideoBanner';
 import Footer from './components/Footer';
@@ -22,26 +21,40 @@ import AddedToBagModal from './components/AddedToBagModal';
 import LookReviewsModal from './components/LookReviewsModal';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
+const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
+const WISHLIST_STORAGE_KEY = 'house_of_nina_wishlist_v1';
+
 export default function App() {
   // Mobile drawer state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  // Cart state
+  // Cart state - loaded from localStorage per browser
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([
-    {
-      id: "hn-01",
-      cartId: "hn-01-12-13x4-180",
-      name: "The Victoria Glass Bob",
-      price: 245,
-      selectedLength: "12\"",
-      selectedLace: "13x4 HD Lace Frontal",
-      selectedDensity: "180%",
-      image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80",
-      quantity: 1
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Failed to load cart from localStorage', e);
     }
-  ]);
+    return [
+      {
+        id: "hn-01",
+        cartId: "hn-01-12-13x4-180",
+        name: "The Victoria Glass Bob",
+        price: 245,
+        selectedLength: "12\"",
+        selectedLace: "13x4 HD Lace Frontal",
+        selectedDensity: "180%",
+        image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80",
+        quantity: 1
+      }
+    ];
+  });
 
   // Added To Bag Upsell Modal State
   const [isAddedModalOpen, setIsAddedModalOpen] = useState(false);
@@ -145,8 +158,37 @@ export default function App() {
     };
   }, [isAnyModalOpen]);
 
-  // Wishlist state (saved looks)
-  const [wishlist, setWishlist] = useState([]);
+  // Wishlist state (saved looks) - loaded from localStorage per browser
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      const saved = localStorage.getItem(WISHLIST_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Failed to load wishlist from localStorage', e);
+    }
+    return [];
+  });
+
+  // Sync cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    } catch (e) {
+      console.warn('Failed to save cart to localStorage', e);
+    }
+  }, [cartItems]);
+
+  // Sync wishlist to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist));
+    } catch (e) {
+      console.warn('Failed to save wishlist to localStorage', e);
+    }
+  }, [wishlist]);
 
   // Toggle product in wishlist
   const handleToggleSave = (post) => {
@@ -258,6 +300,7 @@ export default function App() {
               onSelectCategory={handleSelectCategory} 
               onQuickView={handleInstagramQuickView}
               onToggleWishlist={handleToggleSave}
+              wishlist={wishlist}
               onOpenReviews={(post) => {
                 setActiveReviewPost(post);
                 setIsReviewsModalOpen(true);
@@ -275,19 +318,19 @@ export default function App() {
               onClearFilter={() => setActiveFilter('All')}
             />
 
-            {/* SECTION 6: THE SILK & LACE PAIRING ATELIER */}
+            {/* SECTION 6: THE SILK & LACE PAIRING STUDIO */}
             <SilkPairingAtelier 
               onQuickView={(prod) => setQuickViewProduct(prod)}
               onAddToCart={handleAddToCart}
             />
 
+            {/* SECTION 7: OUR STORY — SCROLL-STACKING SPECIMEN CARDS */}
+            <StoryFeature />
+
             {/* SECTION 8: THE WIG CARE GUIDE */}
             <CareFeature onOpenCareGuide={() => setIsCareGuideOpen(true)} />
 
-            {/* SECTION 9: LETTERS FROM THE WIGVERSE (Email Subscription) */}
-            <NewsletterSignup />
-
-            {/* SECTION 12: FOOTER */}
+            {/* EDITORIAL OVERSIZED WORDMARK FOOTER (LAYER A, B, C) */}
             <Footer onOpenCareGuide={() => setIsCareGuideOpen(true)} />
           </div>
         )}

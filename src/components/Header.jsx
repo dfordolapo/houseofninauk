@@ -79,7 +79,7 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
                   color={wishlistCount > 0 ? "var(--color-gold)" : "currentColor"} 
                 />
                 {wishlistCount > 0 && (
-                  <span className="bag-badge wishlist-badge animate-pop">{wishlistCount}</span>
+                  <span key={`wishlist-${wishlistCount}`} className="bag-badge wishlist-badge animate-badge-pop">{wishlistCount}</span>
                 )}
               </button>
 
@@ -91,7 +91,9 @@ export default function Header({ onOpenMobileMenu, onOpenCart, cartCount, onOpen
                 title="Shopping Bag"
               >
                 <ShoppingBag size={19} strokeWidth={1.8} />
-                <span className="bag-badge">{cartCount}</span>
+                {cartCount > 0 && (
+                  <span key={`cart-${cartCount}`} className="bag-badge animate-badge-pop">{cartCount}</span>
+                )}
               </button>
 
               {/* Mobile Hamburger Button with Gold Background and White Icon */}

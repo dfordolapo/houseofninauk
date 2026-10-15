@@ -14,6 +14,7 @@ export const BRAND_INFO = {
 export const NAV_LINKS = [
   { id: "shop", label: "Shop", href: "#find-your-next-look" },
   { id: "wigs-scarves", label: "Wigs & Scarves", href: "#featured-products" },
+  { id: "our-story", label: "Our Story", href: "#our-story" },
   { id: "wig-care", label: "Care Guide", href: "#wig-care-guide" },
   { id: "contact", label: "Contact", href: "#contact" }
 ];
@@ -447,18 +448,18 @@ export const CARE_GUIDE_DATA = {
   ]
 };
 
-// OUR STORY DATA
+// OUR STORY DATA (United Kingdom Handcrafted Luxury)
 export const STORY_DATA = {
   heading: "A little more about House of Nina.",
-  badge: "Nigerian Heritage • British Craft",
+  badge: "British Craftsmanship • Handcrafted in the UK",
   content: [
-    "Born out of a deep reverence for the transformative artistry of Black hair, House of Nina was founded to bring editorial luxury and unapologetic craftsmanship to the UK hair landscape.",
-    "Rooted in Nigerian hair culture—where hair is celebration, crown, and personal identity—we source only verified, single-donor raw tresses and customize each unit with precision plucking, custom tinting, and ergonomic cap design.",
-    "The Wigverse is our invitation to you: to step effortlessly into whatever version of yourself you choose today, tomorrow, and every chapter ahead."
+    "Founded in the United Kingdom, House of Nina was created to redefine luxury hair through uncompromising British craftsmanship and editorial precision.",
+    "We reject mass-produced, chemically stripped hair. Every House of Nina unit is sculpted from verified single-donor raw hair, paired with featherweight Swiss HD lace, and hand-plucked strand by strand in our UK studio for an undetectable hairline.",
+    "The Wigverse is our world: bespoke units crafted to give you effortless confidence, pure movement, and everyday ease."
   ],
   image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80",
-  quote: "“Your hair is not just an accessory; it is your crowning mood.”",
-  author: "House of Nina Studio"
+  quote: "“Your hair is not an accessory — it is your crown, your mood, and your confidence in motion.”",
+  author: "House of Nina Studio, United Kingdom"
 };
 
 // VERIFIED CUSTOMER REVIEWS
@@ -492,33 +493,23 @@ export const CUSTOMER_REVIEWS = [
   }
 ];
 
-// FOOTER DATA
+// STREAMLINED FOOTER DATA (Excludes main hamburger navigation)
 export const FOOTER_DATA = {
   columns: [
     {
-      title: "Shop",
+      title: "Client Care",
       links: [
-        { label: "All Wigs", href: "#featured-products" },
-        { label: "Bundles", href: "#style-categories" },
-        { label: "Closures & Frontals", href: "#style-categories" },
-        { label: "Coloured Wigs", href: "#style-categories" }
+        { label: "Delivery & Shipping", href: "#details" },
+        { label: "Returns & Exchanges", href: "#details" },
+        { label: "Bespoke Fitting FAQs", href: "#details" }
       ]
     },
     {
-      title: "Help",
+      title: "Legal & Trust",
       links: [
-        { label: "Contact", href: "#contact" },
-        { label: "FAQs", href: "#details" },
-        { label: "Delivery & Returns", href: "#details" },
-        { label: "Wig Care Guide", href: "#wig-care-guide" }
-      ]
-    },
-    {
-      title: "About",
-      links: [
-        { label: "Our Story", href: "#our-story" },
         { label: "Privacy Policy", href: "#privacy" },
-        { label: "Terms & Conditions", href: "#terms" }
+        { label: "Terms of Service", href: "#terms" },
+        { label: "Cookie Preferences", href: "#cookies" }
       ]
     }
   ],

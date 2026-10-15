@@ -2,19 +2,12 @@ import React, { useState, useRef } from 'react';
 import { Heart, MessageCircle, Send, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { INSTA_POSTS } from '../data/wigData';
 
-export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist, onOpenReviews }) {
-  const [likedPosts, setLikedPosts] = useState({});
+export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist, onOpenReviews, wishlist = [] }) {
   const [activeTagPostId, setActiveTagPostId] = useState(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const sliderRef = useRef(null);
 
   const toggleLike = (post) => {
-    const id = post.id;
-    const isNowLiked = !likedPosts[id];
-    setLikedPosts(prev => ({
-      ...prev,
-      [id]: isNowLiked
-    }));
     if (onToggleWishlist) {
       onToggleWishlist(post);
     }
@@ -82,7 +75,7 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
           onScroll={handleScroll}
         >
           {INSTA_POSTS.map((post) => {
-            const isLiked = !!likedPosts[post.id];
+            const isLiked = wishlist.some(item => item.id === post.id);
             const isTagOpen = activeTagPostId === post.id;
 
             return (

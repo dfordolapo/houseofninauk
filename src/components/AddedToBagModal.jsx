@@ -97,7 +97,6 @@ export default function AddedToBagModal({
               <span className="suggestions-subheading">Complete Your Look</span>
               <h4 className="suggestions-heading">Frequently Paired Together</h4>
             </div>
-            <span className="suggestions-tag">Client Favorites</span>
           </div>
 
           <div className="suggestions-grid">
@@ -167,10 +166,10 @@ export default function AddedToBagModal({
               if (onOpenCart) onOpenCart();
             }}
           >
-            <ShoppingBag size={16} />
-            <span>View Bag & Checkout ({totalItemCount})</span>
-            <span className="btn-total-sep">•</span>
-            <span>£{cartTotal}</span>
+            <ShoppingBag size={15} className="btn-checkout-bag-icon" />
+            <span className="btn-checkout-single-line">
+              View Bag &amp; Checkout ({totalItemCount}) <span className="btn-total-sep">•</span> £{cartTotal}
+            </span>
           </button>
         </div>
 
