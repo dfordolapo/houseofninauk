@@ -77,7 +77,7 @@ export default function StoryFeature() {
 
             <div className="story-paragraphs">
               <p className="story-p lead">
-                We started House of Nina in the UK with one simple standard: hair that moves like your own crown, stays soft for years, and melts on the very first try.
+                We started House of Nina with one simple standard: hair that moves like your own crown, stays soft for years, and melts on the very first try.
               </p>
               <p className="story-p">
                 At House of Nina, our story began with a genuine love for beautiful hair. Long before becoming a brand, sourcing hair was something we loved doing for ourselves, discovering styles and finding pieces that made us feel confident.
