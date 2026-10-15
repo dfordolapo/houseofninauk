@@ -4,49 +4,52 @@ import GoldStroke from './GoldStroke';
 
 const SPECIMEN_CARDS = [
   {
-    id: 'specimen-raw-hair',
+    id: 'specimen-love-of-hair',
     num: '01',
-    badge: 'ZERO CRUNCH',
-    title: 'Single-Donor Raw Hair',
-    subtitle: 'Pure movement, zero drama',
+    badge: 'BORN FROM LOVE',
+    tag: 'THE ORIGIN',
+    title: 'Born From a Love of Hair',
+    subtitle: 'Created for Every Woman',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80',
     metrics: [
-      { label: 'Cuticle Flow', value: '100% Unidirectional' },
-      { label: 'Lifespan', value: 'Years, Not Weeks' },
-      { label: 'Natural Texture', value: 'Holds Curls & Heat' },
-      { label: 'Processing', value: 'Zero Acid Baths' }
+      { label: 'Origin', value: 'Personal Passion' },
+      { label: 'Purpose', value: 'Confidence & Joy' },
+      { label: 'Movement', value: 'Like Your Own Crown' },
+      { label: 'Community', value: 'Compliments Shared' }
     ],
-    quote: 'Behaves, shines, and moves in the wind just like your own hair grew out of your scalp.'
+    quote: 'Long before becoming a brand, sourcing hair was something we loved doing for ourselves. The compliments and interest soon made us realise this passion could become something more.'
   },
   {
-    id: 'specimen-swiss-lace',
+    id: 'specimen-fits-your-life',
     num: '02',
-    badge: 'THE GHOST MELT',
-    title: 'Invisible Swiss HD Lace',
-    subtitle: 'Zero lines, pure scalp',
+    badge: 'ACCESSIBLE LUXURY',
+    tag: 'COLLECTIONS',
+    title: 'Hair That Fits Your Life',
+    subtitle: 'Human Hair & Replica Fibre',
     image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=900&q=80',
     metrics: [
-      { label: 'Film Thickness', value: '0.02mm Whisper Thin' },
-      { label: 'Knots', value: 'Micro-Bleached & Plucked' },
-      { label: 'Complexion', value: 'Flawless on All Skin' },
-      { label: 'Camera Test', value: 'Undetectable in 4K' }
+      { label: 'Our Belief', value: 'No Budget Pressure' },
+      { label: 'Human Hair', value: 'Raw Single-Donor' },
+      { label: 'Innovation', value: 'Raw Replica Fibre' },
+      { label: 'Versatility', value: 'Everyday to Glamour' }
     ],
-    quote: 'So seamless people will genuinely ask who does your scalp.'
+    quote: 'Every woman deserves to look and feel beautiful without breaking the bank. Our collections bring together human hair and raw replica fibre, offering different ways to express your individuality.'
   },
   {
-    id: 'specimen-uk-studio',
+    id: 'specimen-welcome-house',
     num: '03',
-    badge: 'READY TO WEAR',
-    title: 'UK Studio Customization',
-    subtitle: 'Bespoke finishing in London',
+    badge: 'MORE THAN HAIR',
+    tag: 'THE EXPERIENCE',
+    title: 'Welcome to Our House',
+    subtitle: 'Wear Your Crown. With Confidence.',
     image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80',
     metrics: [
-      { label: 'Handcrafted In', value: 'United Kingdom Studio' },
-      { label: 'Hairline', value: 'Pre-Plucked & Graduated' },
-      { label: 'Cap Comfort', value: 'All-Day Breathable Stretch' },
-      { label: 'Wear Style', value: 'Glueless or Melted' }
+      { label: 'The Experience', value: 'Thoughtful & Special' },
+      { label: 'Dispatch', value: 'Little Details Matter' },
+      { label: 'The Community', value: 'Every Version Celebrated' },
+      { label: 'The Promise', value: 'Wear Your Crown' }
     ],
-    quote: 'Pre-plucked and customized strand-by-strand so you look salon-finished straight out of the box.'
+    quote: 'We believe the experience matters just as much as the product. We are building a house where beauty, individuality, and confidence come together with genuine passion.'
   }
 ];
 
@@ -73,13 +76,13 @@ export default function StoryFeature() {
 
             <div className="story-paragraphs">
               <p className="story-p lead">
-                No stiff hairlines. No crunchy synthetic surprises. No 45-minute wrestling matches in front of the bathroom mirror.
-              </p>
-              <p className="story-p">
                 We started House of Nina in the UK with one simple standard: hair that moves like your own crown, stays soft for years, and melts on the very first try.
               </p>
               <p className="story-p">
-                From single-donor raw tresses to whisper-thin Swiss HD lace, every unit is customized in our UK studio so you can throw it on, shake it out, and immediately look like your most expensive self.
+                At House of Nina, our story began with a genuine love for beautiful hair. Long before becoming a brand, sourcing hair was something we loved doing for ourselves — discovering styles and finding pieces that made us feel confident.
+              </p>
+              <p className="story-p">
+                We created House of Nina with a simple belief: every woman deserves to look and feel beautiful without breaking the bank. Whether exploring our virgin human hair or our signature Raw Hair Replica Fibre Collection, every piece is designed to help you express your individuality with effortless confidence.
               </p>
             </div>
 
@@ -87,7 +90,7 @@ export default function StoryFeature() {
             <div className="story-quote-card">
               <div className="story-quote-mark" aria-hidden="true">“</div>
               <p className="story-quote-body">
-                Your hair is the outfit you never take off — make it a main character moment.
+                Wear Your Crown. With Confidence.
               </p>
               <span className="story-quote-signature">
                 — House of Nina Studio, United Kingdom
@@ -159,7 +162,7 @@ export default function StoryFeature() {
                         loading="lazy"
                       />
                       <div className="specimen-image-overlay" />
-                      <span className="specimen-macro-tag">UK STUDIO SPEC</span>
+                      <span className="specimen-macro-tag">{card.tag || 'UK STUDIO SPEC'}</span>
                     </div>
 
                     {/* Specimen Information */}
