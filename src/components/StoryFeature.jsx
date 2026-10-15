@@ -82,7 +82,7 @@ export default function StoryFeature() {
                 At House of Nina, our story began with a genuine love for beautiful hair. Long before becoming a brand, sourcing hair was something we loved doing for ourselves — discovering styles and finding pieces that made us feel confident.
               </p>
               <p className="story-p">
-                We created House of Nina with a simple belief: every woman deserves to look and feel beautiful without breaking the bank. Whether exploring our virgin human hair or our signature Raw Hair Replica Fibre Collection, every piece is designed to help you express your individuality with effortless confidence.
+                Whether exploring our virgin human hair or our signature Raw Hair Replica Fibre Collection, every piece is designed to help you express your individuality with effortless confidence — without breaking the bank.
               </p>
             </div>
 
