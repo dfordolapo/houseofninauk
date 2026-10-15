@@ -1731,6 +1731,7 @@ h1, h2, h3,
    ========================================================================== */
 #wig-care-guide {
   padding-top: clamp(48px, 6vw, 76px) !important;
+  padding-bottom: clamp(64px, 8vw, 108px) !important;
 }
 
 .care-feature-card {
@@ -2702,7 +2703,7 @@ video::-moz-media-controls {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding-top: clamp(20px, 2.4vw, 36px);
+  padding-top: clamp(48px, 6vw, 80px);
   padding-bottom: clamp(160px, 16vw, 240px);
   padding-left: clamp(20px, 4vw, 48px);
   padding-right: clamp(20px, 4vw, 48px);
@@ -3214,7 +3215,7 @@ video::-moz-media-controls {
   }
 
   .footer-content-container {
-    padding-top: 16px;
+    padding-top: clamp(40px, 8vw, 56px);
     padding-bottom: 0;
     padding-left: 16px;
     padding-right: 16px;
@@ -4436,7 +4437,7 @@ video::-moz-media-controls {
   border-top: none !important;
   border-bottom: none !important;
   padding-top: clamp(48px, 6vw, 76px) !important;
-  padding-bottom: clamp(48px, 6vw, 76px);
+  padding-bottom: clamp(64px, 8vw, 108px) !important;
 }
 
 #wig-care-guide::after {
