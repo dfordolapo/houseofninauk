@@ -8,7 +8,7 @@ export const BRAND_INFO = {
   currency: "GBP",
   currencySymbol: "£",
   freeShippingThreshold: 100,
-  announcement: "UK Orders — Free shipping over £100"
+  announcement: "UK Orders · Free shipping over £100"
 };
 
 export const NAV_LINKS = [
@@ -458,7 +458,7 @@ export const STORY_DATA = {
     "The Wigverse is our world: bespoke units crafted to give you effortless confidence, pure movement, and everyday ease."
   ],
   image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80",
-  quote: "“Your hair is not an accessory — it is your crown, your mood, and your confidence in motion.”",
+  quote: "“Your hair is not an accessory, it is your crown, your mood, and your confidence in motion.”",
   author: "House of Nina Studio, United Kingdom"
 };
 
@@ -488,7 +488,7 @@ export const CUSTOMER_REVIEWS = [
     city: "Birmingham, UK",
     rating: 5,
     hairPurchased: "The Mayfair Honey Balayage • 26\"",
-    quote: "The colour blend is unbelievable. It doesn't look brassy or dry at all—it feels hydrated, thick from weft to tip, and smells gorgeous.",
+    quote: "The colour blend is unbelievable. It doesn't look brassy or dry at all, it feels hydrated, thick from weft to tip, and smells gorgeous.",
     date: "Verified UK Buyer"
   }
 ];

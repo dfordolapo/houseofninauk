@@ -148,7 +148,7 @@ export default function ProductQuickViewModal({ product, isOpen, onClose, onAddT
                 </>
               ) : (
                 <>
-                  <ShoppingBag size={18} /> Add to Bag — £{product.price}
+                  <ShoppingBag size={18} /> Add to Bag · £{product.price}
                 </>
               )}
             </button>
