@@ -93,32 +93,22 @@ export default function Footer({ onOpenCareGuide }) {
           =================================================================== */}
       <div className="footer-canvas-unified">
 
-        {/* Layer B (Background Video): On web view, spans full canvas height so top is never cut off */}
+        {/* Layer B (Background Video with giant wordmark directly behind it) */}
         <CampaignVideoLayer 
           videoSrc={DEFAULT_CAMPAIGN_VIDEO_SRC}
           className="footer-campaign-video-unified"
-        />
-
-        {/* Layer B (Oversized Wordmark): Positioned behind hair across the lower spread */}
-        <div className="editorial-oversized-wordmark-wrap" aria-hidden="true">
-          <div className="wordmark-container">
-            {/* Desktop Wordmark (Single Line with Slanted 'of') */}
-            <div className="wordmark-text desktop-wordmark">
-              <span className="wordmark-house">House</span>
-              <span className="wordmark-of">of</span>
-              <span className="wordmark-nina">Nina</span>
-            </div>
-
-            {/* Mobile Wordmark (Two Lines: 'House' / 'of Nina') */}
-            <div className="wordmark-text mobile-wordmark">
-              <span className="wordmark-line-1">House</span>
-              <span className="wordmark-line-2">
+        >
+          {/* Giant Oversized Wordmark: Single line on both web and mobile, directly behind the video */}
+          <div className="editorial-oversized-wordmark-wrap" aria-hidden="true">
+            <div className="wordmark-container">
+              <div className="wordmark-text single-line-wordmark">
+                <span className="wordmark-house">House</span>
                 <span className="wordmark-of">of</span>
                 <span className="wordmark-nina">Nina</span>
-              </span>
+              </div>
             </div>
           </div>
-        </div>
+        </CampaignVideoLayer>
 
         {/* Layer A (Foreground Content): Newsletter & Multi-Column Navigation rendered over canvas */}
         <div className="container footer-content-container">
@@ -218,9 +208,8 @@ export default function Footer({ onOpenCareGuide }) {
                   </a>
                 </li>
                 <li><a href="#details" className="footer-nav-link">FAQs</a></li>
-                <li><a href="#privacy" className="footer-nav-link">Privacy Policy</a></li>
+                <li><a href="#privacy-cookies" className="footer-nav-link">Privacy & Cookies</a></li>
                 <li><a href="#terms" className="footer-nav-link">Terms of Service</a></li>
-                <li><a href="#cookies" className="footer-nav-link">Cookies</a></li>
               </ul>
             </div>
 
@@ -315,9 +304,8 @@ export default function Footer({ onOpenCareGuide }) {
                     Care Guide
                   </a>
                   <a href="#details" className="mobile-nav-link">FAQs</a>
-                  <a href="#privacy" className="mobile-nav-link">Privacy Policy</a>
+                  <a href="#privacy-cookies" className="mobile-nav-link">Privacy & Cookies</a>
                   <a href="#terms" className="mobile-nav-link">Terms of Service</a>
-                  <a href="#cookies" className="mobile-nav-link">Cookies</a>
                 </div>
               </div>
             </div>

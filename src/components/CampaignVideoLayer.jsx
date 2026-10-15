@@ -9,7 +9,8 @@ export const DEFAULT_CAMPAIGN_VIDEO_SRC = "/videos/footer-video.mp4";
 
 export default function CampaignVideoLayer({
   videoSrc = DEFAULT_CAMPAIGN_VIDEO_SRC,
-  className = ""
+  className = "",
+  children
 }) {
   const videoRef = useRef(null);
 
@@ -81,6 +82,9 @@ export default function CampaignVideoLayer({
       className={`campaign-video-stage ${className}`}
       aria-hidden="true"
     >
+      {/* Background elements like giant wordmark rendered directly behind the video */}
+      {children}
+
       {videoSrc ? (
         <video
           ref={videoRef}

@@ -507,9 +507,8 @@ export const FOOTER_DATA = {
     {
       title: "Legal & Trust",
       links: [
-        { label: "Privacy Policy", href: "#privacy" },
-        { label: "Terms of Service", href: "#terms" },
-        { label: "Cookie Preferences", href: "#cookies" }
+        { label: "Privacy & Cookies", href: "#privacy-cookies" },
+        { label: "Terms of Service", href: "#terms" }
       ]
     }
   ],
