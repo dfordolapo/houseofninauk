@@ -296,7 +296,7 @@ export default function App() {
   };
 
   return (
-    <div className="wigverse-app">
+    <div className={`wigverse-app ${showHero ? 'is-hero-active' : ''}`}>
       {/* SECTION 1: NAVIGATION */}
       <Header 
         onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
