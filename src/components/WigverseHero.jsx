@@ -144,30 +144,8 @@ export default function WigverseHero({ onEnterStore }) {
         <div className="container hero-exact-container">
           {/* Mobile Headline Composition */}
           <div className="hero-top-typography">
-            <div className="hero-welcome-arch-wrap" aria-hidden="false">
-              <svg
-                className="hero-welcome-svg"
-                viewBox="0 0 700 120"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-label="Welcome to our"
-              >
-                <defs>
-                  <path
-                    id="welcomeArcMobile"
-                    d="M 30,100 Q 350,10 670,100"
-                  />
-                </defs>
-                <text
-                  className="hero-welcome-text-path"
-                  textAnchor="middle"
-                  style={{ fontFamily: "'Pinyon Script', cursive" }}
-                >
-                  <textPath href="#welcomeArcMobile" startOffset="50%">
-                    Welcome to our
-                  </textPath>
-                </text>
-              </svg>
+            <div className="hero-mobile-welcome-line">
+              Welcome to our
             </div>
 
             <div className="wigverse-circled-wrapper">
