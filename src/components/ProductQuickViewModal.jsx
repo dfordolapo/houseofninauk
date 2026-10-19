@@ -140,9 +140,11 @@ export default function ProductQuickViewModal({ product, isOpen, onClose, onAddT
                   loop
                   playsInline
                   webkit-playsinline="true"
+                  x5-playsinline="true"
                   preload="auto"
                   poster={posterSource}
                   key={`${product.id || 'qv'}-video`}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 >
                   {webmSource && <source src={webmSource} type="video/webm" />}
                   <source src={mp4Source} type="video/mp4" />
@@ -192,6 +194,7 @@ export default function ProductQuickViewModal({ product, isOpen, onClose, onAddT
                   src={product.image} 
                   alt={product.name} 
                   className="quickview-img" 
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
             )}
