@@ -84,9 +84,13 @@ export default function CinematicVideoBanner() {
           controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
           disablePictureInPicture
           disableRemotePlayback
-          poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          poster="/videos/15558864_poster.webp"
           aria-hidden="true"
         >
+          <source 
+            src="/videos/15558864.webm" 
+            type="video/webm" 
+          />
           <source 
             src="/videos/15558864_1080_1920_30fps.mp4" 
             type="video/mp4" 

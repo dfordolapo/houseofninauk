@@ -27,9 +27,9 @@ export const HERO_NINE_TILES = [
     accent: "sand",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 15%"
   },
@@ -39,9 +39,9 @@ export const HERO_NINE_TILES = [
     accent: "blush",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 18%"
   },
@@ -51,9 +51,9 @@ export const HERO_NINE_TILES = [
     accent: "olive",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 15%"
   },
@@ -63,9 +63,9 @@ export const HERO_NINE_TILES = [
     accent: "olive",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 15%"
   },
@@ -75,9 +75,9 @@ export const HERO_NINE_TILES = [
     accent: "sand",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 15%"
   },
@@ -87,9 +87,9 @@ export const HERO_NINE_TILES = [
     accent: "blush",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 20%"
   },
@@ -99,9 +99,9 @@ export const HERO_NINE_TILES = [
     accent: "blush",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 15%"
   },
@@ -111,9 +111,9 @@ export const HERO_NINE_TILES = [
     accent: "olive",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 15%"
   },
@@ -123,9 +123,9 @@ export const HERO_NINE_TILES = [
     accent: "sand",
     doodle: "none",
     images: [
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=700&q=80",
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80"
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=700&q=80&fm=webp",
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=700&q=80&fm=webp"
     ],
     objectPosition: "50% 15%"
   }
@@ -138,7 +138,7 @@ export const INSTA_POSTS = [
     productName: "The Victoria Glass Bob",
     category: "Wigs",
     price: "£245",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80&fm=webp",
     likes: "2,118",
     comments: "84",
     caption: "Sharp blunt perimeter, pure mirror glass reflection. Customised unit ready to wear. 🖤 #HouseOfNina #UKWigs",
@@ -155,7 +155,7 @@ export const INSTA_POSTS = [
     productName: "The Silk Bone Straight 26\"",
     category: "Wigs",
     price: "£360",
-    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=800&q=80&fm=webp",
     likes: "3,490",
     comments: "142",
     caption: "Ultra-silky straight hair that moves effortlessly. Hand-finished lace closure. 👑",
@@ -172,7 +172,7 @@ export const INSTA_POSTS = [
     productName: "The Mulberry Silk Edge Scarf",
     category: "Scarves",
     price: "£28",
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=800&q=80&fm=webp",
     likes: "1,890",
     comments: "63",
     caption: "Melt your lace seamlessly and protect your edges overnight with 100% pure Mulberry silk. 🤍",
@@ -188,7 +188,7 @@ export const INSTA_POSTS = [
     productName: "The Soft Body Wave Unit",
     category: "Wigs",
     price: "£320",
-    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80&fm=webp",
     likes: "2,240",
     comments: "95",
     caption: "Soft bounce and effortless body wave. Handcrafted with love in the UK. 💫",
@@ -210,7 +210,7 @@ export const FEATURED_PRODUCTS = [
     price: 245,
     rating: 5.0,
     reviewsCount: 14,
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80&fm=webp",
     options: {
       lengths: ["10\"", "12\"", "14\""],
       laceTypes: ["13x4 HD Lace Frontal", "5x5 HD Closure"],
@@ -226,7 +226,7 @@ export const FEATURED_PRODUCTS = [
     price: 360,
     rating: 5.0,
     reviewsCount: 19,
-    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=800&q=80&fm=webp",
     options: {
       lengths: ["24\"", "26\"", "28\""],
       laceTypes: ["13x6 HD Swiss Lace", "5x5 HD Closure"],
@@ -242,7 +242,7 @@ export const FEATURED_PRODUCTS = [
     price: 320,
     rating: 4.9,
     reviewsCount: 11,
-    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80&fm=webp",
     options: {
       lengths: ["20\"", "24\""],
       laceTypes: ["13x4 HD Lace Frontal", "5x5 HD Closure"],
@@ -258,7 +258,7 @@ export const FEATURED_PRODUCTS = [
     price: 28,
     rating: 5.0,
     reviewsCount: 26,
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=800&q=80&fm=webp",
     options: {
       lengths: ["Standard (6cm x 150cm)"],
       laceTypes: ["100% Mulberry Silk"],
@@ -274,7 +274,7 @@ export const FEATURED_PRODUCTS = [
     price: 35,
     rating: 5.0,
     reviewsCount: 16,
-    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80&fm=webp",
     options: {
       lengths: ["Square (70cm x 70cm)"],
       laceTypes: ["100% Twill Silk"],
@@ -290,7 +290,7 @@ export const FEATURED_PRODUCTS = [
     price: 16,
     rating: 5.0,
     reviewsCount: 38,
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80&fm=webp",
     options: {
       lengths: ["Adjustable Velcro"],
       laceTypes: ["Soft Stretch Band"],
@@ -306,7 +306,7 @@ export const FEATURED_PRODUCTS = [
     price: 26,
     rating: 5.0,
     reviewsCount: 42,
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80&fm=webp",
     options: {
       lengths: ["XL Fit (All Wig Lengths)"],
       laceTypes: ["22 Momme Silk"],
@@ -325,7 +325,7 @@ export const BAG_SUGGESTIONS = [
     category: "Scarves",
     price: 28,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=600&q=80&fm=webp",
     badge: "Must-Have Pairing",
     reason: "Melts lace edges seamlessly & protects styles overnight."
   },
@@ -335,7 +335,7 @@ export const BAG_SUGGESTIONS = [
     category: "Accessories",
     price: 16,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80&fm=webp",
     badge: "Best Seller",
     reason: "Locks your lace down in 10 minutes with zero residue."
   },
@@ -345,7 +345,7 @@ export const BAG_SUGGESTIONS = [
     category: "Accessories",
     price: 26,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80&fm=webp",
     badge: "Hair Preserver",
     reason: "Prevents tangles and keeps hair silky smooth while sleeping."
   },
@@ -355,7 +355,7 @@ export const BAG_SUGGESTIONS = [
     category: "Wigs",
     price: 245,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80&fm=webp",
     badge: "Signature Look",
     reason: "The iconic precision blunt cut that turns heads everywhere."
   }
@@ -367,7 +367,7 @@ export const MOOD_COLLECTIONS = [
     id: "everyday-fine",
     title: "Everyday Fine",
     subtitle: "Polished, wearable styles.",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=900&q=80",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=900&q=80&fm=webp",
     accentColor: "sand",
     description: "Effortless 9-to-5 elegance, sharp precision bobs, and clean middle-part silhouettes designed for effortless day-to-night transitions.",
     suggestedStyles: ["Blunt 12\" Glass Bob", "22\" Body Wave Closure", "Natural Texture Press"],
@@ -377,7 +377,7 @@ export const MOOD_COLLECTIONS = [
     id: "main-character",
     title: "Main Character",
     subtitle: "Statement wigs and dramatic volume.",
-    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=900&q=80",
+    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=900&q=80&fm=webp",
     accentColor: "blush",
     description: "32-inch floor-skimming locks, 250% high-density deep waves, and unapologetic presence. When walking into the room is an event.",
     suggestedStyles: ["30\" Bone Straight Frontal", "28\" Island Deep Wave", "250% Volume Cascade"],
@@ -387,7 +387,7 @@ export const MOOD_COLLECTIONS = [
     id: "new-hair-energy",
     title: "New Hair Energy",
     subtitle: "Blonde, coloured and experimental looks.",
-    image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=80",
+    image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=80&fm=webp",
     accentColor: "olive",
     description: "Honey tones, burgundy wine, molten copper and custom Balayage. Reinvent your mood with professionally toned luxury hair.",
     suggestedStyles: ["Mayfair Honey Blonde", "Chelsea 99J Burgundy", "Ginger Caramel Swirl"],
@@ -427,7 +427,7 @@ export const BRAND_DETAILS = [
 export const CARE_GUIDE_DATA = {
   heading: "Love your wig. Keep the look.",
   supportingCopy: "Explore practical tips for caring for your wig and keeping your favourite style looking its best.",
-  image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+  image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80&fm=webp",
   tips: [
     {
       title: "Washing & Conditioning",
@@ -457,7 +457,7 @@ export const STORY_DATA = {
     "We reject mass-produced, chemically stripped hair. Every House of Nina unit is sculpted from verified single-donor raw hair, paired with featherweight Swiss HD lace, and hand-plucked strand by strand in our UK studio for an undetectable hairline.",
     "The Wigverse is our world: bespoke units crafted to give you effortless confidence, pure movement, and everyday ease."
   ],
-  image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80",
+  image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80&fm=webp",
   quote: "“Your hair is not an accessory, it is your crown, your mood, and your confidence in motion.”",
   author: "House of Nina Studio, United Kingdom"
 };

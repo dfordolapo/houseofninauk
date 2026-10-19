@@ -80,7 +80,7 @@ export default function WigverseHero({ onEnterStore }) {
         {/* Full-width background image covering from very top */}
         <div className="hero-web-bg-wrap" onClick={handleScrollToEnter} role="button" tabIndex={0} aria-label="Enter House of Nina">
           <img
-            src="/images/hero_desktop.jpg"
+            src="/images/hero_desktop.webp"
             alt="House of Nina - Welcome to our House Luxury Walk-in Closet"
             className="hero-web-bg-img"
             loading="eager"
@@ -187,7 +187,7 @@ export default function WigverseHero({ onEnterStore }) {
           >
             <div className="hero-house-img-wrap">
               <img
-                src="/images/welcome-house.jpg"
+                src="/images/welcome-house.webp"
                 alt="House of Nina - Welcome to our House Luxury Atelier"
                 className="hero-house-img"
                 loading="eager"

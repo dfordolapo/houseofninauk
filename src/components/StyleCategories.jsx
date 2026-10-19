@@ -85,7 +85,7 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
                 <div className="insta-post-header">
                   <div className="insta-author-info">
                     <div className="author-avatar-wrap">
-                      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="House of Nina" className="author-avatar-img" />
+                      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80&fm=webp" alt="House of Nina" className="author-avatar-img" />
                     </div>
                     <div>
                       <h3 className="author-name">houseofnina</h3>

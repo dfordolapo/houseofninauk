@@ -10,7 +10,7 @@ const SPECIMEN_CARDS = [
     tag: 'THE ORIGIN',
     title: 'Born From a Love of Hair',
     subtitle: 'Created for Every Woman',
-    image: '/images/about-us.png',
+    image: '/images/about-us.webp',
     imagePosition: 'center 31%',
     metrics: [
       { label: 'Origin', value: 'Personal Passion' },
@@ -27,7 +27,7 @@ const SPECIMEN_CARDS = [
     tag: 'COLLECTIONS',
     title: 'Hair That Fits Your Life',
     subtitle: 'Human Hair & Replica Fibre',
-    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=900&q=80',
+    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=900&q=80&fm=webp',
     metrics: [
       { label: 'Our Belief', value: 'No Budget Pressure' },
       { label: 'Human Hair', value: 'Raw Single-Donor' },
@@ -43,7 +43,7 @@ const SPECIMEN_CARDS = [
     tag: 'THE EXPERIENCE',
     title: 'Welcome to Our House',
     subtitle: 'Wear Your Crown. With Confidence.',
-    image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80',
+    image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80&fm=webp',
     metrics: [
       { label: 'The Experience', value: 'Thoughtful & Special' },
       { label: 'Dispatch', value: 'Little Details Matter' },

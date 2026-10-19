@@ -180,7 +180,7 @@ export default function UnboxingExperience() {
                   >
                     <div className="reveal-unit-img-wrap">
                       <img 
-                        src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80" 
+                        src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80&fm=webp" 
                         alt="The Victoria Raw Hair Unit" 
                         className="reveal-unit-img"
                       />
@@ -217,7 +217,7 @@ export default function UnboxingExperience() {
                   >
                     <div className="reveal-acc-img-wrap">
                       <img 
-                        src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=400&q=80" 
+                        src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=400&q=80&fm=webp" 
                         alt="Silk Scarf Inclusions" 
                         className="reveal-acc-img"
                       />

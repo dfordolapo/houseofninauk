@@ -72,7 +72,7 @@ export default function LookReviewsModal({
             <div className="look-reviews-author-meta">
               <div className="look-author-avatar-wrap">
                 <img 
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80&fm=webp" 
                   alt="House of Nina" 
                   className="look-author-avatar" 
                 />

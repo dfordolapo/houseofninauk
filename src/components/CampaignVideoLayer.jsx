@@ -6,9 +6,13 @@ import React, { useRef, useEffect } from 'react';
  * ============================================================================
  */
 export const DEFAULT_CAMPAIGN_VIDEO_SRC = "/videos/footer-video.mp4";
+export const DEFAULT_CAMPAIGN_VIDEO_WEBM = "/videos/footer-video.webm";
+export const DEFAULT_CAMPAIGN_POSTER = "/videos/footer-video_poster.webp";
 
 export default function CampaignVideoLayer({
   videoSrc = DEFAULT_CAMPAIGN_VIDEO_SRC,
+  webmSrc = DEFAULT_CAMPAIGN_VIDEO_WEBM,
+  poster = DEFAULT_CAMPAIGN_POSTER,
   className = "",
   children
 }) {
@@ -94,14 +98,15 @@ export default function CampaignVideoLayer({
           loop
           playsInline
           webkit-playsinline="true"
-          preload="auto"
+          preload="metadata"
           controls={false}
           controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
           disablePictureInPicture
           disableRemotePlayback
-          poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          poster={poster || DEFAULT_CAMPAIGN_POSTER}
           aria-hidden="true"
         >
+          {webmSrc && <source src={webmSrc} type="video/webm" />}
           <source src={videoSrc} type="video/mp4" />
         </video>
       ) : (
