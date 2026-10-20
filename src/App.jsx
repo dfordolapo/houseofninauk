@@ -14,6 +14,7 @@ import CinematicVideoBanner from './components/CinematicVideoBanner';
 import Footer from './components/Footer';
 import SearchModal from './components/SearchModal';
 import ProductQuickViewModal from './components/ProductQuickViewModal';
+import ProductDetailsModal from './components/ProductDetailsModal';
 import CareGuideModal from './components/CareGuideModal';
 import CartDrawer from './components/CartDrawer';
 import WishlistDrawer from './components/WishlistDrawer';
@@ -64,8 +65,11 @@ export default function App() {
   const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
   const [activeReviewPost, setActiveReviewPost] = useState(null);
 
-  // Quick View Modal state
+  // Quick View (Pure Video) Modal state
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+  // Product Details (Options & Specs) Modal state
+  const [detailsProduct, setDetailsProduct] = useState(null);
 
   // Care Guide Modal state
   const [isCareGuideOpen, setIsCareGuideOpen] = useState(false);
@@ -84,6 +88,7 @@ export default function App() {
     isCartOpen || 
     isWishlistOpen || 
     quickViewProduct || 
+    detailsProduct || 
     isCareGuideOpen || 
     isSearchOpen || 
     isAddedModalOpen || 
@@ -334,6 +339,7 @@ export default function App() {
             {/* SECTION 5: FEATURED PRODUCTS (Signature Rose Section) */}
             <FeaturedProducts 
               onQuickView={(prod) => setQuickViewProduct(prod)}
+              onOpenDetails={(prod) => setDetailsProduct(prod)}
               onAddToCart={handleAddToCart}
               activeFilter={activeFilter}
               onClearFilter={() => setActiveFilter('All')}
@@ -383,11 +389,27 @@ export default function App() {
         onAddToCart={handleAddToCart}
       />
 
+      {/* PURE VIDEO QUICK VIEW MODAL (VIDEO ONLY) */}
       <ProductQuickViewModal 
         product={quickViewProduct}
         isOpen={!!quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
+        onOpenDetails={(prod) => {
+          setQuickViewProduct(null);
+          setDetailsProduct(prod);
+        }}
+      />
+
+      {/* FULL PRODUCT DETAILS & CUSTOMIZATION MODAL */}
+      <ProductDetailsModal
+        product={detailsProduct}
+        isOpen={!!detailsProduct}
+        onClose={() => setDetailsProduct(null)}
         onAddToCart={handleAddToCart}
+        onOpenVideo={(prod) => {
+          setDetailsProduct(null);
+          setQuickViewProduct(prod);
+        }}
       />
 
       <CareGuideModal 
@@ -398,7 +420,7 @@ export default function App() {
       <SearchModal 
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        onSelectProduct={(prod) => setQuickViewProduct(prod)}
+        onSelectProduct={(prod) => setDetailsProduct(prod)}
         onSelectCategory={handleSelectCategory}
       />
 

@@ -3,7 +3,7 @@ import { Eye, Plus, ArrowRight } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 import GoldStroke from './GoldStroke';
 
-export default function FeaturedProducts({ onQuickView, onAddToCart, activeFilter, onClearFilter }) {
+export default function FeaturedProducts({ onQuickView, onOpenDetails, onAddToCart, activeFilter, onClearFilter }) {
   const [selectedFilter, setSelectedFilter] = useState(activeFilter || 'All');
 
   const filteredProducts = selectedFilter === 'All' 
@@ -11,6 +11,14 @@ export default function FeaturedProducts({ onQuickView, onAddToCart, activeFilte
     : FEATURED_PRODUCTS.filter(p => p.category.toLowerCase().includes(selectedFilter.toLowerCase()) || p.name.toLowerCase().includes(selectedFilter.toLowerCase()));
 
   const displayProducts = filteredProducts.length > 0 ? filteredProducts : FEATURED_PRODUCTS;
+
+  const handleOpenDetails = (product) => {
+    if (onOpenDetails) {
+      onOpenDetails(product);
+    } else if (onQuickView) {
+      onQuickView(product);
+    }
+  };
 
   return (
     <section id="featured-products" className="section-wrapper" aria-label="Featured Wigs Collection">
@@ -50,13 +58,13 @@ export default function FeaturedProducts({ onQuickView, onAddToCart, activeFilte
                   <span className="product-tag-badge">{product.tag}</span>
                 )}
 
-                {/* Quick Action Overlay */}
+                {/* Quick Action Overlay: Pure Video Preview */}
                 <div className="product-quick-action">
                   <button 
                     type="button" 
                     className="btn-quick-view"
                     onClick={() => onQuickView(product)}
-                    aria-label={`Quick view ${product.name}`}
+                    aria-label={`Watch video preview of ${product.name}`}
                   >
                     <Eye size={15} /> Quick View
                   </button>
@@ -65,7 +73,13 @@ export default function FeaturedProducts({ onQuickView, onAddToCart, activeFilte
 
               <div className="product-details">
                 <span className="product-cat-pill">{product.category}</span>
-                <h3 className="product-title">{product.name}</h3>
+                <h3 
+                  className="product-title" 
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleOpenDetails(product)}
+                >
+                  {product.name}
+                </h3>
 
                 {/* Options previews (Lengths & Lace) */}
                 <div className="product-options-row">
@@ -80,7 +94,8 @@ export default function FeaturedProducts({ onQuickView, onAddToCart, activeFilte
                   <button 
                     type="button" 
                     className="product-explore-btn"
-                    onClick={() => onQuickView(product)}
+                    onClick={() => handleOpenDetails(product)}
+                    aria-label={`View full details for ${product.name}`}
                   >
                     <span>Details</span>
                     <ArrowRight size={14} />
