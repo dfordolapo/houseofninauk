@@ -2,7 +2,7 @@
    HOUSE OF NINA — WELCOME TO OUR HOUSE
    Design System & Editorial Style Guide
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Great+Vibes&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
 
 :root {
   /* Signature Sand & Radiant Gold Editorial Palette */
@@ -37,7 +37,7 @@
   --color-border-light: rgba(90, 70, 50, 0.08);
 
   /* Typography Hierarchy - Luxury Editorial Didone & Swiss Modernist Sans */
-  --font-brand: 'Pinyon Script', cursive;
+  --font-brand: 'Alex Brush', 'Great Vibes', cursive;
   --font-display: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -332,13 +332,13 @@ h1, h2, h3,
 
 .brand-wordmark {
   font-family: var(--font-brand);
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 400;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   color: var(--color-deep-espresso);
   line-height: 1;
   user-select: none;
-  padding-top: 2px;
+  padding-top: 1px;
 }
 
 .nav-links {
@@ -2963,29 +2963,25 @@ video::-moz-media-controls {
 }
 
 .newsletter-calligraphic-heading {
-  font-family: 'Pinyon Script', cursive;
-  font-size: clamp(34px, 3.6vw, 48px);
-  font-weight: 700;
+  font-family: 'Alex Brush', 'Great Vibes', cursive;
+  font-size: clamp(38px, 4.2vw, 54px);
+  font-weight: 400;
   color: #30271F;
-  line-height: 1.1;
+  line-height: 1.15;
   margin: 0;
   white-space: nowrap;
-  -webkit-text-stroke: 0.65px currentColor;
-  text-shadow: 0 0 0.5px currentColor;
+  letter-spacing: 0.015em;
 }
 
 .newsletter-calligraphic-heading .heading-stay {
-  color: #30271F;
-  font-weight: 700;
-  -webkit-text-stroke: 0.65px #30271F;
+  color: #C7A46A;
+  font-weight: 400;
 }
 
 .newsletter-calligraphic-heading .heading-loop {
-  color: #C7A46A;
-  font-weight: 700;
-  font-style: italic;
-  padding-left: 2px;
-  -webkit-text-stroke: 0.65px #C7A46A;
+  color: #241C19;
+  font-weight: 400;
+  padding-left: 6px;
 }
 
 .newsletter-supporting-copy {
@@ -4204,7 +4200,7 @@ video::-moz-media-controls {
   }
 
   .brand-wordmark {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   .hero-welcome-text-path {

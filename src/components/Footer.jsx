@@ -136,8 +136,8 @@ export default function Footer({
             <div className="footer-newsletter-col">
               <div className="newsletter-heading-wrap">
                 <h3 className="newsletter-calligraphic-heading">
-                  <span className="heading-stay">Stay in the </span>
-                  <span className="heading-loop">loop</span>
+                  <span className="heading-stay">Stay </span>
+                  <span className="heading-loop">in the loop</span>
                 </h3>
                 <p className="newsletter-supporting-copy">
                   New looks, restocks, exclusive drops and hair inspiration.
