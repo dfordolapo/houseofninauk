@@ -4199,7 +4199,7 @@ video::-moz-media-controls {
 }
 
 .quickview-body {
-  padding: 36px 32px;
+  padding: 26px 24px;
   display: flex;
   flex-direction: column;
 }
@@ -4653,6 +4653,10 @@ video::-moz-media-controls {
     margin-bottom: -46px;
     width: 36px;
     height: 36px;
+  }
+
+  .quickview-body {
+    padding: 18px 16px !important;
   }
 }
 

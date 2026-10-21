@@ -28,6 +28,7 @@ import { FEATURED_PRODUCTS } from './data/wigData';
 
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
 const WISHLIST_STORAGE_KEY = 'house_of_nina_wishlist_v1';
+const SEEN_HERO_STORAGE_KEY = 'house_of_nina_seen_welcome_v1';
 
 export default function App() {
   // Mobile drawer state
@@ -236,13 +237,25 @@ export default function App() {
   // Active Category Filter for Featured Products
   const [activeFilter, setActiveFilter] = useState('All');
 
-  // Hero display and transition states
-  const [showHero, setShowHero] = useState(true);
+  // Hero display and transition states (shows once per browser, then loads landing page directly)
+  const [showHero, setShowHero] = useState(() => {
+    try {
+      const hasSeen = localStorage.getItem(SEEN_HERO_STORAGE_KEY);
+      return hasSeen !== 'true';
+    } catch (e) {
+      return true;
+    }
+  });
   const [isHeroFadingOut, setIsHeroFadingOut] = useState(false);
 
   const handleEnterStore = () => {
     if (!showHero || isHeroFadingOut) return;
     setIsHeroFadingOut(true);
+    try {
+      localStorage.setItem(SEEN_HERO_STORAGE_KEY, 'true');
+    } catch (e) {
+      console.warn('Failed to save seen welcome state to localStorage', e);
+    }
     // Cinematic portal dive into image before revealing store (680ms)
     setTimeout(() => {
       setShowHero(false);

@@ -257,36 +257,33 @@ export default function ProductDetailsModal({
           {/* ── Right Column: Product Details & Options ── */}
           <div className="quickview-body">
             <span className="product-cat-pill">{product.category}</span>
-            <h2 className="product-title" style={{ fontSize: '24px', marginBottom: '8px' }}>
-              {product.name}
-            </h2>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-              <span className="product-price" style={{ fontSize: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '14px', marginTop: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
+              <h2 className="product-title" style={{ fontSize: '18px', margin: 0, fontWeight: 600, color: 'var(--color-deep-espresso)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>
+                {product.name}
+              </h2>
+              <span className="product-price" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--color-deep-espresso)', flexShrink: 0 }}>
                 {typeof product.price === 'number' ? `£${product.price}` : product.price}
-              </span>
-              <span style={{ fontSize: '12px', color: 'var(--color-espresso-muted)' }}>
-                (Free UK Delivery &amp; Luxury Box Included)
               </span>
             </div>
 
-            <p className="product-desc" style={{ marginBottom: '24px' }}>
+            <p className="product-desc" style={{ fontSize: '12.5px', lineHeight: 1.5, color: '#685C50', marginBottom: '18px' }}>
               {product.description}
             </p>
 
             {/* Length Selector */}
             {product.options?.lengths?.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                  Length: <span style={{ color: 'var(--color-gold)' }}>{selectedLength}</span>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '6px', color: '#685C50' }}>
+                  Length: <span style={{ color: 'var(--color-deep-espresso)' }}>{selectedLength}</span>
                 </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {product.options.lengths.map(len => (
                     <button
                       key={len}
                       type="button"
                       className={`option-chip ${selectedLength === len ? 'selected' : ''}`}
                       onClick={() => setSelectedLength(len)}
-                      style={{ padding: '8px 14px', fontSize: '13px', cursor: 'pointer' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}
                     >
                       {len}
                     </button>
@@ -297,18 +294,18 @@ export default function ProductDetailsModal({
 
             {/* Lace Selector */}
             {product.options?.laceTypes?.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                  Lace Type: <span style={{ color: 'var(--color-gold)' }}>{selectedLace}</span>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '6px', color: '#685C50' }}>
+                  Lace Type: <span style={{ color: 'var(--color-deep-espresso)' }}>{selectedLace}</span>
                 </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {product.options.laceTypes.map(lace => (
                     <button
                       key={lace}
                       type="button"
                       className={`option-chip ${selectedLace === lace ? 'selected' : ''}`}
                       onClick={() => setSelectedLace(lace)}
-                      style={{ padding: '8px 14px', fontSize: '13px', cursor: 'pointer' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}
                     >
                       {lace}
                     </button>
@@ -319,18 +316,18 @@ export default function ProductDetailsModal({
 
             {/* Density Selector */}
             {product.options?.densities?.length > 0 && (
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                  Density: <span style={{ color: 'var(--color-gold)' }}>{selectedDensity}</span>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '6px', color: '#685C50' }}>
+                  Density: <span style={{ color: 'var(--color-deep-espresso)' }}>{selectedDensity}</span>
                 </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {product.options.densities.map(density => (
                     <button
                       key={density}
                       type="button"
                       className={`option-chip ${selectedDensity === density ? 'selected' : ''}`}
                       onClick={() => setSelectedDensity(density)}
-                      style={{ padding: '8px 14px', fontSize: '13px', cursor: 'pointer' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}
                     >
                       {density}
                     </button>
@@ -344,16 +341,16 @@ export default function ProductDetailsModal({
               <button 
                 type="button" 
                 className="btn-primary-editorial" 
-                style={{ flex: 1, padding: '16px', justifyContent: 'center' }}
+                style={{ flex: 1, padding: '13px 16px', fontSize: '13px', justifyContent: 'center' }}
                 onClick={handleAdd}
               >
                 {isAdded ? (
                   <>
-                    <Check size={18} /> Added to Bag
+                    <Check size={17} /> Added to Bag
                   </>
                 ) : (
                   <>
-                    <ShoppingBag size={18} /> Add to Bag
+                    <ShoppingBag size={17} /> Add to Bag
                   </>
                 )}
               </button>
@@ -366,14 +363,14 @@ export default function ProductDetailsModal({
                 aria-label={isWishlisted ? "Remove from lookbook" : "Save to lookbook"}
                 title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
                 style={{ 
-                  padding: '16px 18px', 
+                  padding: '13px 16px', 
                   justifyContent: 'center',
                   borderColor: isWishlisted ? 'var(--color-gold)' : undefined,
                   backgroundColor: isWishlisted ? 'rgba(215, 172, 85, 0.12)' : undefined
                 }}
               >
                 <Heart 
-                  size={18} 
+                  size={17} 
                   fill={isWishlisted ? "var(--color-gold)" : "none"} 
                   color={isWishlisted ? "var(--color-gold)" : "currentColor"} 
                 />
@@ -383,14 +380,14 @@ export default function ProductDetailsModal({
                 <button
                   type="button"
                   className="btn-secondary-editorial"
-                  style={{ padding: '16px 20px', justifyContent: 'center' }}
+                  style={{ padding: '13px 16px', justifyContent: 'center' }}
                   onClick={() => {
                     onClose();
                     onOpenVideo(product);
                   }}
                   title="Watch Hair Movement Video"
                 >
-                  <Film size={18} />
+                  <Film size={17} />
                 </button>
               )}
             </div>
