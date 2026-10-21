@@ -15,10 +15,19 @@ export default function LookReviewsModal({
   const [isLiked, setIsLiked] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
 
-  // Initialize or update reviews whenever post changes
+  // Initialize or update reviews whenever post/product changes
   useEffect(() => {
     if (post) {
-      setReviews(post.reviewsList || [
+      const storageKey = `house_of_nina_reviews_${post.id}`;
+      let storedList = null;
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (raw) storedList = JSON.parse(raw);
+      } catch (e) {
+        console.warn('Failed to parse stored reviews', e);
+      }
+
+      setReviews(storedList || post.reviewsList || [
         { id: `default-1-${post.id}`, author: "Maya T.", rating: 5, time: "30m ago", verified: true, text: "The lace melted seamlessly! Looks completely natural even in daylight." },
         { id: `default-2-${post.id}`, author: "Chloe B.", rating: 5, time: "2h ago", verified: true, text: "Best hair purchase I've made this year. High density and minimal shedding." }
       ]);
@@ -28,8 +37,11 @@ export default function LookReviewsModal({
     }
   }, [post]);
 
-
   if (!isOpen || !post) return null;
+
+  const title = post.name || post.productName || 'Signature Unit';
+  const priceFormatted = typeof post.price === 'number' ? `£${post.price}` : (post.price || '£245');
+  const descriptionText = post.caption || post.description || "Crafted from verified single-donor raw hair with invisible Swiss HD lace.";
 
   const handleSubmitReview = (e) => {
     e.preventDefault();
@@ -44,7 +56,16 @@ export default function LookReviewsModal({
       text: reviewText.trim()
     };
 
-    setReviews(prev => [newRev, ...prev]);
+    setReviews(prev => {
+      const updated = [newRev, ...prev];
+      try {
+        localStorage.setItem(`house_of_nina_reviews_${post.id}`, JSON.stringify(updated));
+      } catch (err) {
+        console.warn('Failed to persist review', err);
+      }
+      return updated;
+    });
+
     setReviewText('');
     setAuthorName('');
     setSuccessMessage(true);
@@ -55,12 +76,12 @@ export default function LookReviewsModal({
     <div className="look-reviews-backdrop animate-fade-in" onClick={onClose} role="dialog" aria-modal="true">
       <div className="look-reviews-dialog animate-scale-up" onClick={(e) => e.stopPropagation()}>
         
-        {/* Left Side: Look Image Showcase */}
+        {/* Left Side: Product / Look Image Showcase */}
         <div className="look-reviews-media-col">
-          <img src={post.image} alt={post.productName} className="look-reviews-img" />
+          <img src={post.image} alt={title} className="look-reviews-img" />
           <div className="look-reviews-img-overlay">
-            <span className="look-reviews-cat-tag">{post.category}</span>
-            <span className="look-reviews-price-tag">{post.price}</span>
+            <span className="look-reviews-cat-tag">{post.category || 'Luxury Hair'}</span>
+            <span className="look-reviews-price-tag">{priceFormatted}</span>
           </div>
         </div>
 
@@ -79,7 +100,7 @@ export default function LookReviewsModal({
               </div>
               <div>
                 <h3 className="look-author-title">houseofnina</h3>
-                <span className="look-author-sub">United Kingdom • {post.productName}</span>
+                <span className="look-author-sub">United Kingdom • {title}</span>
               </div>
             </div>
             <button 
@@ -95,9 +116,9 @@ export default function LookReviewsModal({
           {/* Caption Box */}
           <div className="look-reviews-caption-row">
             <p className="look-reviews-caption-p">
-              <strong>houseofnina</strong> {post.caption}
+              <strong>houseofnina</strong> {descriptionText}
             </p>
-            <span className="look-caption-time">{post.timeAgo}</span>
+            {post.timeAgo && <span className="look-caption-time">{post.timeAgo}</span>}
           </div>
 
           {/* Reviews & Comments Scrollable Stream */}
@@ -205,7 +226,7 @@ export default function LookReviewsModal({
                 }}
               >
                 <ShoppingBag size={14} />
-                <span>Shop {post.productName} ({post.price})</span>
+                <span>Shop {title} ({priceFormatted})</span>
               </button>
             </div>
 

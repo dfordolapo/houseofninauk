@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, ShoppingBag, ShieldCheck, Play, Pause, Volume2, VolumeX, Film, Image as ImageIcon, Heart } from 'lucide-react';
+import { X, Check, ShoppingBag, ShieldCheck, Play, Pause, Volume2, VolumeX, Film, Image as ImageIcon, Heart, Star, MessageCircle } from 'lucide-react';
 
 /**
  * ============================================================================
@@ -15,6 +15,7 @@ export default function ProductDetailsModal({
   onAddToCart, 
   onOpenVideo,
   onToggleWishlist,
+  onOpenReviews,
   wishlist = []
 }) {
   const [selectedLength, setSelectedLength] = useState('');
@@ -256,7 +257,33 @@ export default function ProductDetailsModal({
 
           {/* ── Right Column: Product Details & Options ── */}
           <div className="quickview-body">
-            <span className="product-cat-pill">{product.category}</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+              <span className="product-cat-pill">{product.category}</span>
+              <button 
+                type="button" 
+                onClick={() => onOpenReviews && onOpenReviews(product)}
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '4px', 
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  padding: '2px 4px'
+                }}
+                title="Read client reviews & write feedback"
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: 'var(--color-gold)' }}>
+                  <Star size={13} fill="var(--color-gold)" color="var(--color-gold)" />
+                  <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
+                    {product.rating || '5.0'}
+                  </span>
+                </div>
+                <span style={{ fontSize: '11px', color: '#8C8074', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                  ({product.reviewsCount || 14} Reviews)
+                </span>
+              </button>
+            </div>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '14px', marginTop: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
               <h2 className="product-title" style={{ fontSize: '18px', margin: 0, fontWeight: 600, color: 'var(--color-deep-espresso)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>
                 {product.name}
@@ -403,6 +430,39 @@ export default function ProductDetailsModal({
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', color: 'var(--color-espresso-muted)', fontSize: '12px' }}>
               <ShieldCheck size={16} className="text-gold" />
               <span>100% Virgin Hair · Pre-Plucked Hairline &amp; Bleached Knots</span>
+            </div>
+
+            {/* Client Reviews Banner Link */}
+            <div style={{ 
+              marginTop: '16px', 
+              paddingTop: '12px', 
+              borderTop: '1px solid var(--color-border-light)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between',
+              fontSize: '11.5px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#685C50' }}>
+                <MessageCircle size={14} color="#8C8074" />
+                <span>Verified Client Reviews ({product.reviewsCount || 14})</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => onOpenReviews && onOpenReviews(product)}
+                style={{
+                  fontSize: '11.5px',
+                  fontWeight: 600,
+                  color: 'var(--color-gold-dark)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '2px',
+                  padding: '2px 0'
+                }}
+              >
+                Read &amp; Write Review →
+              </button>
             </div>
           </div>
         </div>

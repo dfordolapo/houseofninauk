@@ -530,6 +530,10 @@ export default function App() {
           setQuickViewProduct(prod);
         }}
         onToggleWishlist={handleToggleSave}
+        onOpenReviews={(prod) => {
+          setActiveReviewPost(prod);
+          setIsReviewsModalOpen(true);
+        }}
         wishlist={wishlist}
       />
 

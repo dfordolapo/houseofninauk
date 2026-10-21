@@ -217,7 +217,12 @@ export const FEATURED_PRODUCTS = [
       densities: ["180%"]
     },
     tag: "Signature Wig",
-    description: "Handcrafted blunt glass bob with pre-plucked hairline and invisible HD lace."
+    description: "Handcrafted blunt glass bob with pre-plucked hairline and invisible HD lace.",
+    reviewsList: [
+      { id: "rev-hn01-1", author: "Maya T.", rating: 5, time: "30m ago", verified: true, text: "The lace melted seamlessly! Looks completely natural even in daylight." },
+      { id: "rev-hn01-2", author: "Chloe B.", rating: 5, time: "2h ago", verified: true, text: "Best hair purchase I've made this year. High density and minimal shedding." },
+      { id: "rev-hn01-3", author: "Temi A.", rating: 5, time: "1d ago", verified: true, text: "Installed it glue-free for an event in Mayfair and received compliments all night." }
+    ]
   },
   {
     id: "hn-02",
@@ -233,7 +238,11 @@ export const FEATURED_PRODUCTS = [
       densities: ["200%"]
     },
     tag: "Bestseller Wig",
-    description: "Ultra-silky raw straight hair that stays bone flat with minimal heat."
+    description: "Ultra-silky raw straight hair that stays bone flat with minimal heat.",
+    reviewsList: [
+      { id: "rev-hn02-1", author: "Zainab K.", rating: 5, time: "5h ago", verified: true, text: "True raw hair. Stays silky and bone straight even in British humidity." },
+      { id: "rev-hn02-2", author: "Blessing E.", rating: 5, time: "1d ago", verified: true, text: "The 200% density is full from root to tip. Worth every single penny." }
+    ]
   },
   {
     id: "hn-03",
@@ -249,7 +258,11 @@ export const FEATURED_PRODUCTS = [
       densities: ["180%"]
     },
     tag: "Everyday Wig",
-    description: "Classic loose wave with full body and natural movement."
+    description: "Classic loose wave with full body and natural movement.",
+    reviewsList: [
+      { id: "rev-hn03-1", author: "Amara O.", rating: 5, time: "6h ago", verified: true, text: "The bounce stays even after washing! Super soft and effortless." },
+      { id: "rev-hn03-2", author: "Danielle P.", rating: 5, time: "2d ago", verified: true, text: "Worth every single pound. Feels like my own natural hair." }
+    ]
   },
   {
     id: "hn-04",
@@ -265,7 +278,11 @@ export const FEATURED_PRODUCTS = [
       densities: ["19 Momme"]
     },
     tag: "Silk Scarf",
-    description: "100% pure Mulberry silk scarf to melt lace edges, preserve wig styles, and prevent frizz overnight."
+    description: "100% pure Mulberry silk scarf to melt lace edges, preserve wig styles, and prevent frizz overnight.",
+    reviewsList: [
+      { id: "rev-hn04-1", author: "Nia A.", rating: 5, time: "3h ago", verified: true, text: "The only scarf that properly melts lace edges without slipping off overnight." },
+      { id: "rev-hn04-2", author: "Jessica R.", rating: 5, time: "1d ago", verified: true, text: "Pure silk luxury. My edges have never looked so neat." }
+    ]
   },
   {
     id: "hn-05",
@@ -281,7 +298,10 @@ export const FEATURED_PRODUCTS = [
       densities: ["Lightweight"]
     },
     tag: "Silk Scarf",
-    description: "Versatile luxury silk square scarf for headwraps, wig protection, and effortless styling."
+    description: "Versatile luxury silk square scarf for headwraps, wig protection, and effortless styling.",
+    reviewsList: [
+      { id: "rev-hn05-1", author: "Folake O.", rating: 5, time: "4h ago", verified: true, text: "Very versatile. I wear it both out as a chic look and at night to protect my unit." }
+    ]
   },
   {
     id: "hn-06",
@@ -297,7 +317,10 @@ export const FEATURED_PRODUCTS = [
       densities: ["Edge Styling Duo"]
     },
     tag: "Essential Add-on",
-    description: "Custom velvet-lined elastic melt band paired with dual-sided edge styling brush for flawless invisible installs."
+    description: "Custom velvet-lined elastic melt band paired with dual-sided edge styling brush for flawless invisible installs.",
+    reviewsList: [
+      { id: "rev-hn06-1", author: "Kemi D.", rating: 5, time: "1h ago", verified: true, text: "Lays my lace flat in 10 minutes without hair pulling or headache." }
+    ]
   },
   {
     id: "hn-07",
@@ -313,7 +336,10 @@ export const FEATURED_PRODUCTS = [
       densities: ["Double-Layered"]
     },
     tag: "Essential Add-on",
-    description: "Reversible double-lined 100% Mulberry silk bonnet to seal in hydration, eliminate friction, and prolong wig longevity."
+    description: "Reversible double-lined 100% Mulberry silk bonnet to seal in hydration, eliminate friction, and prolong wig longevity.",
+    reviewsList: [
+      { id: "rev-hn07-1", author: "Sarah M.", rating: 5, time: "2h ago", verified: true, text: "The XL size actually fits all my 28-inch hair comfortably. No frizz in the morning!" }
+    ]
   }
 ];
 

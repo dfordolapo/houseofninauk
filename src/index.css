@@ -9780,6 +9780,7 @@ video::-moz-media-controls {
   }
 
   .checkout-grid-layout {
+    grid-template-columns: 1fr !important;
     padding: 14px 12px !important;
     gap: 16px !important;
   }
