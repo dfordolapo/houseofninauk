@@ -21,6 +21,8 @@ import WishlistDrawer from './components/WishlistDrawer';
 import AddedToBagModal from './components/AddedToBagModal';
 import LookReviewsModal from './components/LookReviewsModal';
 import LegalModal from './components/LegalModal';
+import TrackOrderModal from './components/TrackOrderModal';
+import FaqModal from './components/FaqModal';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
@@ -81,6 +83,10 @@ export default function App() {
   // Legal Modal state ('terms' | 'privacy' | 'shipping' | null)
   const [legalModalTab, setLegalModalTab] = useState(null);
 
+  // Track Order & FAQs Modal states
+  const [isTrackOrderOpen, setIsTrackOrderOpen] = useState(false);
+  const [isFaqOpen, setIsFaqOpen] = useState(false);
+
   // Centralized Modal Background Scroll-Lock & Position Preservation:
   // When ANY modal or drawer is open, freeze the background at the exact scroll position
   // When closed, restore the exact scroll position seamlessly
@@ -97,7 +103,9 @@ export default function App() {
     isSearchOpen || 
     isAddedModalOpen || 
     isReviewsModalOpen ||
-    legalModalTab
+    legalModalTab ||
+    isTrackOrderOpen ||
+    isFaqOpen
   );
 
   useEffect(() => {
@@ -366,6 +374,11 @@ export default function App() {
             <Footer 
               onOpenCareGuide={() => setIsCareGuideOpen(true)} 
               onOpenLegal={(tab) => setLegalModalTab(tab)}
+              onOpenTrackOrder={() => setIsTrackOrderOpen(true)}
+              onOpenFaq={() => setIsFaqOpen(true)}
+              onFilterCategory={(cat) => {
+                setActiveFilter(cat);
+              }}
             />
           </div>
         )}
@@ -461,6 +474,18 @@ export default function App() {
         isOpen={Boolean(legalModalTab)}
         initialTab={legalModalTab || 'terms'}
         onClose={() => setLegalModalTab(null)}
+      />
+
+      {/* TRACK ORDER REALTIME CONCIERGE MODAL */}
+      <TrackOrderModal
+        isOpen={isTrackOrderOpen}
+        onClose={() => setIsTrackOrderOpen(false)}
+      />
+
+      {/* CLIENT FAQS ACCORDION MODAL */}
+      <FaqModal
+        isOpen={isFaqOpen}
+        onClose={() => setIsFaqOpen(false)}
       />
     </div>
   );

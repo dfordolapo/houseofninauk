@@ -46,7 +46,13 @@ const SOCIAL_LINKS = [
   }
 ];
 
-export default function Footer({ onOpenCareGuide, onOpenLegal }) {
+export default function Footer({ 
+  onOpenCareGuide, 
+  onOpenLegal,
+  onOpenTrackOrder,
+  onOpenFaq,
+  onFilterCategory 
+}) {
   // Mobile accordion state (strictly mutually exclusive: at most one open at once)
   const [openAccordions, setOpenAccordions] = useState({
     shop: false,
@@ -71,6 +77,13 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
     });
   };
 
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -87,8 +100,6 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
       setErrorMessage('');
     }, 600);
   };
-
-  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="editorial-oversized-footer" aria-label="House of Nina Editorial Footer">
@@ -179,23 +190,92 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
               </form>
             </div>
 
-            {/* Column 2: SHOP */}
+            {/* Column 2: SHOP (DESKTOP) */}
             <div className="footer-nav-col desktop-only">
               <h4 className="footer-nav-heading">SHOP</h4>
               <ul className="footer-nav-list">
-                <li><a href="#featured-products" className="footer-nav-link">Wigs</a></li>
-                <li><a href="#silk-pairing-atelier" className="footer-nav-link">Silk Scarves</a></li>
-                <li><a href="#find-your-next-look" className="footer-nav-link">Accessories</a></li>
-                <li><a href="#featured-products" className="footer-nav-link">New In</a></li>
-                <li><a href="#featured-products" className="footer-nav-link">Sale</a></li>
+                <li>
+                  <a 
+                    href="#featured-products" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (onFilterCategory) onFilterCategory('All');
+                      scrollToSection('featured-products');
+                    }}
+                  >
+                    Wigs
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#silk-pairing-atelier" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection('silk-pairing-atelier');
+                    }}
+                  >
+                    Silk Scarves
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#find-your-next-look" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection('find-your-next-look');
+                    }}
+                  >
+                    Accessories
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#featured-products" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (onFilterCategory) onFilterCategory('New');
+                      scrollToSection('featured-products');
+                    }}
+                  >
+                    New In
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#featured-products" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (onFilterCategory) onFilterCategory('Sale');
+                      scrollToSection('featured-products');
+                    }}
+                  >
+                    Sale
+                  </a>
+                </li>
               </ul>
             </div>
 
-            {/* Column 3: HELP */}
+            {/* Column 3: HELP (DESKTOP) */}
             <div className="footer-nav-col desktop-only">
               <h4 className="footer-nav-heading">HELP</h4>
               <ul className="footer-nav-list">
-                <li><a href="#details" className="footer-nav-link">Track Order</a></li>
+                <li>
+                  <a 
+                    href="#track-order" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (onOpenTrackOrder) onOpenTrackOrder();
+                    }}
+                  >
+                    Track Order
+                  </a>
+                </li>
                 <li>
                   <a 
                     href="#shipping" 
@@ -238,7 +318,18 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
                     Care Guide
                   </a>
                 </li>
-                <li><a href="#details" className="footer-nav-link">FAQs</a></li>
+                <li>
+                  <a 
+                    href="#faqs" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (onOpenFaq) onOpenFaq();
+                    }}
+                  >
+                    FAQs
+                  </a>
+                </li>
                 <li>
                   <a 
                     href="#privacy-cookies" 
@@ -270,14 +361,35 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
               </ul>
             </div>
 
-            {/* Column 4: ABOUT */}
+            {/* Column 4: ABOUT (DESKTOP) — The Wigverse REMOVED */}
             <div className="footer-nav-col desktop-only">
               <h4 className="footer-nav-heading">ABOUT</h4>
               <ul className="footer-nav-list">
-                <li><a href="#our-story" className="footer-nav-link">Our Story</a></li>
-                <li><a href="#hero" className="footer-nav-link">The Wigverse</a></li>
-                <li><a href="#our-story" className="footer-nav-link">Sustainability</a></li>
-                <li><a href="#contact" className="footer-nav-link">Contact</a></li>
+                <li>
+                  <a 
+                    href="#our-story" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection('our-story');
+                    }}
+                  >
+                    Our Story
+                  </a>
+                </li>
+
+                <li>
+                  <a 
+                    href="#contact" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection('contact');
+                    }}
+                  >
+                    Contact
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -321,11 +433,55 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
               </button>
               <div className={`mobile-accordion-content ${openAccordions.shop ? 'open' : ''}`}>
                 <div className="mobile-accordion-inner">
-                  <a href="#featured-products" className="mobile-nav-link">Wigs</a>
-                  <a href="#silk-pairing-atelier" className="mobile-nav-link">Silk Scarves</a>
-                  <a href="#find-your-next-look" className="mobile-nav-link">Accessories</a>
-                  <a href="#featured-products" className="mobile-nav-link">New In</a>
-                  <a href="#featured-products" className="mobile-nav-link">Sale</a>
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      if (onFilterCategory) onFilterCategory('All');
+                      scrollToSection('featured-products');
+                    }}
+                  >
+                    <span className="mobile-nav-link-text">Wigs</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => scrollToSection('silk-pairing-atelier')}
+                  >
+                    <span className="mobile-nav-link-text">Silk Scarves</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => scrollToSection('find-your-next-look')}
+                  >
+                    <span className="mobile-nav-link-text">Accessories</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      if (onFilterCategory) onFilterCategory('New');
+                      scrollToSection('featured-products');
+                    }}
+                  >
+                    <span className="mobile-nav-link-text">New In</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      if (onFilterCategory) onFilterCategory('Sale');
+                      scrollToSection('featured-products');
+                    }}
+                  >
+                    <span className="mobile-nav-link-text">Sale</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -345,73 +501,81 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
               </button>
               <div className={`mobile-accordion-content ${openAccordions.help ? 'open' : ''}`}>
                 <div className="mobile-accordion-inner">
-                  <a href="#details" className="mobile-nav-link">Track Order</a>
-                  <a 
-                    href="#shipping" 
+                  <button 
+                    type="button"
                     className="mobile-nav-link"
-                    onClick={(e) => {
-                      if (onOpenLegal) {
-                        e.preventDefault();
-                        onOpenLegal('shipping');
-                      }
+                    onClick={() => {
+                      if (onOpenTrackOrder) onOpenTrackOrder();
                     }}
                   >
-                    Shipping
-                  </a>
-                  <a 
-                    href="#returns" 
+                    <span className="mobile-nav-link-text">Track Order</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
                     className="mobile-nav-link"
-                    onClick={(e) => {
-                      if (onOpenLegal) {
-                        e.preventDefault();
-                        onOpenLegal('shipping');
-                      }
+                    onClick={() => {
+                      if (onOpenLegal) onOpenLegal('shipping');
                     }}
                   >
-                    Returns
-                  </a>
-                  <a 
-                    href="#wig-care-guide" 
+                    <span className="mobile-nav-link-text">Shipping</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
                     className="mobile-nav-link"
-                    onClick={(e) => {
-                      if (onOpenCareGuide) {
-                        e.preventDefault();
-                        onOpenCareGuide();
-                      }
+                    onClick={() => {
+                      if (onOpenLegal) onOpenLegal('shipping');
                     }}
                   >
-                    Care Guide
-                  </a>
-                  <a href="#details" className="mobile-nav-link">FAQs</a>
-                  <a 
-                    href="#privacy-cookies" 
+                    <span className="mobile-nav-link-text">Returns</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
                     className="mobile-nav-link"
-                    onClick={(e) => {
-                      if (onOpenLegal) {
-                        e.preventDefault();
-                        onOpenLegal('privacy');
-                      }
+                    onClick={() => {
+                      if (onOpenCareGuide) onOpenCareGuide();
                     }}
                   >
-                    Privacy &amp; Cookies
-                  </a>
-                  <a 
-                    href="#terms" 
+                    <span className="mobile-nav-link-text">Care Guide</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
                     className="mobile-nav-link"
-                    onClick={(e) => {
-                      if (onOpenLegal) {
-                        e.preventDefault();
-                        onOpenLegal('terms');
-                      }
+                    onClick={() => {
+                      if (onOpenFaq) onOpenFaq();
                     }}
                   >
-                    Terms of Service
-                  </a>
+                    <span className="mobile-nav-link-text">FAQs</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      if (onOpenLegal) onOpenLegal('privacy');
+                    }}
+                  >
+                    <span className="mobile-nav-link-text">Privacy &amp; Cookies</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      if (onOpenLegal) onOpenLegal('terms');
+                    }}
+                  >
+                    <span className="mobile-nav-link-text">Terms of Service</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Mobile Row: ABOUT */}
+            {/* Mobile Row: ABOUT — The Wigverse REMOVED */}
             <div className="mobile-accordion-row">
               <button
                 type="button"
@@ -426,24 +590,26 @@ export default function Footer({ onOpenCareGuide, onOpenLegal }) {
               </button>
               <div className={`mobile-accordion-content ${openAccordions.about ? 'open' : ''}`}>
                 <div className="mobile-accordion-inner">
-                  <a href="#our-story" className="mobile-nav-link">Our Story</a>
-                  <a href="#hero" className="mobile-nav-link">The Wigverse</a>
-                  <a 
-                    href="#contact-mobile" 
+                  <button 
+                    type="button"
                     className="mobile-nav-link"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const elem = document.getElementById('contact-mobile');
-                      if (elem) elem.scrollIntoView({ behavior: 'smooth' });
-                    }}
+                    onClick={() => scrollToSection('our-story')}
                   >
-                    Contact
-                  </a>
+                    <span className="mobile-nav-link-text">Our Story</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
+
+                  <button 
+                    type="button"
+                    className="mobile-nav-link"
+                    onClick={() => scrollToSection('contact-mobile')}
+                  >
+                    <span className="mobile-nav-link-text">Contact</span>
+                    <span className="mobile-nav-link-arrow">›</span>
+                  </button>
                 </div>
               </div>
             </div>
-
-
 
             {/* Mobile Social Icons Row Under Accordions */}
             <div id="contact-mobile" className="mobile-social-icons-bar">

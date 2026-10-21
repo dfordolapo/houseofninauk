@@ -3347,22 +3347,56 @@ video::-moz-media-controls {
 
   .mobile-accordion-inner {
     min-height: 0;
-    padding: 2px 2px 10px;
+    padding: 6px 0 14px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
   }
 
   .mobile-nav-link {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 13.5px;
+    font-weight: 500;
     color: #4A3E34;
     text-decoration: none;
-    line-height: 1.35;
+    line-height: 1.4;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
+  .mobile-nav-link:active,
   .mobile-nav-link:hover {
+    background-color: rgba(199, 164, 106, 0.12);
+    color: var(--color-deep-espresso);
+    padding-left: 16px;
+  }
+
+  .mobile-nav-link-text {
+    flex-grow: 1;
+  }
+
+  .mobile-nav-link-arrow {
+    font-size: 14px;
+    color: #A39686;
+    opacity: 0.6;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .mobile-nav-link:hover .mobile-nav-link-arrow,
+  .mobile-nav-link:active .mobile-nav-link-arrow {
+    opacity: 1;
     color: #C7A46A;
+    transform: translateX(2px);
   }
 
   /* Mobile Social Icons Row Below Accordions — Elegant Luminous Badges */
@@ -8564,6 +8598,779 @@ video::-moz-media-controls {
     gap: 4px !important;
   }
 }
+
+/* ==========================================================================
+   TRACKING MODAL, CARE GUIDE MODAL & FAQ MODAL RESPONSIVE STYLES
+   ========================================================================== */
+
+/* Tracking Modal Base */
+.track-dialog {
+  max-width: 640px;
+  width: 94%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: #FCFAF7;
+}
+
+.track-header {
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--color-border-light);
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.track-title {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.track-search-bar {
+  padding: 14px 24px;
+  background-color: #F7F3EE;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.track-search-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.track-search-input-wrap {
+  position: relative;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.track-search-input {
+  width: 100%;
+  padding: 10px 12px 10px 34px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: #FFFFFF;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-deep-espresso);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.track-search-input:focus {
+  border-color: var(--color-dusty-rose);
+}
+
+.track-search-btn {
+  padding: 10px 18px;
+  font-size: 12.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.track-body {
+  padding: 22px 24px;
+  overflow-y: auto;
+  flex-grow: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.track-order-card {
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid var(--color-border-light);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+
+.track-order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.track-order-card-id {
+  font-family: var(--font-display);
+  font-size: 17.5px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.track-order-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background-color: #EBF7EE;
+  color: #1E7E34;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.track-order-card-desc {
+  font-size: 12.5px;
+  color: #685C50;
+  line-height: 1.4;
+  margin: 0 0 6px 0;
+}
+
+.track-order-card-est {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: #8C8074;
+  white-space: nowrap;
+}
+
+.track-timeline {
+  position: relative;
+  padding-left: 32px;
+  margin-bottom: 20px;
+}
+
+.track-timeline-line {
+  position: absolute;
+  left: 11px;
+  top: 12px;
+  bottom: 24px;
+  width: 2px;
+  background-color: #DCD3C7;
+}
+
+.track-timeline-step {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.track-timeline-step:last-child {
+  margin-bottom: 0;
+}
+
+.track-step-dot {
+  position: absolute;
+  left: -32px;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+}
+
+.track-step-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  display: block;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.track-step-desc {
+  font-size: 12px;
+  color: #7A6E62;
+  line-height: 1.4;
+  display: block;
+}
+
+.track-courier-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.track-courier-btn {
+  padding: 8px 14px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.track-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--color-border-light);
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.track-footer-help {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #7A6E62;
+  white-space: nowrap;
+}
+
+/* Care Guide Modal Base */
+.care-modal-dialog {
+  max-width: 680px;
+  width: 94%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: #FCFAF7;
+}
+
+.care-modal-header {
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--color-border-light);
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.care-modal-title {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.care-modal-body {
+  padding: 22px 24px 28px;
+  overflow-y: auto;
+  flex-grow: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.care-intro-banner {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.care-intro-heading {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+
+.care-intro-sub {
+  font-size: 13.5px;
+  color: var(--color-espresso-muted);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.care-tips-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.care-tip-card {
+  background-color: var(--color-white);
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border-light);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.care-tip-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--color-sand-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-dusty-rose);
+}
+
+.care-tip-title {
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  margin: 0 0 4px;
+}
+
+.care-tip-desc {
+  font-size: 13px;
+  color: var(--color-espresso-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.care-modal-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--color-border-light);
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* FAQ Modal Base */
+.faq-modal-dialog {
+  max-width: 720px;
+  width: 94%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: #FCFAF7;
+}
+
+.faq-modal-header {
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--color-border-light);
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.faq-modal-title {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.faq-modal-body {
+  padding: 20px 24px 28px;
+  overflow-y: auto;
+  flex-grow: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.faq-accordion-item {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-light);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.faq-accordion-btn {
+  width: 100%;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.faq-item-cat {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8C8074;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.faq-item-question {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-deep-espresso);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.faq-item-answer {
+  padding: 0 18px 16px;
+  font-size: 13px;
+  color: #5C5146;
+  line-height: 1.6;
+  border-top: 1px solid #F5EFE6;
+  padding-top: 12px;
+}
+
+.faq-quick-help {
+  margin-top: 18px;
+  background: linear-gradient(135deg, rgba(235, 219, 197, 0.4) 0%, rgba(255, 255, 255, 0.8) 100%);
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 196, 176, 0.6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.faq-quick-help-buttons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.faq-modal-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--color-border-light);
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   MOBILE VIEW RULES (< 640px) FOR ALL THREE MODALS
+   Strict alignment, zero awkward wrapping, proportional font sizes
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Tracking Modal Mobile */
+  .track-dialog {
+    width: 95% !important;
+    border-radius: 16px !important;
+    max-height: 88vh !important;
+  }
+
+  .track-header {
+    padding: 14px 16px !important;
+  }
+
+  .track-title {
+    font-size: 18px !important;
+  }
+
+  .track-search-bar {
+    padding: 12px 14px !important;
+  }
+
+  .track-search-input {
+    font-size: 12.5px !important;
+    padding: 9px 10px 9px 30px !important;
+  }
+
+  .track-search-btn {
+    padding: 9px 14px !important;
+    font-size: 12px !important;
+  }
+
+  .track-body {
+    padding: 14px 14px 18px !important;
+  }
+
+  .track-order-card {
+    padding: 12px 14px !important;
+    margin-bottom: 16px !important;
+    border-radius: 12px !important;
+  }
+
+  .track-order-card-id {
+    font-size: 16px !important;
+  }
+
+  .track-order-status-badge {
+    font-size: 11px !important;
+    padding: 3px 8px !important;
+  }
+
+  .track-order-card-desc {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .track-order-card-est {
+    font-size: 11px !important;
+  }
+
+  .track-timeline {
+    padding-left: 28px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .track-timeline-line {
+    left: 9px !important;
+    top: 10px !important;
+    bottom: 16px !important;
+  }
+
+  .track-timeline-step {
+    margin-bottom: 16px !important;
+  }
+
+  .track-step-dot {
+    left: -28px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .track-step-dot svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .track-step-title {
+    font-size: 12.5px !important;
+    margin-bottom: 1px !important;
+  }
+
+  .track-step-desc {
+    font-size: 11.5px !important;
+    line-height: 1.35 !important;
+  }
+
+  .track-courier-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+  }
+
+  .track-courier-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 10px !important;
+    font-size: 12px !important;
+  }
+
+  .track-footer {
+    flex-direction: column-reverse !important;
+    padding: 12px 14px !important;
+    gap: 10px !important;
+  }
+
+  .track-footer .btn-primary-editorial {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 11px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .track-footer-help {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-size: 11.5px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Care Guide Modal Mobile */
+  .care-modal-dialog {
+    width: 95% !important;
+    border-radius: 16px !important;
+    max-height: 88vh !important;
+  }
+
+  .care-modal-header {
+    padding: 14px 16px !important;
+  }
+
+  .care-modal-title {
+    font-size: 18px !important;
+  }
+
+  .care-modal-body {
+    padding: 14px 14px 18px !important;
+  }
+
+  .care-intro-banner {
+    margin-bottom: 14px !important;
+    text-align: left !important;
+  }
+
+  .care-intro-heading {
+    font-size: 18px !important;
+    margin-bottom: 4px !important;
+    line-height: 1.25 !important;
+  }
+
+  .care-intro-sub {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  .care-tips-grid {
+    gap: 8px !important;
+  }
+
+  .care-tip-card {
+    padding: 11px 12px !important;
+    gap: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .care-tip-icon-box {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+  }
+
+  .care-tip-icon-box svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .care-tip-title {
+    font-size: 13.5px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .care-tip-desc {
+    font-size: 11.5px !important;
+    line-height: 1.4 !important;
+  }
+
+  .care-modal-footer {
+    padding: 12px 14px !important;
+  }
+
+  .care-modal-footer .btn-primary-editorial {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 11px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  /* FAQ Modal Mobile */
+  .faq-modal-dialog {
+    width: 95% !important;
+    border-radius: 16px !important;
+    max-height: 88vh !important;
+  }
+
+  .faq-modal-header {
+    padding: 14px 16px !important;
+  }
+
+  .faq-modal-title {
+    font-size: 18px !important;
+  }
+
+  .faq-modal-body {
+    padding: 14px 14px 18px !important;
+  }
+
+  .faq-accordion-item {
+    margin-bottom: 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .faq-accordion-btn {
+    padding: 11px 13px !important;
+    gap: 10px !important;
+  }
+
+  .faq-item-cat {
+    font-size: 9px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .faq-item-question {
+    font-size: 13.5px !important;
+    line-height: 1.3 !important;
+  }
+
+  .faq-item-answer {
+    padding: 0 13px 13px !important;
+    padding-top: 9px !important;
+    font-size: 11.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .faq-quick-help {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 12px 14px !important;
+    gap: 10px !important;
+    margin-top: 14px !important;
+  }
+
+  .faq-quick-help strong {
+    font-size: 12.5px !important;
+    line-height: 1.3 !important;
+  }
+
+  .faq-quick-help span {
+    font-size: 11.5px !important;
+  }
+
+  .faq-quick-help-buttons {
+    width: 100% !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+
+  .faq-quick-help-buttons a {
+    flex: 1 1 0 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 9px 6px !important;
+    font-size: 11.5px !important;
+    white-space: nowrap !important;
+  }
+
+  .faq-modal-footer {
+    padding: 12px 14px !important;
+  }
+
+  .faq-modal-footer .btn-primary-editorial {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 11px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+}
+
 
 
 
