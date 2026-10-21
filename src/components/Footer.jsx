@@ -278,7 +278,7 @@ export default function Footer({
                 </li>
                 <li>
                   <a 
-                    href="#shipping" 
+                    href="#shipping-returns" 
                     className="footer-nav-link"
                     onClick={(e) => {
                       if (onOpenLegal) {
@@ -287,21 +287,7 @@ export default function Footer({
                       }
                     }}
                   >
-                    Shipping
-                  </a>
-                </li>
-                <li>
-                  <a 
-                    href="#returns" 
-                    className="footer-nav-link"
-                    onClick={(e) => {
-                      if (onOpenLegal) {
-                        e.preventDefault();
-                        onOpenLegal('shipping');
-                      }
-                    }}
-                  >
-                    Returns
+                    Shipping &amp; Returns
                   </a>
                 </li>
                 <li>
@@ -518,17 +504,7 @@ export default function Footer({
                       if (onOpenLegal) onOpenLegal('shipping');
                     }}
                   >
-                    <span className="mobile-nav-link-text">Shipping</span>
-                    <span className="mobile-nav-link-arrow">›</span>
-                  </button>
-                  <button 
-                    type="button"
-                    className="mobile-nav-link"
-                    onClick={() => {
-                      if (onOpenLegal) onOpenLegal('shipping');
-                    }}
-                  >
-                    <span className="mobile-nav-link-text">Returns</span>
+                    <span className="mobile-nav-link-text">Shipping &amp; Returns</span>
                     <span className="mobile-nav-link-arrow">›</span>
                   </button>
                   <button 

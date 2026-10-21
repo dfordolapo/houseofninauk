@@ -9445,9 +9445,9 @@ video::-moz-media-controls {
   -webkit-backdrop-filter: blur(8px);
   z-index: 9999;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 48px 16px 24px;
+  padding: 24px 16px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
@@ -9461,7 +9461,7 @@ video::-moz-media-controls {
 .search-modal-dialog {
   max-width: 560px;
   width: 100%;
-  max-height: calc(88vh - 48px);
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -9470,12 +9470,12 @@ video::-moz-media-controls {
   background-color: #FAF6F0;
   border: 1px solid var(--color-border);
   box-shadow: 0 24px 60px rgba(28, 22, 20, 0.35);
-  transform: translateY(-8px) scale(0.98);
+  transform: scale(0.96) translateY(6px);
   transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .search-modal-backdrop.open .search-modal-dialog {
-  transform: translateY(0) scale(1);
+  transform: scale(1) translateY(0);
 }
 
 /* Header */
@@ -9833,14 +9833,15 @@ video::-moz-media-controls {
 /* Mobile responsive fine-tuning (max-width: 640px) */
 @media (max-width: 640px) {
   .search-modal-backdrop {
-    padding: 12px;
-    align-items: flex-start;
+    padding: 16px 12px;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .search-modal-dialog {
     width: 100% !important;
-    max-height: calc(100vh - 24px) !important;
-    border-radius: 16px !important;
+    max-height: 86vh !important;
+    border-radius: 18px !important;
   }
 
   .search-modal-header {
