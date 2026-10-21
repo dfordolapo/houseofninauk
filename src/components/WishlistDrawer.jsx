@@ -394,7 +394,17 @@ export default function WishlistDrawer({
             <button 
               type="button" 
               className="btn-outline-editorial"
-              style={{ width: '100%', justifyContent: 'center', padding: '10px 16px', fontSize: '12px' }}
+              style={{ 
+                width: '100%', 
+                justifyContent: 'center', 
+                padding: '11px 16px', 
+                fontSize: '12px',
+                color: 'var(--color-deep-espresso)',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--color-border)',
+                borderRadius: '30px',
+                cursor: 'pointer'
+              }}
               onClick={onClose}
             >
               Continue Exploring

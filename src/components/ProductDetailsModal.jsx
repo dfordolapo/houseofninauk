@@ -365,14 +365,15 @@ export default function ProductDetailsModal({
                 style={{ 
                   padding: '13px 16px', 
                   justifyContent: 'center',
-                  borderColor: isWishlisted ? 'var(--color-gold)' : undefined,
-                  backgroundColor: isWishlisted ? 'rgba(215, 172, 85, 0.12)' : undefined
+                  borderColor: isWishlisted ? 'var(--color-gold)' : 'var(--color-border)',
+                  backgroundColor: isWishlisted ? 'rgba(215, 172, 85, 0.12)' : '#FFFFFF',
+                  color: isWishlisted ? 'var(--color-gold)' : 'var(--color-deep-espresso)'
                 }}
               >
                 <Heart 
                   size={17} 
                   fill={isWishlisted ? "var(--color-gold)" : "none"} 
-                  color={isWishlisted ? "var(--color-gold)" : "currentColor"} 
+                  color={isWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
                 />
               </button>
 
@@ -380,14 +381,20 @@ export default function ProductDetailsModal({
                 <button
                   type="button"
                   className="btn-secondary-editorial"
-                  style={{ padding: '13px 16px', justifyContent: 'center' }}
+                  style={{ 
+                    padding: '13px 16px', 
+                    justifyContent: 'center',
+                    backgroundColor: '#FFFFFF',
+                    color: 'var(--color-deep-espresso)',
+                    border: '1px solid var(--color-border)'
+                  }}
                   onClick={() => {
                     onClose();
                     onOpenVideo(product);
                   }}
                   title="Watch Hair Movement Video"
                 >
-                  <Film size={17} />
+                  <Film size={17} color="var(--color-deep-espresso)" />
                 </button>
               )}
             </div>
