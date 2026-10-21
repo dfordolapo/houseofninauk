@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Play, Pause, Volume2, VolumeX, ArrowRight, Eye } from 'lucide-react';
+import { X, Play, Pause, Volume2, VolumeX, ArrowRight, Eye, Heart } from 'lucide-react';
 
 /**
  * ============================================================================
@@ -13,7 +13,9 @@ export default function ProductQuickViewModal({
   product, 
   isOpen, 
   onClose, 
-  onOpenDetails 
+  onOpenDetails,
+  onToggleWishlist,
+  wishlist = []
 }) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -80,6 +82,8 @@ export default function ProductQuickViewModal({
   const mp4Source = product.video || '/videos/15558864_1080_1920_30fps.mp4';
   const posterSource = product.image || '/videos/15558864_poster.webp';
 
+  const isWishlisted = wishlist.some(item => item.id === product.id);
+
   return (
     <div className={`modal-backdrop pure-video-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
       <div 
@@ -89,6 +93,44 @@ export default function ProductQuickViewModal({
         aria-modal="true" 
         aria-label={`${product.name} Video Quick View`}
       >
+        {/* Floating Lookbook / Wishlist Button */}
+        <button 
+          type="button" 
+          className="pure-video-wishlist-btn" 
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onToggleWishlist) onToggleWishlist(product);
+          }}
+          aria-label={isWishlisted ? `Remove ${product.name} from lookbook` : `Save ${product.name} to lookbook`}
+          title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+          style={{
+            position: 'absolute',
+            top: '14px',
+            left: '14px',
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(28, 22, 20, 0.65)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            border: isWishlisted ? '1px solid var(--color-gold)' : '1px solid rgba(255, 255, 255, 0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            zIndex: 30,
+            color: isWishlisted ? 'var(--color-gold)' : '#FFFFFF',
+            transition: 'all 0.2s ease',
+            padding: 0
+          }}
+        >
+          <Heart 
+            size={18} 
+            fill={isWishlisted ? "var(--color-gold)" : "none"} 
+            color={isWishlisted ? "var(--color-gold)" : "#FFFFFF"} 
+          />
+        </button>
+
         {/* Floating Close Button */}
         <button 
           type="button" 

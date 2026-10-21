@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { Eye, Plus, ArrowRight } from 'lucide-react';
+import { Eye, Plus, ArrowRight, Heart } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 import GoldStroke from './GoldStroke';
 
-export default function FeaturedProducts({ onQuickView, onOpenDetails, onAddToCart, activeFilter, onClearFilter }) {
+export default function FeaturedProducts({ 
+  onQuickView, 
+  onOpenDetails, 
+  onAddToCart, 
+  activeFilter, 
+  onClearFilter,
+  onToggleWishlist,
+  wishlist = []
+}) {
   const [selectedFilter, setSelectedFilter] = useState(activeFilter || 'All');
 
   const filteredProducts = selectedFilter === 'All' 
@@ -43,33 +51,55 @@ export default function FeaturedProducts({ onQuickView, onOpenDetails, onAddToCa
 
         {/* 4-Column Product Grid */}
         <div className="products-grid">
-          {displayProducts.map((product) => (
-            <article key={product.id} className="product-card">
-              <div className="product-image-container">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
-                  className="product-img" 
-                  loading="lazy"
-                />
-                
-                {/* Tag Badge */}
-                {product.tag && (
-                  <span className="product-tag-badge">{product.tag}</span>
-                )}
+          {displayProducts.map((product) => {
+            const isWishlisted = wishlist.some(item => item.id === product.id);
 
-                {/* Quick Action Overlay: Pure Video Preview */}
-                <div className="product-quick-action">
+            return (
+              <article key={product.id} className="product-card">
+                <div className="product-image-container">
+                  <img 
+                    src={product.image} 
+                    alt={product.name} 
+                    className="product-img" 
+                    loading="lazy"
+                  />
+                  
+                  {/* Tag Badge */}
+                  {product.tag && (
+                    <span className="product-tag-badge">{product.tag}</span>
+                  )}
+
+                  {/* Wishlist / Save to Lookbook Heart Button */}
                   <button 
                     type="button" 
-                    className="btn-quick-view"
-                    onClick={() => onQuickView(product)}
-                    aria-label={`Watch video preview of ${product.name}`}
+                    className={`product-wishlist-btn ${isWishlisted ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onToggleWishlist) onToggleWishlist(product);
+                    }}
+                    aria-label={isWishlisted ? `Remove ${product.name} from lookbook` : `Save ${product.name} to lookbook`}
+                    title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
                   >
-                    <Eye size={15} /> Quick View
+                    <Heart 
+                      size={16} 
+                      fill={isWishlisted ? "var(--color-gold)" : "none"} 
+                      color={isWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
+                      strokeWidth={isWishlisted ? 2.2 : 1.8}
+                    />
                   </button>
+
+                  {/* Quick Action Overlay: Pure Video Preview */}
+                  <div className="product-quick-action">
+                    <button 
+                      type="button" 
+                      className="btn-quick-view"
+                      onClick={() => onQuickView(product)}
+                      aria-label={`Watch video preview of ${product.name}`}
+                    >
+                      <Eye size={15} /> Quick View
+                    </button>
+                  </div>
                 </div>
-              </div>
 
               <div className="product-details">
                 <span className="product-cat-pill">{product.category}</span>
@@ -103,7 +133,7 @@ export default function FeaturedProducts({ onQuickView, onOpenDetails, onAddToCa
                 </div>
               </div>
             </article>
-          ))}
+          )})}
         </div>
 
         {/* Shop All Wigs Link */}

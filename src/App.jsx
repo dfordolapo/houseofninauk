@@ -388,12 +388,16 @@ export default function App() {
               onAddToCart={handleAddToCart}
               activeFilter={activeFilter}
               onClearFilter={() => setActiveFilter('All')}
+              onToggleWishlist={handleToggleSave}
+              wishlist={wishlist}
             />
 
             {/* SECTION 6: THE SILK & LACE PAIRING STUDIO */}
             <SilkPairingAtelier 
               onQuickView={(prod) => setQuickViewProduct(prod)}
               onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleSave}
+              wishlist={wishlist}
             />
 
             {/* SECTION 7: OUR STORY — SCROLL-STACKING SPECIMEN CARDS */}
@@ -473,6 +477,8 @@ export default function App() {
           setQuickViewProduct(null);
           setDetailsProduct(prod);
         }}
+        onToggleWishlist={handleToggleSave}
+        wishlist={wishlist}
       />
 
       {/* FULL PRODUCT DETAILS & CUSTOMIZATION MODAL */}
@@ -485,6 +491,8 @@ export default function App() {
           setDetailsProduct(null);
           setQuickViewProduct(prod);
         }}
+        onToggleWishlist={handleToggleSave}
+        wishlist={wishlist}
       />
 
       <CareGuideModal 
@@ -497,6 +505,8 @@ export default function App() {
         onClose={() => setIsSearchOpen(false)}
         onSelectProduct={(prod) => setDetailsProduct(prod)}
         onSelectCategory={handleSelectCategory}
+        onToggleWishlist={handleToggleSave}
+        wishlist={wishlist}
       />
 
       {/* ADDED TO BAG UPSELL & CROSS-SELL MODAL */}

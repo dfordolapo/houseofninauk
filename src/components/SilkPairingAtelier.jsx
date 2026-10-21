@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
-import { Eye, Plus, Check } from 'lucide-react';
+import { Eye, Plus, Check, Heart } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 import GoldStroke from './GoldStroke';
 
 const WIGS = FEATURED_PRODUCTS.filter(p => p.category === 'Wigs');
 const SCARVES = FEATURED_PRODUCTS.filter(p => p.category === 'Scarves');
 
-export default function SilkPairingAtelier({ onQuickView, onAddToCart }) {
+export default function SilkPairingAtelier({ 
+  onQuickView, 
+  onAddToCart,
+  onToggleWishlist,
+  wishlist = []
+}) {
   const [selectedWigIndex, setSelectedWigIndex] = useState(0);
   const [selectedScarfIndex, setSelectedScarfIndex] = useState(0);
   const [isAdded, setIsAdded] = useState(false);
 
   const activeWig = WIGS[selectedWigIndex] || WIGS[0];
   const activeScarf = SCARVES[selectedScarfIndex] || SCARVES[0];
+
+  const isWigWishlisted = wishlist.some(item => item.id === activeWig.id);
+  const isScarfWishlisted = wishlist.some(item => item.id === activeScarf.id);
 
   const bundleTotal = activeWig.price + activeScarf.price;
   const bundleDiscounted = Math.round(bundleTotal * 0.9); // 10% Pairing Bundle Perk
@@ -49,12 +57,29 @@ export default function SilkPairingAtelier({ onQuickView, onAddToCart }) {
           
           {/* Left: Selected Wig Preview & Switcher */}
           <div className="pairing-item-pane">
-            <div className="pairing-image-box">
+            <div className="pairing-image-box" style={{ position: 'relative' }}>
               <img 
                 src={activeWig.image} 
                 alt={activeWig.name} 
                 className="pairing-hero-img" 
               />
+              <button 
+                type="button" 
+                className={`product-wishlist-btn ${isWigWishlisted ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onToggleWishlist) onToggleWishlist(activeWig);
+                }}
+                aria-label={isWigWishlisted ? "Remove wig from lookbook" : "Save wig to lookbook"}
+                title={isWigWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+              >
+                <Heart 
+                  size={16} 
+                  fill={isWigWishlisted ? "var(--color-gold)" : "none"} 
+                  color={isWigWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
+                  strokeWidth={isWigWishlisted ? 2.2 : 1.8}
+                />
+              </button>
               <button 
                 type="button" 
                 className="pairing-quick-look-btn"
@@ -92,12 +117,29 @@ export default function SilkPairingAtelier({ onQuickView, onAddToCart }) {
 
           {/* Right: Selected Scarf Preview & Switcher */}
           <div className="pairing-item-pane">
-            <div className="pairing-image-box">
+            <div className="pairing-image-box" style={{ position: 'relative' }}>
               <img 
                 src={activeScarf.image} 
                 alt={activeScarf.name} 
                 className="pairing-hero-img" 
               />
+              <button 
+                type="button" 
+                className={`product-wishlist-btn ${isScarfWishlisted ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onToggleWishlist) onToggleWishlist(activeScarf);
+                }}
+                aria-label={isScarfWishlisted ? "Remove scarf from lookbook" : "Save scarf to lookbook"}
+                title={isScarfWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+              >
+                <Heart 
+                  size={16} 
+                  fill={isScarfWishlisted ? "var(--color-gold)" : "none"} 
+                  color={isScarfWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
+                  strokeWidth={isScarfWishlisted ? 2.2 : 1.8}
+                />
+              </button>
               <button 
                 type="button" 
                 className="pairing-quick-look-btn"

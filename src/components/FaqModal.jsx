@@ -35,7 +35,7 @@ const FAQ_ITEMS = [
 ];
 
 export default function FaqModal({ isOpen, onClose }) {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(null);
 
   if (!isOpen) return null;
 

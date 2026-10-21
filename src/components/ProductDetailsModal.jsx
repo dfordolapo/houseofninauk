@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, ShoppingBag, ShieldCheck, Play, Pause, Volume2, VolumeX, Film, Image as ImageIcon } from 'lucide-react';
+import { X, Check, ShoppingBag, ShieldCheck, Play, Pause, Volume2, VolumeX, Film, Image as ImageIcon, Heart } from 'lucide-react';
 
 /**
  * ============================================================================
@@ -8,7 +8,15 @@ import { X, Check, ShoppingBag, ShieldCheck, Play, Pause, Volume2, VolumeX, Film
  * Displays full product details, specifications, length/lace/density options,
  * quantity counter, and Add to Bag functionality.
  */
-export default function ProductDetailsModal({ product, isOpen, onClose, onAddToCart, onOpenVideo }) {
+export default function ProductDetailsModal({ 
+  product, 
+  isOpen, 
+  onClose, 
+  onAddToCart, 
+  onOpenVideo,
+  onToggleWishlist,
+  wishlist = []
+}) {
   const [selectedLength, setSelectedLength] = useState('');
   const [selectedLace, setSelectedLace] = useState('');
   const [selectedDensity, setSelectedDensity] = useState('');
@@ -97,6 +105,7 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onAddToC
     }, 1000);
   };
 
+  const isWishlisted = wishlist.some(item => item.id === product.id);
   const hasCustomVideo = !!product.video;
   const webmSource = hasCustomVideo ? null : '/videos/15558864.webm';
   const mp4Source = product.video || '/videos/15558864_1080_1920_30fps.mp4';
@@ -122,7 +131,25 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onAddToC
 
         <div className="quickview-layout">
           {/* ── Left Column: Media Showcase ── */}
-          <div className="quickview-media-wrap">
+          <div className="quickview-media-wrap" style={{ position: 'relative' }}>
+            {/* Floating Lookbook / Wishlist Button */}
+            <button 
+              type="button" 
+              className={`product-wishlist-btn ${isWishlisted ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onToggleWishlist) onToggleWishlist(product);
+              }}
+              aria-label={isWishlisted ? `Remove ${product.name} from lookbook` : `Save ${product.name} to lookbook`}
+              title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+            >
+              <Heart 
+                size={16} 
+                fill={isWishlisted ? "var(--color-gold)" : "none"} 
+                color={isWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
+                strokeWidth={isWishlisted ? 2.2 : 1.8}
+              />
+            </button>
             {mediaMode === 'video' ? (
               <div 
                 className="quickview-video-container" 
@@ -312,8 +339,8 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onAddToC
               </div>
             )}
 
-            {/* Add to Bag Button */}
-            <div style={{ display: 'flex', gap: '12px', marginTop: 'auto' }}>
+            {/* Add to Bag Button Row */}
+            <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
               <button 
                 type="button" 
                 className="btn-primary-editorial" 
@@ -329,6 +356,27 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onAddToC
                     <ShoppingBag size={18} /> Add to Bag
                   </>
                 )}
+              </button>
+
+              {/* Lookbook / Wishlist Save Button */}
+              <button
+                type="button"
+                className="btn-secondary-editorial"
+                onClick={() => onToggleWishlist && onToggleWishlist(product)}
+                aria-label={isWishlisted ? "Remove from lookbook" : "Save to lookbook"}
+                title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+                style={{ 
+                  padding: '16px 18px', 
+                  justifyContent: 'center',
+                  borderColor: isWishlisted ? 'var(--color-gold)' : undefined,
+                  backgroundColor: isWishlisted ? 'rgba(215, 172, 85, 0.12)' : undefined
+                }}
+              >
+                <Heart 
+                  size={18} 
+                  fill={isWishlisted ? "var(--color-gold)" : "none"} 
+                  color={isWishlisted ? "var(--color-gold)" : "currentColor"} 
+                />
               </button>
 
               {onOpenVideo && (

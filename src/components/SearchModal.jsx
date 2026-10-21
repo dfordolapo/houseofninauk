@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { X, Search, ChevronRight } from 'lucide-react';
+import { X, Search, ChevronRight, Heart } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 
 const POPULAR_SEARCHES = ['All Wigs', 'Silk Scarves', 'Glass Bob', 'Bone Straight', 'Body Wave', 'HD Lace'];
 
-export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelectCategory }) {
+export default function SearchModal({ 
+  isOpen, 
+  onClose, 
+  onSelectProduct, 
+  onSelectCategory,
+  onToggleWishlist,
+  wishlist = []
+}) {
   const [query, setQuery] = useState('');
 
   if (!isOpen) return null;
@@ -123,43 +130,78 @@ export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelect
                 </div>
               ) : (
                 <div className="search-results-list">
-                  {filteredProducts.map(prod => (
-                    <div
-                      key={prod.id}
-                      onClick={() => {
-                        onClose();
-                        onSelectProduct(prod);
-                      }}
-                      className="search-result-card"
-                    >
-                      <img 
-                        src={prod.image} 
-                        alt={prod.name} 
-                        className="search-result-thumb" 
-                      />
+                  {filteredProducts.map(prod => {
+                    const isWishlisted = wishlist.some(item => item.id === prod.id);
 
-                      <div className="search-result-info">
-                        <h4 className="search-result-name">
-                          {prod.name}
-                        </h4>
-                        <div className="search-result-meta-row">
-                          <span className="search-result-price">
-                            £{prod.price}
-                          </span>
-                          <span className="search-result-sep">•</span>
-                          <span className="search-result-tag">{prod.category}</span>
-                          {prod.lengths && (
-                            <>
-                              <span className="search-result-sep">•</span>
-                              <span className="search-result-tag">{prod.lengths[0]}</span>
-                            </>
-                          )}
+                    return (
+                      <div
+                        key={prod.id}
+                        onClick={() => {
+                          onClose();
+                          onSelectProduct(prod);
+                        }}
+                        className="search-result-card"
+                      >
+                        <img 
+                          src={prod.image} 
+                          alt={prod.name} 
+                          className="search-result-thumb" 
+                        />
+
+                        <div className="search-result-info">
+                          <h4 className="search-result-name">
+                            {prod.name}
+                          </h4>
+                          <div className="search-result-meta-row">
+                            <span className="search-result-price">
+                              £{prod.price}
+                            </span>
+                            <span className="search-result-sep">•</span>
+                            <span className="search-result-tag">{prod.category}</span>
+                            {prod.lengths && (
+                              <>
+                                <span className="search-result-sep">•</span>
+                                <span className="search-result-tag">{prod.lengths[0]}</span>
+                              </>
+                            )}
+                          </div>
                         </div>
-                      </div>
 
-                      <ChevronRight size={16} className="search-result-arrow" />
-                    </div>
-                  ))}
+                        {/* Heart Wishlist Button */}
+                        <button
+                          type="button"
+                          className={`search-result-wishlist-btn ${isWishlisted ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onToggleWishlist) onToggleWishlist(prod);
+                          }}
+                          aria-label={isWishlisted ? `Remove ${prod.name} from lookbook` : `Save ${prod.name} to lookbook`}
+                          title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            padding: '8px',
+                            marginRight: '2px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: isWishlisted ? 'var(--color-gold)' : '#A39688',
+                            flexShrink: 0,
+                            transition: 'transform 0.15s ease'
+                          }}
+                        >
+                          <Heart 
+                            size={17} 
+                            fill={isWishlisted ? "var(--color-gold)" : "none"} 
+                            color={isWishlisted ? "var(--color-gold)" : "currentColor"} 
+                          />
+                        </button>
+
+                        <ChevronRight size={16} className="search-result-arrow" />
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
