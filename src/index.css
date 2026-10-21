@@ -1755,15 +1755,23 @@ h1, h2, h3,
   z-index: 5;
 }
 
-/* Product Wishlist / Lookbook Save Button */
-.product-wishlist-btn {
+/* Product Top-Right Action Buttons Stack (Heart & Quick Add to Bag) */
+.product-card-actions {
   position: absolute;
   top: 12px;
   right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.product-wishlist-btn,
+.product-action-circle-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(226, 218, 206, 0.7);
@@ -1772,13 +1780,13 @@ h1, h2, h3,
   justify-content: center;
   color: var(--color-deep-espresso);
   cursor: pointer;
-  z-index: 10;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 14px rgba(36, 28, 25, 0.1);
   padding: 0;
 }
 
-.product-wishlist-btn:hover {
+.product-wishlist-btn:hover,
+.product-action-circle-btn:hover {
   transform: scale(1.1);
   background-color: #FFFFFF;
   border-color: var(--color-gold);
@@ -1786,15 +1794,23 @@ h1, h2, h3,
   box-shadow: 0 6px 18px rgba(215, 172, 85, 0.3);
 }
 
-.product-wishlist-btn:active {
+.product-wishlist-btn:active,
+.product-action-circle-btn:active {
   transform: scale(0.92);
 }
 
-.product-wishlist-btn.active {
+.product-wishlist-btn.active,
+.product-action-circle-btn.active {
   background-color: #FFFFFF;
   border-color: var(--color-gold);
   color: var(--color-gold);
   box-shadow: 0 4px 16px rgba(215, 172, 85, 0.35);
+}
+
+.product-action-circle-btn.added {
+  background-color: #E8F5E9 !important;
+  border-color: #2E7D32 !important;
+  color: #2E7D32 !important;
 }
 
 .product-quick-action {
@@ -4588,14 +4604,20 @@ video::-moz-media-controls {
     line-height: 1.2 !important;
   }
 
-  .product-wishlist-btn {
+  .product-card-actions {
     top: 8px !important;
     right: 8px !important;
+    gap: 6px !important;
+  }
+
+  .product-wishlist-btn,
+  .product-action-circle-btn {
     width: 28px !important;
     height: 28px !important;
   }
 
-  .product-wishlist-btn svg {
+  .product-wishlist-btn svg,
+  .product-action-circle-btn svg {
     width: 13px !important;
     height: 13px !important;
   }

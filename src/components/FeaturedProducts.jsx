@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, Plus, ArrowRight, Heart } from 'lucide-react';
+import { Eye, Plus, ArrowRight, Heart, ShoppingBag, Check } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 import GoldStroke from './GoldStroke';
 
@@ -13,6 +13,25 @@ export default function FeaturedProducts({
   wishlist = []
 }) {
   const [selectedFilter, setSelectedFilter] = useState(activeFilter || 'All');
+  const [addedId, setAddedId] = useState(null);
+
+  const handleQuickAdd = (product, e) => {
+    e.stopPropagation();
+    if (onAddToCart) {
+      const defaultLength = product.options?.lengths?.[0] || '';
+      const defaultLace = product.options?.laceTypes?.[0] || '';
+      const defaultDensity = product.options?.densities?.[0] || '';
+      onAddToCart({
+        ...product,
+        selectedLength: defaultLength,
+        selectedLace: defaultLace,
+        selectedDensity: defaultDensity,
+        cartId: `${product.id}-${defaultLength}-${defaultLace}-${defaultDensity}`
+      });
+      setAddedId(product.id);
+      setTimeout(() => setAddedId(null), 1400);
+    }
+  };
 
   const filteredProducts = selectedFilter === 'All' 
     ? FEATURED_PRODUCTS 
@@ -69,24 +88,40 @@ export default function FeaturedProducts({
                     <span className="product-tag-badge">{product.tag}</span>
                   )}
 
-                  {/* Wishlist / Save to Lookbook Heart Button */}
-                  <button 
-                    type="button" 
-                    className={`product-wishlist-btn ${isWishlisted ? 'active' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (onToggleWishlist) onToggleWishlist(product);
-                    }}
-                    aria-label={isWishlisted ? `Remove ${product.name} from lookbook` : `Save ${product.name} to lookbook`}
-                    title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
-                  >
-                    <Heart 
-                      size={16} 
-                      fill={isWishlisted ? "var(--color-gold)" : "none"} 
-                      color={isWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
-                      strokeWidth={isWishlisted ? 2.2 : 1.8}
-                    />
-                  </button>
+                  {/* Floating Action Buttons Stack: Heart on Top, Quick Add to Bag Below */}
+                  <div className="product-card-actions">
+                    <button 
+                      type="button" 
+                      className={`product-action-circle-btn ${isWishlisted ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onToggleWishlist) onToggleWishlist(product);
+                      }}
+                      aria-label={isWishlisted ? `Remove ${product.name} from lookbook` : `Save ${product.name} to lookbook`}
+                      title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+                    >
+                      <Heart 
+                        size={15} 
+                        fill={isWishlisted ? "var(--color-gold)" : "none"} 
+                        color={isWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
+                        strokeWidth={isWishlisted ? 2.2 : 1.8}
+                      />
+                    </button>
+
+                    <button 
+                      type="button" 
+                      className={`product-action-circle-btn ${addedId === product.id ? 'added' : ''}`}
+                      onClick={(e) => handleQuickAdd(product, e)}
+                      aria-label={`Quick add ${product.name} to bag`}
+                      title="Quick Add to Bag"
+                    >
+                      {addedId === product.id ? (
+                        <Check size={15} strokeWidth={2.4} color="#2E7D32" />
+                      ) : (
+                        <ShoppingBag size={15} strokeWidth={1.8} />
+                      )}
+                    </button>
+                  </div>
 
                   {/* Quick Action Overlay: Pure Video Preview */}
                   <div className="product-quick-action">
