@@ -243,12 +243,12 @@ export default function App() {
   const handleEnterStore = () => {
     if (!showHero || isHeroFadingOut) return;
     setIsHeroFadingOut(true);
-    // Fast fade & switch (350ms)
+    // Cinematic portal dive into image before revealing store (680ms)
     setTimeout(() => {
       setShowHero(false);
       setIsHeroFadingOut(false);
       window.scrollTo({ top: 0, behavior: 'instant' });
-    }, 360);
+    }, 680);
   };
 
   const handleReturnToHero = () => {

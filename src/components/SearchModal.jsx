@@ -59,7 +59,6 @@ export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelect
               placeholder="Search style, length, or texture..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              autoFocus
             />
             {query.trim() !== '' && (
               <button

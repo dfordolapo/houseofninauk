@@ -572,20 +572,175 @@ h1, h2, h3,
    SECTION 2: HERO TRANSITIONS & 9-CARD HERO COMPOSITION
    ========================================================================== */
 
-/* Fast fade & switch wrappers */
+/* ==========================================================================
+   WILD, FUN & CRAZY PORTAL DIVE HERO TRANSITION
+   Zooms deeply into the luxury house image before fading into the store
+   ========================================================================== */
 .hero-transition-wrap {
   position: relative;
   width: 100%;
   opacity: 1;
-  transform: translateY(0);
-  transition: opacity 350ms cubic-bezier(0.25, 1, 0.5, 1), transform 350ms cubic-bezier(0.25, 1, 0.5, 1);
+  transform: scale(1);
+  transform-origin: center center;
+  transition: opacity 250ms ease;
   will-change: opacity, transform;
 }
 
 .hero-transition-wrap.fade-out {
-  opacity: 0;
-  transform: translateY(-24px);
   pointer-events: none;
+  animation: heroCinematicPortalFade 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes heroCinematicPortalFade {
+  0% {
+    opacity: 1;
+    filter: brightness(1) blur(0px);
+  }
+  65% {
+    opacity: 1;
+    filter: brightness(1.15) blur(0px);
+  }
+  100% {
+    opacity: 0;
+    filter: brightness(1.3) blur(6px);
+  }
+}
+
+/* Mobile Showcase Card & Image Zoom Dive */
+.hero-transition-wrap.fade-out .hero-house-showcase {
+  animation: heroShowcaseDiveMobile 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, box-shadow;
+  z-index: 50;
+}
+
+@keyframes heroShowcaseDiveMobile {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    box-shadow: 0 24px 60px -12px rgba(36, 28, 25, 0.32);
+  }
+  30% {
+    transform: translateY(-8px) scale(1.18) rotate(-1deg);
+    box-shadow: 0 35px 80px rgba(215, 172, 85, 0.45);
+  }
+  70% {
+    transform: translateY(-25px) scale(2.4) rotate(-2deg);
+    box-shadow: 0 60px 140px rgba(215, 172, 85, 0.85);
+  }
+  100% {
+    transform: translateY(-50px) scale(3.5) rotate(-3deg);
+    box-shadow: 0 80px 180px rgba(215, 172, 85, 1);
+  }
+}
+
+.hero-transition-wrap.fade-out .hero-house-img {
+  animation: heroImgInnerZoom 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, filter;
+}
+
+@keyframes heroImgInnerZoom {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) contrast(1);
+  }
+  50% {
+    transform: scale(1.6);
+    filter: brightness(1.12) contrast(1.08);
+  }
+  100% {
+    transform: scale(3.8);
+    filter: brightness(1.28) contrast(1.16);
+  }
+}
+
+.hero-transition-wrap.fade-out .hero-house-ambient-glow {
+  animation: heroGlowExpansion 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes heroGlowExpansion {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.85;
+    background: radial-gradient(circle, rgba(215, 172, 85, 0.6) 0%, transparent 70%);
+  }
+  100% {
+    opacity: 1;
+    background: radial-gradient(circle, rgba(215, 172, 85, 0.95) 0%, transparent 60%);
+  }
+}
+
+/* Mobile Headlines & Circle Zooming Outward & Dissolving */
+.hero-transition-wrap.fade-out .hero-top-typography {
+  animation: heroHeadlinesBlowOut 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes heroHeadlinesBlowOut {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: scale(1.45) translateY(-60px);
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+.hero-transition-wrap.fade-out .hero-scroll-enter-wrap {
+  animation: heroScrollDropOut 350ms ease forwards;
+}
+
+@keyframes heroScrollDropOut {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(35px) scale(0.7);
+    opacity: 0;
+  }
+}
+
+/* Desktop Web Full-Width Hero Zoom Dive */
+.hero-transition-wrap.fade-out .hero-web-bg-img {
+  animation: heroWebBgDive 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, filter;
+}
+
+@keyframes heroWebBgDive {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.4) translateY(2%);
+    filter: brightness(1.1);
+  }
+  100% {
+    transform: scale(2.2) translateY(5%);
+    filter: brightness(1.25) contrast(1.1);
+  }
+}
+
+.hero-transition-wrap.fade-out .hero-web-content {
+  animation: heroWebHeadlinesBlowOut 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes heroWebHeadlinesBlowOut {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: scale(1.35) translateY(-40px);
+    opacity: 0;
+    filter: blur(8px);
+  }
 }
 
 .store-content-wrap {
@@ -9373,20 +9528,16 @@ video::-moz-media-controls {
 @media (max-width: 640px) {
   .cart-drawer,
   .wishlist-drawer {
-    top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 86vw !important;
-    max-width: 380px !important;
-    border-radius: 0 !important;
-    border-top-left-radius: 20px !important;
-    border-bottom-left-radius: 20px !important;
-    border-top-right-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-    padding: 16px 14px 20px !important;
-    transform: translateX(100%) !important;
-    box-shadow: -14px 0 45px rgba(28, 22, 20, 0.45) !important;
-    border-left: 1px solid var(--color-border) !important;
+    top: 14px !important;
+    right: 14px !important;
+    bottom: 14px !important;
+    width: calc(88% - 14px) !important;
+    max-width: 350px !important;
+    border-radius: 28px !important;
+    padding: 20px 16px 22px !important;
+    transform: translateX(calc(100% + 20px)) !important;
+    box-shadow: -12px 14px 44px -8px rgba(36, 28, 25, 0.26) !important;
+    border: 1px solid var(--color-border) !important;
   }
 
   .cart-drawer.open,
@@ -9836,8 +9987,14 @@ video::-moz-media-controls {
 
   .search-modal-dialog {
     width: 100% !important;
-    max-height: 86vh !important;
+    max-height: 85vh !important;
     border-radius: 18px !important;
+    transform: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .search-modal-backdrop.open .search-modal-dialog {
+    transform: none !important;
   }
 
   .search-modal-header {
@@ -9867,8 +10024,8 @@ video::-moz-media-controls {
   }
 
   .search-input-field {
-    height: 42px !important;
-    font-size: 13px !important;
+    height: 44px !important;
+    font-size: 16px !important; /* 16px prevents iOS/Android auto-zoom on input tap */
     padding: 0 34px 0 36px !important;
   }
 
