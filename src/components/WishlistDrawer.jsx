@@ -207,7 +207,7 @@ export default function WishlistDrawer({
                 Your lookbook is waiting
               </h3>
               <p style={{ fontSize: '12.5px', color: '#7A6E62', maxWidth: '280px', margin: '0 auto 20px', lineHeight: 1.5 }}>
-                Tap the heart on any unit or silk scarf to curate your personal House of Nina collection.
+                Tap the heart on any unit or silk piece to curate your personal lookbook.
               </p>
               <button 
                 type="button" 

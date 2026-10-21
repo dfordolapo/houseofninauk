@@ -119,8 +119,8 @@ export default function CartDrawer({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <span style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>
               {remainingForFreeShipping === 0 
-                ? 'Complimentary UK White-Glove Dispatch Unlocked' 
-                : `Add £${remainingForFreeShipping.toFixed(0)} for Free UK Next-Day Dispatch`}
+                ? 'Free Shipping Unlocked' 
+                : `Add £${remainingForFreeShipping.toFixed(0)} for Free Shipping`}
             </span>
             <span style={{ fontSize: '11px', color: '#8C8074', fontWeight: 600 }}>
               {freeShippingProgress}%
@@ -495,9 +495,9 @@ export default function CartDrawer({
               )}
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
-                <span>UK Dispatch</span>
+                <span>UK Shipping</span>
                 <span style={{ color: remainingForFreeShipping === 0 ? '#1E7E34' : 'inherit' }}>
-                  {remainingForFreeShipping === 0 ? 'Complimentary' : 'Calculated at checkout'}
+                  {remainingForFreeShipping === 0 ? 'Free' : 'Calculated at checkout'}
                 </span>
               </div>
 
@@ -538,7 +538,7 @@ export default function CartDrawer({
             {/* Safe & Secure Disclaimer */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '10px', fontSize: '11px', color: '#8C8074' }}>
               <ShieldCheck size={13} color="#2E7D32" />
-              <span>Encrypted 256-Bit SSL Checkout • UK Consumer Rights</span>
+              <span>Encrypted 256-Bit SSL Checkout</span>
             </div>
           </div>
         )}
