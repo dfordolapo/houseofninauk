@@ -248,6 +248,30 @@ export default function App() {
   });
   const [isHeroFadingOut, setIsHeroFadingOut] = useState(false);
 
+  // Deep-linked product URL handling (e.g. from shared Instagram cards)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const prodQuery = params.get('product');
+      if (prodQuery) {
+        setShowHero(false);
+        const match = FEATURED_PRODUCTS.find(p => 
+          p.id.toLowerCase() === prodQuery.toLowerCase() || 
+          p.name.toLowerCase().includes(prodQuery.toLowerCase())
+        );
+        if (match) {
+          setTimeout(() => {
+            setDetailsProduct(match);
+            const el = document.getElementById('featured-products');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 350);
+        }
+      }
+    } catch (e) {
+      console.warn('URL product param handling error', e);
+    }
+  }, []);
+
   const handleEnterStore = () => {
     if (!showHero || isHeroFadingOut) return;
     setIsHeroFadingOut(true);
@@ -512,6 +536,12 @@ export default function App() {
       <CareGuideModal 
         isOpen={isCareGuideOpen}
         onClose={() => setIsCareGuideOpen(false)}
+        onShopSilkCare={() => {
+          setIsCareGuideOpen(false);
+          setShowHero(false);
+          const target = document.getElementById('silk-pairing-studio') || document.getElementById('featured-products');
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }}
       />
 
       <SearchModal 

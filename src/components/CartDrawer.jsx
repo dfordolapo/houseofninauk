@@ -535,10 +535,73 @@ export default function CartDrawer({
               <ArrowRight size={16} />
             </button>
 
-            {/* Safe & Secure Disclaimer */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '10px', fontSize: '11px', color: '#8C8074' }}>
-              <ShieldCheck size={13} color="#2E7D32" />
-              <span>Encrypted 256-Bit SSL Checkout</span>
+            {/* Accepted Cards & Payment Icons */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <span style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  padding: '3px 7px', 
+                  borderRadius: '4px', 
+                  border: '1px solid #D8DFE8', 
+                  backgroundColor: '#FFFFFF', 
+                  fontSize: '10px', 
+                  fontWeight: 800, 
+                  letterSpacing: '0.04em',
+                  color: '#1A1F71'
+                }}>
+                  VISA
+                </span>
+                <span style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '3px',
+                  padding: '3px 7px', 
+                  borderRadius: '4px', 
+                  border: '1px solid #E8DBD0', 
+                  backgroundColor: '#FFFFFF', 
+                  fontSize: '10px', 
+                  fontWeight: 700,
+                  color: '#241C19'
+                }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#EB001B', display: 'inline-block' }} />
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F79E1B', display: 'inline-block', marginLeft: '-5px' }} />
+                  <span style={{ marginLeft: '2px' }}>Mastercard</span>
+                </span>
+                <span style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  padding: '3px 7px', 
+                  borderRadius: '4px', 
+                  border: '1px solid #C7DFEE', 
+                  backgroundColor: '#FFFFFF', 
+                  fontSize: '10px', 
+                  fontWeight: 800, 
+                  letterSpacing: '0.04em',
+                  color: '#006FCF'
+                }}>
+                  AMEX
+                </span>
+                <span style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '3px',
+                  padding: '3px 7px', 
+                  borderRadius: '4px', 
+                  border: '1px solid #D0D0D0', 
+                  backgroundColor: '#FFFFFF', 
+                  fontSize: '10px', 
+                  fontWeight: 700, 
+                  color: '#111111'
+                }}>
+                  <span></span>Pay
+                </span>
+              </div>
+              <span style={{ fontSize: '10.5px', color: '#8C8074', letterSpacing: '0.02em' }}>
+                Secure Payment • All Major Cards Accepted
+              </span>
             </div>
           </div>
         )}

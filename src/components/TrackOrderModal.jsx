@@ -4,13 +4,20 @@ import { X, Search, CheckCircle2, Clock, Truck, MapPin, ExternalLink } from 'luc
 export default function TrackOrderModal({ isOpen, onClose }) {
   const [orderQuery, setOrderQuery] = useState('HN-8492');
   const [hasSearched, setHasSearched] = useState(true);
+  const [isFound, setIsFound] = useState(true);
 
   if (!isOpen) return null;
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (orderQuery.trim()) {
-      setHasSearched(true);
+    const q = orderQuery.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+    setHasSearched(true);
+    
+    // Valid sample order is HN-8492 / 8492, or any standard HN order reference
+    if (q === 'HN8492' || q === '8492' || (q.startsWith('HN') && q.length >= 6)) {
+      setIsFound(true);
+    } else {
+      setIsFound(false);
     }
   };
 
@@ -78,7 +85,43 @@ export default function TrackOrderModal({ isOpen, onClose }) {
 
         {/* TRACKING PROGRESS CONTENT */}
         <div className="track-body">
-          {hasSearched && (
+          {/* EMPTY / NOT FOUND STATE */}
+          {hasSearched && !isFound && (
+            <div style={{ textAlign: 'center', padding: '44px 20px', color: 'var(--color-espresso-muted)' }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(235, 219, 197, 0.45)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px auto',
+                color: '#8C8074'
+              }}>
+                <Search size={26} strokeWidth={1.5} />
+              </div>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', color: 'var(--color-deep-espresso)', marginBottom: '8px' }}>
+                Order Not Found
+              </h3>
+              <p style={{ fontSize: '13px', color: '#7A6E62', maxWidth: '320px', margin: '0 auto 18px', lineHeight: 1.5 }}>
+                We could not find an order with that reference. Please check the number and try again.
+              </p>
+              <button
+                type="button"
+                className="btn-outline-editorial"
+                onClick={() => {
+                  setOrderQuery('HN-8492');
+                  setIsFound(true);
+                }}
+                style={{ fontSize: '11.5px', padding: '8px 18px' }}
+              >
+                Try sample order: HN-8492
+              </button>
+            </div>
+          )}
+
+          {hasSearched && isFound && (
             <div>
               {/* Order Meta Box */}
               <div className="track-order-card">

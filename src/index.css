@@ -10278,6 +10278,24 @@ video::-moz-media-controls {
   }
 }
 
+/* ==========================================================================
+   MOBILE INPUT AUTO-ZOOM PREVENTION (iOS WebKit 16px font-size rule)
+   Prevents the mobile browser/keyboard from zooming in when focusing any input
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+  input,
+  textarea,
+  select,
+  .look-author-input,
+  .look-comment-textarea,
+  .track-search-input,
+  .header-search-input,
+  .cart-promo-input {
+    font-size: 16px !important;
+  }
+}
+
+
 
 
 

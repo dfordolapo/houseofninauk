@@ -57,7 +57,7 @@ export default function FaqModal({ isOpen, onClose }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
               <span className="section-label" style={{ margin: 0 }}>Client Support</span>
-              <span style={{ fontSize: '11px', color: '#8C8074' }}>• House of Nina London</span>
+              <span style={{ fontSize: '11px', color: '#8C8074' }}>• House of Nina Limited</span>
             </div>
             <h2 className="faq-modal-title">
               Frequently Asked Questions

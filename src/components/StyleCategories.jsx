@@ -1,12 +1,36 @@
 import React, { useState, useRef } from 'react';
-import { Heart, MessageCircle, Send, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
-import { INSTA_POSTS } from '../data/wigData';
+import { Heart, MessageCircle, Send, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { INSTA_POSTS, FEATURED_PRODUCTS } from '../data/wigData';
 import GoldStroke from './GoldStroke';
 
 export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist, onOpenReviews, wishlist = [] }) {
   const [activeTagPostId, setActiveTagPostId] = useState(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [copiedPostId, setCopiedPostId] = useState(null);
   const sliderRef = useRef(null);
+
+  const handleShareProductLink = (post) => {
+    // Match the corresponding product in the store
+    const matchingProduct = FEATURED_PRODUCTS.find(p => 
+      p.name?.toLowerCase() === post.productName?.toLowerCase()
+    ) || post;
+
+    const productId = matchingProduct.id || post.id;
+    const shareUrl = `${window.location.origin}${window.location.pathname}?product=${encodeURIComponent(productId)}#featured-products`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setCopiedPostId(post.id);
+        setTimeout(() => setCopiedPostId(null), 2400);
+      }).catch(() => {
+        setCopiedPostId(post.id);
+        setTimeout(() => setCopiedPostId(null), 2400);
+      });
+    } else {
+      setCopiedPostId(post.id);
+      setTimeout(() => setCopiedPostId(null), 2400);
+    }
+  };
 
   const toggleLike = (post) => {
     if (onToggleWishlist) {
@@ -173,10 +197,36 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
                     <button 
                       type="button" 
                       className="insta-action-btn" 
-                      aria-label="Share post"
-                      onClick={() => alert("Link copied to clipboard! Share this look with friends.")}
+                      aria-label="Copy direct product link"
+                      title={copiedPostId === post.id ? "Product link copied!" : "Copy product link"}
+                      onClick={() => handleShareProductLink(post)}
+                      style={{ position: 'relative' }}
                     >
-                      <Send size={20} color="var(--color-deep-espresso)" />
+                      {copiedPostId === post.id ? (
+                        <Check size={20} color="#2E7D32" strokeWidth={2.5} />
+                      ) : (
+                        <Send size={20} color="var(--color-deep-espresso)" />
+                      )}
+                      {copiedPostId === post.id && (
+                        <span style={{
+                          position: 'absolute',
+                          bottom: '-24px',
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          backgroundColor: 'var(--color-deep-espresso)',
+                          color: '#FFFFFF',
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          padding: '2px 8px',
+                          borderRadius: '6px',
+                          whiteSpace: 'nowrap',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
+                          zIndex: 10,
+                          pointerEvents: 'none'
+                        }}>
+                          Link copied!
+                        </span>
+                      )}
                     </button>
                   </div>
                 </div>

@@ -1,11 +1,21 @@
 import React from 'react';
-import { X, Droplets, Wind, Scissors, Moon } from 'lucide-react';
+import { X, Droplets, Wind, ShieldCheck, Moon, ShoppingBag } from 'lucide-react';
 import { CARE_GUIDE_DATA } from '../data/wigData';
 
-const ICONS = [Droplets, Scissors, Wind, Moon];
+const ICONS = [Droplets, ShieldCheck, Wind, Moon];
 
-export default function CareGuideModal({ isOpen, onClose }) {
+export default function CareGuideModal({ isOpen, onClose, onShopSilkCare }) {
   if (!isOpen) return null;
+
+  const handleShopCare = () => {
+    onClose();
+    if (onShopSilkCare) {
+      onShopSilkCare();
+    } else {
+      const target = document.getElementById('silk-pairing-studio') || document.getElementById('featured-products');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div 
@@ -81,10 +91,11 @@ export default function CareGuideModal({ isOpen, onClose }) {
           <button 
             type="button" 
             className="btn-primary-editorial" 
-            onClick={onClose}
-            style={{ padding: '10px 28px', fontSize: '13px' }}
+            onClick={handleShopCare}
+            style={{ padding: '12px 28px', fontSize: '13px' }}
           >
-            Got it, back to store
+            <ShoppingBag size={15} />
+            <span>Shop Silk Care &amp; Bonnets</span>
           </button>
         </div>
       </div>
