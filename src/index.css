@@ -7605,7 +7605,10 @@ video::-moz-media-controls {
   z-index: 360;
   background: radial-gradient(circle at 50% 25%, #FAF7F2 0%, #F3EDE4 50%, #E7DBCB 100%);
   overflow-y: auto;
+  overflow-x: hidden !important;
   overscroll-behavior: contain;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
   padding: 40px 16px 60px 16px;
   display: flex;
   justify-content: center;
@@ -7613,6 +7616,9 @@ video::-moz-media-controls {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.35s ease;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 
 .receipt-screen-backdrop.open {
@@ -8152,6 +8158,7 @@ video::-moz-media-controls {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   overflow-y: auto;
+  overflow-x: hidden !important;
   overscroll-behavior: contain;
   padding: 24px 16px;
   display: flex;
@@ -8160,6 +8167,9 @@ video::-moz-media-controls {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 
 .checkout-modal-backdrop.open {
@@ -8170,13 +8180,18 @@ video::-moz-media-controls {
 .checkout-modal-dialog {
   background: #FAF7F0;
   border-radius: 20px;
-  max-width: 960px;
+  max-width: min(960px, calc(100vw - 32px));
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden !important;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 25px 60px rgba(26, 20, 18, 0.35);
   border: 1px solid var(--color-border);
   position: relative;
+  box-sizing: border-box;
 }
 
 .checkout-modal-dialog.confirmation-view {
@@ -8188,16 +8203,26 @@ video::-moz-media-controls {
   overflow: visible;
 }
 
+.checkout-content-container {
+  overflow-x: hidden !important;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .checkout-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 28px;
+  padding: 16px 24px;
   border-bottom: 1px solid var(--color-border);
   background: #FFFFFF;
   position: sticky;
   top: 0;
   z-index: 20;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .checkout-brand-title {
@@ -8249,9 +8274,44 @@ video::-moz-media-controls {
 
 .checkout-grid-layout {
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  gap: 28px;
-  padding: 28px;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 24px;
+  padding: 24px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.checkout-form-column,
+.checkout-summary-column {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.checkout-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.checkout-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.checkout-modal-dialog input,
+.checkout-modal-dialog select,
+.checkout-modal-dialog button,
+.checkout-modal-dialog label {
+  box-sizing: border-box !important;
 }
 
 .checkout-main-title {
@@ -9767,22 +9827,36 @@ video::-moz-media-controls {
 
   .checkout-modal-backdrop {
     padding: 10px 8px !important;
+    overflow-x: hidden !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
   }
 
   .checkout-modal-dialog {
     width: 100% !important;
+    max-width: calc(100vw - 16px) !important;
     border-radius: 16px !important;
     max-height: 94vh !important;
+    overflow-x: hidden !important;
+    touch-action: pan-y !important;
   }
 
   .checkout-modal-header {
     padding: 12px 14px !important;
+    overflow-x: hidden !important;
   }
 
   .checkout-grid-layout {
     grid-template-columns: 1fr !important;
-    padding: 14px 12px !important;
+    padding: 14px 10px !important;
     gap: 16px !important;
+    overflow-x: hidden !important;
+  }
+
+  .checkout-row-2,
+  .checkout-row-3 {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
   }
 
   .checkout-form-card {
