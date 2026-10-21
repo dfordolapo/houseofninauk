@@ -469,7 +469,7 @@ export const CARE_GUIDE_DATA = {
     },
     {
       title: "Night Storage & Silk Care",
-      text: "Store your unit on a satin mannequin head or in a breathable silk pouch. For sewn-down units, sleep in a 100% mulberry silk bonnet."
+      text: "Store your unit on a satin mannequin head or in a breathable silk pouch. For sewn-down units, sleep in a 100% mulberry silk scarf."
     }
   ]
 };

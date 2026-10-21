@@ -43,7 +43,7 @@ export default function CartDrawer({
       setPromoApplied(true);
       setPromoError('');
     } else if (code) {
-      setPromoError('Invalid privilege code. Try "HOUSE10".');
+      setPromoError('Invalid discount code. Please check and try again.');
     }
   };
 
@@ -428,13 +428,13 @@ export default function CartDrawer({
                     setPromoCode(e.target.value);
                     setPromoError('');
                   }}
-                  placeholder="Privilege Code (try HOUSE10)"
+                  placeholder="Discount code"
                   style={{
                     flexGrow: 1,
                     padding: '8px 12px',
                     borderRadius: '8px',
                     border: promoError ? '1px solid #D32F2F' : '1px solid var(--color-border)',
-                    fontSize: '12px',
+                    fontSize: '11px',
                     outline: 'none',
                     backgroundColor: '#FFFFFF'
                   }}
@@ -442,7 +442,7 @@ export default function CartDrawer({
                 <button
                   type="submit"
                   className="btn-outline-editorial"
-                  style={{ padding: '8px 14px', fontSize: '11.5px', whiteSpace: 'nowrap' }}
+                  style={{ padding: '8px 14px', fontSize: '11px', whiteSpace: 'nowrap' }}
                 >
                   Apply
                 </button>
@@ -489,7 +489,7 @@ export default function CartDrawer({
 
               {promoApplied && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#1E7E34' }}>
-                  <span>Privilege Discount (10%)</span>
+                  <span>Discount (10%)</span>
                   <span>−£{discountAmount}</span>
                 </div>
               )}

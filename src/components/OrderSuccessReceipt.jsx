@@ -224,7 +224,7 @@ export default function OrderSuccessReceipt({
 
                   {orderData.discount > 0 && (
                     <div className="totals-line-row discount-line">
-                      <span>Privilege Discount</span>
+                      <span>Discount</span>
                       <span>-{formatMoney(orderData.discount)}</span>
                     </div>
                   )}

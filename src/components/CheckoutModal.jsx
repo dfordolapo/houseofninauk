@@ -1158,7 +1158,7 @@ export default function CheckoutModal({
 
                       {discount > 0 && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#1E7E34', width: '100%', boxSizing: 'border-box' }}>
-                          <span>Privilege Discount ({checkoutData.promoCode})</span>
+                          <span>Discount ({checkoutData.promoCode})</span>
                           <strong>−{formatPrice(discount)}</strong>
                         </div>
                       )}

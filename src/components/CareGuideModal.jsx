@@ -95,7 +95,7 @@ export default function CareGuideModal({ isOpen, onClose, onShopSilkCare }) {
             style={{ padding: '12px 28px', fontSize: '13px' }}
           >
             <ShoppingBag size={15} />
-            <span>Shop Silk Care &amp; Bonnets</span>
+            <span>Shop Silk Scarves</span>
           </button>
         </div>
       </div>
