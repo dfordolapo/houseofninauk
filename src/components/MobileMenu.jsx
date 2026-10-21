@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { X, Search, ShoppingBag } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 
-export default function MobileMenu({ isOpen, onClose, onOpenCart, cartCount, onOpenSearch, onSelectNavLink }) {
+export default function MobileMenu({ isOpen, onClose, onOpenCart, cartCount, onOpenSearch, onSelectNavLink, onOpenLegal }) {
   const [activeLinkId, setActiveLinkId] = React.useState('shop');
 
 
@@ -78,9 +78,27 @@ export default function MobileMenu({ isOpen, onClose, onOpenCart, cartCount, onO
             <Search size={16} /> Search Catalog
           </button>
           <div className="mobile-drawer-legal-links" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '14px', fontSize: '11px', color: '#8C8074' }}>
-            <a href="#privacy-cookies" onClick={onClose} style={{ color: '#5C5146', textDecoration: 'none' }}>Privacy & Cookies</a>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                if (onOpenLegal) onOpenLegal('privacy');
+              }}
+              style={{ background: 'none', border: 'none', padding: 0, color: '#5C5146', textDecoration: 'none', cursor: 'pointer', font: 'inherit', fontSize: '11px' }}
+            >
+              Privacy &amp; Cookies
+            </button>
             <span>&bull;</span>
-            <a href="#terms" onClick={onClose} style={{ color: '#5C5146', textDecoration: 'none' }}>Terms</a>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                if (onOpenLegal) onOpenLegal('terms');
+              }}
+              style={{ background: 'none', border: 'none', padding: 0, color: '#5C5146', textDecoration: 'none', cursor: 'pointer', font: 'inherit', fontSize: '11px' }}
+            >
+              Terms
+            </button>
           </div>
         </div>
       </div>

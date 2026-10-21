@@ -46,8 +46,8 @@ const SOCIAL_LINKS = [
   }
 ];
 
-export default function Footer({ onOpenCareGuide }) {
-  // Mobile accordion state (all closed by default per specification)
+export default function Footer({ onOpenCareGuide, onOpenLegal }) {
+  // Mobile accordion state (strictly mutually exclusive: at most one open at once)
   const [openAccordions, setOpenAccordions] = useState({
     shop: false,
     help: false,
@@ -60,10 +60,15 @@ export default function Footer({ onOpenCareGuide }) {
   const [errorMessage, setErrorMessage] = useState('');
 
   const toggleAccordion = (key) => {
-    setOpenAccordions(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+    setOpenAccordions(prev => {
+      const isCurrentlyOpen = prev[key];
+      return {
+        shop: false,
+        help: false,
+        about: false,
+        [key]: !isCurrentlyOpen
+      };
+    });
   };
 
   const handleNewsletterSubmit = (e) => {
@@ -191,8 +196,34 @@ export default function Footer({ onOpenCareGuide }) {
               <h4 className="footer-nav-heading">HELP</h4>
               <ul className="footer-nav-list">
                 <li><a href="#details" className="footer-nav-link">Track Order</a></li>
-                <li><a href="#details" className="footer-nav-link">Shipping</a></li>
-                <li><a href="#details" className="footer-nav-link">Returns</a></li>
+                <li>
+                  <a 
+                    href="#shipping" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('shipping');
+                      }
+                    }}
+                  >
+                    Shipping
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#returns" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('shipping');
+                      }
+                    }}
+                  >
+                    Returns
+                  </a>
+                </li>
                 <li>
                   <a 
                     href="#wig-care-guide" 
@@ -208,8 +239,34 @@ export default function Footer({ onOpenCareGuide }) {
                   </a>
                 </li>
                 <li><a href="#details" className="footer-nav-link">FAQs</a></li>
-                <li><a href="#privacy-cookies" className="footer-nav-link">Privacy & Cookies</a></li>
-                <li><a href="#terms" className="footer-nav-link">Terms of Service</a></li>
+                <li>
+                  <a 
+                    href="#privacy-cookies" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('privacy');
+                      }
+                    }}
+                  >
+                    Privacy &amp; Cookies
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#terms" 
+                    className="footer-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('terms');
+                      }
+                    }}
+                  >
+                    Terms of Service
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -289,8 +346,30 @@ export default function Footer({ onOpenCareGuide }) {
               <div className={`mobile-accordion-content ${openAccordions.help ? 'open' : ''}`}>
                 <div className="mobile-accordion-inner">
                   <a href="#details" className="mobile-nav-link">Track Order</a>
-                  <a href="#details" className="mobile-nav-link">Shipping</a>
-                  <a href="#details" className="mobile-nav-link">Returns</a>
+                  <a 
+                    href="#shipping" 
+                    className="mobile-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('shipping');
+                      }
+                    }}
+                  >
+                    Shipping
+                  </a>
+                  <a 
+                    href="#returns" 
+                    className="mobile-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('shipping');
+                      }
+                    }}
+                  >
+                    Returns
+                  </a>
                   <a 
                     href="#wig-care-guide" 
                     className="mobile-nav-link"
@@ -304,8 +383,30 @@ export default function Footer({ onOpenCareGuide }) {
                     Care Guide
                   </a>
                   <a href="#details" className="mobile-nav-link">FAQs</a>
-                  <a href="#privacy-cookies" className="mobile-nav-link">Privacy & Cookies</a>
-                  <a href="#terms" className="mobile-nav-link">Terms of Service</a>
+                  <a 
+                    href="#privacy-cookies" 
+                    className="mobile-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('privacy');
+                      }
+                    }}
+                  >
+                    Privacy &amp; Cookies
+                  </a>
+                  <a 
+                    href="#terms" 
+                    className="mobile-nav-link"
+                    onClick={(e) => {
+                      if (onOpenLegal) {
+                        e.preventDefault();
+                        onOpenLegal('terms');
+                      }
+                    }}
+                  >
+                    Terms of Service
+                  </a>
                 </div>
               </div>
             </div>

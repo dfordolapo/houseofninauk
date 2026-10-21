@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { X, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 import { BRAND_INFO } from '../data/wigData';
 
-export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, onClearCart }) {
+export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, onClearCart, onOpenLegal }) {
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
   const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - subtotal);
@@ -136,6 +136,31 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onRemoveItem, o
               <span>Proceed to Checkout</span>
               <ArrowRight size={16} />
             </button>
+            <p style={{ fontSize: '11px', color: '#8C8074', textAlign: 'center', marginTop: '12px', lineHeight: 1.4 }}>
+              By checking out, you agree to House of Nina's{' '}
+              <button 
+                type="button" 
+                onClick={() => {
+                  onClose();
+                  if (onOpenLegal) onOpenLegal('terms');
+                }}
+                style={{ background: 'none', border: 'none', padding: 0, textDecoration: 'underline', color: 'var(--color-deep-espresso)', cursor: 'pointer', font: 'inherit', fontSize: '11px' }}
+              >
+                Terms of Service
+              </button>
+              {' '}and{' '}
+              <button 
+                type="button" 
+                onClick={() => {
+                  onClose();
+                  if (onOpenLegal) onOpenLegal('privacy');
+                }}
+                style={{ background: 'none', border: 'none', padding: 0, textDecoration: 'underline', color: 'var(--color-deep-espresso)', cursor: 'pointer', font: 'inherit', fontSize: '11px' }}
+              >
+                Privacy Policy
+              </button>
+              .
+            </p>
           </div>
         )}
       </div>

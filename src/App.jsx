@@ -20,6 +20,7 @@ import CartDrawer from './components/CartDrawer';
 import WishlistDrawer from './components/WishlistDrawer';
 import AddedToBagModal from './components/AddedToBagModal';
 import LookReviewsModal from './components/LookReviewsModal';
+import LegalModal from './components/LegalModal';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
@@ -77,6 +78,9 @@ export default function App() {
   // Search Modal state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  // Legal Modal state ('terms' | 'privacy' | 'shipping' | null)
+  const [legalModalTab, setLegalModalTab] = useState(null);
+
   // Centralized Modal Background Scroll-Lock & Position Preservation:
   // When ANY modal or drawer is open, freeze the background at the exact scroll position
   // When closed, restore the exact scroll position seamlessly
@@ -92,7 +96,8 @@ export default function App() {
     isCareGuideOpen || 
     isSearchOpen || 
     isAddedModalOpen || 
-    isReviewsModalOpen
+    isReviewsModalOpen ||
+    legalModalTab
   );
 
   useEffect(() => {
@@ -358,7 +363,10 @@ export default function App() {
             <CareFeature onOpenCareGuide={() => setIsCareGuideOpen(true)} />
 
             {/* EDITORIAL OVERSIZED WORDMARK FOOTER (LAYER A, B, C) */}
-            <Footer onOpenCareGuide={() => setIsCareGuideOpen(true)} />
+            <Footer 
+              onOpenCareGuide={() => setIsCareGuideOpen(true)} 
+              onOpenLegal={(tab) => setLegalModalTab(tab)}
+            />
           </div>
         )}
       </main>
@@ -371,6 +379,7 @@ export default function App() {
         cartCount={cartItems.length}
         onOpenSearch={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }}
         onSelectNavLink={handleSelectNavLink}
+        onOpenLegal={(tab) => setLegalModalTab(tab)}
       />
 
       <CartDrawer 
@@ -379,6 +388,7 @@ export default function App() {
         cartItems={cartItems}
         onRemoveItem={handleRemoveCartItem}
         onClearCart={() => setCartItems([])}
+        onOpenLegal={(tab) => setLegalModalTab(tab)}
       />
 
       <WishlistDrawer
@@ -444,6 +454,13 @@ export default function App() {
         post={activeReviewPost}
         onQuickView={handleInstagramQuickView}
         onAddToCart={handleAddToCart}
+      />
+
+      {/* COMPREHENSIVE LEGAL & POLICIES MODAL (TERMS, PRIVACY NOTICE, RETURNS) */}
+      <LegalModal
+        isOpen={Boolean(legalModalTab)}
+        initialTab={legalModalTab || 'terms'}
+        onClose={() => setLegalModalTab(null)}
       />
     </div>
   );
