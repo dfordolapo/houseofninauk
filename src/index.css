@@ -8206,7 +8206,8 @@ video::-moz-media-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 22px;
+  min-height: 54px;
+  padding: 12px 20px;
   border-bottom: 1px solid var(--color-border);
   background: #FFFFFF;
   position: sticky;
@@ -8215,7 +8216,34 @@ video::-moz-media-controls {
   width: 100%;
   flex-shrink: 0;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: visible;
+}
+
+.checkout-close-btn {
+  position: static !important;
+  margin: 0 !important;
+  top: auto !important;
+  right: auto !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background-color: #FAF8F5 !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: 0 1px 4px rgba(36, 28, 25, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--color-deep-espresso) !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.checkout-close-btn:hover {
+  background-color: var(--color-deep-espresso) !important;
+  color: #FFFFFF !important;
+  transform: scale(1.05);
 }
 
 .checkout-content-container {
@@ -8232,69 +8260,67 @@ video::-moz-media-controls {
 
 .checkout-brand-title {
   font-family: 'Pinyon Script', cursive;
-  font-size: 28px;
+  font-size: 26px;
   color: var(--color-deep-espresso);
+  line-height: 1;
 }
 
-.checkout-step-pills {
+.checkout-step-icons {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.checkout-step-pill {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
-  background: transparent;
-  border: 1px solid transparent;
-  font-size: 12px;
-  font-weight: 500;
-  color: #8C8074;
-  cursor: pointer;
-  padding: 4px 10px;
-  border-radius: 20px;
-  transition: all 0.2s ease;
 }
 
-.checkout-step-pill.active {
-  color: var(--color-deep-espresso);
-  font-weight: 700;
-  background: #FAF5EB;
-  border-color: rgba(197, 160, 89, 0.4);
-}
-
-.checkout-step-pill.completed {
-  color: var(--color-deep-espresso);
-}
-
-.step-pill-num {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #EFE6D8;
+.checkout-step-icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: #685C50;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: 5px 10px;
+  color: #8C8074;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 11.5px;
+  font-weight: 600;
 }
 
-.checkout-step-pill.active .step-pill-num {
-  background: var(--color-deep-espresso);
-  color: #FFFFFF;
+.checkout-step-icon-btn.active {
+  background: #FAF5EB;
+  border-color: rgba(197, 160, 89, 0.45);
+  color: var(--color-deep-espresso);
 }
 
-.checkout-step-pill.completed .step-pill-num {
-  background: #2E7D32;
-  color: #FFFFFF;
+.checkout-step-icon-btn.completed {
+  color: #2E7D32;
+  background: #F0FDF4;
+  border-color: rgba(46, 125, 50, 0.25);
 }
 
-.step-pill-divider {
-  width: 14px;
+.checkout-step-icon-line {
+  width: 12px;
   height: 1px;
   background: var(--color-border);
+}
+
+@media (max-width: 540px) {
+  .step-icon-label {
+    display: none !important;
+  }
+  .checkout-step-icon-btn {
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+  }
+  .checkout-step-icon-line {
+    width: 8px !important;
+  }
+  .checkout-brand-title {
+    font-size: 22px !important;
+  }
 }
 
 .checkout-grid-layout {

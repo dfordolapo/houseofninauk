@@ -195,11 +195,11 @@ export default function CheckoutModal({
     setCheckoutStep(2);
   };
 
-  const handlePlaceOrder = (e, expressMethod = null) => {
+  const handlePlaceOrder = (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setIsSubmitting(true);
 
-    const chosenPayment = expressMethod || formData.paymentMethod;
+    const chosenPayment = formData.paymentMethod;
 
     setTimeout(() => {
       const randomOrderNum = Math.floor(1000 + Math.random() * 9000);
@@ -208,8 +208,6 @@ export default function CheckoutModal({
         ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
       let paymentLabel = 'Stripe Verified Card (•••• 4892)';
-      if (chosenPayment === 'apple_pay') paymentLabel = 'Apple Pay (Biometric Authorized)';
-      if (chosenPayment === 'google_pay') paymentLabel = 'Google Pay (1-Click Authorized)';
       if (chosenPayment === 'klarna') paymentLabel = 'Klarna (Pay in 3)';
       if (chosenPayment === 'bank') paymentLabel = 'Direct Studio Bank Wire';
 
@@ -279,48 +277,49 @@ export default function CheckoutModal({
           />
         ) : (
           <>
-            {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & STEP PROGRESS */}
+            {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
             <div className="checkout-modal-header">
               <div className="checkout-header-branding" style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
-                <span className="checkout-brand-title" style={{ fontFamily: 'var(--font-brand)', fontSize: '26px', color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap' }}>
+                <span className="checkout-brand-title">
                   House of Nina
                 </span>
               </div>
 
-              {/* Multi-step progress pills */}
-              <div className="checkout-step-pills">
+              {/* Luxury Compact Icon Step Indicator (Never Spills or Overflows) */}
+              <div className="checkout-step-icons">
                 <button 
                   type="button" 
                   onClick={() => setCheckoutStep(1)} 
-                  className={`checkout-step-pill ${checkoutStep === 1 ? 'active' : 'completed'}`}
-                  title="Return to Delivery Step"
+                  className={`checkout-step-icon-btn ${checkoutStep === 1 ? 'active' : 'completed'}`}
+                  title="Step 1: Delivery Details"
+                  aria-label="Step 1: Delivery Details"
                 >
-                  <span className="step-pill-num">{checkoutStep > 1 ? <Check size={11} strokeWidth={3} /> : '1'}</span>
-                  <span className="step-pill-text">1. Delivery</span>
+                  {checkoutStep > 1 ? <Check size={13} strokeWidth={2.5} /> : <Truck size={14} />}
+                  <span className="step-icon-label">Delivery</span>
                 </button>
 
-                <div className="step-pill-divider" />
+                <div className="checkout-step-icon-line" />
 
                 <button 
                   type="button" 
                   onClick={handleProceedToPayment} 
-                  className={`checkout-step-pill ${checkoutStep === 2 ? 'active' : ''}`}
-                  title="Proceed to Payment"
+                  className={`checkout-step-icon-btn ${checkoutStep === 2 ? 'active' : ''}`}
+                  title="Step 2: Payment & Review"
+                  aria-label="Step 2: Payment & Review"
                 >
-                  <span className="step-pill-num">2</span>
-                  <span className="step-pill-text">2. Payment</span>
+                  <CreditCard size={14} />
+                  <span className="step-icon-label">Payment</span>
                 </button>
               </div>
 
-              {/* Close Button Pinned at Top Right */}
+              {/* Close Button Pinned at Top Right — Perfectly Centered and Never Cut Off */}
               <button 
                 type="button" 
-                className="modal-close-btn" 
+                className="checkout-close-btn" 
                 onClick={onClose}
                 aria-label="Close checkout"
-                style={{ width: '32px', height: '32px', flexShrink: 0 }}
               >
-                <X size={18} strokeWidth={2} />
+                <X size={16} strokeWidth={2.2} />
               </button>
             </div>
 
@@ -354,75 +353,6 @@ export default function CheckoutModal({
                       ══════════════════════════════════════════════════════════ */}
                   {checkoutStep === 1 && (
                     <>
-                      {/* 1-CLICK EXPRESS CHECKOUT ROW */}
-                      <div style={{
-                        padding: '16px',
-                        backgroundColor: '#FAF7F2',
-                        borderRadius: '12px',
-                        border: '1px solid var(--color-border)',
-                        textAlign: 'center',
-                        boxSizing: 'border-box'
-                      }}>
-                        <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#8C8074', marginBottom: '10px' }}>
-                          Express 1-Click Checkout
-                        </span>
-                        <div className="checkout-row-2">
-                          <button
-                            type="button"
-                            onClick={(e) => handlePlaceOrder(e, 'apple_pay')}
-                            disabled={isSubmitting}
-                            style={{
-                              padding: '11px 16px',
-                              backgroundColor: '#000000',
-                              color: '#FFFFFF',
-                              border: 'none',
-                              borderRadius: '8px',
-                              fontSize: '13px',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '6px',
-                              transition: 'opacity 0.2s'
-                            }}
-                          >
-                            <span style={{ fontSize: '15px' }}></span> Pay
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => handlePlaceOrder(e, 'google_pay')}
-                            disabled={isSubmitting}
-                            style={{
-                              padding: '11px 16px',
-                              backgroundColor: '#FFFFFF',
-                              color: '#3C4043',
-                              border: '1px solid #DADCE0',
-                              borderRadius: '8px',
-                              fontSize: '13px',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '6px',
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.06)'
-                            }}
-                          >
-                            <span style={{ fontWeight: 700, color: '#4285F4' }}>G</span>Pay
-                          </button>
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '14px' }}>
-                          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
-                          <span style={{ fontSize: '10.5px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            or complete delivery details
-                          </span>
-                          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
-                        </div>
-                      </div>
-
                       {/* 1. Contact Information Card */}
                       <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
                         <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
