@@ -479,6 +479,7 @@ export default function App() {
         }}
         onToggleWishlist={handleToggleSave}
         wishlist={wishlist}
+        onAddToCart={handleAddToCart}
       />
 
       {/* FULL PRODUCT DETAILS & CUSTOMIZATION MODAL */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Play, Pause, Volume2, VolumeX, ArrowRight, Eye, Heart } from 'lucide-react';
+import { X, Play, Pause, Volume2, VolumeX, ArrowRight, Eye, Heart, ShoppingBag, Check } from 'lucide-react';
 
 /**
  * ============================================================================
@@ -15,11 +15,31 @@ export default function ProductQuickViewModal({
   onClose, 
   onOpenDetails,
   onToggleWishlist,
-  wishlist = []
+  wishlist = [],
+  onAddToCart
 }) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+  const [added, setAdded] = useState(false);
   const videoRef = useRef(null);
+
+  const handleQuickAdd = (e) => {
+    e.stopPropagation();
+    if (onAddToCart && product) {
+      const defaultLength = product.options?.lengths?.[0] || '';
+      const defaultLace = product.options?.laceTypes?.[0] || '';
+      const defaultDensity = product.options?.densities?.[0] || '';
+      onAddToCart({
+        ...product,
+        selectedLength: defaultLength,
+        selectedLace: defaultLace,
+        selectedDensity: defaultDensity,
+        cartId: `${product.id}-${defaultLength}-${defaultLace}-${defaultDensity}`
+      });
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1400);
+    }
+  };
 
   // Reset playback and mute state on modal open
   useEffect(() => {
@@ -93,44 +113,6 @@ export default function ProductQuickViewModal({
         aria-modal="true" 
         aria-label={`${product.name} Video Quick View`}
       >
-        {/* Floating Lookbook / Wishlist Button */}
-        <button 
-          type="button" 
-          className="pure-video-wishlist-btn" 
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onToggleWishlist) onToggleWishlist(product);
-          }}
-          aria-label={isWishlisted ? `Remove ${product.name} from lookbook` : `Save ${product.name} to lookbook`}
-          title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
-          style={{
-            position: 'absolute',
-            top: '14px',
-            left: '14px',
-            width: '38px',
-            height: '38px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(28, 22, 20, 0.65)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            border: isWishlisted ? '1px solid var(--color-gold)' : '1px solid rgba(255, 255, 255, 0.25)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            zIndex: 30,
-            color: isWishlisted ? 'var(--color-gold)' : '#FFFFFF',
-            transition: 'all 0.2s ease',
-            padding: 0
-          }}
-        >
-          <Heart 
-            size={18} 
-            fill={isWishlisted ? "var(--color-gold)" : "none"} 
-            color={isWishlisted ? "var(--color-gold)" : "#FFFFFF"} 
-          />
-        </button>
-
         {/* Floating Close Button */}
         <button 
           type="button" 
@@ -187,8 +169,51 @@ export default function ProductQuickViewModal({
             </div>
           )}
 
-          {/* Floating Sound & Play Buttons */}
+          {/* Floating Action Controls Rail: Heart, Cart, Play/Pause, Mute */}
           <div className="pure-video-floating-controls" onClick={(e) => e.stopPropagation()}>
+            {/* Heart / Lookbook */}
+            <button
+              type="button"
+              className={`pure-ctrl-btn ${isWishlisted ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onToggleWishlist) onToggleWishlist(product);
+              }}
+              aria-label={isWishlisted ? `Remove ${product.name} from lookbook` : `Save ${product.name} to lookbook`}
+              title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
+              style={{
+                color: isWishlisted ? 'var(--color-gold)' : undefined,
+                borderColor: isWishlisted ? 'var(--color-gold)' : undefined
+              }}
+            >
+              <Heart 
+                size={16} 
+                fill={isWishlisted ? "var(--color-gold)" : "none"} 
+                color={isWishlisted ? "var(--color-gold)" : "currentColor"} 
+              />
+            </button>
+
+            {/* Quick Add to Bag Cart Button */}
+            <button
+              type="button"
+              className={`pure-ctrl-btn ${added ? 'added' : ''}`}
+              onClick={handleQuickAdd}
+              aria-label={`Quick add ${product.name} to bag`}
+              title="Quick Add to Bag"
+              style={{
+                color: added ? '#2E7D32' : undefined,
+                borderColor: added ? '#2E7D32' : undefined,
+                backgroundColor: added ? 'rgba(46, 125, 50, 0.3)' : undefined
+              }}
+            >
+              {added ? (
+                <Check size={16} strokeWidth={2.4} color="#2E7D32" />
+              ) : (
+                <ShoppingBag size={15} strokeWidth={1.8} />
+              )}
+            </button>
+
+            {/* Play / Pause */}
             <button
               type="button"
               className="pure-ctrl-btn"
@@ -199,6 +224,7 @@ export default function ProductQuickViewModal({
               {isPlaying ? <Pause size={16} /> : <Play size={16} fill="currentColor" />}
             </button>
 
+            {/* Mute / Unmute */}
             <button
               type="button"
               className="pure-ctrl-btn"
