@@ -31,7 +31,7 @@ export default function TrackOrderModal({ isOpen, onClose }) {
         <div className="track-header">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-              <span className="section-label" style={{ margin: 0 }}>Atelier Dispatch</span>
+              <span className="section-label" style={{ margin: 0 }}>Order Dispatch</span>
               <span style={{ fontSize: '11px', color: '#8C8074' }}>• Realtime Tracking</span>
             </div>
             <h2 className="track-title">
@@ -128,14 +128,14 @@ export default function TrackOrderModal({ isOpen, onClose }) {
                   </div>
                 </div>
 
-                {/* Step 2: Atelier Customization */}
+                {/* Step 2: Customization & Hand-Styling */}
                 <div className="track-timeline-step">
                   <div className="track-step-dot" style={{ backgroundColor: '#2E7D32' }}>
                     <CheckCircle2 size={13} />
                   </div>
                   <div>
                     <strong className="track-step-title">
-                      London Atelier Hand-Plucking &amp; Styling
+                      London Studio Hand-Plucking &amp; Styling
                     </strong>
                     <span className="track-step-desc">
                       Knots bleached, hairline plucked, and raw hair steam-treated.

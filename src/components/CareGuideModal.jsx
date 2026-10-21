@@ -24,7 +24,7 @@ export default function CareGuideModal({ isOpen, onClose }) {
         <div className="care-modal-header">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-              <span className="section-label" style={{ margin: 0 }}>Atelier Preservation</span>
+              <span className="section-label" style={{ margin: 0 }}>Hair Preservation</span>
               <span style={{ fontSize: '11px', color: '#8C8074' }}>• Raw Hair Maintenance</span>
             </div>
             <h2 className="care-modal-title">

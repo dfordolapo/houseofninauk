@@ -31,7 +31,7 @@ export default function SilkPairingAtelier({ onQuickView, onAddToCart }) {
   };
 
   return (
-    <section id="silk-pairing-atelier" className="section-wrapper pairing-atelier-section" aria-label="Silk &amp; Lace Pairing Studio">
+    <section id="silk-pairing-studio" className="section-wrapper pairing-atelier-section" aria-label="Silk &amp; Lace Pairing Studio">
       <div className="container">
         
         {/* Header */}

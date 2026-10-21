@@ -201,7 +201,7 @@ export const INSTA_POSTS = [
   }
 ];
 
-// CURATED PRODUCTS: Wigs and Luxury Silk Hair Scarves (UK Atelier Boutique)
+// CURATED PRODUCTS: Wigs and Luxury Silk Hair Scarves (UK Boutique)
 export const FEATURED_PRODUCTS = [
   {
     id: "hn-01",

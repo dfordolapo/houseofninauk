@@ -209,11 +209,11 @@ export default function Footer({
                 </li>
                 <li>
                   <a 
-                    href="#silk-pairing-atelier" 
+                    href="#silk-pairing-studio" 
                     className="footer-nav-link"
                     onClick={(e) => {
                       e.preventDefault();
-                      scrollToSection('silk-pairing-atelier');
+                      scrollToSection('silk-pairing-studio');
                     }}
                   >
                     Silk Scarves
@@ -447,7 +447,7 @@ export default function Footer({
                   <button 
                     type="button"
                     className="mobile-nav-link"
-                    onClick={() => scrollToSection('silk-pairing-atelier')}
+                    onClick={() => scrollToSection('silk-pairing-studio')}
                   >
                     <span className="mobile-nav-link-text">Silk Scarves</span>
                     <span className="mobile-nav-link-arrow">›</span>

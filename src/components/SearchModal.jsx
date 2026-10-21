@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { X, Search, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Search, ChevronRight } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 
-const POPULAR_SEARCHES = ['Wigs', 'Scarves', 'Bob', 'Bone Straight', 'Body Wave', 'Silk'];
+const POPULAR_SEARCHES = ['All Wigs', 'Silk Scarves', 'Glass Bob', 'Bone Straight', 'Body Wave', 'HD Lace'];
 
 export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelectCategory }) {
   const [query, setQuery] = useState('');
-
 
   if (!isOpen) return null;
 
@@ -15,115 +14,157 @@ export default function SearchModal({ isOpen, onClose, onSelectProduct, onSelect
     : FEATURED_PRODUCTS.filter(p => 
         p.name.toLowerCase().includes(query.toLowerCase()) || 
         p.category.toLowerCase().includes(query.toLowerCase()) ||
-        p.description.toLowerCase().includes(query.toLowerCase())
+        (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
       );
 
   return (
-    <div className={`modal-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
+    <div className={`search-modal-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
       <div 
-        className="modal-dialog" 
+        className="search-modal-dialog" 
         onClick={(e) => e.stopPropagation()}
         role="dialog" 
         aria-modal="true" 
-        aria-label="Search House of Nina"
-        style={{ maxWidth: '640px' }}
+        aria-label="Search House of Nina Collection"
       >
-        <button 
-          type="button" 
-          className="modal-close-btn" 
-          onClick={onClose}
-          aria-label="Close search"
-        >
-          <X size={20} />
-        </button>
+        {/* HEADER */}
+        <div className="search-modal-header">
+          <div className="search-modal-header-left">
+            <div className="search-modal-badge-row">
+              <span className="search-modal-brand-tag">House of Nina</span>
+              <span className="search-modal-brand-sub">• Collection Search</span>
+            </div>
+            <h2 className="search-modal-title">
+              Search Collection
+            </h2>
+          </div>
 
-        <div className="modal-content-inner" style={{ padding: '4px 32px 32px' }}>
-          <div style={{ marginBottom: '24px' }}>
+          <button 
+            type="button" 
+            className="search-modal-close-btn" 
+            onClick={onClose}
+            aria-label="Close search"
+          >
+            <X size={17} strokeWidth={2} />
+          </button>
+        </div>
 
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 600, margin: '4px 0 16px 0' }}>
-            Search wigs & silk scarves
-          </h2>
-          <div style={{ position: 'relative' }}>
-            <Search size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-espresso-muted)' }} />
+        {/* SEARCH BODY */}
+        <div className="search-modal-body">
+          {/* SEARCH INPUT */}
+          <div className="search-input-wrapper">
+            <Search size={16} className="search-input-icon" />
             <input
               type="text"
-              className="newsletter-input"
-              style={{ width: '100%', paddingLeft: '44px' }}
-              placeholder="Try 'Bob', 'Bone straight', 'Silk scarf'..."
+              className="search-input-field"
+              placeholder="Search style, length, or texture..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               autoFocus
             />
-          </div>
-        </div>
-
-        {/* Quick Style Category Suggestions */}
-        {query.trim() === '' && (
-          <div>
-            <p style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--color-espresso-muted)', marginBottom: '10px' }}>
-              Popular Searches
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {POPULAR_SEARCHES.map(cat => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    if (onSelectCategory) onSelectCategory(cat);
-                  }}
-                  className="option-chip"
-                  style={{ padding: '6px 12px', cursor: 'pointer' }}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Search Results */}
-        {query.trim() !== '' && (
-          <div>
-            <p style={{ fontSize: '12px', color: 'var(--color-espresso-muted)', marginBottom: '12px' }}>
-              Found {filteredProducts.length} result(s)
-            </p>
-            {filteredProducts.length === 0 ? (
-              <p style={{ fontSize: '14px', color: 'var(--color-espresso-muted)', textAlign: 'center', padding: '24px 0' }}>
-                No styles found matching "{query}". Try another texture or keyword.
-              </p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto' }}>
-                {filteredProducts.map(prod => (
-                  <div
-                    key={prod.id}
-                    onClick={() => {
-                      onClose();
-                      onSelectProduct(prod);
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '8px',
-                      borderRadius: '10px',
-                      backgroundColor: 'var(--color-white)',
-                      cursor: 'pointer',
-                      border: '1px solid var(--color-border-light)'
-                    }}
-                  >
-                    <img src={prod.image} alt={prod.name} style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '6px' }} />
-                    <div style={{ flexGrow: 1 }}>
-                      <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', margin: 0, fontWeight: 600 }}>{prod.name}</h4>
-                      <span style={{ fontSize: '12px', color: 'var(--color-dusty-rose)' }}>{prod.category} • £{prod.price}</span>
-                    </div>
-                    <ArrowRight size={16} color="var(--color-espresso-muted)" />
-                  </div>
-                ))}
-              </div>
+            {query.trim() !== '' && (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="search-input-clear-btn"
+                aria-label="Clear search"
+              >
+                <X size={13} strokeWidth={2.2} />
+              </button>
             )}
           </div>
-        )}
+
+          {/* POPULAR SEARCH SUGGESTIONS */}
+          {query.trim() === '' && (
+            <div className="search-popular-section">
+              <div className="search-section-label">
+                Popular Searches
+              </div>
+
+              <div className="search-chip-group">
+                {POPULAR_SEARCHES.map(cat => {
+                  const filterValue = cat === 'All Wigs' ? 'All' : cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        if (onSelectCategory) onSelectCategory(filterValue);
+                      }}
+                      className="search-popular-chip"
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* SEARCH RESULTS */}
+          {query.trim() !== '' && (
+            <div className="search-results-section">
+              <div className="search-results-meta-header">
+                <span className="search-results-count">
+                  {filteredProducts.length} {filteredProducts.length === 1 ? 'unit found' : 'units found'}
+                </span>
+                <span className="search-results-hint">
+                  Tap unit to view
+                </span>
+              </div>
+
+              {filteredProducts.length === 0 ? (
+                <div className="search-empty-state">
+                  <p className="search-empty-title">
+                    No units matching "{query}"
+                  </p>
+                  <p className="search-empty-sub">
+                    Try searching for "Bob", "Straight", "Body Wave", or "Silk"
+                  </p>
+                </div>
+              ) : (
+                <div className="search-results-list">
+                  {filteredProducts.map(prod => (
+                    <div
+                      key={prod.id}
+                      onClick={() => {
+                        onClose();
+                        onSelectProduct(prod);
+                      }}
+                      className="search-result-card"
+                    >
+                      <img 
+                        src={prod.image} 
+                        alt={prod.name} 
+                        className="search-result-thumb" 
+                      />
+
+                      <div className="search-result-info">
+                        <h4 className="search-result-name">
+                          {prod.name}
+                        </h4>
+                        <div className="search-result-meta-row">
+                          <span className="search-result-price">
+                            £{prod.price}
+                          </span>
+                          <span className="search-result-sep">•</span>
+                          <span className="search-result-tag">{prod.category}</span>
+                          {prod.lengths && (
+                            <>
+                              <span className="search-result-sep">•</span>
+                              <span className="search-result-tag">{prod.lengths[0]}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <ChevronRight size={16} className="search-result-arrow" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

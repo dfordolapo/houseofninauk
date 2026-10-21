@@ -102,11 +102,11 @@ export default function StoryFeature() {
                 <ArrowRight size={16} />
               </a>
               <a 
-                href="#silk-pairing-atelier" 
+                href="#silk-pairing-studio" 
                 className="story-secondary-link"
                 onClick={(e) => {
                   e.preventDefault();
-                  const target = document.getElementById('silk-pairing-atelier');
+                  const target = document.getElementById('silk-pairing-studio');
                   if (target) target.scrollIntoView({ behavior: 'smooth' });
                 }}
               >

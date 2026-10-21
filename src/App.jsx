@@ -23,6 +23,7 @@ import LookReviewsModal from './components/LookReviewsModal';
 import LegalModal from './components/LegalModal';
 import TrackOrderModal from './components/TrackOrderModal';
 import FaqModal from './components/FaqModal';
+import CheckoutModal from './components/CheckoutModal';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
@@ -32,9 +33,11 @@ export default function App() {
   // Mobile drawer state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  // Cart state - loaded from localStorage per browser
+  // Cart & Wishlist states - loaded from localStorage per browser
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutData, setCheckoutData] = useState({});
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -97,6 +100,7 @@ export default function App() {
     isMobileMenuOpen || 
     isCartOpen || 
     isWishlistOpen || 
+    isCheckoutOpen ||
     quickViewProduct || 
     detailsProduct || 
     isCareGuideOpen || 
@@ -276,6 +280,34 @@ export default function App() {
     setCartItems(prev => prev.filter(item => item.cartId !== cartId));
   };
 
+  const handleUpdateQuantity = (cartId, newQuantity) => {
+    if (newQuantity <= 0) {
+      handleRemoveCartItem(cartId);
+      return;
+    }
+    setCartItems(prev => prev.map(item => 
+      item.cartId === cartId 
+        ? { ...item, quantity: newQuantity } 
+        : item
+    ));
+  };
+
+  const handleMoveToWishlist = (item) => {
+    handleToggleSave(item);
+    handleRemoveCartItem(item.cartId || item.id);
+  };
+
+  const handleProceedToCheckout = (data = {}) => {
+    setCheckoutData(data);
+    setIsCartOpen(false);
+    setIsCheckoutOpen(true);
+  };
+
+  const handleMoveAllToBag = () => {
+    setIsWishlistOpen(false);
+    setIsCartOpen(true);
+  };
+
   const handleSelectCategory = (catName) => {
     setActiveFilter(catName);
     const elem = document.getElementById('featured-products');
@@ -400,7 +432,10 @@ export default function App() {
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
         onRemoveItem={handleRemoveCartItem}
+        onUpdateQuantity={handleUpdateQuantity}
+        onMoveToWishlist={handleMoveToWishlist}
         onClearCart={() => setCartItems([])}
+        onProceedToCheckout={handleProceedToCheckout}
         onOpenLegal={(tab) => setLegalModalTab(tab)}
       />
 
@@ -410,6 +445,23 @@ export default function App() {
         wishlist={wishlist}
         onRemoveItem={(id) => setWishlist(prev => prev.filter(item => item.id !== id))}
         onAddToCart={handleAddToCart}
+        onMoveAllToBag={handleMoveAllToBag}
+      />
+
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        cartItems={cartItems}
+        checkoutData={checkoutData}
+        onClearCart={() => setCartItems([])}
+        onOpenCart={() => {
+          setIsCheckoutOpen(false);
+          setIsCartOpen(true);
+        }}
+        onOpenTrackOrder={() => {
+          setIsCheckoutOpen(false);
+          setIsTrackOrderOpen(true);
+        }}
       />
 
       {/* PURE VIDEO QUICK VIEW MODAL (VIDEO ONLY) */}

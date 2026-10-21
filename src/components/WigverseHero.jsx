@@ -188,7 +188,7 @@ export default function WigverseHero({ onEnterStore }) {
             <div className="hero-house-img-wrap">
               <img
                 src="/images/welcome-house.webp"
-                alt="House of Nina - Welcome to our House Luxury Atelier"
+                alt="House of Nina - Welcome to our House"
                 className="hero-house-img"
                 loading="eager"
               />

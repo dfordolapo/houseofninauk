@@ -20,7 +20,7 @@ const FAQ_ITEMS = [
   {
     category: "Bespoke Services",
     question: "How do Wig Revamping and Restyling services work?",
-    answer: "Our revamp service restores your existing unit to salon-fresh glory. We deep-cleanse, deep-condition with keratin, replace elastic bands if needed, re-pluck the hairline, and precision cut or bone-straighten/curl your unit. Simply book on our Site, mail your unit to our London atelier, and we return it within 5–7 working days."
+    answer: "Our revamp service restores your existing unit to salon-fresh glory. We deep-cleanse, deep-condition with keratin, replace elastic bands if needed, re-pluck the hairline, and precision cut or bone-straighten/curl your unit. Simply book on our Site, mail your unit to our London studio, and we return it within 5–7 working days."
   },
   {
     category: "Shipping & Delivery",
@@ -57,7 +57,7 @@ export default function FaqModal({ isOpen, onClose }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
               <span className="section-label" style={{ margin: 0 }}>Client Support</span>
-              <span style={{ fontSize: '11px', color: '#8C8074' }}>• House of Nina Atelier</span>
+              <span style={{ fontSize: '11px', color: '#8C8074' }}>• House of Nina London</span>
             </div>
             <h2 className="faq-modal-title">
               Frequently Asked Questions
@@ -126,7 +126,7 @@ export default function FaqModal({ isOpen, onClose }) {
                 Have a bespoke inquiry or need fitting advice?
               </strong>
               <span style={{ fontSize: '12px', color: '#685C50' }}>
-                Our London atelier stylists are available on WhatsApp and email.
+                Our London stylists are available on WhatsApp and email.
               </span>
             </div>
             <div className="faq-quick-help-buttons">
@@ -138,7 +138,7 @@ export default function FaqModal({ isOpen, onClose }) {
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
                 <MessageCircle size={13} />
-                <span>WhatsApp Atelier</span>
+                <span>WhatsApp Concierge</span>
               </a>
               <a 
                 href="mailto:houseofnina2026@gmail.com" 
