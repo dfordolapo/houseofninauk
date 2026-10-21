@@ -1891,6 +1891,49 @@ h1, h2, h3,
   padding: 3px 8px;
   border-radius: 4px;
   border: 1px solid var(--color-border-light);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+button.option-chip {
+  padding: 6px 13px;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  color: var(--color-deep-espresso);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  line-height: 1.25;
+  user-select: none;
+}
+
+button.option-chip:hover:not(.selected) {
+  border-color: var(--color-deep-espresso);
+  background-color: #F8F5F0;
+  color: var(--color-deep-espresso);
+  transform: translateY(-1px);
+}
+
+.option-chip.selected,
+button.option-chip.selected {
+  background-color: var(--color-deep-espresso) !important;
+  color: #FAF7F0 !important;
+  border-color: var(--color-deep-espresso) !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(36, 28, 25, 0.2);
+  transform: translateY(-1px);
+}
+
+button.option-chip:active {
+  transform: translateY(0) scale(0.97);
+}
+
+button.option-chip:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
 }
 
 .product-bottom-row {

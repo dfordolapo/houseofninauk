@@ -283,7 +283,7 @@ export default function ProductDetailsModal({
                       type="button"
                       className={`option-chip ${selectedLength === len ? 'selected' : ''}`}
                       onClick={() => setSelectedLength(len)}
-                      style={{ padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}
+                      aria-pressed={selectedLength === len}
                     >
                       {len}
                     </button>
@@ -305,7 +305,7 @@ export default function ProductDetailsModal({
                       type="button"
                       className={`option-chip ${selectedLace === lace ? 'selected' : ''}`}
                       onClick={() => setSelectedLace(lace)}
-                      style={{ padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}
+                      aria-pressed={selectedLace === lace}
                     >
                       {lace}
                     </button>
@@ -327,7 +327,7 @@ export default function ProductDetailsModal({
                       type="button"
                       className={`option-chip ${selectedDensity === density ? 'selected' : ''}`}
                       onClick={() => setSelectedDensity(density)}
-                      style={{ padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}
+                      aria-pressed={selectedDensity === density}
                     >
                       {density}
                     </button>
