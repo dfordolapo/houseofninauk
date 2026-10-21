@@ -587,16 +587,17 @@ export default function CartDrawer({
                 <span style={{ 
                   display: 'inline-flex', 
                   alignItems: 'center', 
-                  gap: '3px',
+                  justifyContent: 'center',
                   padding: '3px 7px', 
                   borderRadius: '4px', 
-                  border: '1px solid #D0D0D0', 
-                  backgroundColor: '#FFFFFF', 
+                  border: '1px solid #FFD0DC', 
+                  backgroundColor: '#FFB3C7', 
                   fontSize: '10px', 
-                  fontWeight: 700, 
-                  color: '#111111'
+                  fontWeight: 800, 
+                  letterSpacing: '0.02em',
+                  color: '#0A0A0A'
                 }}>
-                  <span></span>Pay
+                  Klarna.
                 </span>
               </div>
               <span style={{ fontSize: '10.5px', color: '#8C8074', letterSpacing: '0.02em' }}>

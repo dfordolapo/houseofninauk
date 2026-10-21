@@ -99,6 +99,20 @@ export default function CheckoutModal({
 
   if (!isOpen) return null;
 
+  const standardInputStyle = {
+    width: '100%',
+    height: '42px',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    border: '1px solid var(--color-border)',
+    fontSize: '13px',
+    outline: 'none',
+    boxSizing: 'border-box',
+    backgroundColor: '#FFFFFF',
+    color: 'var(--color-deep-espresso)',
+    transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+  };
+
   // Currency multiplier / symbol
   const isNgn = formData.currency === "NGN";
   const currencySymbol = isNgn ? "₦" : "£";
@@ -279,14 +293,14 @@ export default function CheckoutModal({
           <>
             {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
             <div className="checkout-modal-header">
-              <div className="checkout-header-branding" style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+              <div className="checkout-header-branding" style={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: '1 1 0' }}>
                 <span className="checkout-brand-title">
                   House of Nina
                 </span>
               </div>
 
               {/* Luxury Compact Icon Step Indicator (Never Spills or Overflows) */}
-              <div className="checkout-step-icons">
+              <div className="checkout-step-icons" style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'center' }}>
                 <button 
                   type="button" 
                   onClick={() => setCheckoutStep(1)} 
@@ -312,15 +326,17 @@ export default function CheckoutModal({
                 </button>
               </div>
 
-              {/* Close Button Pinned at Top Right — Perfectly Centered and Never Cut Off */}
-              <button 
-                type="button" 
-                className="checkout-close-btn" 
-                onClick={onClose}
-                aria-label="Close checkout"
-              >
-                <X size={16} strokeWidth={2.2} />
-              </button>
+              {/* Close Button Pinned at Top Right — Perfectly Centered in its flex column and Never Cut Off */}
+              <div style={{ flex: '1 1 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                <button 
+                  type="button" 
+                  className="checkout-close-btn" 
+                  onClick={onClose}
+                  aria-label="Close checkout"
+                >
+                  <X size={16} strokeWidth={2.2} />
+                </button>
+              </div>
             </div>
 
             {/* SCROLLABLE CHECKOUT BODY */}
@@ -361,7 +377,7 @@ export default function CheckoutModal({
                         
                         <div className="checkout-row-2">
                           <div>
-                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                               Email Address
                             </label>
                             <input
@@ -370,12 +386,12 @@ export default function CheckoutModal({
                               onChange={(e) => handleChange('email', e.target.value)}
                               placeholder="you@domain.com"
                               required
-                              style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                              style={standardInputStyle}
                             />
                           </div>
 
                           <div>
-                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                               Phone Number (Delivery SMS)
                             </label>
                             <input
@@ -384,7 +400,7 @@ export default function CheckoutModal({
                               onChange={(e) => handleChange('phone', e.target.value)}
                               placeholder="+44 7776 000000"
                               required
-                              style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                              style={standardInputStyle}
                             />
                           </div>
                         </div>
@@ -507,7 +523,7 @@ export default function CheckoutModal({
                         {(isEditingAddress || selectedAddressId === 'new') && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                             <div>
-                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                                 Recipient Full Name
                               </label>
                               <input
@@ -516,12 +532,12 @@ export default function CheckoutModal({
                                 onChange={(e) => handleChange('fullName', e.target.value)}
                                 placeholder="Recipient full name"
                                 required
-                                style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                style={standardInputStyle}
                               />
                             </div>
 
                             <div>
-                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                                 Street Address &amp; Suite / Apt
                               </label>
                               <input
@@ -530,13 +546,13 @@ export default function CheckoutModal({
                                 onChange={(e) => handleChange('address', e.target.value)}
                                 placeholder="House number, street name, apartment"
                                 required
-                                style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                style={standardInputStyle}
                               />
                             </div>
 
                             <div className="checkout-row-3">
                               <div>
-                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                                   City
                                 </label>
                                 <input
@@ -545,12 +561,12 @@ export default function CheckoutModal({
                                   onChange={(e) => handleChange('city', e.target.value)}
                                   placeholder="City"
                                   required
-                                  style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                  style={standardInputStyle}
                                 />
                               </div>
 
                               <div>
-                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                                   County / State
                                 </label>
                                 <input
@@ -559,12 +575,12 @@ export default function CheckoutModal({
                                   onChange={(e) => handleChange('state', e.target.value)}
                                   placeholder="Greater London"
                                   required
-                                  style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                  style={standardInputStyle}
                                 />
                               </div>
 
                               <div>
-                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                                   Postcode
                                 </label>
                                 <input
@@ -573,7 +589,7 @@ export default function CheckoutModal({
                                   onChange={(e) => handleChange('postalCode', e.target.value)}
                                   placeholder="W1J 8AJ"
                                   required
-                                  style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                  style={standardInputStyle}
                                 />
                               </div>
                             </div>
@@ -662,19 +678,19 @@ export default function CheckoutModal({
                               cursor: 'pointer',
                               boxSizing: 'border-box',
                               width: '100%',
-                              minWidth: 0,
-                              gap: '10px',
-                              flexWrap: 'wrap'
+                              minHeight: '58px',
+                              gap: '12px'
                             }}
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
                               <input 
                                 type="radio" 
                                 name="deliveryMethod"
                                 checked={formData.deliveryMethod === 'standard'}
                                 onChange={() => {}}
+                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
-                              <div>
+                              <div style={{ minWidth: 0 }}>
                                 <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
                                   Royal Mail 48 Tracked
                                 </strong>
@@ -683,7 +699,7 @@ export default function CheckoutModal({
                                 </span>
                               </div>
                             </div>
-                            <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#2E7D32' }}>
+                            <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#2E7D32', flexShrink: 0 }}>
                               Complimentary
                             </span>
                           </label>
@@ -703,19 +719,19 @@ export default function CheckoutModal({
                               cursor: 'pointer',
                               boxSizing: 'border-box',
                               width: '100%',
-                              minWidth: 0,
-                              gap: '10px',
-                              flexWrap: 'wrap'
+                              minHeight: '58px',
+                              gap: '12px'
                             }}
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
                               <input 
                                 type="radio" 
                                 name="deliveryMethod"
                                 checked={formData.deliveryMethod === 'express'}
                                 onChange={() => {}}
+                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
-                              <div>
+                              <div style={{ minWidth: 0 }}>
                                 <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
                                   Royal Mail Special Delivery (Guaranteed 1pm)
                                 </strong>
@@ -724,7 +740,7 @@ export default function CheckoutModal({
                                 </span>
                               </div>
                             </div>
-                            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
+                            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-deep-espresso)', flexShrink: 0 }}>
                               {formatPrice(expressShippingCost)}
                             </span>
                           </label>
@@ -738,9 +754,13 @@ export default function CheckoutModal({
                         className="btn-primary-editorial"
                         style={{
                           width: '100%',
-                          padding: '14px 18px',
+                          height: '48px',
+                          display: 'flex',
+                          alignItems: 'center',
                           justifyContent: 'center',
-                          fontSize: '14px',
+                          gap: '8px',
+                          padding: '0 18px',
+                          fontSize: '13.5px',
                           fontWeight: 600,
                           cursor: 'pointer'
                         }}
@@ -858,14 +878,15 @@ export default function CheckoutModal({
                           }}>
                             <label 
                               onClick={() => handleChange('paymentMethod', 'card')}
-                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', flexWrap: 'wrap', gap: '8px' }}
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
                             >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
                                 <input 
                                   type="radio" 
                                   name="paymentMethod"
                                   checked={formData.paymentMethod === 'card'}
                                   onChange={() => {}}
+                                  style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                                 />
                                 <div>
                                   <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
@@ -877,7 +898,7 @@ export default function CheckoutModal({
                                 </div>
                               </div>
 
-                              <div style={{ display: 'flex', gap: '4px' }}>
+                              <div style={{ display: 'flex', gap: '4px', flexShrink: 0, alignItems: 'center' }}>
                                 <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #D0D8E4', color: '#1A1F71' }}>VISA</span>
                                 <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #E8DBD0', color: '#EB001B' }}>MC</span>
                                 <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #C7DFEE', color: '#006FCF' }}>AMEX</span>
@@ -885,48 +906,48 @@ export default function CheckoutModal({
                             </label>
 
                             {formData.paymentMethod === 'card' && (
-                              <div style={{ padding: '12px 14px 16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FFFFFF' }}>
+                              <div style={{ padding: '14px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FFFFFF' }}>
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '3px' }}>Cardholder Name</label>
+                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Cardholder Name</label>
                                   <input
                                     type="text"
                                     value={formData.cardName}
                                     onChange={(e) => handleChange('cardName', e.target.value)}
                                     placeholder="Name on card"
-                                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                    style={standardInputStyle}
                                   />
                                 </div>
 
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '3px' }}>Card Number</label>
+                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Card Number</label>
                                   <input
                                     type="text"
                                     value={formData.cardNumber}
                                     onChange={(e) => handleChange('cardNumber', e.target.value)}
                                     placeholder="•••• •••• •••• 4892"
-                                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                    style={standardInputStyle}
                                   />
                                 </div>
 
                                 <div className="checkout-row-2">
                                   <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '3px' }}>Expiry</label>
+                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Expiry</label>
                                     <input
                                       type="text"
                                       value={formData.cardExpiry}
                                       onChange={(e) => handleChange('cardExpiry', e.target.value)}
                                       placeholder="MM/YY"
-                                      style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                      style={standardInputStyle}
                                     />
                                   </div>
                                   <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '3px' }}>CVC</label>
+                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>CVC</label>
                                     <input
                                       type="text"
                                       value={formData.cardCvc}
                                       onChange={(e) => handleChange('cardCvc', e.target.value)}
                                       placeholder="•••"
-                                      style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                                      style={standardInputStyle}
                                     />
                                   </div>
                                 </div>
@@ -947,16 +968,17 @@ export default function CheckoutModal({
                               borderColor: formData.paymentMethod === 'klarna' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
                               backgroundColor: formData.paymentMethod === 'klarna' ? '#FAF8F5' : '#FFFFFF',
                               cursor: 'pointer',
-                              flexWrap: 'wrap',
-                              gap: '8px'
+                              gap: '12px',
+                              minHeight: '56px'
                             }}
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
                               <input 
                                 type="radio" 
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'klarna'}
                                 onChange={() => {}}
+                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
                                 <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
@@ -967,7 +989,7 @@ export default function CheckoutModal({
                                 </span>
                               </div>
                             </div>
-                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', background: '#FFB3C7', color: '#0A0A0A' }}>
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', background: '#FFB3C7', color: '#0A0A0A', flexShrink: 0 }}>
                               Klarna.
                             </span>
                           </label>
@@ -982,14 +1004,15 @@ export default function CheckoutModal({
                           }}>
                             <label 
                               onClick={() => handleChange('paymentMethod', 'bank')}
-                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', flexWrap: 'wrap', gap: '8px' }}
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
                             >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
                                 <input 
                                   type="radio" 
                                   name="paymentMethod"
                                   checked={formData.paymentMethod === 'bank'}
                                   onChange={() => {}}
+                                  style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                                 />
                                 <div>
                                   <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
@@ -1000,27 +1023,39 @@ export default function CheckoutModal({
                                   </span>
                                 </div>
                               </div>
-                              <Building2 size={16} color="#8C8074" />
+                              <Building2 size={16} color="#8C8074" style={{ flexShrink: 0 }} />
                             </label>
 
                             {formData.paymentMethod === 'bank' && (
                               <div style={{
-                                padding: '12px 14px',
+                                padding: '14px',
                                 borderTop: '1px solid var(--color-border-light)',
                                 backgroundColor: '#FAF7F2',
                                 fontSize: '12px',
                                 color: '#685C50'
                               }}>
-                                <span style={{ display: 'block', fontWeight: 700, color: 'var(--color-deep-espresso)', marginBottom: '6px' }}>
+                                <span style={{ display: 'block', fontWeight: 700, color: 'var(--color-deep-espresso)', marginBottom: '8px' }}>
                                   House of Nina UK Business Bank Details:
                                 </span>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '11.5px' }}>
-                                  <div><strong>Bank:</strong> Barclays UK</div>
-                                  <div><strong>Sort Code:</strong> 20-04-15</div>
-                                  <div><strong>Account No:</strong> 83920194</div>
-                                  <div><strong>Beneficiary:</strong> House of Nina UK Ltd</div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
+                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bank</span>
+                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>Barclays UK</strong>
+                                  </div>
+                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sort Code</span>
+                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>20-04-15</strong>
+                                  </div>
+                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Account No.</span>
+                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>83920194</strong>
+                                  </div>
+                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Beneficiary</span>
+                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>House of Nina UK Ltd</strong>
+                                  </div>
                                 </div>
-                                <span style={{ display: 'block', fontSize: '10.5px', color: '#8C8074', marginTop: '6px', fontStyle: 'italic' }}>
+                                <span style={{ display: 'block', fontSize: '10.5px', color: '#8C8074', marginTop: '8px', fontStyle: 'italic' }}>
                                   *Use your order reference upon placement. Hair is dispatched upon transfer receipt.
                                 </span>
                               </div>
@@ -1030,12 +1065,13 @@ export default function CheckoutModal({
                       </div>
 
                       {/* Step 2 Action Buttons */}
-                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <button
                           type="button"
                           onClick={() => setCheckoutStep(1)}
                           style={{
-                            padding: '13px 18px',
+                            height: '48px',
+                            padding: '0 18px',
                             backgroundColor: '#FFFFFF',
                             color: 'var(--color-deep-espresso)',
                             border: '1px solid var(--color-border)',
@@ -1045,7 +1081,9 @@ export default function CheckoutModal({
                             cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '6px'
+                            justifyContent: 'center',
+                            gap: '6px',
+                            flexShrink: 0
                           }}
                         >
                           <ArrowLeft size={15} />
@@ -1059,8 +1097,12 @@ export default function CheckoutModal({
                           disabled={isSubmitting || cartItems.length === 0}
                           style={{
                             flex: 1,
-                            padding: '14px 18px',
+                            height: '48px',
+                            padding: '0 18px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
                             justifyContent: 'center',
+                            gap: '8px',
                             fontSize: '13.5px',
                             fontWeight: 600
                           }}
@@ -1204,9 +1246,13 @@ export default function CheckoutModal({
                         onClick={handleProceedToPayment}
                         style={{
                           width: '100%',
+                          height: '48px',
                           marginTop: '18px',
-                          padding: '14px 18px',
+                          padding: '0 18px',
+                          display: 'flex',
+                          alignItems: 'center',
                           justifyContent: 'center',
+                          gap: '8px',
                           fontSize: '13.5px',
                           fontWeight: 600
                         }}
@@ -1222,9 +1268,13 @@ export default function CheckoutModal({
                         disabled={isSubmitting || cartItems.length === 0}
                         style={{
                           width: '100%',
+                          height: '48px',
                           marginTop: '18px',
-                          padding: '14px 18px',
+                          padding: '0 18px',
+                          display: 'flex',
+                          alignItems: 'center',
                           justifyContent: 'center',
+                          gap: '8px',
                           fontSize: '13.5px',
                           fontWeight: 600
                         }}
