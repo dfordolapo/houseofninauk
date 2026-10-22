@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, Plus, ArrowRight, Heart, ShoppingBag, Check } from 'lucide-react';
+import { Eye, Plus, ArrowRight, Heart, ShoppingBag, Check, MessageCircle } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 import GoldStroke from './GoldStroke';
 
@@ -10,7 +10,8 @@ export default function FeaturedProducts({
   activeFilter, 
   onClearFilter,
   onToggleWishlist,
-  wishlist = []
+  wishlist = [],
+  onOpenReviews
 }) {
   const [selectedFilter, setSelectedFilter] = useState(activeFilter || 'All');
   const [addedId, setAddedId] = useState(null);
@@ -106,6 +107,21 @@ export default function FeaturedProducts({
                         color={isWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
                         strokeWidth={isWishlisted ? 2.2 : 1.8}
                       />
+                    </button>
+
+                    {/* Comment / Client Reviews Icon Button */}
+                    <button 
+                      type="button" 
+                      className="product-action-circle-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onOpenReviews) onOpenReviews(product);
+                        else if (onOpenDetails) onOpenDetails(product);
+                      }}
+                      aria-label={`View client reviews & comments for ${product.name}`}
+                      title="Client Reviews & Comments"
+                    >
+                      <MessageCircle size={15} strokeWidth={1.8} />
                     </button>
 
                     <button 

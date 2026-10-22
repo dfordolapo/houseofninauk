@@ -444,6 +444,10 @@ export default function App() {
               onClearFilter={() => setActiveFilter('All')}
               onToggleWishlist={handleToggleSave}
               wishlist={wishlist}
+              onOpenReviews={(prod) => {
+                setActiveReviewPost(prod);
+                setIsReviewsModalOpen(true);
+              }}
             />
 
             {/* SECTION 6: THE SILK & LACE PAIRING STUDIO */}

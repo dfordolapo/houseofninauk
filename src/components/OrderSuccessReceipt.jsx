@@ -280,6 +280,10 @@ export default function OrderSuccessReceipt({
 
         {/* Modal Action Footer directly within modal: View Order Details first, Continue Shopping second */}
         <div className="ribbon-modal-footer">
+          <p className="ribbon-confirmation-note">
+            Thank you! We'll email you the details.
+          </p>
+
           <button
             type="button"
             className="ribbon-details-btn"

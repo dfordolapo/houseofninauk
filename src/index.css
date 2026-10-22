@@ -7871,7 +7871,7 @@ video::-moz-media-controls {
 /* Modal Footer with Actions */
 .ribbon-modal-footer {
   position: absolute;
-  bottom: clamp(16px, 3.5vh, 26px);
+  bottom: clamp(14px, 3vh, 22px);
   left: 0;
   right: 0;
   padding: 0 clamp(16px, 4vw, 24px);
@@ -7880,6 +7880,18 @@ video::-moz-media-controls {
   gap: 8px;
   align-items: center;
   z-index: 20;
+}
+
+.ribbon-confirmation-note {
+  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
+  font-size: clamp(12px, 1.3vw, 13px);
+  color: #F8F4EC;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  margin: 0 0 2px;
+  text-align: center;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  line-height: 1.35;
 }
 
 .ribbon-details-btn {
