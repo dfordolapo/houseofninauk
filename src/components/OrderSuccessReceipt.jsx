@@ -9,7 +9,8 @@ import {
   MapPin, 
   CreditCard, 
   Calendar,
-  ArrowRight
+  ArrowRight,
+  Mail
 } from 'lucide-react';
 
 /**
@@ -33,6 +34,19 @@ export default function OrderSuccessReceipt({
   const canvasRef = useRef(null);
   const [showDetails, setShowDetails] = useState(false);
   const [copiedOrderId, setCopiedOrderId] = useState(false);
+  const [showEmailToast, setShowEmailToast] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShowEmailToast(true);
+      const timer = setTimeout(() => {
+        setShowEmailToast(false);
+      }, 3500);
+      return () => clearTimeout(timer);
+    } else {
+      setShowEmailToast(false);
+    }
+  }, [isOpen]);
 
   if (!isOpen && !order) return null;
 
@@ -231,11 +245,12 @@ export default function OrderSuccessReceipt({
       />
 
       {/* ── FLOATING LUXURY MODAL DIALOG (9:16 PROPORTION) ── */}
-      <div 
-        className="ribbon-modal-window"
-        onClick={(e) => e.stopPropagation()}
-        role="document"
-      >
+      {isOpen && (
+        <div 
+          className="ribbon-modal-window"
+          onClick={(e) => e.stopPropagation()}
+          role="document"
+        >
         {/* Modal Close Button */}
         <button
           type="button"
@@ -245,6 +260,16 @@ export default function OrderSuccessReceipt({
         >
           <X size={18} strokeWidth={2} />
         </button>
+
+        {/* Floating Auto-dismissing Confirmation Toast */}
+        <div 
+          className={`ribbon-email-toast ${showEmailToast ? 'visible' : 'hidden'}`}
+          role="status"
+          aria-live="polite"
+        >
+          <Mail size={13} strokeWidth={2} className="ribbon-toast-icon" />
+          <span>Thank you! We'll email you the details.</span>
+        </div>
 
         {/* 9:16 Visual Background */}
         <picture>
@@ -280,10 +305,6 @@ export default function OrderSuccessReceipt({
 
         {/* Modal Action Footer directly within modal: View Order Details first, Continue Shopping second */}
         <div className="ribbon-modal-footer">
-          <p className="ribbon-confirmation-note">
-            Thank you! We'll email you the details.
-          </p>
-
           <button
             type="button"
             className="ribbon-details-btn"
@@ -302,6 +323,7 @@ export default function OrderSuccessReceipt({
           </button>
         </div>
       </div>
+      )}
 
       {/* ══════════════════════════════════════════════════════════════════════
           LUXURY ORDER DETAILS OVERLAY & MODAL SHEET (NO SPARKLES, NO ATELIER)

@@ -7795,18 +7795,26 @@ video::-moz-media-controls {
 }
 
 .animate-ribbon-text {
-  animation: ribbonTextRestrainedFade 1.2s ease-out 0.4s forwards;
+  animation: ribbonGentleSettle 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
   opacity: 0;
+  will-change: transform, opacity;
 }
 
-@keyframes ribbonTextRestrainedFade {
+.ribbon-success-backdrop.open .animate-ribbon-text {
+  animation: ribbonGentleSettle 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+@keyframes ribbonGentleSettle {
   0% {
     opacity: 0;
-    transform: translateY(4px);
+    transform: rotate(-2.8deg) translate3d(-18px, 3px, 0);
+  }
+  65% {
+    opacity: 0.95;
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: rotate(-2.8deg) translate3d(0, 0, 0);
   }
 }
 
@@ -7871,27 +7879,62 @@ video::-moz-media-controls {
 /* Modal Footer with Actions */
 .ribbon-modal-footer {
   position: absolute;
-  bottom: clamp(14px, 3vh, 22px);
+  bottom: clamp(16px, 3.5vh, 26px);
   left: 0;
   right: 0;
   padding: 0 clamp(16px, 4vw, 24px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
   align-items: center;
   z-index: 20;
 }
 
-.ribbon-confirmation-note {
-  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
-  font-size: clamp(12px, 1.3vw, 13px);
+/* Floating Auto-dismissing Confirmation Toast */
+.ribbon-email-toast {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 58px; /* Leaves clear breathing space for the close button at right: 14px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: rgba(28, 18, 12, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.42);
   color: #F8F4EC;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-  margin: 0 0 2px;
-  text-align: center;
-  letter-spacing: 0.02em;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
+  font-size: clamp(11px, 1.25vw, 12.5px);
   font-weight: 500;
-  line-height: 1.35;
+  letter-spacing: 0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 30;
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.45),
+    0 0 15px rgba(212, 175, 55, 0.15);
+  pointer-events: none;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ribbon-email-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ribbon-email-toast.hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.ribbon-toast-icon {
+  color: #E8C882;
+  flex-shrink: 0;
 }
 
 .ribbon-details-btn {
