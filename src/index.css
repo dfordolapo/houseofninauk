@@ -7882,12 +7882,13 @@ video::-moz-media-controls {
   z-index: 20;
 }
 
-.ribbon-continue-btn {
+.ribbon-details-btn {
   width: 100%;
   max-width: 320px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 7px;
   background: #24170F;
   color: #F8F4EC;
   border: 1px solid rgba(36, 23, 15, 0.4);
@@ -7904,21 +7905,20 @@ video::-moz-media-controls {
   white-space: nowrap;
 }
 
-.ribbon-continue-btn:hover {
+.ribbon-details-btn:hover {
   background: #3B2618;
   transform: translateY(-2px);
   box-shadow: 0 14px 34px -5px rgba(36, 23, 15, 0.38);
   color: #FFFFFF;
 }
 
-.ribbon-details-btn {
+.ribbon-continue-btn {
   width: 100%;
   max-width: 320px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  background: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: #24170F;
@@ -7936,7 +7936,7 @@ video::-moz-media-controls {
   white-space: nowrap;
 }
 
-.ribbon-details-btn:hover {
+.ribbon-continue-btn:hover {
   background: #FFFFFF;
   color: #120A06;
   border-color: rgba(36, 23, 15, 0.45);

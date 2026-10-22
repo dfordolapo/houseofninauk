@@ -278,16 +278,8 @@ export default function OrderSuccessReceipt({
           </div>
         </div>
 
-        {/* Modal Action Footer directly within modal */}
+        {/* Modal Action Footer directly within modal: View Order Details first, Continue Shopping second */}
         <div className="ribbon-modal-footer">
-          <button
-            type="button"
-            className="ribbon-continue-btn"
-            onClick={handleContinue}
-          >
-            Continue Shopping
-          </button>
-
           <button
             type="button"
             className="ribbon-details-btn"
@@ -295,6 +287,14 @@ export default function OrderSuccessReceipt({
           >
             <FileText size={14} strokeWidth={1.8} />
             <span>View Order Details</span>
+          </button>
+
+          <button
+            type="button"
+            className="ribbon-continue-btn"
+            onClick={handleContinue}
+          >
+            Continue Shopping
           </button>
         </div>
       </div>
