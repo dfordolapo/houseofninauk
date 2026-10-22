@@ -1,21 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { 
   X, Truck, ShoppingBag, Check, Copy, Printer, 
-  ShieldCheck, Sparkles, Scissors, RotateCcw, Share2, 
-  ChevronRight, ArrowDown, MapPin, CreditCard, Clock
+  ChevronRight, ShieldCheck
 } from 'lucide-react';
 import HouseOfNinaCrest from './HouseOfNinaCrest';
 
 /**
  * ============================================================================
- * HOUSE OF NINA: BESPOKE LUXURY THERMAL REGISTER & WAX STAMPING CEREMONY
+ * HOUSE OF NINA: LUXURY RECEIPT GENERATOR & THERMAL PRINTER
  * ============================================================================
- * An authentic, tangible Mayfair boutique register printing ceremony:
- * 1. Physical brushed champagne gold & emerald Saffiano leather register machine
- * 2. Real-time thermal feed printing with mechanical audio synthesis
- * 3. Molten Gold Wax Stamping Ceremony (3D brass stamp presses official crest)
- * 4. Interactive "Tear Off Receipt" physical rip action & paper tear audio
- * 5. Full inspected archival receipt with live tracking & print styling
+ * Clean, realistic receipt machine and physical receipt inspired by the brand
+ * reference:
+ * - Sleek champagne-gold brushed thermal receipt machine head at top
+ * - Authentic receipt paper rolling smoothly out from the gold slot
+ * - No cluttered room backgrounds or distracting scenery
+ * - House of Nina Crest, "Thank You", order particulars, itemized breakdown
+ * - "With love, House of Nina" script + 3D antique gold wax seal stamp
+ * - Physical serrated zig-zag cut edge at the bottom
+ * - Track Order Live, Print/PDF, and Continue Shopping
  */
 export default function OrderSuccessReceipt({ 
   order, 
@@ -24,22 +26,19 @@ export default function OrderSuccessReceipt({
   onContinueShopping,
   onTrackOrder 
 }) {
-  // Ceremony Stages: 'printing' -> 'stamping' -> 'printed' -> 'torn'
-  const [stage, setStage] = useState('printing');
-  const [copiedRef, setCopiedRef] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [trackingModalOpen, setTrackingModalOpen] = useState(false);
-  const audioCtxRef = useRef(null);
 
   if (!isOpen && !order) return null;
 
   // Realistic dynamic order structure for House of Nina luxury hair
   const orderData = order || {
-    orderId: "HN4892",
+    orderId: "HN2487",
     date: new Date().toLocaleDateString('en-GB', { 
       day: 'numeric', 
       month: 'short', 
       year: 'numeric' 
-    }) + ' ' + new Date().toLocaleTimeString('en-GB', { 
+    }) + ', ' + new Date().toLocaleTimeString('en-GB', { 
       hour: '2-digit', 
       minute: '2-digit' 
     }),
@@ -49,28 +48,37 @@ export default function OrderSuccessReceipt({
       phone: "+44 7776 759731",
       address: "14 Mayfair Place, Flat 3B",
       city: "London",
-      state: "Greater London",
       postalCode: "W1J 8AJ"
     },
     items: [
       {
         id: "hn-01",
-        name: "Raw Virgin Straight Hair Bundle",
-        selectedLength: "26\"",
+        name: "HD Lace Body Wave Wig",
+        selectedLength: "24\"",
         selectedLace: "Invisible HD Lace",
         selectedDensity: "200% Density",
         quantity: 1,
-        price: 240,
+        price: 280,
         currencySymbol: "£",
         image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80&fm=webp"
+      },
+      {
+        id: "hn-04",
+        name: "Silk Preservation Bonnet & Scarf",
+        selectedLength: "Champagne Gold",
+        selectedLace: "100% Mulberry Silk",
+        quantity: 1,
+        price: 35,
+        currencySymbol: "£",
+        image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=400&q=80&fm=webp"
       }
     ],
     deliveryMethod: "Royal Mail 48 Tracked (Complimentary)",
-    paymentMethod: "Stripe Verified Card (•••• 4892)",
-    subtotal: 240,
+    paymentMethod: "Stripe Verified Card (•••• 2487)",
+    subtotal: 315,
     shippingCost: 0,
     discount: 0,
-    total: 240,
+    total: 315,
     currencySymbol: "£"
   };
 
@@ -80,134 +88,10 @@ export default function OrderSuccessReceipt({
     return `${curr}${val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
   };
 
-  // ── Web Audio Synthesis (No external sound files, 100% reliable) ──
-  const getAudioContext = () => {
-    if (!audioCtxRef.current) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) audioCtxRef.current = new AudioCtx();
-    }
-    if (audioCtxRef.current?.state === 'suspended') {
-      audioCtxRef.current.resume();
-    }
-    return audioCtxRef.current;
-  };
-
-  // 1. Mechanical Thermal Print Pulse
-  const playPrintPulse = () => {
-    try {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(160, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.05);
-      gain.gain.setValueAtTime(0.04, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.055);
-    } catch {}
-  };
-
-  // 2. Heavy Brass Wax Stamp Thud & Squish
-  const playStampThud = () => {
-    try {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(140, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(32, ctx.currentTime + 0.28);
-      gain.gain.setValueAtTime(0.35, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.32);
-    } catch {}
-  };
-
-  // 3. Serrated Paper Tear
-  const playPaperTear = () => {
-    try {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-      const bufferSize = ctx.sampleRate * 0.18;
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.045));
-      }
-      const noise = ctx.createBufferSource();
-      noise.buffer = buffer;
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 2600;
-      filter.Q.value = 1.4;
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.22, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-      noise.start();
-    } catch {}
-  };
-
-  // Lifecycle of the Printing & Stamping Ceremony
-  useEffect(() => {
-    if (stage === 'printing') {
-      // Periodic printing audio pulses
-      const interval = setInterval(() => {
-        playPrintPulse();
-      }, 220);
-
-      const printTimer = setTimeout(() => {
-        clearInterval(interval);
-        setStage('stamping');
-      }, 2400);
-
-      return () => {
-        clearInterval(interval);
-        clearTimeout(printTimer);
-      };
-    }
-
-    if (stage === 'stamping') {
-      // Trigger the heavy stamp thud after stamp descends
-      const stampSoundTimer = setTimeout(() => {
-        playStampThud();
-      }, 650);
-
-      const finishTimer = setTimeout(() => {
-        setStage('printed');
-      }, 1600);
-
-      return () => {
-        clearTimeout(stampSoundTimer);
-        clearTimeout(finishTimer);
-      };
-    }
-  }, [stage]);
-
-  // Handle Tear-Off Action
-  const handleTearOff = () => {
-    playPaperTear();
-    setStage('torn');
-  };
-
-  // Replay Ceremony
-  const handleReplay = () => {
-    setStage('printing');
-  };
-
   const handleCopyOrderId = () => {
     navigator.clipboard?.writeText?.(orderData.orderId);
-    setCopiedRef(true);
-    setTimeout(() => setCopiedRef(false), 2500);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
 
   const handlePrint = () => {
@@ -235,422 +119,220 @@ export default function OrderSuccessReceipt({
         aria-label={`Order Confirmation Receipt ${orderData.orderId}`}
       >
         
-        {/* ══════════════════════════════════════════════════════════════════════
-            CEREMONY VIEW: THE MAYFAIR REGISTER MACHINE WITH WAX STAMP
-           ══════════════════════════════════════════════════════════════════════ */}
-        {stage !== 'torn' && (
-          <div className="register-scene-wrapper animate-receipt-slide">
-            
-            {/* Top Status Header */}
-            <div className="register-scene-header">
-              <div className="register-live-badge">
-                <span className={`live-dot ${stage === 'printing' ? 'blinking' : 'solid'}`} />
-                <span>
-                  {stage === 'printing' && "PRINTING BOUTIQUE RECEIPT..."}
-                  {stage === 'stamping' && "EMBOSSING OFFICIAL MAYFAIR WAX SEAL..."}
-                  {stage === 'printed' && "OFFICIAL RECEIPT READY"}
-                </span>
-              </div>
-              <h2 className="register-scene-title">House of Nina Mayfair Register</h2>
-            </div>
-
-            {/* The Machine & Slot Assembly */}
-            <div className="register-machine-stage">
+        {/* ── RECEIPT GENERATOR WRAPPER (No background room, just machine & receipt) ── */}
+        <div className="receipt-generator-assembly">
+          
+          {/* 1. Sleek Thermal Receipt Machine Head */}
+          <div className="receipt-printer-head">
+            <div className="printer-head-housing">
               
-              {/* Machine Background Image */}
-              <div className="register-machine-frame">
-                <picture>
-                  <source srcSet="/images/house-of-nina-printer-cropped.webp" type="image/webp" />
-                  <img 
-                    src="/images/house-of-nina-printer-cropped.jpg" 
-                    alt="House of Nina Mayfair Boutique Register" 
-                    className="register-machine-img"
-                  />
-                </picture>
-
-                {/* ── THE FEEDING RECEIPT PAPER ── */}
-                <div className={`register-paper-feeder ${stage}`}>
-                  <div className="register-paper-content">
-                    
-                    {/* Serrated Top Edge */}
-                    <div className="paper-serrated-edge top" />
-
-                    {/* Paper Header */}
-                    <div className="paper-header">
-                      <div className="paper-crest">
-                        <HouseOfNinaCrest size={28} color="#1E1713" showWordmark={true} />
-                      </div>
-                      <span className="paper-reg-num">MAYFAIR LONDON • REG #01</span>
-                      <span className="paper-date">{orderData.date}</span>
-                    </div>
-
-                    <div className="paper-divider-dash" />
-
-                    {/* Order Reference & Client */}
-                    <div className="paper-client-block">
-                      <div className="paper-row">
-                        <span>ORDER:</span>
-                        <strong>#{orderData.orderId}</strong>
-                      </div>
-                      <div className="paper-row">
-                        <span>CLIENT:</span>
-                        <strong>{orderData.customer?.fullName || "Valued VIP Client"}</strong>
-                      </div>
-                    </div>
-
-                    <div className="paper-divider-dash" />
-
-                    {/* Purchased Items */}
-                    <div className="paper-items-table">
-                      {orderData.items.map((item, idx) => (
-                        <div key={idx} className="paper-item-entry">
-                          <div className="paper-item-name">{item.name}</div>
-                          <div className="paper-item-sub">
-                            <span>{item.selectedLength} · {item.selectedDensity || "200%"}</span>
-                            <strong>{formatMoney(item.price)}</strong>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="paper-divider-dash" />
-
-                    {/* Financial Summary */}
-                    <div className="paper-totals-table">
-                      <div className="paper-row">
-                        <span>SUBTOTAL</span>
-                        <span>{formatMoney(orderData.subtotal)}</span>
-                      </div>
-                      <div className="paper-row">
-                        <span>LUXURY BOX</span>
-                        <span>COMPLIMENTARY</span>
-                      </div>
-                      <div className="paper-row total">
-                        <strong>TOTAL PAID</strong>
-                        <strong>{formatMoney(orderData.total)}</strong>
-                      </div>
-                    </div>
-
-                    {/* Authentic Barcode */}
-                    <div className="paper-barcode-block">
-                      <div className="paper-barcode-lines" />
-                      <span className="paper-barcode-number">*HN-{orderData.orderId}-LON*</span>
-                    </div>
-
-                    {/* ── THE MOLTEN WAX STAMPING ZONE ── */}
-                    <div className="paper-wax-stamp-zone">
-                      {/* 3D Brass Stamping Tool descending during 'stamping' stage */}
-                      {stage === 'stamping' && (
-                        <div className="brass-stamp-tool animate-stamp-down">
-                          <div className="brass-stamp-handle" />
-                          <div className="brass-stamp-head" />
-                        </div>
-                      )}
-
-                      {/* The Molten Wax Pool / Raised 3D Wax Seal */}
-                      {(stage === 'stamping' || stage === 'printed') && (
-                        <div className="paper-wax-seal animate-wax-squish">
-                          <img 
-                            src="/images/wax-seal.webp" 
-                            alt="House of Nina Antique Gold Wax Seal" 
-                            className="paper-wax-img"
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Serrated Bottom Edge */}
-                    <div className="paper-serrated-edge bottom" />
-
-                  </div>
+              {/* Metallic top bevel & status bar */}
+              <div className="printer-head-top-bar">
+                <div className="printer-indicator-group">
+                  <span className="printer-led-dot ready" />
+                  <span className="printer-led-label">PRINT READY</span>
                 </div>
-
-                {/* ── LOWER BRASS SLOT LIP OVERLAY (creates realistic 3D slot depth) ── */}
-                <div className="register-slot-lip-overlay">
-                  <img 
-                    src="/images/nina-slot-lip.png" 
-                    alt="Brass Slot Lip" 
-                    className="slot-lip-img"
-                  />
-                </div>
-
+                <div className="printer-subtle-model">THERMAL REGISTER • MAYFAIR</div>
               </div>
 
-              {/* ── TEAR OFF CALL TO ACTION ── */}
-              {stage === 'printed' && (
-                <div className="register-tear-cta-container animate-fade-in-up">
+              {/* The Gleaming Gold Slot Feeder Mouth */}
+              <div className="printer-slot-bezel">
+                <div className="printer-slot-mouth">
+                  {/* Metal serrated cutter teeth inside slot */}
+                  <div className="printer-slot-teeth" />
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* 2. Physical Receipt Paper emerging smoothly from the gold slot */}
+          <div className="receipt-paper-roll animate-receipt-slide">
+            
+            {/* Top feeder shadow at mouth */}
+            <div className="receipt-mouth-drop-shadow" aria-hidden="true" />
+
+            {/* Paper Texture Grain */}
+            <div className="receipt-paper-surface">
+              
+              {/* Brand Crest */}
+              <div className="receipt-brand-header">
+                <HouseOfNinaCrest size={46} color="#A37E3E" showWordmark={true} />
+              </div>
+
+              {/* Elegant Script "Thank You" */}
+              <h1 className="receipt-thank-you-title">
+                Thank You
+              </h1>
+
+              {/* For Shopping With Us Tag */}
+              <span className="receipt-for-shopping-sub">
+                FOR SHOPPING WITH US
+              </span>
+
+              {/* Gold Hairline Divider */}
+              <div className="receipt-gold-divider-dash" />
+
+              {/* Order Meta: ID & Date */}
+              <div className="receipt-order-meta-box">
+                <div className="receipt-meta-id-row">
+                  <span className="receipt-order-num">Order #{orderData.orderId}</span>
                   <button 
                     type="button" 
-                    className="register-tear-btn"
-                    onClick={handleTearOff}
+                    className="receipt-copy-id-btn"
+                    onClick={handleCopyOrderId}
+                    title="Copy Order ID"
                   >
-                    <Scissors size={15} />
-                    <span>TEAR OFF RECEIPT</span>
+                    {copied ? (
+                      <>
+                        <Check size={11} color="#A37E3E" />
+                        <span>Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={11} />
+                        <span>Copy</span>
+                      </>
+                    )}
                   </button>
-                  <span className="register-tear-hint">Tap to inspect full archival order deed</span>
                 </div>
-              )}
-
-            </div>
-
-            {/* Quick Helper below machine */}
-            <div className="register-footer-hint">
-              <span>Authentic 100% Raw Virgin Hair • Dispatched from Mayfair Studio</span>
-            </div>
-
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════════════
-            INSPECTED VIEW: THE TORN ARCHIVAL DEED WITH WAX SEAL (Full Clarity)
-           ══════════════════════════════════════════════════════════════════════ */}
-        {stage === 'torn' && (
-          <div className="torn-receipt-dossier animate-receipt-slide">
-            
-            {/* Replay Ribbon at Top */}
-            <div className="torn-dossier-top-bar">
-              <div className="dossier-torn-badge">
-                <Scissors size={13} />
-                <span>OFFICIALLY REGISTERED &amp; SEALED</span>
+                <div className="receipt-date-string">{orderData.date}</div>
               </div>
 
-              <button 
-                type="button" 
-                className="dossier-replay-btn"
-                onClick={handleReplay}
-                title="Watch register machine print again"
-              >
-                <RotateCcw size={13} />
-                <span>Re-Print Register</span>
-              </button>
-            </div>
+              {/* Gold Hairline Divider */}
+              <div className="receipt-gold-divider-dash" />
 
-            {/* The Physical Parchment Receipt Card */}
-            <div className="torn-parchment-sheet">
-              
-              {/* Jagged Serrated Top Edge */}
-              <div className="serrated-tear-lip top-rip" />
+              {/* Purchased Items Breakdown */}
+              <div className="receipt-items-breakdown">
+                {orderData.items.map((item, index) => {
+                  const specs = [
+                    item.selectedLength,
+                    item.selectedLace,
+                    item.selectedDensity
+                  ].filter(Boolean).join(" · ");
 
-              {/* Dual Inset Gold Foil Frame */}
-              <div className="parchment-gold-frame" aria-hidden="true" />
-
-              {/* Header */}
-              <div className="parchment-header">
-                <div className="parchment-crest-row">
-                  <HouseOfNinaCrest size={46} color="#A37E3E" showWordmark={true} />
-                </div>
-                <span className="parchment-subtitle">MAYFAIR, LONDON • 100% RAW VIRGIN HAIR</span>
-                <h1 className="parchment-title">Official Order Confirmation</h1>
-                <p className="parchment-date">Issued {orderData.date}</p>
-              </div>
-
-              {/* Reference & Copy Pill */}
-              <div className="parchment-security-strip">
-                <div className="security-strip-left">
-                  <span className="security-pulse-core" />
-                  <span className="security-ref-label">ORDER REF:</span>
-                  <span className="security-ref-num">{orderData.orderId}</span>
-                </div>
-
-                <button 
-                  type="button" 
-                  className="copy-reference-pill"
-                  onClick={handleCopyOrderId}
-                >
-                  {copiedRef ? (
-                    <>
-                      <Check size={12} color="#A37E3E" />
-                      <span>Copied</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={12} />
-                      <span>Copy Ref</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Live Studio Timeline */}
-              <div className="parchment-timeline-card">
-                <div className="timeline-header-row">
-                  <span className="timeline-title">STUDIO PREPARATION STATUS</span>
-                  <span className="timeline-step-badge">STAGE 1 OF 4</span>
-                </div>
-
-                <div className="timeline-progress-track">
-                  <div className="timeline-step completed">
-                    <div className="step-marker">
-                      <Check size={12} strokeWidth={2.8} />
-                    </div>
-                    <div className="step-info">
-                      <strong>Authorized</strong>
-                      <span>Payment verified</span>
-                    </div>
-                  </div>
-
-                  <div className="step-connector active" />
-
-                  <div className="timeline-step in-progress">
-                    <div className="step-marker">
-                      <Sparkles size={12} />
-                    </div>
-                    <div className="step-info">
-                      <strong>Studio Quality</strong>
-                      <span>Steamed &amp; matched</span>
-                    </div>
-                  </div>
-
-                  <div className="step-connector" />
-
-                  <div className="timeline-step pending">
-                    <div className="step-marker">
-                      <Truck size={12} />
-                    </div>
-                    <div className="step-info">
-                      <strong>Dispatch</strong>
-                      <span>Royal Mail 48</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Key Particulars Grid */}
-              <div className="parchment-particulars-grid">
-                <div className="particular-card">
-                  <span className="particular-label">PAYMENT METHOD</span>
-                  <strong className="particular-value">{orderData.paymentMethod}</strong>
-                </div>
-
-                <div className="particular-card">
-                  <span className="particular-label">DELIVERING TO</span>
-                  <strong className="particular-value">{orderData.customer?.fullName}</strong>
-                  <span className="particular-subtext">
-                    {orderData.customer?.address}, {orderData.customer?.city} {orderData.customer?.postalCode}
-                  </span>
-                </div>
-              </div>
-
-              {/* Itemized Purchased Pieces */}
-              <div className="parchment-items-section">
-                <div className="items-header-bar">
-                  <span>PURCHASED PIECES ({orderData.items?.length || 0})</span>
-                  <span>AMOUNT</span>
-                </div>
-
-                <div className="parchment-items-list">
-                  {orderData.items.map((item, idx) => (
-                    <div key={idx} className="parchment-product-row">
-                      <div className="product-thumb">
-                        <img src={item.image} alt={item.name} className="product-thumb-img" />
+                  return (
+                    <div key={item.id || item.cartId || index} className="receipt-product-entry">
+                      <div className="receipt-product-thumb">
+                        <img 
+                          src={item.image} 
+                          alt={item.name} 
+                          className="receipt-product-img" 
+                        />
                       </div>
-                      <div className="product-details">
-                        <h4 className="product-name">{item.name}</h4>
-                        <span className="product-specs">
-                          {item.selectedLength} · {item.selectedLace || "HD Lace"} · {item.selectedDensity || "200%"}
-                        </span>
-                        <span className="product-qty">Quantity: {item.quantity || 1}</span>
+
+                      <div className="receipt-product-info">
+                        <h4 className="receipt-product-name">{item.name}</h4>
+                        {specs && <div className="receipt-product-specs">{specs}</div>}
+                        <span className="receipt-product-qty">Qty: {item.quantity || 1}</span>
                       </div>
-                      <div className="product-price">
+
+                      <div className="receipt-product-price">
                         {formatMoney(typeof item.price === 'number' ? item.price * (item.quantity || 1) : item.price)}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
 
-              {/* Financial Breakdown */}
-              <div className="parchment-breakdown-card">
-                <div className="breakdown-line">
+              {/* Gold Hairline Divider */}
+              <div className="receipt-gold-divider-dash" />
+
+              {/* Financial Totals */}
+              <div className="receipt-financial-totals">
+                <div className="receipt-total-line">
                   <span>Subtotal</span>
                   <span>{formatMoney(orderData.subtotal)}</span>
                 </div>
-                <div className="breakdown-line">
-                  <span>Signature Velvet Box &amp; Bonnet</span>
-                  <span className="text-emerald">Complimentary</span>
+
+                <div className="receipt-total-line">
+                  <span>Shipping</span>
+                  <span>{orderData.shippingCost === 0 ? 'Complimentary' : formatMoney(orderData.shippingCost)}</span>
                 </div>
-                <div className="breakdown-line">
-                  <span>Delivery Speed</span>
-                  <span>{orderData.deliveryMethod}</span>
-                </div>
-                <div className="breakdown-total-line">
-                  <div>
-                    <span className="total-title">Total Authorized</span>
-                    <span className="total-subtitle">Includes UK VAT</span>
+
+                {orderData.discount > 0 && (
+                  <div className="receipt-total-line discount">
+                    <span>Discount</span>
+                    <span>−{formatMoney(orderData.discount)}</span>
                   </div>
-                  <span className="total-figure">{formatMoney(orderData.total)}</span>
+                )}
+
+                <div className="receipt-grand-total-line">
+                  <span className="grand-total-label">Total</span>
+                  <span className="grand-total-figure">{formatMoney(orderData.total)}</span>
                 </div>
               </div>
 
-              {/* The Wax Seal & Signature Section */}
-              <div className="parchment-seal-signoff-row">
-                <div className="signoff-left">
-                  <span className="signoff-script">With gratitude &amp; care,</span>
-                  <span className="signoff-brand">House of Nina</span>
-                  <span className="signoff-loc">Mayfair, London UK</span>
+              {/* "With love, House of Nina" & Authentic Antique Gold Wax Seal */}
+              <div className="receipt-signoff-row">
+                <div className="receipt-signoff-calligraphy">
+                  <span className="signoff-with-love-script">With love,</span>
+                  <span className="signoff-house-script">House of Nina</span>
                 </div>
 
-                <div className="signoff-seal-badge" title="Official House of Nina Antique Gold Wax Seal">
+                {/* 3D Wax Seal Stamp (Antique Gold) */}
+                <div className="receipt-wax-seal-badge" title="Official House of Nina Antique Gold Wax Seal">
                   <img 
                     src="/images/wax-seal.webp" 
                     alt="House of Nina Antique Gold Wax Seal" 
-                    className="wax-seal-img" 
+                    className="wax-seal-stamp-img" 
                   />
                 </div>
               </div>
 
-              {/* Jagged Serrated Bottom Edge */}
-              <div className="serrated-tear-lip bottom-rip" />
+              {/* Serrated Zig-Zag Cut Edge at Bottom of Paper */}
+              <div className="receipt-serrated-zigzag-edge" aria-hidden="true" />
 
-            </div>
-
-            {/* Action Buttons Toolbar */}
-            <div className="parchment-actions-toolbar">
-              <div className="actions-button-row">
-                <button
-                  type="button"
-                  className="btn-primary-editorial action-btn-pill"
-                  onClick={() => {
-                    if (onTrackOrder) onTrackOrder(orderData);
-                    else setTrackingModalOpen(true);
-                  }}
-                >
-                  <Truck size={16} />
-                  <span>Track Order Live</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="btn-secondary-editorial action-btn-pill"
-                  onClick={handlePrint}
-                >
-                  <Printer size={16} />
-                  <span>Print / Save PDF</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="btn-secondary-editorial action-btn-pill"
-                  onClick={() => {
-                    if (onContinueShopping) onContinueShopping();
-                    else onClose();
-                  }}
-                >
-                  <ShoppingBag size={16} />
-                  <span>Continue Shopping</span>
-                </button>
-              </div>
-
-              {orderData.customer?.email && (
-                <p className="parchment-email-note">
-                  Official dispatch confirmation and tracking link sent to{' '}
-                  <strong>{orderData.customer.email}</strong>.
-                </p>
-              )}
             </div>
 
           </div>
-        )}
+
+          {/* 3. Actions Cluster Beneath the Receipt */}
+          <div className="receipt-actions-cluster">
+            <div className="receipt-buttons-row">
+              <button
+                type="button"
+                className="btn-primary-editorial receipt-action-btn"
+                onClick={() => {
+                  if (onTrackOrder) onTrackOrder(orderData);
+                  else setTrackingModalOpen(true);
+                }}
+              >
+                <Truck size={16} />
+                <span>Track Order</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-secondary-editorial receipt-action-btn"
+                onClick={handlePrint}
+              >
+                <Printer size={16} />
+                <span>Print / Save PDF</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-secondary-editorial receipt-action-btn"
+                onClick={() => {
+                  if (onContinueShopping) onContinueShopping();
+                  else onClose();
+                }}
+              >
+                <ShoppingBag size={16} />
+                <span>Continue Shopping</span>
+              </button>
+            </div>
+
+            {orderData.customer?.email && (
+              <p className="receipt-confirmation-email-text">
+                An order confirmation receipt has been sent to{' '}
+                <strong>{orderData.customer.email}</strong>.
+              </p>
+            )}
+          </div>
+
+        </div>
 
       </div>
 
@@ -678,9 +360,9 @@ export default function OrderSuccessReceipt({
             <div className="tracking-status-step">
               <span className="tracking-dot active" />
               <div>
-                <strong>Order Verified &amp; Authorized</strong>
+                <strong>Order Verified</strong>
                 <p style={{ margin: 0, fontSize: '12px', color: '#685C50' }}>
-                  Your House of Nina hair order is verified and entered the studio preparation queue.
+                  Your House of Nina hair order is being carefully prepared.
                 </p>
               </div>
             </div>
@@ -700,7 +382,7 @@ export default function OrderSuccessReceipt({
               <div>
                 <strong>Royal Mail 48 Tracked Dispatch</strong>
                 <p style={{ margin: 0, fontSize: '12px', color: '#685C50' }}>
-                  Tracking code will be activated as soon as collected by Royal Mail.
+                  Tracking details will update once collected by Royal Mail.
                 </p>
               </div>
             </div>
