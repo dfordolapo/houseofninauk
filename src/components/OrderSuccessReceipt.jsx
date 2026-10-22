@@ -5,17 +5,14 @@ import { X, Truck, Check } from 'lucide-react';
  * ============================================================================
  * HOUSE OF NINA: BESPOKE RIBBON ORDER-SUCCESS EXPERIENCE
  * ============================================================================
- * An editorial, tactile, luxurious, and restrained order-confirmation experience.
- * 
- * Visual & Conceptual Elements:
- * - A champagne-beige satin ribbon wraps organically around a bundle of glossy dark hair.
- * - The ribbon carries the order-confirmation information directly on its surface.
- * - Background: warm ivory / softly lit champagne satin.
- * - Typography: refined editorial serif for "Order Confirmed", understated widely spaced
- *   sans-serif for labels and the brand name.
- * - Text color: espresso brown.
- * - One discreet text link below: "Track your order →".
- * - Fully data-driven from real order record, responsive across desktop & mobile.
+ * High-fashion, editorial, tactile, and restrained order-confirmation experience.
+ * Recreated with exact precision from the client reference image:
+ * - Full-screen immersive warm champagne satin background.
+ * - Organic champagne-beige satin ribbon wrapping around glossy dark hair.
+ * - Dynamic HTML typography rendered directly on the upper and lower ribbon folds.
+ * - Upper Band: "HOUSE OF NINA", hairline dash, "Order Confirmed".
+ * - Lower Band: 3-column particulars (Order No, Delivery, Est. Arrival).
+ * - Discreet text link: "Track your order →".
  */
 export default function OrderSuccessReceipt({ 
   order, 
@@ -28,21 +25,24 @@ export default function OrderSuccessReceipt({
 
   if (!isOpen && !order) return null;
 
-  // Real order data with safe fallback resolution
-  const orderId = order?.orderId || order?.id || "HN4892";
-  
+  // Real order identifier with formatting
+  const rawId = order?.orderId || order?.id || "HN-48291";
+  const formattedOrderId = rawId.startsWith('HN') && !rawId.includes('-')
+    ? rawId.replace('HN', 'HN-')
+    : rawId;
+
   // Dynamic Delivery Status from order record
   const getDeliveryStatus = () => {
     if (order?.status) return order.status;
     const method = (order?.deliveryMethod || "").toLowerCase();
     if (method.includes('express') || method.includes('special')) {
-      return 'Express 24h';
+      return 'Express Dispatch';
     }
-    return 'Standard Tracked';
+    return 'On its way soon';
   };
   const deliveryStatus = getDeliveryStatus();
 
-  // Dynamic Estimated Arrival calculation
+  // Dynamic Estimated Arrival date calculation
   const getEstimatedArrival = () => {
     if (order?.estimatedArrival) return order.estimatedArrival;
     try {
@@ -52,7 +52,7 @@ export default function OrderSuccessReceipt({
       }
       const est = new Date(baseDate);
       est.setDate(est.getDate() + 3);
-      return est.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      return est.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     } catch {
       return "2–3 Working Days";
     }
@@ -65,16 +65,16 @@ export default function OrderSuccessReceipt({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label={`Order Confirmed: #${orderId}`}
+      aria-label={`Order Confirmed: ${formattedOrderId}`}
     >
-      {/* Discreet Close Icon */}
+      {/* Discreet Close Button */}
       <button
         type="button"
         className="ribbon-close-btn"
         onClick={onClose}
         aria-label="Close order confirmation"
       >
-        <X size={18} strokeWidth={1.5} />
+        <X size={20} strokeWidth={1.5} />
       </button>
 
       <div 
@@ -88,64 +88,59 @@ export default function OrderSuccessReceipt({
           {/* Hair & Satin Ribbon Image Base */}
           <div className="ribbon-image-wrapper">
             <picture>
-              <source srcSet="/images/house-of-nina-ribbon-wrap.webp" type="image/webp" />
+              <source srcSet="/images/house-of-nina-ribbon-reference-blank.webp" type="image/webp" />
               <img 
-                src="/images/house-of-nina-ribbon-wrap.jpg" 
-                alt="House of Nina satin ribbon wrapped organically around glossy virgin hair bundle" 
+                src="/images/house-of-nina-ribbon-reference-blank.jpg" 
+                alt="House of Nina champagne satin ribbon wrapped around glossy virgin hair bundle" 
                 className="ribbon-bg-image"
               />
             </picture>
 
-            {/* Subtle Lighting Vignette */}
-            <div className="ribbon-lighting-overlay" aria-hidden="true" />
-
-            {/* ── THE REAL HTML TEXT LAYER: PRINTED DIRECTLY ON THE RIBBON ── */}
-            <div className="ribbon-text-surface animate-ribbon-text">
-              
-              {/* Brand Name */}
+            {/* ── TIER 1: UPPER RIBBON FOLD (Brand & Order Confirmed) ── */}
+            <div className="ribbon-tier-upper animate-ribbon-text">
               <div className="ribbon-brand-label">
                 HOUSE OF NINA
               </div>
-
-              {/* Editorial Title */}
+              <div className="ribbon-hairline-dash" aria-hidden="true" />
               <h1 className="ribbon-confirmed-heading">
                 Order Confirmed
               </h1>
+            </div>
 
-              {/* 3-Column Order Particulars Grid with Fine Dividers */}
-              <div className="ribbon-details-row">
+            {/* ── TIER 2: LOWER RIBBON FOLD (3 Columns: Order No, Delivery, Est. Arrival) ── */}
+            <div className="ribbon-tier-lower animate-ribbon-text">
+              <div className="ribbon-columns-grid">
                 
                 {/* Column 1: Order No. */}
-                <div className="ribbon-detail-col">
-                  <span className="ribbon-label">ORDER NO.</span>
-                  <span className="ribbon-val">{orderId}</span>
+                <div className="ribbon-column">
+                  <span className="ribbon-col-val">{formattedOrderId}</span>
+                  <span className="ribbon-col-lbl">ORDER NO.</span>
                 </div>
 
-                <div className="ribbon-col-divider" aria-hidden="true" />
+                <div className="ribbon-vertical-divider" aria-hidden="true" />
 
                 {/* Column 2: Delivery */}
-                <div className="ribbon-detail-col">
-                  <span className="ribbon-label">DELIVERY</span>
-                  <span className="ribbon-val">{deliveryStatus}</span>
+                <div className="ribbon-column">
+                  <span className="ribbon-col-val">{deliveryStatus}</span>
+                  <span className="ribbon-col-lbl">DELIVERY</span>
                 </div>
 
-                <div className="ribbon-col-divider" aria-hidden="true" />
+                <div className="ribbon-vertical-divider" aria-hidden="true" />
 
                 {/* Column 3: Est. Arrival */}
-                <div className="ribbon-detail-col">
-                  <span className="ribbon-label">EST. ARRIVAL</span>
-                  <span className="ribbon-val">{estimatedArrival}</span>
+                <div className="ribbon-column">
+                  <span className="ribbon-col-val">{estimatedArrival}</span>
+                  <span className="ribbon-col-lbl">EST. ARRIVAL</span>
                 </div>
 
               </div>
-
             </div>
 
           </div>
 
         </div>
 
-        {/* ── DISCREET TRACKING TEXT LINK ── */}
+        {/* ── DISCREET TRACKING ACTION LINK ── */}
         <div className="ribbon-footer-action">
           <button
             type="button"
@@ -169,7 +164,7 @@ export default function OrderSuccessReceipt({
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Truck size={18} color="#4A3427" />
                 <h3 style={{ margin: 0, fontSize: '18px', fontFamily: "'Playfair Display', serif", color: '#241913' }}>
-                  Order #{orderId}
+                  Order #{formattedOrderId}
                 </h3>
               </div>
               <button 
