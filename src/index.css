@@ -7665,8 +7665,8 @@ video::-moz-media-controls {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
-   HOUSE OF NINA: BESPOKE SATIN RIBBON ORDER-SUCCESS EXPERIENCE
-   (Exact recreation of reference image with immersive full-screen impact)
+   HOUSE OF NINA: UNIFIED LUXURY RIBBON ORDER SUCCESS EXPERIENCE
+   (Exact unified composition across desktop and mobile with organic ribbon angle)
    ══════════════════════════════════════════════════════════════════════════════ */
 
 .ribbon-success-backdrop {
@@ -7677,7 +7677,7 @@ video::-moz-media-controls {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(16px, 3vw, 40px);
+  padding: 24px 16px;
   overflow-y: auto;
   opacity: 0;
   pointer-events: none;
@@ -7689,15 +7689,25 @@ video::-moz-media-controls {
   pointer-events: auto;
 }
 
-/* Discreet Close Icon */
+/* Luxury 3D Gold Confetti Shower Canvas */
+.ribbon-gold-confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10001;
+}
+
+/* Discreet Close Button */
 .ribbon-close-btn {
   position: fixed;
-  top: clamp(20px, 3vw, 36px);
-  right: clamp(20px, 3vw, 36px);
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(61, 43, 31, 0.15);
+  top: clamp(16px, 2.5vw, 32px);
+  right: clamp(16px, 2.5vw, 32px);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(61, 43, 31, 0.16);
   color: #3D2B1F;
   cursor: pointer;
   padding: 10px;
@@ -7710,30 +7720,32 @@ video::-moz-media-controls {
 }
 
 .ribbon-close-btn:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.75);
   color: #1E1713;
   transform: scale(1.08);
 }
 
-/* Main Cinematic Stage (Taking up a major, impactful portion of the screen) */
-.ribbon-success-stage {
-  max-width: 1140px;
-  width: 100%;
-  margin: auto;
+/* Main Composition Stage (Desktop & Mobile) */
+.ribbon-composition-stage {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
 }
 
-/* ── VISUAL COMPOSITION: RIBBON WRAPPED AROUND GLOSSY HAIR ── */
-.ribbon-composition-frame {
+.ribbon-card-frame {
   position: relative;
   width: 100%;
-  border-radius: clamp(12px, 2vw, 22px);
+  aspect-ratio: 9 / 16;
+  max-height: 84vh;
+  border-radius: clamp(14px, 2vw, 22px);
   overflow: hidden;
   box-shadow: 
-    0 40px 110px -20px rgba(35, 22, 14, 0.35),
+    0 40px 100px -20px rgba(35, 22, 14, 0.38),
     0 15px 40px -10px rgba(0, 0, 0, 0.12);
   background: #E8DAC8;
   animation: ribbonEntranceSettle 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -7753,31 +7765,32 @@ video::-moz-media-controls {
   }
 }
 
-.ribbon-image-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1024 / 682;
-  user-select: none;
-}
-
-.ribbon-bg-image {
+.ribbon-hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   display: block;
+  user-select: none;
 }
 
-/* ── TIER 1: UPPER RIBBON FOLD (Brand Name & Order Confirmed) ── */
-.ribbon-tier-upper {
+/* Unified Ribbon Text Surface with natural -2.8deg organic tilt matching ribbon wrap */
+.ribbon-unified-text-surface {
   position: absolute;
-  top: 17%;
-  left: 36%;
-  width: 36%;
-  transform: rotate(-13.5deg);
+  top: 40.8%;
+  left: 14%;
+  width: 72%;
+  height: 18.5%;
+  transform: rotate(-2.8deg);
   transform-origin: center center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   z-index: 10;
   pointer-events: none;
+  box-sizing: border-box;
 }
 
 .animate-ribbon-text {
@@ -7796,54 +7809,27 @@ video::-moz-media-controls {
   }
 }
 
-.ribbon-brand-label {
-  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
-  font-size: clamp(9px, 1.25vw, 15px);
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  color: #3D2B1F;
-  text-transform: uppercase;
-  margin-bottom: clamp(2px, 0.4vw, 5px);
-}
-
-.ribbon-hairline-dash {
-  width: clamp(20px, 3vw, 36px);
-  height: 1px;
-  background: rgba(61, 43, 31, 0.6);
-  margin: clamp(2px, 0.35vw, 5px) auto clamp(4px, 0.6vw, 8px);
-}
-
-.ribbon-confirmed-heading {
+.ribbon-serif-heading {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(18px, 3.2vw, 42px);
+  font-size: clamp(20px, 3.2vw, 32px);
   font-style: italic;
   font-weight: 400;
   color: #24170F;
-  margin: 0;
+  margin: 0 0 clamp(8px, 1.4vw, 16px);
   line-height: 1.05;
   letter-spacing: -0.01em;
 }
 
-/* ── TIER 2: LOWER RIBBON FOLD (3 Columns: Order No, Delivery, Est. Arrival) ── */
-.ribbon-tier-lower {
-  position: absolute;
-  top: 47.5%;
-  left: 17%;
-  width: 66%;
-  transform: rotate(9.5deg);
-  transform-origin: center center;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.ribbon-columns-grid {
+/* 2 Columns: Order No & Est. Arrival with generous breathing room */
+.ribbon-columns-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
+  padding: 0 clamp(6px, 1.5vw, 16px);
 }
 
-.ribbon-column {
+.ribbon-col-entry {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7852,9 +7838,9 @@ video::-moz-media-controls {
   min-width: 0;
 }
 
-.ribbon-col-val {
+.ribbon-val-text {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(12.5px, 2.1vw, 25px);
+  font-size: clamp(13px, 2vw, 19px);
   font-weight: 400;
   color: #24170F;
   white-space: nowrap;
@@ -7862,84 +7848,121 @@ video::-moz-media-controls {
   letter-spacing: -0.01em;
 }
 
-.ribbon-col-lbl {
+.ribbon-lbl-text {
   font-family: var(--font-body, system-ui, -apple-system, sans-serif);
-  font-size: clamp(7px, 1.05vw, 12px);
+  font-size: clamp(7.5px, 1vw, 10.5px);
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   color: #614A3B;
   text-transform: uppercase;
-  margin-top: clamp(2px, 0.4vw, 6px);
+  margin-top: clamp(2px, 0.4vw, 5px);
   white-space: nowrap;
 }
 
-.ribbon-vertical-divider {
+.ribbon-divider-line {
   width: 1px;
-  height: clamp(20px, 3.6vw, 44px);
-  background: rgba(58, 42, 30, 0.26);
-  margin: 0 clamp(6px, 1.2vw, 16px);
+  height: clamp(22px, 2.8vw, 34px);
+  background: rgba(58, 42, 30, 0.28);
+  margin: 0 clamp(8px, 1.6vw, 20px);
   flex-shrink: 0;
 }
 
-/* ── TRACKING ACTION: DISCREET TEXT LINK ── */
-.ribbon-footer-action {
-  margin-top: clamp(20px, 2.8vw, 36px);
+/* Proper "Continue Shopping" Editorial Button */
+.ribbon-action-footer {
+  margin-top: clamp(18px, 2.5vw, 30px);
   text-align: center;
 }
 
-.ribbon-track-text-link {
-  background: transparent;
-  border: none;
+.ribbon-continue-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #24170F;
+  color: #F8F4EC;
+  border: 1px solid rgba(36, 23, 15, 0.4);
+  padding: 14px 38px;
+  border-radius: 100px;
   font-family: var(--font-body, system-ui, -apple-system, sans-serif);
-  font-size: clamp(13px, 1.35vw, 16px);
-  font-weight: 500;
-  color: #3A2A20;
-  letter-spacing: 0.04em;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 25px -5px rgba(36, 23, 15, 0.28);
   cursor: pointer;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(58, 42, 32, 0.45);
-  padding-bottom: 3px;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
 }
 
-.ribbon-track-text-link:hover {
-  color: #1E1713;
-  border-bottom-color: #1E1713;
-  transform: translateX(3px);
+.ribbon-continue-btn:hover {
+  background: #3B2618;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px -5px rgba(36, 23, 15, 0.38);
+  color: #FFFFFF;
 }
 
-/* ── MOBILE RESPONSIVENESS ── */
-@media (max-width: 600px) {
+/* ══════════════════════════════════════════════════════════════════════════════
+   MOBILE FULL-SCREEN 9:16 (<= 768px, 100vw × 100dvh Edge-to-Edge)
+   ══════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
   .ribbon-success-backdrop {
-    padding: 16px 12px;
+    padding: 0;
+    background: #D0BDA9;
+    overflow: hidden;
   }
 
-  .ribbon-close-btn {
-    top: 14px;
-    right: 14px;
-    padding: 8px;
+  .ribbon-composition-stage {
+    width: 100vw;
+    height: 100dvh;
+    max-width: 100vw;
+    max-height: 100dvh;
+    padding: 0;
   }
 
-  .ribbon-tier-upper {
-    top: 16.5%;
-    left: 35%;
-    width: 38%;
+  .ribbon-card-frame {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
   }
 
-  .ribbon-tier-lower {
-    top: 46%;
-    left: 15%;
-    width: 70%;
+  .ribbon-serif-heading {
+    font-size: clamp(20px, 5.8vw, 30px);
+    margin: 0 0 clamp(8px, 2.5vw, 14px);
   }
 
-  .ribbon-vertical-divider {
-    margin: 0 4px;
+  .ribbon-val-text {
+    font-size: clamp(13px, 3.8vw, 18px);
+  }
+
+  .ribbon-lbl-text {
+    font-size: clamp(7.5px, 2vw, 10px);
+  }
+
+  .ribbon-divider-line {
+    height: clamp(20px, 5.2vw, 28px);
+    margin: 0 clamp(8px, 2.5vw, 18px);
+  }
+
+  .ribbon-action-footer {
+    position: absolute;
+    bottom: calc(env(safe-area-inset-bottom, 16px) + 26px);
+    left: 0;
+    right: 0;
+    margin-top: 0;
+    padding: 0 20px;
+    z-index: 20;
+  }
+
+  .ribbon-continue-btn {
+    padding: 13px 32px;
+    font-size: 12px;
   }
 }
 
 /* Reduced Motion Preferences */
 @media (prefers-reduced-motion: reduce) {
-  .ribbon-composition-frame,
+  .ribbon-card-frame,
   .animate-ribbon-text {
     animation: none !important;
     opacity: 1 !important;

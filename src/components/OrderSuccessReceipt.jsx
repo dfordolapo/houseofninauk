@@ -1,46 +1,32 @@
-import React, { useState } from 'react';
-import { X, Truck, Check } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { X } from 'lucide-react';
 
 /**
  * ============================================================================
- * HOUSE OF NINA: BESPOKE RIBBON ORDER-SUCCESS EXPERIENCE
+ * HOUSE OF NINA: BESPOKE RIBBON ORDER SUCCESS WITH RADIANT GOLD CONFETTI
  * ============================================================================
- * High-fashion, editorial, tactile, and restrained order-confirmation experience.
- * Recreated with exact precision from the client reference image:
- * - Full-screen immersive warm champagne satin background.
- * - Organic champagne-beige satin ribbon wrapping around glossy dark hair.
- * - Dynamic HTML typography rendered directly on the upper and lower ribbon folds.
- * - Upper Band: "HOUSE OF NINA", hairline dash, "Order Confirmed".
- * - Lower Band: 3-column particulars (Order No, Delivery, Est. Arrival).
- * - Discreet text link: "Track your order →".
+ * - Celebratory shower of 3D tumbling metallic gold confetti & foil ribbons.
+ * - Single cohesive satin ribbon band wrapping the cascading glossy dark hair.
+ * - Restrained typography: "Order Confirmed", "ORDER NO.", and "EST. ARRIVAL".
+ * - Natural -2.8deg organic tilt matching the ribbon wrap seam.
+ * - Full-bleed on mobile (100vw × 100dvh) & centered luxury editorial on desktop.
+ * - Proper "Continue Shopping" button.
  */
 export default function OrderSuccessReceipt({ 
   order, 
   isOpen = true, 
   onClose, 
-  onContinueShopping,
-  onTrackOrder 
+  onContinueShopping 
 }) {
-  const [trackingModalOpen, setTrackingModalOpen] = useState(false);
+  const canvasRef = useRef(null);
 
   if (!isOpen && !order) return null;
 
-  // Real order identifier with formatting
+  // Real order identifier with clean formatting
   const rawId = order?.orderId || order?.id || "HN-48291";
   const formattedOrderId = rawId.startsWith('HN') && !rawId.includes('-')
     ? rawId.replace('HN', 'HN-')
     : rawId;
-
-  // Dynamic Delivery Status from order record
-  const getDeliveryStatus = () => {
-    if (order?.status) return order.status;
-    const method = (order?.deliveryMethod || "").toLowerCase();
-    if (method.includes('express') || method.includes('special')) {
-      return 'Express Dispatch';
-    }
-    return 'On its way soon';
-  };
-  const deliveryStatus = getDeliveryStatus();
 
   // Dynamic Estimated Arrival date calculation
   const getEstimatedArrival = () => {
@@ -59,6 +45,123 @@ export default function OrderSuccessReceipt({
   };
   const estimatedArrival = getEstimatedArrival();
 
+  const handleContinue = () => {
+    if (onContinueShopping) onContinueShopping();
+    else if (onClose) onClose();
+  };
+
+  // ── LUXURY METALLIC GOLD CONFETTI CANVAS EFFECT ──
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Curated rich 24K and champagne gold metallic palette
+    const goldPalette = [
+      '#FFDF78', // bright pale gold shimmer
+      '#D4AF37', // metallic 24k gold
+      '#C5A059', // warm champagne satin
+      '#ECCB8F', // specular radiant gold
+      '#AA7A28', // deep molten bronze
+      '#FFF3C4', // glittering highlight
+      '#F0D082'  // fine leaf gold
+    ];
+
+    // Abundant luxury gold confetti shower (220 particles: foils, discs, diamond stars)
+    const particleCount = 220;
+    const particles = Array.from({ length: particleCount }).map(() => {
+      const randShape = Math.random();
+      const shape = randShape > 0.4 ? 'foil' : randShape > 0.15 ? 'disc' : 'diamond';
+      return {
+        x: Math.random() * canvas.width,
+        // Spread both across the viewport and above it so it explodes into view immediately
+        y: Math.random() * canvas.height * 1.6 - canvas.height * 0.7,
+        w: Math.random() * 8 + 6,
+        h: Math.random() * 16 + 8,
+        vx: (Math.random() - 0.5) * 2.8,
+        vy: Math.random() * 2.8 + 1.8,
+        rotation: Math.random() * 360,
+        vRotation: (Math.random() - 0.5) * 8,
+        tilt: Math.random() * 360,
+        vTilt: Math.random() * 6 + 3,
+        color: goldPalette[Math.floor(Math.random() * goldPalette.length)],
+        opacity: Math.random() * 0.45 + 0.55,
+        shape
+      };
+    });
+
+    const startTime = Date.now();
+
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p) => {
+        p.x += p.vx + Math.sin(p.y * 0.015) * 0.9;
+        p.y += p.vy;
+        p.rotation += p.vRotation;
+        p.tilt += p.vTilt;
+
+        // Loop / recycle particles gracefully for continuous lavish celebration
+        if (p.y > canvas.height + 40) {
+          const elapsed = (Date.now() - startTime) / 1000;
+          if (elapsed < 24) {
+            p.y = -35;
+            p.x = Math.random() * canvas.width;
+          }
+        }
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+
+        const tiltFactor = Math.sin((p.tilt * Math.PI) / 180);
+
+        if (p.shape === 'foil') {
+          // 3D Tumbling Rectangular Gold Foil Ribbon
+          ctx.beginPath();
+          ctx.rect(-p.w / 2, (-p.h * tiltFactor) / 2, p.w, p.h * Math.abs(tiltFactor));
+          ctx.fill();
+        } else if (p.shape === 'disc') {
+          // Sparkling Circular Gold Disc
+          ctx.beginPath();
+          ctx.arc(0, 0, (p.w / 2) * Math.abs(tiltFactor), 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Diamond / 4-Point Shimmer Star
+          const size = (p.w / 1.5) * Math.abs(tiltFactor);
+          ctx.beginPath();
+          ctx.moveTo(0, -size);
+          ctx.lineTo(size * 0.4, 0);
+          ctx.lineTo(0, size);
+          ctx.lineTo(-size * 0.4, 0);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        ctx.restore();
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
   return (
     <div 
       className={`ribbon-success-backdrop ${isOpen ? 'open' : ''}`} 
@@ -67,6 +170,13 @@ export default function OrderSuccessReceipt({
       aria-modal="true"
       aria-label={`Order Confirmed: ${formattedOrderId}`}
     >
+      {/* ── FULL-SCREEN GOLD CONFETTI CANVAS ── */}
+      <canvas 
+        ref={canvasRef} 
+        className="ribbon-gold-confetti-canvas"
+        aria-hidden="true"
+      />
+
       {/* Discreet Close Button */}
       <button
         type="button"
@@ -77,147 +187,55 @@ export default function OrderSuccessReceipt({
         <X size={20} strokeWidth={1.5} />
       </button>
 
+      {/* ── UNIFIED COMPOSITION STAGE (Desktop & Mobile) ── */}
       <div 
-        className="ribbon-success-stage"
+        className="ribbon-composition-stage"
         onClick={(e) => e.stopPropagation()}
       >
-        
-        {/* ── THE VISUAL COMPOSITION: RIBBON WRAPPED AROUND GLOSSY HAIR ── */}
-        <div className="ribbon-composition-frame">
-          
-          {/* Hair & Satin Ribbon Image Base */}
-          <div className="ribbon-image-wrapper">
-            <picture>
-              <source srcSet="/images/house-of-nina-ribbon-reference-blank.webp" type="image/webp" />
-              <img 
-                src="/images/house-of-nina-ribbon-reference-blank.jpg" 
-                alt="House of Nina champagne satin ribbon wrapped around glossy virgin hair bundle" 
-                className="ribbon-bg-image"
-              />
-            </picture>
+        <div className="ribbon-card-frame">
+          <picture>
+            <source srcSet="/images/house-of-nina-ribbon-mobile.webp" type="image/webp" />
+            <img 
+              src="/images/house-of-nina-ribbon-mobile.jpg" 
+              alt="House of Nina satin ribbon wrapped around glossy dark hair" 
+              className="ribbon-hero-img"
+            />
+          </picture>
 
-            {/* ── TIER 1: UPPER RIBBON FOLD (Brand & Order Confirmed) ── */}
-            <div className="ribbon-tier-upper animate-ribbon-text">
-              <div className="ribbon-brand-label">
-                HOUSE OF NINA
+          {/* Unified Ribbon Surface: Order Confirmed + Order No & Est. Arrival */}
+          <div className="ribbon-unified-text-surface animate-ribbon-text">
+            <h1 className="ribbon-serif-heading">
+              Order Confirmed
+            </h1>
+
+            {/* 2 Columns with fine vertical divider */}
+            <div className="ribbon-columns-container">
+              <div className="ribbon-col-entry">
+                <span className="ribbon-val-text">{formattedOrderId}</span>
+                <span className="ribbon-lbl-text">ORDER NO.</span>
               </div>
-              <div className="ribbon-hairline-dash" aria-hidden="true" />
-              <h1 className="ribbon-confirmed-heading">
-                Order Confirmed
-              </h1>
-            </div>
 
-            {/* ── TIER 2: LOWER RIBBON FOLD (3 Columns: Order No, Delivery, Est. Arrival) ── */}
-            <div className="ribbon-tier-lower animate-ribbon-text">
-              <div className="ribbon-columns-grid">
-                
-                {/* Column 1: Order No. */}
-                <div className="ribbon-column">
-                  <span className="ribbon-col-val">{formattedOrderId}</span>
-                  <span className="ribbon-col-lbl">ORDER NO.</span>
-                </div>
+              <div className="ribbon-divider-line" aria-hidden="true" />
 
-                <div className="ribbon-vertical-divider" aria-hidden="true" />
-
-                {/* Column 2: Delivery */}
-                <div className="ribbon-column">
-                  <span className="ribbon-col-val">{deliveryStatus}</span>
-                  <span className="ribbon-col-lbl">DELIVERY</span>
-                </div>
-
-                <div className="ribbon-vertical-divider" aria-hidden="true" />
-
-                {/* Column 3: Est. Arrival */}
-                <div className="ribbon-column">
-                  <span className="ribbon-col-val">{estimatedArrival}</span>
-                  <span className="ribbon-col-lbl">EST. ARRIVAL</span>
-                </div>
-
+              <div className="ribbon-col-entry">
+                <span className="ribbon-val-text">{estimatedArrival}</span>
+                <span className="ribbon-lbl-text">EST. ARRIVAL</span>
               </div>
             </div>
-
           </div>
-
         </div>
 
-        {/* ── DISCREET TRACKING ACTION LINK ── */}
-        <div className="ribbon-footer-action">
+        {/* Proper "Continue Shopping" Luxury Button */}
+        <div className="ribbon-action-footer">
           <button
             type="button"
-            className="ribbon-track-text-link"
-            onClick={() => {
-              if (onTrackOrder) onTrackOrder(order);
-              else setTrackingModalOpen(true);
-            }}
+            className="ribbon-continue-btn"
+            onClick={handleContinue}
           >
-            Track your order →
+            Continue Shopping
           </button>
         </div>
-
       </div>
-
-      {/* TRACK ORDER MODAL */}
-      {trackingModalOpen && (
-        <div className="tracking-modal-backdrop" onClick={() => setTrackingModalOpen(false)}>
-          <div className="tracking-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Truck size={18} color="#4A3427" />
-                <h3 style={{ margin: 0, fontSize: '18px', fontFamily: "'Playfair Display', serif", color: '#241913' }}>
-                  Order #{formattedOrderId}
-                </h3>
-              </div>
-              <button 
-                type="button" 
-                className="modal-close-btn" 
-                style={{ position: 'static', margin: 0, width: '30px', height: '30px' }}
-                onClick={() => setTrackingModalOpen(false)}
-              >
-                <X size={16} />
-              </button>
-            </div>
-            
-            <div className="tracking-status-step">
-              <span className="tracking-dot active" />
-              <div>
-                <strong style={{ color: '#241913' }}>Order Confirmed &amp; Authorized</strong>
-                <p style={{ margin: 0, fontSize: '12.5px', color: '#685C50' }}>
-                  Your House of Nina order has been registered for studio quality inspection.
-                </p>
-              </div>
-            </div>
-
-            <div className="tracking-status-step" style={{ marginTop: '16px' }}>
-              <span className="tracking-dot active" />
-              <div>
-                <strong style={{ color: '#241913' }}>Studio Steaming &amp; Packaging</strong>
-                <p style={{ margin: 0, fontSize: '12.5px', color: '#685C50' }}>
-                  Raw virgin hair bundles selected, aligned, and prepared in signature packaging.
-                </p>
-              </div>
-            </div>
-
-            <div className="tracking-status-step" style={{ marginTop: '16px', opacity: 0.6 }}>
-              <span className="tracking-dot" />
-              <div>
-                <strong style={{ color: '#241913' }}>Royal Mail 48 Tracked Dispatch</strong>
-                <p style={{ margin: 0, fontSize: '12.5px', color: '#685C50' }}>
-                  Tracking reference will activate upon collection from our Mayfair studio.
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="btn-primary-editorial"
-              style={{ width: '100%', marginTop: '22px', height: '44px', justifyContent: 'center' }}
-              onClick={() => setTrackingModalOpen(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
 
     </div>
   );
