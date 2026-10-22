@@ -1,30 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Truck, ShoppingBag, Check, Copy, Printer, 
-  ShieldCheck, Sparkles, Package, RotateCcw, Share2, 
-  Smartphone, FileText, ChevronRight, Download
+  ShieldCheck, Sparkles, Scissors, RotateCcw, Share2, 
+  ChevronRight, ArrowDown, MapPin, CreditCard, Clock
 } from 'lucide-react';
 import HouseOfNinaCrest from './HouseOfNinaCrest';
 
 /**
  * ============================================================================
- * HOUSE OF NINA: BESPOKE LUXURY UNBOXING CEREMONY & VIP BRAND MOMENT
+ * HOUSE OF NINA: BESPOKE LUXURY THERMAL REGISTER & WAX STAMPING CEREMONY
  * ============================================================================
- * An out-of-the-box, viral order confirmation experience designed for luxury
- * screen-recording, Instagram/TikTok social sharing, and bespoke client delight.
- * 
- * Features:
- * 1. The Interactive Mayfair Coffer Unboxing:
- *    - Sealed House of Nina velvet coffer box with gold crest & wax seal
- *    - Interactive "Tap to Break Wax Seal & Unbox" with Web Audio chime synthesis
- *    - Smooth reveal into open velvet coffer displaying authentic raw virgin hair
- *    - Replay button for content creators and social sharing
- * 2. High-Fashion 9:16 Social Story Card:
- *    - Specifically tailored for Instagram Stories, TikTok & social media bragging rights
- *    - Gold foil royal crest, luxury hair showcase, authenticated VIP client deed
- * 3. Comprehensive Physical Parchment Dossier & Tracking:
- *    - Archival deckled certificate, live 4-stage studio timeline, item breakdown,
- *      financial statement, 3D antique gold wax seal, and print/PDF invoice
+ * An authentic, tangible Mayfair boutique register printing ceremony:
+ * 1. Physical brushed champagne gold & emerald Saffiano leather register machine
+ * 2. Real-time thermal feed printing with mechanical audio synthesis
+ * 3. Molten Gold Wax Stamping Ceremony (3D brass stamp presses official crest)
+ * 4. Interactive "Tear Off Receipt" physical rip action & paper tear audio
+ * 5. Full inspected archival receipt with live tracking & print styling
  */
 export default function OrderSuccessReceipt({ 
   order, 
@@ -33,13 +24,11 @@ export default function OrderSuccessReceipt({
   onContinueShopping,
   onTrackOrder 
 }) {
-  // View Modes: 'unboxing' (default), 'story' (9:16 social card), 'dossier' (full receipt)
-  const [activeTab, setActiveTab] = useState('unboxing');
-  const [isUnboxed, setIsUnboxed] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  // Ceremony Stages: 'printing' -> 'stamping' -> 'printed' -> 'torn'
+  const [stage, setStage] = useState('printing');
   const [copiedRef, setCopiedRef] = useState(false);
-  const [copiedStory, setCopiedStory] = useState(false);
   const [trackingModalOpen, setTrackingModalOpen] = useState(false);
+  const audioCtxRef = useRef(null);
 
   if (!isOpen && !order) return null;
 
@@ -50,7 +39,7 @@ export default function OrderSuccessReceipt({
       day: 'numeric', 
       month: 'short', 
       year: 'numeric' 
-    }) + ', ' + new Date().toLocaleTimeString('en-GB', { 
+    }) + ' ' + new Date().toLocaleTimeString('en-GB', { 
       hour: '2-digit', 
       minute: '2-digit' 
     }),
@@ -91,63 +80,134 @@ export default function OrderSuccessReceipt({
     return `${curr}${val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
   };
 
-  const primaryItem = orderData.items?.[0] || {
-    name: "Raw Virgin Hair Collection",
-    selectedLength: "26\"",
-    image: "/images/house-of-nina-coffer-opened.webp"
-  };
-
-  // Subtle luxury audio chime synthesis via Web Audio API (zero external assets)
-  const playLuxuryChime = () => {
-    try {
+  // ── Web Audio Synthesis (No external sound files, 100% reliable) ──
+  const getAudioContext = () => {
+    if (!audioCtxRef.current) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const frequencies = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
-      frequencies.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
-        gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.08);
-        gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + idx * 0.08 + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.08 + 0.7);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + idx * 0.08);
-        osc.stop(ctx.currentTime + idx * 0.08 + 0.75);
-      });
-    } catch {
-      // Audio playback fails silently if restricted
+      if (AudioCtx) audioCtxRef.current = new AudioCtx();
     }
+    if (audioCtxRef.current?.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
+    return audioCtxRef.current;
   };
 
-  const handleUnbox = () => {
-    if (isAnimating || isUnboxed) return;
-    setIsAnimating(true);
-    playLuxuryChime();
-    setTimeout(() => {
-      setIsUnboxed(true);
-      setIsAnimating(false);
-    }, 700);
+  // 1. Mechanical Thermal Print Pulse
+  const playPrintPulse = () => {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(160, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.04, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.055);
+    } catch {}
   };
 
+  // 2. Heavy Brass Wax Stamp Thud & Squish
+  const playStampThud = () => {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(32, ctx.currentTime + 0.28);
+      gain.gain.setValueAtTime(0.35, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.32);
+    } catch {}
+  };
+
+  // 3. Serrated Paper Tear
+  const playPaperTear = () => {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const bufferSize = ctx.sampleRate * 0.18;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.045));
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 2600;
+      filter.Q.value = 1.4;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.22, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start();
+    } catch {}
+  };
+
+  // Lifecycle of the Printing & Stamping Ceremony
+  useEffect(() => {
+    if (stage === 'printing') {
+      // Periodic printing audio pulses
+      const interval = setInterval(() => {
+        playPrintPulse();
+      }, 220);
+
+      const printTimer = setTimeout(() => {
+        clearInterval(interval);
+        setStage('stamping');
+      }, 2400);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(printTimer);
+      };
+    }
+
+    if (stage === 'stamping') {
+      // Trigger the heavy stamp thud after stamp descends
+      const stampSoundTimer = setTimeout(() => {
+        playStampThud();
+      }, 650);
+
+      const finishTimer = setTimeout(() => {
+        setStage('printed');
+      }, 1600);
+
+      return () => {
+        clearTimeout(stampSoundTimer);
+        clearTimeout(finishTimer);
+      };
+    }
+  }, [stage]);
+
+  // Handle Tear-Off Action
+  const handleTearOff = () => {
+    playPaperTear();
+    setStage('torn');
+  };
+
+  // Replay Ceremony
   const handleReplay = () => {
-    setIsAnimating(false);
-    setIsUnboxed(false);
+    setStage('printing');
   };
 
   const handleCopyOrderId = () => {
     navigator.clipboard?.writeText?.(orderData.orderId);
     setCopiedRef(true);
     setTimeout(() => setCopiedRef(false), 2500);
-  };
-
-  const handleCopyStoryText = () => {
-    const text = `👑 My bespoke House of Nina Mayfair hair acquisition is confirmed!\n\n✨ Order Reference: #${orderData.orderId}\n💇‍♀️ Piece: ${primaryItem.name}\n📍 Mayfair, London • 100% Raw Virgin Hair\n\n@houseofnina #HouseOfNina #MayfairHair #LuxuryHair`;
-    navigator.clipboard?.writeText?.(text);
-    setCopiedStory(true);
-    setTimeout(() => setCopiedStory(false), 2500);
   };
 
   const handlePrint = () => {
@@ -175,519 +235,377 @@ export default function OrderSuccessReceipt({
         aria-label={`Order Confirmation Receipt ${orderData.orderId}`}
       >
         
-        {/* ── LUXURY MODE SWITCHER TABS ── */}
-        <div className="receipt-view-tabs-bar">
-          <button
-            type="button"
-            className={`receipt-tab-pill ${activeTab === 'unboxing' ? 'active' : ''}`}
-            onClick={() => setActiveTab('unboxing')}
-          >
-            <Sparkles size={14} />
-            <span>VIP Unboxing</span>
-          </button>
-
-          <button
-            type="button"
-            className={`receipt-tab-pill ${activeTab === 'story' ? 'active' : ''}`}
-            onClick={() => setActiveTab('story')}
-          >
-            <Smartphone size={14} />
-            <span>Story Card (Share)</span>
-          </button>
-
-          <button
-            type="button"
-            className={`receipt-tab-pill ${activeTab === 'dossier' ? 'active' : ''}`}
-            onClick={() => setActiveTab('dossier')}
-          >
-            <FileText size={14} />
-            <span>Order Dossier</span>
-          </button>
-        </div>
-
         {/* ══════════════════════════════════════════════════════════════════════
-            MODE 1: THE INTERACTIVE MAYFAIR COFFER UNBOXING
+            CEREMONY VIEW: THE MAYFAIR REGISTER MACHINE WITH WAX STAMP
            ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'unboxing' && (
-          <div className="coffer-unboxing-viewport animate-receipt-slide">
+        {stage !== 'torn' && (
+          <div className="register-scene-wrapper animate-receipt-slide">
             
-            {/* Ambient Lighting & Floating Gold Embers */}
-            <div className="coffer-ambient-glow" aria-hidden="true" />
+            {/* Top Status Header */}
+            <div className="register-scene-header">
+              <div className="register-live-badge">
+                <span className={`live-dot ${stage === 'printing' ? 'blinking' : 'solid'}`} />
+                <span>
+                  {stage === 'printing' && "PRINTING BOUTIQUE RECEIPT..."}
+                  {stage === 'stamping' && "EMBOSSING OFFICIAL MAYFAIR WAX SEAL..."}
+                  {stage === 'printed' && "OFFICIAL RECEIPT READY"}
+                </span>
+              </div>
+              <h2 className="register-scene-title">House of Nina Mayfair Register</h2>
+            </div>
 
-            <div className="coffer-interactive-stage">
+            {/* The Machine & Slot Assembly */}
+            <div className="register-machine-stage">
               
-              {/* Box Image Stage (Sealed vs Opened with crossfade) */}
-              <div 
-                className={`coffer-box-container ${isUnboxed ? 'unboxed' : 'sealed'} ${isAnimating ? 'bursting' : ''}`}
-                onClick={!isUnboxed ? handleUnbox : undefined}
-                role="button"
-                tabIndex={0}
-                aria-label={isUnboxed ? "Unboxed House of Nina Coffer" : "Tap to break wax seal and unbox"}
-              >
-                {/* Sparkle Burst Overlay during unboxing */}
-                {isAnimating && (
-                  <div className="coffer-sparkle-burst">
-                    <span className="burst-particle p1">✦</span>
-                    <span className="burst-particle p2">✦</span>
-                    <span className="burst-particle p3">✦</span>
-                    <span className="burst-particle p4">✦</span>
-                    <span className="burst-particle p5">✦</span>
-                    <span className="burst-particle p6">✦</span>
-                  </div>
-                )}
+              {/* Machine Background Image */}
+              <div className="register-machine-frame">
+                <picture>
+                  <source srcSet="/images/house-of-nina-printer-cropped.webp" type="image/webp" />
+                  <img 
+                    src="/images/house-of-nina-printer-cropped.jpg" 
+                    alt="House of Nina Mayfair Boutique Register" 
+                    className="register-machine-img"
+                  />
+                </picture>
 
-                {/* Sealed Box */}
-                <div className="coffer-image-layer sealed-layer">
-                  <picture>
-                    <source srcSet="/images/house-of-nina-coffer-sealed.webp" type="image/webp" />
-                    <img 
-                      src="/images/house-of-nina-coffer-sealed.jpg" 
-                      alt="Sealed House of Nina Luxury Presentation Coffer" 
-                      className="coffer-render-img"
-                    />
-                  </picture>
+                {/* ── THE FEEDING RECEIPT PAPER ── */}
+                <div className={`register-paper-feeder ${stage}`}>
+                  <div className="register-paper-content">
+                    
+                    {/* Serrated Top Edge */}
+                    <div className="paper-serrated-edge top" />
 
-                  {/* Pulsing Wax Seal Call-To-Action Button */}
-                  {!isUnboxed && (
-                    <div className="coffer-seal-trigger-anchor">
-                      <div className="coffer-seal-pulse-ring" />
-                      <div className="coffer-seal-cta-pill">
-                        <Sparkles size={13} className="shimmer-icon" />
-                        <span>TAP TO BREAK SEAL &amp; UNBOX</span>
+                    {/* Paper Header */}
+                    <div className="paper-header">
+                      <div className="paper-crest">
+                        <HouseOfNinaCrest size={28} color="#1E1713" showWordmark={true} />
+                      </div>
+                      <span className="paper-reg-num">MAYFAIR LONDON • REG #01</span>
+                      <span className="paper-date">{orderData.date}</span>
+                    </div>
+
+                    <div className="paper-divider-dash" />
+
+                    {/* Order Reference & Client */}
+                    <div className="paper-client-block">
+                      <div className="paper-row">
+                        <span>ORDER:</span>
+                        <strong>#{orderData.orderId}</strong>
+                      </div>
+                      <div className="paper-row">
+                        <span>CLIENT:</span>
+                        <strong>{orderData.customer?.fullName || "Valued VIP Client"}</strong>
                       </div>
                     </div>
-                  )}
+
+                    <div className="paper-divider-dash" />
+
+                    {/* Purchased Items */}
+                    <div className="paper-items-table">
+                      {orderData.items.map((item, idx) => (
+                        <div key={idx} className="paper-item-entry">
+                          <div className="paper-item-name">{item.name}</div>
+                          <div className="paper-item-sub">
+                            <span>{item.selectedLength} · {item.selectedDensity || "200%"}</span>
+                            <strong>{formatMoney(item.price)}</strong>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="paper-divider-dash" />
+
+                    {/* Financial Summary */}
+                    <div className="paper-totals-table">
+                      <div className="paper-row">
+                        <span>SUBTOTAL</span>
+                        <span>{formatMoney(orderData.subtotal)}</span>
+                      </div>
+                      <div className="paper-row">
+                        <span>LUXURY BOX</span>
+                        <span>COMPLIMENTARY</span>
+                      </div>
+                      <div className="paper-row total">
+                        <strong>TOTAL PAID</strong>
+                        <strong>{formatMoney(orderData.total)}</strong>
+                      </div>
+                    </div>
+
+                    {/* Authentic Barcode */}
+                    <div className="paper-barcode-block">
+                      <div className="paper-barcode-lines" />
+                      <span className="paper-barcode-number">*HN-{orderData.orderId}-LON*</span>
+                    </div>
+
+                    {/* ── THE MOLTEN WAX STAMPING ZONE ── */}
+                    <div className="paper-wax-stamp-zone">
+                      {/* 3D Brass Stamping Tool descending during 'stamping' stage */}
+                      {stage === 'stamping' && (
+                        <div className="brass-stamp-tool animate-stamp-down">
+                          <div className="brass-stamp-handle" />
+                          <div className="brass-stamp-head" />
+                        </div>
+                      )}
+
+                      {/* The Molten Wax Pool / Raised 3D Wax Seal */}
+                      {(stage === 'stamping' || stage === 'printed') && (
+                        <div className="paper-wax-seal animate-wax-squish">
+                          <img 
+                            src="/images/wax-seal.webp" 
+                            alt="House of Nina Antique Gold Wax Seal" 
+                            className="paper-wax-img"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Serrated Bottom Edge */}
+                    <div className="paper-serrated-edge bottom" />
+
+                  </div>
                 </div>
 
-                {/* Opened Box */}
-                <div className="coffer-image-layer opened-layer">
-                  <picture>
-                    <source srcSet="/images/house-of-nina-coffer-opened.webp" type="image/webp" />
-                    <img 
-                      src="/images/house-of-nina-coffer-opened.jpg" 
-                      alt="Opened House of Nina Luxury Coffer with Raw Virgin Hair" 
-                      className="coffer-render-img"
-                    />
-                  </picture>
+                {/* ── LOWER BRASS SLOT LIP OVERLAY (creates realistic 3D slot depth) ── */}
+                <div className="register-slot-lip-overlay">
+                  <img 
+                    src="/images/nina-slot-lip.png" 
+                    alt="Brass Slot Lip" 
+                    className="slot-lip-img"
+                  />
                 </div>
+
               </div>
 
-              {/* Bottom Card / Floating Deed after Unboxing */}
-              {isUnboxed ? (
-                <div className="coffer-revealed-card animate-slide-up-deed">
-                  <div className="revealed-card-crest">
-                    <HouseOfNinaCrest size={34} color="#A37E3E" showWordmark={true} />
-                  </div>
-
-                  <span className="revealed-eyebrow">MAYFAIR LONDON • VIP CLIENT REGISTRATION</span>
-                  <h2 className="revealed-title">Your Bespoke Hairpiece is Secured</h2>
-
-                  <p className="revealed-desc">
-                    Prepared for <strong>{orderData.customer?.fullName || "Valued Client"}</strong>. 
-                    Your raw virgin hair has entered Studio Quality Inspection &amp; Conditioning.
-                  </p>
-
-                  <div className="revealed-actions-row">
-                    <button
-                      type="button"
-                      className="btn-primary-editorial"
-                      onClick={() => setActiveTab('story')}
-                    >
-                      <Smartphone size={15} />
-                      <span>Capture Social Story Card</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      className="btn-secondary-editorial"
-                      onClick={() => setActiveTab('dossier')}
-                    >
-                      <FileText size={15} />
-                      <span>View Full Order Dossier</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      className="coffer-replay-btn"
-                      onClick={handleReplay}
-                      title="Replay unboxing animation"
-                    >
-                      <RotateCcw size={15} />
-                      <span>Replay</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="coffer-teaser-caption">
-                  <p>
-                    A bespoke gift coffer from <strong>House of Nina Mayfair</strong> has arrived for you. 
-                    Tap the wax seal above to open.
-                  </p>
+              {/* ── TEAR OFF CALL TO ACTION ── */}
+              {stage === 'printed' && (
+                <div className="register-tear-cta-container animate-fade-in-up">
+                  <button 
+                    type="button" 
+                    className="register-tear-btn"
+                    onClick={handleTearOff}
+                  >
+                    <Scissors size={15} />
+                    <span>TEAR OFF RECEIPT</span>
+                  </button>
+                  <span className="register-tear-hint">Tap to inspect full archival order deed</span>
                 </div>
               )}
 
             </div>
-          </div>
-        )}
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            MODE 2: 9:16 SOCIAL STORY CARD (VIRAL INSTAGRAM / TIKTOK BRAG MOMENT)
-           ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'story' && (
-          <div className="story-card-viewport animate-receipt-slide">
-            
-            <div className="story-card-hint">
-              <Sparkles size={14} color="#C5A059" />
-              <span>Perfect 9:16 format for Instagram Stories, TikTok &amp; Social Feeds</span>
-            </div>
-
-            {/* The 9:16 Editorial Vertical Story Card */}
-            <div className="instagram-story-frame" id="social-story-card">
-              
-              {/* Dual Gold Foil Filigree Inset Frame */}
-              <div className="story-foil-border" aria-hidden="true" />
-              
-              {/* Top Crown & Mayfair Crest */}
-              <div className="story-top-crest">
-                <HouseOfNinaCrest size={44} color="#D4AF37" showWordmark={true} />
-                <span className="story-mayfair-pill">MAYFAIR • LONDON</span>
-              </div>
-
-              {/* Bold Editorial Headline */}
-              <div className="story-headline-block">
-                <span className="story-exclusive-badge">OFFICIAL CLIENT ACQUISITION</span>
-                <h2 className="story-title">Bespoke Hair Secured</h2>
-              </div>
-
-              {/* Showcase Frame for the Purchased Hair Piece */}
-              <div className="story-product-showcase">
-                <div className="story-product-oval-frame">
-                  <img 
-                    src={primaryItem.image} 
-                    alt={primaryItem.name} 
-                    className="story-product-img" 
-                  />
-                  <div className="story-product-sheen" />
-                </div>
-                <div className="story-product-details">
-                  <h3 className="story-product-name">{primaryItem.name}</h3>
-                  <div className="story-product-tags">
-                    <span>{primaryItem.selectedLength || "26\" Length"}</span>
-                    <span>•</span>
-                    <span>100% Raw Virgin</span>
-                    <span>•</span>
-                    <span>Double Drawn</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* VIP Recipient & Authenticity Hologram */}
-              <div className="story-vip-deed">
-                <div className="story-deed-text">
-                  <span className="story-deed-label">EXCLUSIVELY PREPARED FOR</span>
-                  <strong className="story-deed-name">{orderData.customer?.fullName || "Valued VIP Client"}</strong>
-                  <span className="story-deed-sub">House of Nina Client Registry • {orderData.date}</span>
-                </div>
-
-                <div className="story-wax-badge">
-                  <img 
-                    src="/images/wax-seal.webp" 
-                    alt="House of Nina Antique Gold Wax Seal" 
-                    className="story-wax-img" 
-                  />
-                </div>
-              </div>
-
-              {/* Bottom Reference Bar */}
-              <div className="story-bottom-bar">
-                <span className="story-order-code">REF: #{orderData.orderId}</span>
-                <span className="story-verified-text">
-                  <ShieldCheck size={12} color="#2E7D32" />
-                  AUTHENTICATED MAYFAIR PIECE
-                </span>
-              </div>
-
-            </div>
-
-            {/* Social Share & Copy Bar */}
-            <div className="story-actions-cluster">
-              <button
-                type="button"
-                className="btn-primary-editorial"
-                onClick={handleCopyStoryText}
-              >
-                {copiedStory ? (
-                  <>
-                    <Check size={16} />
-                    <span>Story Text &amp; Hashtags Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Share2 size={16} />
-                    <span>Copy Story Caption &amp; Tags</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                type="button"
-                className="btn-secondary-editorial"
-                onClick={() => setActiveTab('dossier')}
-              >
-                <FileText size={16} />
-                <span>View Full Order Dossier</span>
-              </button>
+            {/* Quick Helper below machine */}
+            <div className="register-footer-hint">
+              <span>Authentic 100% Raw Virgin Hair • Dispatched from Mayfair Studio</span>
             </div>
 
           </div>
         )}
 
         {/* ══════════════════════════════════════════════════════════════════════
-            MODE 3: THE PHYSICAL PARCHMENT DOSSIER & INVOICE
+            INSPECTED VIEW: THE TORN ARCHIVAL DEED WITH WAX SEAL (Full Clarity)
            ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'dossier' && (
-          <div className="luxury-receipt-dossier animate-receipt-slide">
+        {stage === 'torn' && (
+          <div className="torn-receipt-dossier animate-receipt-slide">
             
-            {/* Dual Inset Gold Hairline Foil Frame */}
-            <div className="receipt-gold-frame-border" aria-hidden="true" />
-            
-            {/* Header Status & Royal Crest */}
-            <div className="receipt-header-section">
-              <div className="receipt-verified-badge">
-                <ShieldCheck size={13} color="#2E7D32" />
-                <span>OFFICIAL ORDER CONFIRMATION</span>
-              </div>
-
-              <div className="receipt-crest-wrapper">
-                <HouseOfNinaCrest size={48} color="#A37E3E" showWordmark={true} />
-              </div>
-
-              <span className="receipt-mayfair-subtitle">
-                MAYFAIR, LONDON • 100% RAW VIRGIN HAIR
-              </span>
-
-              <h1 className="receipt-calligraphy-title">
-                Thank You for Your Order
-              </h1>
-
-              <p className="receipt-curated-tagline">
-                Your bespoke hair collection has been officially confirmed and registered for studio preparation.
-              </p>
-            </div>
-
-            {/* Security Reference & Live Status Banner */}
-            <div className="receipt-security-strip">
-              <div className="security-strip-left">
-                <div className="pulse-dot-container">
-                  <span className="pulse-dot-ping" />
-                  <span className="pulse-dot-core" />
-                </div>
-                <div className="order-id-group">
-                  <span className="order-id-label">ORDER REF:</span>
-                  <span className="order-id-number">{orderData.orderId}</span>
-                </div>
+            {/* Replay Ribbon at Top */}
+            <div className="torn-dossier-top-bar">
+              <div className="dossier-torn-badge">
+                <Scissors size={13} />
+                <span>OFFICIALLY REGISTERED &amp; SEALED</span>
               </div>
 
               <button 
                 type="button" 
-                className="copy-reference-pill"
-                onClick={handleCopyOrderId}
-                title="Copy Order Reference"
+                className="dossier-replay-btn"
+                onClick={handleReplay}
+                title="Watch register machine print again"
               >
-                {copiedRef ? (
-                  <>
-                    <Check size={12} color="#A37E3E" />
-                    <span>Copied</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy size={12} />
-                    <span>Copy Reference</span>
-                  </>
-                )}
+                <RotateCcw size={13} />
+                <span>Re-Print Register</span>
               </button>
             </div>
 
-            {/* Live Studio Preparation Timeline */}
-            <div className="receipt-timeline-card">
-              <div className="timeline-header-row">
-                <span className="timeline-title">STUDIO PREPARATION STATUS</span>
-                <span className="timeline-step-badge">STAGE 1 OF 4</span>
+            {/* The Physical Parchment Receipt Card */}
+            <div className="torn-parchment-sheet">
+              
+              {/* Jagged Serrated Top Edge */}
+              <div className="serrated-tear-lip top-rip" />
+
+              {/* Dual Inset Gold Foil Frame */}
+              <div className="parchment-gold-frame" aria-hidden="true" />
+
+              {/* Header */}
+              <div className="parchment-header">
+                <div className="parchment-crest-row">
+                  <HouseOfNinaCrest size={46} color="#A37E3E" showWordmark={true} />
+                </div>
+                <span className="parchment-subtitle">MAYFAIR, LONDON • 100% RAW VIRGIN HAIR</span>
+                <h1 className="parchment-title">Official Order Confirmation</h1>
+                <p className="parchment-date">Issued {orderData.date}</p>
               </div>
 
-              <div className="timeline-progress-track">
-                {/* Step 1: Payment Verified */}
-                <div className="timeline-step completed">
-                  <div className="step-marker">
-                    <Check size={12} strokeWidth={2.8} />
-                  </div>
-                  <div className="step-info">
-                    <strong>Authorized</strong>
-                    <span>Payment verified</span>
-                  </div>
+              {/* Reference & Copy Pill */}
+              <div className="parchment-security-strip">
+                <div className="security-strip-left">
+                  <span className="security-pulse-core" />
+                  <span className="security-ref-label">ORDER REF:</span>
+                  <span className="security-ref-num">{orderData.orderId}</span>
                 </div>
 
-                <div className="step-connector active" />
+                <button 
+                  type="button" 
+                  className="copy-reference-pill"
+                  onClick={handleCopyOrderId}
+                >
+                  {copiedRef ? (
+                    <>
+                      <Check size={12} color="#A37E3E" />
+                      <span>Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={12} />
+                      <span>Copy Ref</span>
+                    </>
+                  )}
+                </button>
+              </div>
 
-                {/* Step 2: Quality Inspection */}
-                <div className="timeline-step in-progress">
-                  <div className="step-marker">
-                    <Sparkles size={12} />
-                  </div>
-                  <div className="step-info">
-                    <strong>Studio Inspection</strong>
-                    <span>Hair steamed &amp; matched</span>
-                  </div>
+              {/* Live Studio Timeline */}
+              <div className="parchment-timeline-card">
+                <div className="timeline-header-row">
+                  <span className="timeline-title">STUDIO PREPARATION STATUS</span>
+                  <span className="timeline-step-badge">STAGE 1 OF 4</span>
                 </div>
 
-                <div className="step-connector" />
-
-                {/* Step 3: Luxury Packaging */}
-                <div className="timeline-step pending">
-                  <div className="step-marker">
-                    <Package size={12} />
+                <div className="timeline-progress-track">
+                  <div className="timeline-step completed">
+                    <div className="step-marker">
+                      <Check size={12} strokeWidth={2.8} />
+                    </div>
+                    <div className="step-info">
+                      <strong>Authorized</strong>
+                      <span>Payment verified</span>
+                    </div>
                   </div>
-                  <div className="step-info">
-                    <strong>Signature Box</strong>
-                    <span>Satin preservation bag</span>
+
+                  <div className="step-connector active" />
+
+                  <div className="timeline-step in-progress">
+                    <div className="step-marker">
+                      <Sparkles size={12} />
+                    </div>
+                    <div className="step-info">
+                      <strong>Studio Quality</strong>
+                      <span>Steamed &amp; matched</span>
+                    </div>
+                  </div>
+
+                  <div className="step-connector" />
+
+                  <div className="timeline-step pending">
+                    <div className="step-marker">
+                      <Truck size={12} />
+                    </div>
+                    <div className="step-info">
+                      <strong>Dispatch</strong>
+                      <span>Royal Mail 48</span>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="step-connector" />
+              {/* Key Particulars Grid */}
+              <div className="parchment-particulars-grid">
+                <div className="particular-card">
+                  <span className="particular-label">PAYMENT METHOD</span>
+                  <strong className="particular-value">{orderData.paymentMethod}</strong>
+                </div>
 
-                {/* Step 4: Tracked Dispatch */}
-                <div className="timeline-step pending">
-                  <div className="step-marker">
-                    <Truck size={12} />
-                  </div>
-                  <div className="step-info">
-                    <strong>Dispatch</strong>
-                    <span>Royal Mail tracking</span>
-                  </div>
+                <div className="particular-card">
+                  <span className="particular-label">DELIVERING TO</span>
+                  <strong className="particular-value">{orderData.customer?.fullName}</strong>
+                  <span className="particular-subtext">
+                    {orderData.customer?.address}, {orderData.customer?.city} {orderData.customer?.postalCode}
+                  </span>
                 </div>
               </div>
-            </div>
 
-            {/* Key Order Particulars Grid (4 Micro-Cards) */}
-            <div className="receipt-particulars-grid">
-              <div className="particular-card">
-                <span className="particular-label">DATE &amp; TIME</span>
-                <strong className="particular-value">{orderData.date}</strong>
-              </div>
+              {/* Itemized Purchased Pieces */}
+              <div className="parchment-items-section">
+                <div className="items-header-bar">
+                  <span>PURCHASED PIECES ({orderData.items?.length || 0})</span>
+                  <span>AMOUNT</span>
+                </div>
 
-              <div className="particular-card">
-                <span className="particular-label">PAYMENT METHOD</span>
-                <strong className="particular-value">{orderData.paymentMethod}</strong>
-              </div>
-
-              <div className="particular-card">
-                <span className="particular-label">DELIVERY SPEED</span>
-                <strong className="particular-value">{orderData.deliveryMethod}</strong>
-              </div>
-
-              <div className="particular-card">
-                <span className="particular-label">DELIVERING TO</span>
-                <strong className="particular-value">
-                  {orderData.customer?.fullName || "Valued Client"}
-                </strong>
-                <span className="particular-subtext">
-                  {orderData.customer?.address}, {orderData.customer?.city} {orderData.customer?.postalCode}
-                </span>
-              </div>
-            </div>
-
-            {/* Itemized Purchased Items */}
-            <div className="receipt-items-section">
-              <div className="items-section-header">
-                <span>PURCHASED PIECES ({orderData.items?.length || 0})</span>
-                <span>AMOUNT</span>
-              </div>
-
-              <div className="receipt-products-list">
-                {orderData.items.map((item, index) => {
-                  const specs = [
-                    item.selectedLength,
-                    item.selectedLace,
-                    item.selectedDensity
-                  ].filter(Boolean).join(" · ");
-
-                  return (
-                    <div key={item.id || item.cartId || index} className="receipt-product-card">
-                      <div className="product-card-thumb">
-                        <img 
-                          src={item.image} 
-                          alt={item.name} 
-                          className="product-card-img" 
-                        />
+                <div className="parchment-items-list">
+                  {orderData.items.map((item, idx) => (
+                    <div key={idx} className="parchment-product-row">
+                      <div className="product-thumb">
+                        <img src={item.image} alt={item.name} className="product-thumb-img" />
                       </div>
-
-                      <div className="product-card-body">
-                        <h4 className="product-card-title">{item.name}</h4>
-                        {specs && <div className="product-card-specs">{specs}</div>}
-                        <span className="product-card-qty">Quantity: {item.quantity || 1}</span>
+                      <div className="product-details">
+                        <h4 className="product-name">{item.name}</h4>
+                        <span className="product-specs">
+                          {item.selectedLength} · {item.selectedLace || "HD Lace"} · {item.selectedDensity || "200%"}
+                        </span>
+                        <span className="product-qty">Quantity: {item.quantity || 1}</span>
                       </div>
-
-                      <div className="product-card-price">
+                      <div className="product-price">
                         {formatMoney(typeof item.price === 'number' ? item.price * (item.quantity || 1) : item.price)}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Financial Breakdown */}
-            <div className="receipt-breakdown-card">
-              <div className="breakdown-line">
-                <span>Subtotal</span>
-                <span>{formatMoney(orderData.subtotal)}</span>
-              </div>
-
-              <div className="breakdown-line">
-                <span>Complimentary Luxury Velvet Box &amp; Preservation Bonnet</span>
-                <span className="text-emerald">Included</span>
-              </div>
-
-              <div className="breakdown-line">
-                <span>Delivery Fee</span>
-                <span>{orderData.shippingCost === 0 ? 'Complimentary' : formatMoney(orderData.shippingCost)}</span>
-              </div>
-
-              {orderData.discount > 0 && (
-                <div className="breakdown-line discount">
-                  <span>Discount Applied {orderData.promoCode ? `(${orderData.promoCode})` : ''}</span>
-                  <span>−{formatMoney(orderData.discount)}</span>
+                  ))}
                 </div>
-              )}
+              </div>
 
-              <div className="breakdown-total-line">
-                <div>
-                  <span className="total-title">Total Authorized</span>
-                  <span className="total-subtitle">Includes UK VAT</span>
+              {/* Financial Breakdown */}
+              <div className="parchment-breakdown-card">
+                <div className="breakdown-line">
+                  <span>Subtotal</span>
+                  <span>{formatMoney(orderData.subtotal)}</span>
                 </div>
-                <span className="total-figure">{formatMoney(orderData.total)}</span>
+                <div className="breakdown-line">
+                  <span>Signature Velvet Box &amp; Bonnet</span>
+                  <span className="text-emerald">Complimentary</span>
+                </div>
+                <div className="breakdown-line">
+                  <span>Delivery Speed</span>
+                  <span>{orderData.deliveryMethod}</span>
+                </div>
+                <div className="breakdown-total-line">
+                  <div>
+                    <span className="total-title">Total Authorized</span>
+                    <span className="total-subtitle">Includes UK VAT</span>
+                  </div>
+                  <span className="total-figure">{formatMoney(orderData.total)}</span>
+                </div>
               </div>
+
+              {/* The Wax Seal & Signature Section */}
+              <div className="parchment-seal-signoff-row">
+                <div className="signoff-left">
+                  <span className="signoff-script">With gratitude &amp; care,</span>
+                  <span className="signoff-brand">House of Nina</span>
+                  <span className="signoff-loc">Mayfair, London UK</span>
+                </div>
+
+                <div className="signoff-seal-badge" title="Official House of Nina Antique Gold Wax Seal">
+                  <img 
+                    src="/images/wax-seal.webp" 
+                    alt="House of Nina Antique Gold Wax Seal" 
+                    className="wax-seal-img" 
+                  />
+                </div>
+              </div>
+
+              {/* Jagged Serrated Bottom Edge */}
+              <div className="serrated-tear-lip bottom-rip" />
+
             </div>
 
-            {/* Authentic Gold Wax Seal & London Calligraphy Signoff */}
-            <div className="receipt-wax-signoff-section">
-              <div className="signoff-left-calligraphy">
-                <span className="signoff-with-love">With gratitude &amp; care,</span>
-                <span className="signoff-brand-signature">House of Nina</span>
-                <span className="signoff-location">Mayfair, London UK</span>
-              </div>
-
-              <div className="signoff-right-wax-seal" title="Authentic House of Nina Antique Gold Wax Seal">
-                <img 
-                  src="/images/wax-seal.webp" 
-                  alt="House of Nina Antique Gold Wax Seal" 
-                  className="wax-seal-img" 
-                />
-              </div>
-            </div>
-
-            {/* Actions Toolbar (Inside Dossier) */}
-            <div className="receipt-actions-toolbar">
+            {/* Action Buttons Toolbar */}
+            <div className="parchment-actions-toolbar">
               <div className="actions-button-row">
                 <button
                   type="button"
@@ -724,8 +642,8 @@ export default function OrderSuccessReceipt({
               </div>
 
               {orderData.customer?.email && (
-                <p className="receipt-email-confirmation-note">
-                  A formal confirmation receipt and courier tracking link have been dispatched to{' '}
+                <p className="parchment-email-note">
+                  Official dispatch confirmation and tracking link sent to{' '}
                   <strong>{orderData.customer.email}</strong>.
                 </p>
               )}
