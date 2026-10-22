@@ -135,7 +135,7 @@ export default function OrderSuccessReceipt({
     window.print();
   };
 
-  // ── LUXURY METALLIC GOLD CONFETTI CANVAS EFFECT ──
+  // ── LUXURY METALLIC GOLD CONFETTI CANVAS EFFECT (TIMED CELEBRATION BURST) ──
   useEffect(() => {
     if (!isOpen) return;
     const canvas = canvasRef.current;
@@ -161,67 +161,99 @@ export default function OrderSuccessReceipt({
       '#F0D082'  // fine leaf gold
     ];
 
-    // Abundant luxury gold confetti shower (250 metallic gold foils and spangles)
-    const particleCount = 250;
+    // Abundant luxury gold confetti shower (220 metallic gold foils and spangles)
+    const particleCount = 220;
     const particles = Array.from({ length: particleCount }).map(() => ({
       x: Math.random() * canvas.width,
       // Distribute both in view and above viewport so it's instantly showering everywhere
-      y: Math.random() * canvas.height * 1.6 - canvas.height * 0.6,
+      y: Math.random() * canvas.height * 1.5 - canvas.height * 0.5,
       w: Math.random() * 8 + 6,
       h: Math.random() * 16 + 8,
-      vx: (Math.random() - 0.5) * 2.8,
+      vx: (Math.random() - 0.5) * 2.6,
       vy: Math.random() * 2.8 + 1.8,
       rotation: Math.random() * 360,
       vRotation: (Math.random() - 0.5) * 8,
       tilt: Math.random() * 360,
       vTilt: Math.random() * 6 + 3,
       color: goldPalette[Math.floor(Math.random() * goldPalette.length)],
+      baseOpacity: Math.random() * 0.45 + 0.55,
       opacity: Math.random() * 0.45 + 0.55,
       shape: Math.random() > 0.35 ? 'foil' : 'disc'
     }));
 
-    const render = () => {
+    const startTime = performance.now();
+    const SPAWN_DURATION = 3500; // Stop recycling after 3.5s
+    const TOTAL_DURATION = 5200; // Graceful finish and loop termination by 5.2s
+
+    const render = (currentTime) => {
+      const elapsed = currentTime - startTime;
+
+      if (elapsed >= TOTAL_DURATION) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return; // Finished timed celebration, stop loop cleanly
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Subtle fade out factor in final stretch
+      const fadeFactor = elapsed > SPAWN_DURATION 
+        ? Math.max(0, 1 - (elapsed - SPAWN_DURATION) / (TOTAL_DURATION - SPAWN_DURATION))
+        : 1;
+
+      let activeParticles = 0;
 
       particles.forEach((p) => {
         p.x += p.vx + Math.sin(p.y * 0.015) * 0.9;
         p.y += p.vy;
         p.rotation += p.vRotation;
         p.tilt += p.vTilt;
+        p.opacity = p.baseOpacity * fadeFactor;
 
-        // Continuous celebratory shower while modal is open
+        // Only recycle particles from the top while inside the active burst duration
         if (p.y > canvas.height + 40) {
-          p.y = -35;
-          p.x = Math.random() * canvas.width;
+          if (elapsed < SPAWN_DURATION) {
+            p.y = -35;
+            p.x = Math.random() * canvas.width;
+          } else {
+            return; // Dropped off screen, let it finish naturally
+          }
         }
 
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = p.color;
+        if (p.y <= canvas.height + 40 && p.opacity > 0.01) {
+          activeParticles++;
 
-        const tiltFactor = Math.sin((p.tilt * Math.PI) / 180);
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = p.opacity;
+          ctx.fillStyle = p.color;
 
-        if (p.shape === 'foil') {
-          // 3D Tumbling Rectangular Gold Foil Ribbon
-          ctx.beginPath();
-          ctx.rect(-p.w / 2, (-p.h * tiltFactor) / 2, p.w, p.h * Math.abs(tiltFactor));
-          ctx.fill();
-        } else {
-          // Sparkling Circular Gold Disc
-          ctx.beginPath();
-          ctx.arc(0, 0, (p.w / 2) * Math.abs(tiltFactor), 0, Math.PI * 2);
-          ctx.fill();
+          const tiltFactor = Math.sin((p.tilt * Math.PI) / 180);
+
+          if (p.shape === 'foil') {
+            // 3D Tumbling Rectangular Gold Foil Ribbon
+            ctx.beginPath();
+            ctx.rect(-p.w / 2, (-p.h * tiltFactor) / 2, p.w, p.h * Math.abs(tiltFactor));
+            ctx.fill();
+          } else {
+            // Sparkling Circular Gold Disc
+            ctx.beginPath();
+            ctx.arc(0, 0, (p.w / 2) * Math.abs(tiltFactor), 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
         }
-
-        ctx.restore();
       });
 
-      animationFrameId = requestAnimationFrame(render);
+      if (activeParticles > 0 || elapsed < SPAWN_DURATION) {
+        animationFrameId = requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
     };
 
-    render();
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
