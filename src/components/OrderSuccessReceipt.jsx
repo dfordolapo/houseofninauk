@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import { X, Truck, ShoppingBag, CheckCircle, Copy, Check } from 'lucide-react';
+import { 
+  X, Truck, ShoppingBag, Check, Copy, Printer, 
+  ShieldCheck, Sparkles, Package, Clock, MapPin, CreditCard, ChevronRight
+} from 'lucide-react';
 import HouseOfNinaCrest from './HouseOfNinaCrest';
 
 /**
  * ============================================================================
- * HOUSE OF NINA: ORDER SUCCESS SCREEN | DIGITAL LUXURY RECEIPT ON TABLE
+ * HOUSE OF NINA: BESPOKE ORDER CONFIRMATION & LUXURY PHYSICAL DOSSIER
  * ============================================================================
- * An actual beige and champagne-gold receipt printer machine sitting on a 
- * polished marble table, with the live dynamic House of Nina receipt emerging 
- * from the machine's gold slot hole in 3D perspective down onto the table.
- * 
- * Strictly "House of Nina" luxury hair brand — no atelier messaging.
+ * Photorealistic luxury certificate of purchase and physical receipt.
+ * Features:
+ * - 300gsm deckled heavy ivory archival paper styling with dual gold-foil border
+ * - Raised House of Nina Royal Crest in antique gold (#C5A059)
+ * - Security verification badge & one-click reference copy
+ * - Live 4-stage studio preparation timeline
+ * - Itemized luxury hair breakdown with real product imagery
+ * - Financial statement with complimentary packaging recognition
+ * - Authentic 3D embossed antique gold wax seal stamp
+ * - Action toolbar: Live Tracking, Print / PDF Invoice, Return to Boutique
  */
 export default function OrderSuccessReceipt({ 
   order, 
-  isOpen, 
+  isOpen = true, 
   onClose, 
   onContinueShopping,
   onTrackOrder 
@@ -26,7 +34,7 @@ export default function OrderSuccessReceipt({
 
   // Realistic dynamic order structure for House of Nina luxury hair
   const orderData = order || {
-    orderId: "HN2487",
+    orderId: "HN4892",
     date: new Date().toLocaleDateString('en-GB', { 
       day: 'numeric', 
       month: 'short', 
@@ -41,44 +49,35 @@ export default function OrderSuccessReceipt({
       phone: "+44 7776 759731",
       address: "14 Mayfair Place, Flat 3B",
       city: "London",
+      state: "Greater London",
       postalCode: "W1J 8AJ"
     },
     items: [
       {
         id: "hn-01",
-        name: "HD Lace Body Wave Wig",
-        selectedLength: "24\"",
+        name: "Raw Virgin Straight Hair Bundle",
+        selectedLength: "26\"",
         selectedLace: "Invisible HD Lace",
         selectedDensity: "200% Density",
         quantity: 1,
-        price: 285000,
-        currencySymbol: "₦",
-        image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=300&q=80&fm=webp"
-      },
-      {
-        id: "hn-04",
-        name: "Silk Preservation Bonnet & Scarf",
-        selectedLength: "Champagne Gold",
-        selectedLace: "100% Mulberry Silk",
-        quantity: 1,
-        price: 25000,
-        currencySymbol: "₦",
-        image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=300&q=80&fm=webp"
+        price: 240,
+        currencySymbol: "£",
+        image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80&fm=webp"
       }
     ],
-    deliveryMethod: "Standard Delivery (2 - 4 working days)",
-    paymentMethod: "Card (Verified)",
-    subtotal: 310000,
+    deliveryMethod: "Royal Mail 48 Tracked (Complimentary)",
+    paymentMethod: "Stripe Verified Card (•••• 4892)",
+    subtotal: 240,
     shippingCost: 0,
     discount: 0,
-    total: 310000,
-    currencySymbol: "₦"
+    total: 240,
+    currencySymbol: "£"
   };
 
   const curr = orderData.currencySymbol || "£";
   const formatMoney = (val) => {
     if (typeof val !== 'number') return `${curr}${val}`;
-    return `${curr}${val.toLocaleString()}`;
+    return `${curr}${val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
   };
 
   const handleCopyOrderId = () => {
@@ -87,17 +86,21 @@ export default function OrderSuccessReceipt({
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className={`receipt-screen-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
       
-      {/* Close Button */}
+      {/* Floating Close Button */}
       <button
         type="button"
         className="receipt-close-btn"
         onClick={onClose}
         aria-label="Close order confirmation"
       >
-        <X size={20} strokeWidth={2} />
+        <X size={20} strokeWidth={2.2} />
       </button>
 
       <div 
@@ -108,199 +111,289 @@ export default function OrderSuccessReceipt({
         aria-label={`Order Confirmation Receipt ${orderData.orderId}`}
       >
         
-        {/* ── THE LUXURY TABLE SCENE: RECEIPT MACHINE SITTING ON THE TABLE ── */}
-        <div className="table-printer-scene-wrapper">
+        {/* ── THE LUXURY PHYSICAL PARCHMENT DOSSIER ── */}
+        <div className="luxury-receipt-dossier animate-receipt-slide">
           
-          {/* Photorealistic Tabletop Scene with House of Nina Printer */}
-          <div className="table-scene-container">
-            <img 
-              src="/images/house-of-nina-table-printer.webp" 
-              alt="House of Nina Receipt Machine on Marble Table" 
-              className="table-scene-image" 
-            />
+          {/* Dual Inset Gold Hairline Foil Frame */}
+          <div className="receipt-gold-frame-border" aria-hidden="true" />
+          
+          {/* Header Status & Royal Crest */}
+          <div className="receipt-header-section">
+            <div className="receipt-verified-badge">
+              <ShieldCheck size={13} color="#2E7D32" />
+              <span>OFFICIAL ORDER CONFIRMATION</span>
+            </div>
 
-            {/* Slot Feeder Anchor: Anchored directly over the machine's gold slot opening */}
-            <div className="printer-slot-feeder-anchor">
-              
-              {/* Dynamic Physical Receipt Paper emerging in 3D */}
-              <div className="table-receipt-paper animate-receipt-slide">
-                
-                {/* Deep Slot Shadow at mouth where paper emerges */}
-                <div className="receipt-mouth-shadow" aria-hidden="true" />
-                
-                {/* Paper roll specular curve highlight */}
-                <div className="receipt-curve-specular" aria-hidden="true" />
-                
-                {/* Textured paper grain */}
-                <div className="receipt-texture-grain" aria-hidden="true" />
+            <div className="receipt-crest-wrapper">
+              <HouseOfNinaCrest size={48} color="#A37E3E" showWordmark={true} />
+            </div>
 
-                {/* 1. Logo at Top: House of Nina Royal Crest & Wordmark */}
-                <div className="receipt-crest-header">
-                  <HouseOfNinaCrest size={44} color="#A37E3E" showWordmark={true} />
+            <span className="receipt-mayfair-subtitle">
+              MAYFAIR, LONDON • 100% RAW VIRGIN HAIR
+            </span>
+
+            <h1 className="receipt-calligraphy-title">
+              Thank You for Your Order
+            </h1>
+
+            <p className="receipt-curated-tagline">
+              Your bespoke hair collection has been officially confirmed and registered for studio preparation.
+            </p>
+          </div>
+
+          {/* Security Reference & Live Status Banner */}
+          <div className="receipt-security-strip">
+            <div className="security-strip-left">
+              <div className="pulse-dot-container">
+                <span className="pulse-dot-ping" />
+                <span className="pulse-dot-core" />
+              </div>
+              <div className="order-id-group">
+                <span className="order-id-label">ORDER REF:</span>
+                <span className="order-id-number">{orderData.orderId}</span>
+              </div>
+            </div>
+
+            <button 
+              type="button" 
+              className="copy-reference-pill"
+              onClick={handleCopyOrderId}
+              title="Copy Order Reference"
+            >
+              {copied ? (
+                <>
+                  <Check size={12} color="#A37E3E" />
+                  <span>Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy size={12} />
+                  <span>Copy Reference</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Live Studio Preparation Timeline */}
+          <div className="receipt-timeline-card">
+            <div className="timeline-header-row">
+              <span className="timeline-title">STUDIO PREPARATION STATUS</span>
+              <span className="timeline-step-badge">STAGE 1 OF 4</span>
+            </div>
+
+            <div className="timeline-progress-track">
+              {/* Step 1: Payment Verified */}
+              <div className="timeline-step completed">
+                <div className="step-marker">
+                  <Check size={12} strokeWidth={2.8} />
                 </div>
-
-                {/* 2. "Thank You" in Elegant Script */}
-                <div className="receipt-thank-you-script">
-                  Thank You
+                <div className="step-info">
+                  <strong>Authorized</strong>
+                  <span>Payment verified</span>
                 </div>
-
-                {/* 3. "FOR SHOPPING WITH US" */}
-                <div className="receipt-for-shopping-tag">
-                  FOR SHOPPING WITH US
-                </div>
-
-                {/* Delicate Divider */}
-                <div className="receipt-gold-divider" />
-
-                {/* 4. Order Number & Order Date */}
-                <div className="receipt-meta-container">
-                  <div className="receipt-order-id-row">
-                    <span className="order-id-text">Order #{orderData.orderId}</span>
-                    <button 
-                      type="button" 
-                      className="copy-order-btn"
-                      onClick={handleCopyOrderId}
-                      title="Copy Order ID"
-                    >
-                      {copied ? <Check size={11} className="text-gold" /> : <Copy size={11} />}
-                      <span>{copied ? 'Copied' : 'Copy'}</span>
-                    </button>
-                  </div>
-                  <div className="order-date-text">
-                    {orderData.date}
-                  </div>
-                </div>
-
-                {/* Delicate Divider */}
-                <div className="receipt-gold-divider" />
-
-                {/* 5. Purchased Items List */}
-                <div className="receipt-items-container">
-                  {orderData.items.map((item, index) => {
-                    const specs = [
-                      item.selectedLength,
-                      item.selectedLace,
-                      item.selectedDensity
-                    ].filter(Boolean).join(" · ");
-
-                    return (
-                      <div key={item.id || item.cartId || index} className="receipt-product-row">
-                        <div className="product-thumbnail-box">
-                          <img 
-                            src={item.image} 
-                            alt={item.name} 
-                            className="product-thumbnail-img" 
-                          />
-                        </div>
-
-                        <div className="product-details-col">
-                          <h4 className="product-name-title">{item.name}</h4>
-                          {specs && <div className="product-specs-text">{specs}</div>}
-                          <div className="product-qty-text">Qty: {item.quantity || 1}</div>
-                        </div>
-
-                        <div className="product-price-col">
-                          {formatMoney(typeof item.price === 'number' ? item.price * (item.quantity || 1) : item.price)}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Delicate Divider */}
-                <div className="receipt-gold-divider" />
-
-                {/* 6. Subtotal, Shipping, and Final Total */}
-                <div className="receipt-totals-container">
-                  <div className="totals-line-row">
-                    <span>Subtotal</span>
-                    <span>{formatMoney(orderData.subtotal)}</span>
-                  </div>
-
-                  <div className="totals-line-row">
-                    <span>Shipping</span>
-                    <span>{orderData.shippingCost === 0 ? 'Free' : formatMoney(orderData.shippingCost)}</span>
-                  </div>
-
-                  {orderData.discount > 0 && (
-                    <div className="totals-line-row discount-line">
-                      <span>Discount</span>
-                      <span>-{formatMoney(orderData.discount)}</span>
-                    </div>
-                  )}
-
-                  <div className="totals-final-row">
-                    <span className="total-label-text">Total</span>
-                    <span className="total-amount-text">{formatMoney(orderData.total)}</span>
-                  </div>
-                </div>
-
-                {/* 7. "With love, House of Nina" & Realistic Champagne-Gold Wax Seal */}
-                <div className="receipt-signoff-container">
-                  <div className="receipt-signoff-script">
-                    <span className="with-love-script">With love,</span>
-                    <span className="house-of-nina-script">House of Nina</span>
-                  </div>
-
-                  {/* Realistic Physical Champagne-Gold Wax Seal */}
-                  <div className="physical-gold-wax-seal" title="Authentic House of Nina Wax Seal">
-                    <img 
-                      src="/images/wax-seal.webp" 
-                      alt="House of Nina Antique Gold Wax Seal" 
-                      className="wax-seal-graphic-img" 
-                    />
-                  </div>
-                </div>
-
-                {/* 8. Perforated / Serrated Lower Cut Edge */}
-                <div className="receipt-serrated-edge-cut" aria-hidden="true" />
               </div>
 
-              {/* Physical Gold Bezel Lip: sits right over the paper emergence line */}
-              <div className="printer-gold-lip-overlay" aria-hidden="true">
-                <img 
-                  src="/images/printer-gold-lip.webp" 
-                  alt="" 
-                  className="gold-lip-overlay-img" 
-                />
+              <div className="step-connector active" />
+
+              {/* Step 2: Quality Inspection */}
+              <div className="timeline-step in-progress">
+                <div className="step-marker">
+                  <Sparkles size={12} />
+                </div>
+                <div className="step-info">
+                  <strong>Studio Inspection</strong>
+                  <span>Hair steamed &amp; matched</span>
+                </div>
               </div>
 
+              <div className="step-connector" />
+
+              {/* Step 3: Luxury Packaging */}
+              <div className="timeline-step pending">
+                <div className="step-marker">
+                  <Package size={12} />
+                </div>
+                <div className="step-info">
+                  <strong>Signature Box</strong>
+                  <span>Satin preservation bag</span>
+                </div>
+              </div>
+
+              <div className="step-connector" />
+
+              {/* Step 4: Tracked Dispatch */}
+              <div className="timeline-step pending">
+                <div className="step-marker">
+                  <Truck size={12} />
+                </div>
+                <div className="step-info">
+                  <strong>Dispatch</strong>
+                  <span>Royal Mail tracking</span>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Key Order Particulars Grid (4 Micro-Cards) */}
+          <div className="receipt-particulars-grid">
+            <div className="particular-card">
+              <span className="particular-label">DATE &amp; TIME</span>
+              <strong className="particular-value">{orderData.date}</strong>
+            </div>
+
+            <div className="particular-card">
+              <span className="particular-label">PAYMENT METHOD</span>
+              <strong className="particular-value">{orderData.paymentMethod}</strong>
+            </div>
+
+            <div className="particular-card">
+              <span className="particular-label">DELIVERY SPEED</span>
+              <strong className="particular-value">{orderData.deliveryMethod}</strong>
+            </div>
+
+            <div className="particular-card">
+              <span className="particular-label">DELIVERING TO</span>
+              <strong className="particular-value">
+                {orderData.customer?.fullName || "Valued Client"}
+              </strong>
+              <span className="particular-subtext">
+                {orderData.customer?.address}, {orderData.customer?.city} {orderData.customer?.postalCode}
+              </span>
+            </div>
+          </div>
+
+          {/* Itemized Purchased Items */}
+          <div className="receipt-items-section">
+            <div className="items-section-header">
+              <span>PURCHASED PIECES ({orderData.items?.length || 0})</span>
+              <span>AMOUNT</span>
+            </div>
+
+            <div className="receipt-products-list">
+              {orderData.items.map((item, index) => {
+                const specs = [
+                  item.selectedLength,
+                  item.selectedLace,
+                  item.selectedDensity
+                ].filter(Boolean).join(" · ");
+
+                return (
+                  <div key={item.id || item.cartId || index} className="receipt-product-card">
+                    <div className="product-card-thumb">
+                      <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        className="product-card-img" 
+                      />
+                    </div>
+
+                    <div className="product-card-body">
+                      <h4 className="product-card-title">{item.name}</h4>
+                      {specs && <div className="product-card-specs">{specs}</div>}
+                      <span className="product-card-qty">Quantity: {item.quantity || 1}</span>
+                    </div>
+
+                    <div className="product-card-price">
+                      {formatMoney(typeof item.price === 'number' ? item.price * (item.quantity || 1) : item.price)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Financial Breakdown */}
+          <div className="receipt-breakdown-card">
+            <div className="breakdown-line">
+              <span>Subtotal</span>
+              <span>{formatMoney(orderData.subtotal)}</span>
+            </div>
+
+            <div className="breakdown-line">
+              <span>Complimentary Luxury Velvet Box &amp; Preservation Bonnet</span>
+              <span className="text-emerald">Included</span>
+            </div>
+
+            <div className="breakdown-line">
+              <span>Delivery Fee</span>
+              <span>{orderData.shippingCost === 0 ? 'Complimentary' : formatMoney(orderData.shippingCost)}</span>
+            </div>
+
+            {orderData.discount > 0 && (
+              <div className="breakdown-line discount">
+                <span>Discount Applied {orderData.promoCode ? `(${orderData.promoCode})` : ''}</span>
+                <span>−{formatMoney(orderData.discount)}</span>
+              </div>
+            )}
+
+            <div className="breakdown-total-line">
+              <div>
+                <span className="total-title">Total Authorized</span>
+                <span className="total-subtitle">Includes UK VAT</span>
+              </div>
+              <span className="total-figure">{formatMoney(orderData.total)}</span>
+            </div>
+          </div>
+
+          {/* Authentic Gold Wax Seal & London Calligraphy Signoff */}
+          <div className="receipt-wax-signoff-section">
+            <div className="signoff-left-calligraphy">
+              <span className="signoff-with-love">With gratitude &amp; care,</span>
+              <span className="signoff-brand-signature">House of Nina</span>
+              <span className="signoff-location">Mayfair, London UK</span>
+            </div>
+
+            <div className="signoff-right-wax-seal" title="Authentic House of Nina Antique Gold Wax Seal">
+              <img 
+                src="/images/wax-seal.webp" 
+                alt="House of Nina Antique Gold Wax Seal" 
+                className="wax-seal-img" 
+              />
+            </div>
+          </div>
+
         </div>
 
-        {/* ── ACTIONS BENEATH THE RECEIPT (ON THE TABLE) ── */}
-        <div className="receipt-actions-cluster">
-          <div className="receipt-buttons-row">
+        {/* ── ACTION BUTTONS CLUSTER (OUTSIDE THE PARCHMENT) ── */}
+        <div className="receipt-actions-toolbar">
+          <div className="actions-button-row">
             <button
               type="button"
-              className="btn-primary-editorial receipt-action-btn"
+              className="btn-primary-editorial action-btn-pill"
               onClick={() => {
                 if (onTrackOrder) onTrackOrder(orderData);
                 else setTrackingModalOpen(true);
               }}
             >
-              <Truck size={17} />
-              <span>Track Order</span>
+              <Truck size={16} />
+              <span>Track Order Live</span>
             </button>
 
             <button
               type="button"
-              className="btn-secondary-editorial receipt-action-btn"
+              className="btn-secondary-editorial action-btn-pill"
+              onClick={handlePrint}
+            >
+              <Printer size={16} />
+              <span>Print / Save PDF</span>
+            </button>
+
+            <button
+              type="button"
+              className="btn-secondary-editorial action-btn-pill"
               onClick={() => {
                 if (onContinueShopping) onContinueShopping();
                 else onClose();
               }}
             >
-              <ShoppingBag size={17} />
+              <ShoppingBag size={16} />
               <span>Continue Shopping</span>
             </button>
           </div>
 
-          {/* Concise note about confirmation email */}
           {orderData.customer?.email && (
-            <p className="receipt-email-note">
-              An order confirmation receipt has been sent to{' '}
+            <p className="receipt-email-confirmation-note">
+              A formal confirmation receipt and courier tracking link have been dispatched to{' '}
               <strong>{orderData.customer.email}</strong>.
             </p>
           )}
@@ -314,8 +407,8 @@ export default function OrderSuccessReceipt({
           <div className="tracking-modal-card" onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <CheckCircle size={20} className="text-gold" />
-                <h3 style={{ margin: 0, fontSize: '18px', fontFamily: "'Playfair Display', serif" }}>
+                <Truck size={20} color="#A37E3E" />
+                <h3 style={{ margin: 0, fontSize: '18px', fontFamily: "'Playfair Display', serif", color: 'var(--color-deep-espresso)' }}>
                   Tracking Order #{orderData.orderId}
                 </h3>
               </div>
@@ -332,9 +425,19 @@ export default function OrderSuccessReceipt({
             <div className="tracking-status-step">
               <span className="tracking-dot active" />
               <div>
-                <strong>Order Verified</strong>
-                <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-espresso-muted)' }}>
-                  Your House of Nina hair order is being carefully prepared.
+                <strong>Order Verified &amp; Authorized</strong>
+                <p style={{ margin: 0, fontSize: '12px', color: '#685C50' }}>
+                  Your House of Nina hair order is verified and entered the studio preparation queue.
+                </p>
+              </div>
+            </div>
+
+            <div className="tracking-status-step" style={{ marginTop: '14px' }}>
+              <span className="tracking-dot active" />
+              <div>
+                <strong>Studio Inspection &amp; Conditioning</strong>
+                <p style={{ margin: 0, fontSize: '12px', color: '#685C50' }}>
+                  Raw virgin hair bundles selected, aligned, and steamed with organic oils.
                 </p>
               </div>
             </div>
@@ -342,9 +445,9 @@ export default function OrderSuccessReceipt({
             <div className="tracking-status-step" style={{ marginTop: '14px', opacity: 0.6 }}>
               <span className="tracking-dot" />
               <div>
-                <strong>Courier Dispatch</strong>
-                <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-espresso-muted)' }}>
-                  Tracking details will update once collected by the courier.
+                <strong>Royal Mail 48 Tracked Dispatch</strong>
+                <p style={{ margin: 0, fontSize: '12px', color: '#685C50' }}>
+                  Tracking code will be activated as soon as collected by Royal Mail.
                 </p>
               </div>
             </div>
@@ -352,7 +455,7 @@ export default function OrderSuccessReceipt({
             <button
               type="button"
               className="btn-primary-editorial"
-              style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}
+              style={{ width: '100%', marginTop: '20px', height: '46px', justifyContent: 'center' }}
               onClick={() => setTrackingModalOpen(false)}
             >
               Close Tracking Details

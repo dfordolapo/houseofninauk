@@ -299,31 +299,33 @@ export default function CheckoutModal({
   const activeSaved = savedAddresses.find(a => a.id === selectedAddressId);
   const currentAddressTag = activeSaved ? activeSaved.label : (selectedAddressId === 'new' ? 'New Address' : 'Custom');
 
+  // When order is confirmed, render the luxury OrderSuccessReceipt directly without nested modal backdrops
+  if (isConfirmed) {
+    return (
+      <OrderSuccessReceipt
+        isOpen={isOpen}
+        order={confirmedOrder}
+        onClose={onClose}
+        onContinueShopping={() => {
+          onClose();
+          setIsConfirmed(false);
+        }}
+      />
+    );
+  }
+
   return (
     <div className={`checkout-modal-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
       <div 
-        className={`checkout-modal-dialog ${isConfirmed ? 'confirmation-view' : ''}`}
+        className="checkout-modal-dialog"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label="Secure Luxury Checkout"
-        style={{ maxWidth: isConfirmed ? '680px' : '980px' }}
+        style={{ maxWidth: '980px' }}
       >
-        {/* Step 3: Order Confirmation Digital Receipt */}
-        {isConfirmed ? (
-          <OrderSuccessReceipt
-            isOpen={true}
-            order={confirmedOrder}
-            onClose={onClose}
-            onContinueShopping={() => {
-              onClose();
-              setIsConfirmed(false);
-            }}
-          />
-        ) : (
-          <>
-            {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
-            <div className="checkout-modal-header">
+        {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
+        <div className="checkout-modal-header">
               <div className="checkout-header-branding" style={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: '1 1 0' }}>
                 <span className="checkout-brand-title">
                   House of Nina
@@ -1328,8 +1330,6 @@ export default function CheckoutModal({
 
               </div>
             </div>
-          </>
-        )}
       </div>
     </div>
   );

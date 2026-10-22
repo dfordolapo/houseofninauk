@@ -7602,20 +7602,21 @@ video::-moz-media-controls {
 .receipt-screen-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 360;
-  background: radial-gradient(circle at 50% 25%, #FAF7F2 0%, #F3EDE4 50%, #E7DBCB 100%);
+  z-index: 400;
+  background: radial-gradient(circle at 50% 20%, rgba(32, 24, 20, 0.88) 0%, rgba(18, 12, 10, 0.94) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   overflow-y: auto;
   overflow-x: hidden !important;
   overscroll-behavior: contain;
-  overscroll-behavior-x: none;
   touch-action: pan-y;
-  padding: 40px 16px 60px 16px;
+  padding: 44px 16px 70px 16px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.3s ease;
   width: 100vw;
   max-width: 100vw;
   box-sizing: border-box;
@@ -7627,481 +7628,740 @@ video::-moz-media-controls {
 }
 
 .receipt-stage-container {
-  max-width: 580px;
+  max-width: 640px;
   width: 100%;
   margin: 0 auto;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .receipt-close-btn {
   position: fixed;
-  top: 24px;
-  right: 24px;
-  width: 44px;
-  height: 44px;
+  top: 20px;
+  right: 20px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--color-border);
-  box-shadow: 0 4px 20px rgba(44, 32, 20, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-deep-espresso);
   cursor: pointer;
-  z-index: 390;
-  transition: all 0.25s ease;
+  z-index: 420;
+  transition: all 0.2s ease;
 }
 
 .receipt-close-btn:hover {
-  background-color: var(--color-gold);
-  border-color: var(--color-gold);
+  background-color: var(--color-deep-espresso);
+  border-color: var(--color-deep-espresso);
   color: #FFFFFF;
-  transform: scale(1.08) rotate(90deg);
+  transform: scale(1.06);
 }
 
-/* ── THE LUXURY TABLE SCENE: MACHINE SITTING ON THE TABLE ── */
-.table-printer-scene-wrapper {
-  width: 100%;
-  position: relative;
-  margin-top: 10px;
-}
+/* ══════════════════════════════════════════════════════════════════════════════
+   HOUSE OF NINA: LUXURY PHYSICAL DOSSIER & ORDER CONFIRMATION
+   ══════════════════════════════════════════════════════════════════════════════ */
 
-.table-scene-container {
+.luxury-receipt-dossier {
   position: relative;
-  width: 100%;
-  border-radius: 20px;
-  overflow: hidden;
+  background: linear-gradient(180deg, #FDFCF9 0%, #FAF6EE 100%);
+  border-radius: 14px;
   box-shadow: 
-    0 35px 85px -15px rgba(35, 25, 18, 0.4),
-    0 10px 30px rgba(0, 0, 0, 0.12);
-  background: #EAE1D3;
-}
-
-.table-scene-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* ── SLOT FEEDER ANCHOR: POSITIONED PRECISELY OVER THE GOLD SLOT HOLE ── */
-.printer-slot-feeder-anchor {
-  position: absolute;
-  top: 45.8%;
-  left: 31%;
-  width: 38.2%;
-  z-index: 20;
-}
-
-/* Physical Gold Lip Overlay: sits directly in front of the emerging paper */
-.printer-gold-lip-overlay {
-  position: absolute;
-  top: 0;
-  left: -2%;
-  width: 104%;
-  height: 16px;
-  z-index: 30;
-  pointer-events: none;
-}
-
-.gold-lip-overlay-img {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  display: block;
-  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
-}
-
-/* ── PHYSICAL IVORY RECEIPT PAPER FEEDING OUT OF THE MACHINE ONTO TABLE ── */
-.table-receipt-paper {
-  width: 100%;
+    0 25px 70px -15px rgba(16, 10, 6, 0.48),
+    0 10px 25px -5px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(163, 126, 62, 0.22);
+  padding: 42px 38px 36px;
+  max-width: 620px;
   margin: 0 auto;
-  background-color: #FAF7F0;
-  background-image: 
-    radial-gradient(#E8DFC9 0.65px, transparent 0.65px),
-    radial-gradient(#E8DFC9 0.65px, #FAF7F0 0.65px);
-  background-size: 16px 16px;
-  background-position: 0 0, 8px 8px;
-  padding: 34px 20px 42px 20px;
-  position: relative;
-  z-index: 15;
-  box-shadow: 
-    0 28px 65px -10px rgba(18, 12, 8, 0.55),
-    0 8px 22px rgba(0, 0, 0, 0.18),
-    inset 1px 0 2px rgba(255, 255, 255, 0.95),
-    inset -1px 0 2px rgba(0, 0, 0, 0.05);
-  border-radius: 0 0 2px 2px;
-  color: #241C19;
-  max-height: 520px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #D3C3AF transparent;
-}
-
-.table-receipt-paper::-webkit-scrollbar {
-  width: 4px;
-}
-
-.table-receipt-paper::-webkit-scrollbar-thumb {
-  background: #D3C3AF;
-  border-radius: 4px;
-}
-
-/* Deep Slot Exit Shadow at mouth where paper emerges */
-.receipt-mouth-shadow {
-  position: sticky;
-  top: 0;
-  left: -20px;
-  right: -20px;
-  height: 30px;
-  margin-top: -34px;
-  margin-bottom: 6px;
-  background: linear-gradient(180deg, 
-    rgba(8, 5, 4, 0.98) 0%, 
-    rgba(8, 5, 4, 0.65) 35%, 
-    rgba(8, 5, 4, 0.2) 75%, 
-    transparent 100%
-  );
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* Paper Roll Specular Highlight where Paper Bends Over Lip */
-.receipt-curve-specular {
-  position: sticky;
-  top: 14px;
-  left: -20px;
-  right: -20px;
-  height: 12px;
-  background: linear-gradient(180deg, 
-    rgba(255, 255, 255, 0.75) 0%, 
-    rgba(255, 255, 255, 0.12) 60%, 
-    transparent 100%
-  );
-  z-index: 9;
-  pointer-events: none;
-}
-
-@keyframes receiptSlideDown {
-  0% {
-    transform: translateY(-50px) scale(0.95);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
+  overflow: hidden;
+  color: #1E1713;
+  font-family: var(--font-body);
 }
 
 .animate-receipt-slide {
-  animation: receiptSlideDown 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: receiptSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 1. Logo at Top */
-.receipt-crest-header {
+@keyframes receiptSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dual Inset Gold Hairline Foil Frame */
+.receipt-gold-frame-border {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(163, 126, 62, 0.32);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.receipt-gold-frame-border::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(163, 126, 62, 0.16);
+  border-radius: 7px;
+}
+
+/* Header Section */
+.receipt-header-section {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.receipt-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(46, 125, 50, 0.08);
+  border: 1px solid rgba(46, 125, 50, 0.22);
+  border-radius: 100px;
+  color: #2E7D32;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.receipt-crest-wrapper {
+  margin: 0 auto 10px;
   display: flex;
   justify-content: center;
-  margin-bottom: 8px;
 }
 
-/* 2. "Thank You" Script */
-.receipt-thank-you-script {
-  font-family: 'Pinyon Script', cursive;
-  font-size: 46px;
-  color: #A37E3E;
-  text-align: center;
-  line-height: 1.1;
-  margin-top: 4px;
-}
-
-/* 3. "FOR SHOPPING WITH US" */
-.receipt-for-shopping-tag {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 9.5px;
+.receipt-mayfair-subtitle {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
   font-weight: 600;
-  letter-spacing: 0.28em;
+  color: #8A7256;
   text-transform: uppercase;
-  color: #8C7E72;
-  text-align: center;
-  margin-top: 3px;
+  margin-bottom: 10px;
 }
 
-.receipt-gold-divider {
-  height: 1px;
-  background: rgba(140, 126, 114, 0.22);
-  margin: 16px 0;
-  border: none;
+.receipt-calligraphy-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1E1713;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
-/* 4. Order Number & Date */
-.receipt-meta-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+.receipt-curated-tagline {
+  font-size: 13.5px;
+  color: #6E5C4E;
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 480px;
 }
 
-.receipt-order-id-row {
+/* Security Reference Strip */
+.receipt-security-strip {
+  background: #F3EFEA;
+  border: 1px solid rgba(163, 126, 62, 0.22);
+  border-radius: 8px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.security-strip-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pulse-dot-container {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-dot-ping {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #2E7D32;
+  opacity: 0.75;
+  animation: pingAnimation 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.pulse-dot-core {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #2E7D32;
+}
+
+@keyframes pingAnimation {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.order-id-group {
+  display: flex;
+  align-items: baseline;
   gap: 6px;
 }
 
-.order-id-text {
-  font-size: 14.5px;
+.order-id-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
   font-weight: 700;
-  color: #241C19;
-  letter-spacing: -0.01em;
+  color: #8A7A6C;
 }
 
-.copy-order-btn {
+.order-id-number {
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E1713;
+  letter-spacing: 0.05em;
+}
+
+.copy-reference-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(163, 126, 62, 0.12);
-  border: 1px solid rgba(163, 126, 62, 0.25);
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 10px;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #FFFFFF;
+  border: 1px solid rgba(163, 126, 62, 0.28);
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 600;
-  color: #88682A;
+  color: #4E3E32;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.copy-order-btn:hover {
-  background: rgba(163, 126, 62, 0.22);
+.copy-reference-pill:hover {
+  background: #FAF7F2;
+  border-color: #A37E3E;
+  color: #1E1713;
 }
 
-.order-date-text {
-  font-size: 11.5px;
-  color: #8C7E72;
+/* Studio Preparation Timeline */
+.receipt-timeline-card {
+  background: #FAF7F2;
+  border: 1px solid rgba(163, 126, 62, 0.16);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 2;
 }
 
-/* 5. Purchased Items List */
-.receipt-items-container {
+.timeline-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.timeline-title {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: #7A695C;
+  text-transform: uppercase;
+}
+
+.timeline-step-badge {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #A37E3E;
+  background: rgba(163, 126, 62, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.timeline-progress-track {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.timeline-step {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  align-items: center;
+  text-align: center;
+  flex: 1;
 }
 
-.receipt-product-row {
+.step-marker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  transition: all 0.25s ease;
 }
 
-.product-thumbnail-box {
-  width: 44px;
-  height: 44px;
+.timeline-step.completed .step-marker {
+  background: #2E7D32;
+  color: #FFFFFF;
+  border: 2px solid #2E7D32;
+}
+
+.timeline-step.in-progress .step-marker {
+  background: #A37E3E;
+  color: #FFFFFF;
+  border: 2px solid #A37E3E;
+  box-shadow: 0 0 0 4px rgba(163, 126, 62, 0.2);
+}
+
+.timeline-step.pending .step-marker {
+  background: #FFFFFF;
+  color: #B5A89E;
+  border: 2px solid #D6CBC1;
+}
+
+.step-connector {
+  height: 2px;
+  flex: 0.7;
+  margin-top: 11px;
+  background: #E2D9CF;
+}
+
+.step-connector.active {
+  background: #A37E3E;
+}
+
+.step-info {
+  margin-top: 8px;
+}
+
+.step-info strong {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1E1713;
+  line-height: 1.25;
+}
+
+.step-info span {
+  display: block;
+  font-size: 9.5px;
+  color: #8A7A6C;
+  margin-top: 2px;
+  line-height: 1.25;
+}
+
+/* Order Particulars Grid (4 Micro-Cards) */
+.receipt-particulars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.particular-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(163, 126, 62, 0.14);
   border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.particular-label {
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: #9A8A7C;
+  text-transform: uppercase;
+}
+
+.particular-value {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1E1713;
+  line-height: 1.35;
+}
+
+.particular-subtext {
+  font-size: 11px;
+  color: #7A695C;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+/* Itemized Products List */
+.receipt-items-section {
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.items-section-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: #8A7A6C;
+  border-bottom: 1px solid rgba(163, 126, 62, 0.18);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.receipt-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.receipt-product-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #FFFFFF;
+  border: 1px solid rgba(163, 126, 62, 0.14);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.product-card-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
-  background-color: #EFE8DC;
-  border: 1px solid rgba(140, 126, 114, 0.15);
+  background: #F3EFEA;
 }
 
-.product-thumbnail-img {
+.product-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-.product-details-col {
+.product-card-body {
   flex: 1;
   min-width: 0;
 }
 
-.product-name-title {
+.product-card-title {
   font-size: 13px;
   font-weight: 600;
-  color: #241C19;
-  margin: 0 0 2px 0;
-  line-height: 1.3;
+  color: #1E1713;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.product-specs-text {
+.product-card-specs {
   font-size: 11px;
-  color: #8C7E72;
-  line-height: 1.25;
+  color: #8A7256;
+  font-weight: 500;
+  margin-bottom: 3px;
 }
 
-.product-qty-text {
+.product-card-qty {
   font-size: 10.5px;
-  color: #A69B91;
-  margin-top: 1px;
+  color: #9A8A7C;
 }
 
-.product-price-col {
-  font-size: 13px;
-  font-weight: 600;
-  color: #241C19;
-  text-align: right;
+.product-card-price {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1E1713;
+  font-family: var(--font-mono, monospace);
   white-space: nowrap;
 }
 
-/* 6. Totals Section */
-.receipt-totals-container {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+/* Financial Breakdown */
+.receipt-breakdown-card {
+  background: #FAF7F2;
+  border: 1px solid rgba(163, 126, 62, 0.16);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
 }
 
-.totals-line-row {
+.breakdown-line {
   display: flex;
   justify-content: space-between;
   font-size: 12.5px;
-  color: #54443E;
+  color: #6E5C4E;
+  margin-bottom: 8px;
 }
 
-.totals-line-row.discount-line {
-  color: #9E7A32;
-  font-weight: 500;
+.breakdown-line.discount {
+  color: #2E7D32;
+  font-weight: 600;
 }
 
-.totals-final-row {
+.text-emerald {
+  color: #2E7D32;
+  font-weight: 600;
+  font-size: 11.5px;
+}
+
+.breakdown-total-line {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-top: 6px;
-  padding-top: 9px;
-  border-top: 1px solid rgba(140, 126, 114, 0.25);
+  border-top: 1px dashed rgba(163, 126, 62, 0.28);
+  padding-top: 12px;
+  margin-top: 8px;
 }
 
-.total-label-text {
-  font-size: 15px;
+.total-title {
+  font-size: 14px;
   font-weight: 700;
-  color: #241C19;
-  letter-spacing: -0.01em;
+  color: #1E1713;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.total-amount-text {
-  font-size: 18px;
-  font-weight: 800;
-  color: #241C19;
+.total-subtitle {
+  font-size: 10.5px;
+  color: #8A7A6C;
+  display: block;
+  margin-top: 2px;
 }
 
-/* 7. Sign-off & Wax Seal */
-.receipt-signoff-container {
-  position: relative;
-  margin-top: 24px;
-  padding-bottom: 8px;
+.total-figure {
+  font-size: 24px;
+  font-weight: 700;
+  color: #A37E3E;
+  font-family: 'Playfair Display', serif;
+}
+
+/* Antique Gold Wax Seal & Calligraphy Signoff */
+.receipt-wax-signoff-section {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  padding: 18px 8px 6px;
+  border-top: 1px solid rgba(163, 126, 62, 0.18);
+  position: relative;
+  z-index: 2;
 }
 
-.receipt-signoff-script {
+.signoff-left-calligraphy {
   display: flex;
   flex-direction: column;
-  font-family: 'Pinyon Script', cursive;
-  color: #A37E3E;
-  line-height: 1.15;
 }
 
-.with-love-script {
-  font-size: 26px;
+.signoff-with-love {
+  font-family: 'Playfair Display', cursive, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #8A7256;
 }
 
-.house-of-nina-script {
-  font-size: 32px;
-  margin-top: -2px;
+.signoff-brand-signature {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1E1713;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
-/* Realistic 3D Pressed Antique Champagne-Gold Wax Seal */
-.physical-gold-wax-seal {
-  position: absolute;
-  right: -16px;
-  bottom: -20px;
-  width: 104px;
-  height: 104px;
-  z-index: 10;
-  filter: drop-shadow(0 10px 20px rgba(55, 38, 20, 0.45));
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
+.signoff-location {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #A38E7E;
+  margin-top: 3px;
+  font-weight: 600;
 }
 
-.physical-gold-wax-seal:hover {
-  transform: scale(1.08) rotate(3deg);
+.signoff-right-wax-seal {
+  position: relative;
+  width: 95px;
+  height: 95px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 16px rgba(163, 126, 62, 0.45));
 }
 
-.wax-seal-graphic-img {
+.wax-seal-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  display: block;
+  transform: rotate(-6deg);
+  transition: transform 0.3s ease;
 }
 
-/* 8. Serrated Lower Edge Cut */
-.receipt-serrated-edge-cut {
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: 
-    linear-gradient(135deg, #FAF7F0 4px, transparent 0) 0 0,
-    linear-gradient(-135deg, #FAF7F0 4px, transparent 0) 0 0;
-  background-size: 8px 8px;
-  background-repeat: repeat-x;
+.signoff-right-wax-seal:hover .wax-seal-img {
+  transform: rotate(0deg) scale(1.05);
 }
 
-/* ── ACTIONS BENEATH RECEIPT (ON THE TABLE) ── */
-.receipt-actions-cluster {
-  width: 100%;
-  max-width: 440px;
-  margin-top: 22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+/* Action Toolbar */
+.receipt-actions-toolbar {
+  margin-top: 24px;
+  position: relative;
+  z-index: 2;
 }
 
-.receipt-buttons-row {
+.actions-button-row {
   display: flex;
   gap: 12px;
-  width: 100%;
-}
-
-.receipt-action-btn {
-  flex: 1;
   justify-content: center;
-  height: 48px;
-  border-radius: 12px;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  font-weight: 600;
+}
+
+.action-btn-pill {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
 }
 
-.receipt-email-note {
-  font-size: 12px;
-  color: #7A695C;
+.receipt-email-confirmation-note {
   text-align: center;
-  margin: 0;
-  line-height: 1.4;
+  font-size: 12px;
+  color: #E8DCD2;
+  margin-top: 14px;
+  line-height: 1.5;
+  opacity: 0.9;
 }
 
+.receipt-email-confirmation-note strong {
+  color: #FFFFFF;
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 640px) {
-  .table-receipt-paper {
-    padding: 26px 14px 34px 14px;
+  .luxury-receipt-dossier {
+    padding: 26px 16px 20px;
+    border-radius: 12px;
   }
-  .receipt-thank-you-script {
-    font-size: 38px;
+
+  .receipt-gold-frame-border {
+    inset: 8px;
   }
-  .receipt-buttons-row {
+
+  .receipt-gold-frame-border::after {
+    inset: 3px;
+  }
+
+  .receipt-calligraphy-title {
+    font-size: 23px;
+  }
+
+  .receipt-curated-tagline {
+    font-size: 12.5px;
+  }
+
+  .receipt-particulars-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .actions-button-row {
     flex-direction: column;
+    gap: 10px;
   }
-  .physical-gold-wax-seal {
-    width: 80px;
-    height: 80px;
-    right: -8px;
+
+  .action-btn-pill {
+    width: 100%;
+    height: 46px;
+  }
+
+  .timeline-step .step-info strong {
+    font-size: 10px;
+  }
+
+  .timeline-step .step-info span {
+    display: none;
+  }
+
+  .signoff-right-wax-seal {
+    width: 72px;
+    height: 72px;
+  }
+
+  .signoff-brand-signature {
+    font-size: 17px;
+  }
+}
+
+/* Print Invoice Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .receipt-screen-backdrop {
+    position: static !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+  }
+  .receipt-stage-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .luxury-receipt-dossier, 
+  .luxury-receipt-dossier * {
+    visibility: visible;
+  }
+  .luxury-receipt-dossier {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+    border: 1px solid #C5A059;
+    padding: 30px;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .receipt-close-btn,
+  .receipt-actions-toolbar,
+  .copy-reference-pill,
+  .pulse-dot-container {
+    display: none !important;
   }
 }
 
