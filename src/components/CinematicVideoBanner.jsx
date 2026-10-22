@@ -8,7 +8,7 @@ export default function CinematicVideoBanner() {
     const vid = videoRef.current;
     if (!vid) return;
 
-    // Force HTML attributes for strict mobile WebKit/iOS requirements
+    // Strict WebKit / iOS autoplay prerequisites
     vid.setAttribute('muted', '');
     vid.setAttribute('playsinline', '');
     vid.setAttribute('webkit-playsinline', '');
@@ -27,7 +27,7 @@ export default function CinematicVideoBanner() {
     // Immediate attempt
     playVideo();
 
-    // Event listeners on media state
+    // Native media events
     vid.addEventListener('loadedmetadata', playVideo);
     vid.addEventListener('loadeddata', playVideo);
     vid.addEventListener('canplay', playVideo);
@@ -69,8 +69,17 @@ export default function CinematicVideoBanner() {
 
   return (
     <section className="cinematic-video-section" aria-label="Cinematic Silk and Hair Movement">
-      <div className="cinematic-video-container">
-        {/* Continuous Autoplay Video Loop (Transparent 1x1 poster prevents any thumbnail or play icon) */}
+      <div 
+        className="cinematic-video-container"
+        onClick={() => {
+          const vid = videoRef.current;
+          if (vid && vid.paused) {
+            vid.muted = true;
+            vid.play().catch(() => {});
+          }
+        }}
+      >
+        {/* Continuous Autoplay Video Loop (Proven Original Video) */}
         <video
           ref={videoRef}
           className="cinematic-video-player"
@@ -84,28 +93,31 @@ export default function CinematicVideoBanner() {
           controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
           disablePictureInPicture
           disableRemotePlayback
-          poster="/videos/15558864_poster.webp"
+          poster="/videos/landing-cinematic-banner_poster.webp"
           aria-hidden="true"
         >
           <source 
-            src="/videos/15558864.webm" 
-            type="video/webm" 
+            src="/videos/landing-cinematic-banner.mp4" 
+            type="video/mp4" 
           />
           <source 
-            src="/videos/15558864_1080_1920_30fps.mp4" 
-            type="video/mp4" 
+            src="/videos/landing-cinematic-banner.webm" 
+            type="video/webm" 
           />
         </video>
 
         {/* Editorial Dark Overlay */}
         <div className="cinematic-video-overlay" />
 
-        {/* Classy Pun: One line on web, two equal lines on mobile */}
+        {/* Classy Pun: Ivory & Champagne Gold on Frosted Atelier Glass Badge */}
         <div className="cinematic-content-wrapper">
-          <h2 className="cinematic-headline single-line-pun">
-            <span className="pun-part-1">Life isn't perfect,</span>{' '}
-            <span className="pun-part-2">but your hair can be.</span>
-          </h2>
+          <div className="cinematic-text-badge">
+            <h2 className="cinematic-headline single-line-pun">
+              <span className="pun-part-1">Life isn't perfect,</span>
+              <span className="pun-space"> </span>
+              <span className="pun-part-2">but your hair can be.</span>
+            </h2>
+          </div>
         </div>
       </div>
     </section>
