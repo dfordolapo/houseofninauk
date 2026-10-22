@@ -24,6 +24,7 @@ import LegalModal from './components/LegalModal';
 import TrackOrderModal from './components/TrackOrderModal';
 import FaqModal from './components/FaqModal';
 import CheckoutModal from './components/CheckoutModal';
+import OrderSuccessReceipt from './components/OrderSuccessReceipt';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
@@ -39,6 +40,21 @@ export default function App() {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutData, setCheckoutData] = useState({});
+
+  // Direct Order Success modal support (via ?preview=success or window.openOrderSuccessModal())
+  const [isPreviewSuccessOpen, setIsPreviewSuccessOpen] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('preview') === 'success' || params.get('preview') === 'order-success';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    window.openOrderSuccessModal = () => setIsPreviewSuccessOpen(true);
+    window.closeOrderSuccessModal = () => setIsPreviewSuccessOpen(false);
+  }, []);
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -341,6 +357,7 @@ export default function App() {
   };
 
   const handleMoveAllToBag = () => {
+    setWishlist([]);
     setIsWishlistOpen(false);
     setIsCartOpen(true);
   };
@@ -503,6 +520,13 @@ export default function App() {
           setIsCheckoutOpen(false);
           setIsTrackOrderOpen(true);
         }}
+      />
+
+      {/* LUXURY BESPOKE RIBBON ORDER SUCCESS MODAL */}
+      <OrderSuccessReceipt
+        isOpen={isPreviewSuccessOpen}
+        onClose={() => setIsPreviewSuccessOpen(false)}
+        onContinueShopping={() => setIsPreviewSuccessOpen(false)}
       />
 
       {/* PURE VIDEO QUICK VIEW MODAL (VIDEO ONLY) */}

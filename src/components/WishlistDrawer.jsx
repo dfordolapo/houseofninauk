@@ -42,6 +42,11 @@ export default function WishlistDrawer({
 
       onAddToCart(productToAdd);
 
+      // Remove from wishlist when moved to cart
+      if (onRemoveItem) {
+        onRemoveItem(item.id);
+      }
+
       // Temporary visual confirmation badge
       setAddedItemIds(prev => ({ ...prev, [item.id]: true }));
       setTimeout(() => {
