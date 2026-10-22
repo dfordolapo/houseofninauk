@@ -15,7 +15,7 @@ const DEFAULT_SAVED_ADDRESSES = [
     state: 'Greater London',
     postalCode: 'W1J 8AJ',
     phone: '+44 7776 759731',
-    isDefault: true
+    isDefault: false
   },
   {
     id: 'work',
@@ -73,28 +73,28 @@ export default function CheckoutModal({
     }
   });
 
-  const [selectedAddressId, setSelectedAddressId] = useState('home');
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [saveAsLabel, setSaveAsLabel] = useState('Home');
   const [showSaveAddressPrompt, setShowSaveAddressPrompt] = useState(false);
 
-  // Form State
+  // Form State - Nothing auto-filled or pre-selected
   const [formData, setFormData] = useState({
-    email: "amara.okafor@luxurymail.co.uk",
-    phone: "+44 7776 759731",
+    email: "",
+    phone: "",
     countryCode: "+44",
-    fullName: "Amara Okafor",
-    address: "14 Mayfair Place, Flat 3B",
-    city: "London",
-    state: "Greater London",
-    postalCode: "W1J 8AJ",
-    deliveryMethod: "standard", // standard | express
-    paymentMethod: "card", // card | klarna | bank
+    fullName: "",
+    address: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    deliveryMethod: "", // standard | express (none selected initially)
+    paymentMethod: "", // card | klarna | bank (none selected initially)
     currency: "GBP", // GBP | NGN
-    cardName: "Amara Okafor",
-    cardNumber: "•••• •••• •••• 4892",
-    cardExpiry: "08/28",
-    cardCvc: "•••"
+    cardName: "",
+    cardNumber: "",
+    cardExpiry: "",
+    cardCvc: ""
   });
 
   if (!isOpen) return null;
@@ -129,7 +129,9 @@ export default function CheckoutModal({
 
   const standardShippingCost = 0; // Complimentary standard delivery
   const expressShippingCost = isNgn ? 15000 : 8.5; // Royal Mail Special Delivery Guaranteed by 1pm
-  const shippingCost = formData.deliveryMethod === 'express' ? expressShippingCost : standardShippingCost;
+  const shippingCost = formData.deliveryMethod === 'express' 
+    ? expressShippingCost 
+    : (formData.deliveryMethod === 'standard' ? standardShippingCost : 0);
 
   const total = Math.max(0, subtotal - discount + shippingCost);
 
@@ -141,6 +143,21 @@ export default function CheckoutModal({
   };
 
   const handleSelectSavedAddress = (addr) => {
+    if (selectedAddressId === addr.id) {
+      // Toggle off if tapping selected address chip again
+      setSelectedAddressId(null);
+      setIsEditingAddress(false);
+      setShowSaveAddressPrompt(false);
+      setFormData(prev => ({
+        ...prev,
+        fullName: '',
+        address: '',
+        city: '',
+        state: '',
+        postalCode: ''
+      }));
+      return;
+    }
     setSelectedAddressId(addr.id);
     setIsEditingAddress(false);
     setShowSaveAddressPrompt(false);
@@ -205,12 +222,26 @@ export default function CheckoutModal({
       setStepError('Please complete your recipient name and delivery address.');
       return;
     }
+    if (!formData.deliveryMethod) {
+      setStepError('Please choose your preferred delivery speed.');
+      return;
+    }
     setStepError('');
     setCheckoutStep(2);
   };
 
   const handlePlaceOrder = (e) => {
     if (e && e.preventDefault) e.preventDefault();
+    if (!formData.paymentMethod) {
+      setStepError('Please select your preferred payment method.');
+      return;
+    }
+    if (formData.paymentMethod === 'card') {
+      if (!formData.cardName?.trim() || !formData.cardNumber?.trim() || !formData.cardExpiry?.trim() || !formData.cardCvc?.trim()) {
+        setStepError('Please complete your card details.');
+        return;
+      }
+    }
     setIsSubmitting(true);
 
     const chosenPayment = formData.paymentMethod;
@@ -519,9 +550,9 @@ export default function CheckoutModal({
                           </div>
                         )}
 
-                        {/* Full Address Inputs (Shown if editing or new) */}
-                        {(isEditingAddress || selectedAddressId === 'new') && (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                        {/* Full Address Inputs (Shown if editing, no saved address selected, or new) */}
+                        {(isEditingAddress || !activeSaved || selectedAddressId === 'new') && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: activeSaved ? '10px' : '0' }}>
                             <div>
                               <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
                                 Recipient Full Name
@@ -1098,21 +1129,22 @@ export default function CheckoutModal({
                           style={{
                             flex: 1,
                             height: '48px',
-                            padding: '0 18px',
+                            padding: '0 14px',
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '8px',
-                            fontSize: '13.5px',
-                            fontWeight: 600
+                            gap: '6px',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            whiteSpace: 'nowrap'
                           }}
                         >
                           {isSubmitting ? (
-                            <span>Authorizing Secure Order...</span>
+                            <span style={{ whiteSpace: 'nowrap' }}>Authorizing...</span>
                           ) : (
                             <>
-                              <Lock size={15} />
-                              <span>Authorize &amp; Pay {formatPrice(total)}</span>
+                              <Lock size={14} style={{ flexShrink: 0 }} />
+                              <span style={{ whiteSpace: 'nowrap' }}>Authorize &amp; Pay</span>
                             </>
                           )}
                         </button>
@@ -1207,8 +1239,8 @@ export default function CheckoutModal({
 
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50', width: '100%', boxSizing: 'border-box' }}>
                         <span>Delivery</span>
-                        <strong style={{ color: shippingCost === 0 ? '#1E7E34' : 'var(--color-deep-espresso)' }}>
-                          {shippingCost === 0 ? 'Complimentary' : formatPrice(shippingCost)}
+                        <strong style={{ color: !formData.deliveryMethod ? '#8C8074' : (shippingCost === 0 ? '#1E7E34' : 'var(--color-deep-espresso)') }}>
+                          {!formData.deliveryMethod ? 'Calculated at delivery' : (shippingCost === 0 ? 'Complimentary' : formatPrice(shippingCost))}
                         </strong>
                       </div>
 
@@ -1254,7 +1286,8 @@ export default function CheckoutModal({
                           justifyContent: 'center',
                           gap: '8px',
                           fontSize: '13.5px',
-                          fontWeight: 600
+                          fontWeight: 600,
+                          whiteSpace: 'nowrap'
                         }}
                       >
                         <span>Continue to Payment</span>
@@ -1270,21 +1303,22 @@ export default function CheckoutModal({
                           width: '100%',
                           height: '48px',
                           marginTop: '18px',
-                          padding: '0 18px',
+                          padding: '0 14px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '8px',
-                          fontSize: '13.5px',
-                          fontWeight: 600
+                          gap: '6px',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          whiteSpace: 'nowrap'
                         }}
                       >
                         {isSubmitting ? (
-                          <span>Authorizing Secure Order...</span>
+                          <span style={{ whiteSpace: 'nowrap' }}>Authorizing...</span>
                         ) : (
                           <>
-                            <Lock size={15} />
-                            <span>Authorize &amp; Pay {formatPrice(total)}</span>
+                            <Lock size={14} style={{ flexShrink: 0 }} />
+                            <span style={{ whiteSpace: 'nowrap' }}>Authorize &amp; Pay</span>
                           </>
                         )}
                       </button>
