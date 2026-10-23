@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Check, ArrowRight, CreditCard, Building2, Edit3, Lock, Truck, 
   MapPin, Plus, Home, Briefcase, Gift, ChevronRight, ChevronDown, ChevronUp, AlertCircle, ArrowLeft,
-  ShieldCheck, Sparkles, CheckCircle2, Zap
+  ShieldCheck, Sparkles, CheckCircle2, Zap, Search
 } from 'lucide-react';
 import OrderSuccessReceipt from './OrderSuccessReceipt';
 
@@ -365,6 +365,48 @@ const DEFAULT_SAVED_ADDRESSES = [
 ];
 
 /**
+ * Stripe Accepted Global Currencies (Comprehensive list formatted for international luxury clients)
+ */
+export const STRIPE_SUPPORTED_CURRENCIES = [
+  { code: 'GBP', symbol: '£', name: 'British Pound', rate: 1, country: 'United Kingdom' },
+  { code: 'USD', symbol: '$', name: 'US Dollar', rate: 1.28, country: 'United States' },
+  { code: 'EUR', symbol: '€', name: 'Euro', rate: 1.17, country: 'European Union' },
+  { code: 'NGN', symbol: '₦', name: 'Nigerian Naira', rate: 1800, country: 'Nigeria' },
+  { code: 'CAD', symbol: 'CA$', name: 'Canadian Dollar', rate: 1.74, country: 'Canada' },
+  { code: 'AUD', symbol: 'AU$', name: 'Australian Dollar', rate: 1.95, country: 'Australia' },
+  { code: 'AED', symbol: 'AED', name: 'UAE Dirham', rate: 4.70, country: 'United Arab Emirates' },
+  { code: 'SAR', symbol: 'SAR', name: 'Saudi Riyal', rate: 4.80, country: 'Saudi Arabia' },
+  { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc', rate: 1.14, country: 'Switzerland' },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen', rate: 195, country: 'Japan' },
+  { code: 'SGD', symbol: 'SG$', name: 'Singapore Dollar', rate: 1.71, country: 'Singapore' },
+  { code: 'HKD', symbol: 'HK$', name: 'Hong Kong Dollar', rate: 9.98, country: 'Hong Kong' },
+  { code: 'NZD', symbol: 'NZ$', name: 'New Zealand Dollar', rate: 2.15, country: 'New Zealand' },
+  { code: 'KRW', symbol: '₩', name: 'South Korean Won', rate: 1720, country: 'South Korea' },
+  { code: 'SEK', symbol: 'kr', name: 'Swedish Krona', rate: 13.5, country: 'Sweden' },
+  { code: 'DKK', symbol: 'kr', name: 'Danish Krone', rate: 8.75, country: 'Denmark' },
+  { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone', rate: 13.8, country: 'Norway' },
+  { code: 'PLN', symbol: 'zł', name: 'Polish Złoty', rate: 5.10, country: 'Poland' },
+  { code: 'ZAR', symbol: 'R', name: 'South African Rand', rate: 23.5, country: 'South Africa' },
+  { code: 'INR', symbol: '₹', name: 'Indian Rupee', rate: 107, country: 'India' },
+  { code: 'BRL', symbol: 'R$', name: 'Brazilian Real', rate: 6.95, country: 'Brazil' },
+  { code: 'MXN', symbol: 'MX$', name: 'Mexican Peso', rate: 24.5, country: 'Mexico' },
+  { code: 'QAR', symbol: 'QAR', name: 'Qatari Riyal', rate: 4.66, country: 'Qatar' },
+  { code: 'KWD', symbol: 'KWD', name: 'Kuwaiti Dinar', rate: 0.39, country: 'Kuwait' },
+  { code: 'ILS', symbol: '₪', name: 'Israeli Shekel', rate: 4.75, country: 'Israel' },
+  { code: 'TRY', symbol: '₺', name: 'Turkish Lira', rate: 43.5, country: 'Turkey' },
+  { code: 'CZK', symbol: 'Kč', name: 'Czech Koruna', rate: 29.5, country: 'Czech Republic' },
+  { code: 'HUF', symbol: 'Ft', name: 'Hungarian Forint', rate: 465, country: 'Hungary' },
+  { code: 'RON', symbol: 'lei', name: 'Romanian Leu', rate: 5.82, country: 'Romania' },
+  { code: 'MYR', symbol: 'RM', name: 'Malaysian Ringgit', rate: 5.65, country: 'Malaysia' },
+  { code: 'THB', symbol: '฿', name: 'Thai Baht', rate: 46.2, country: 'Thailand' },
+  { code: 'PHP', symbol: '₱', name: 'Philippine Peso', rate: 73.5, country: 'Philippines' },
+  { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah', rate: 20200, country: 'Indonesia' },
+  { code: 'VND', symbol: '₫', name: 'Vietnamese Đồng', rate: 32000, country: 'Vietnam' },
+  { code: 'GHS', symbol: 'GH₵', name: 'Ghanaian Cedi', rate: 19.8, country: 'Ghana' },
+  { code: 'KES', symbol: 'KSh', name: 'Kenyan Shilling', rate: 165, country: 'Kenya' }
+];
+
+/**
  * ============================================================================
  * HOUSE OF NINA: 2-STEP LUXURY CHECKOUT WITH SAVED ADDRESSES & STICKY HEADER
  * ============================================================================
@@ -421,17 +463,18 @@ export default function CheckoutModal({
     cardCvc: ""
   });
 
-  // Billing currency dropdown drawer state (closed by default)
+  // Billing currency dropdown drawer and search state
   const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
+  const [currencySearch, setCurrencySearch] = useState('');
 
-  // Auxiliary states to showcase both first-time (no saved card/details) vs saved wallet
-  const [applePayMode, setApplePayMode] = useState('no_card'); // 'no_card' | 'ready' | 'add_card'
+  // Auxiliary states
+  const [applePayMode, setApplePayMode] = useState('ready');
   const [appleCardData, setAppleCardData] = useState({ number: '', expiry: '', cvc: '', name: '' });
 
-  const [googlePayMode, setGooglePayMode] = useState('new'); // 'new' (add card) | 'saved'
+  const [googlePayMode, setGooglePayMode] = useState('saved');
   const [gpayCardData, setGpayCardData] = useState({ number: '', expiry: '', cvc: '', name: '', zip: '' });
 
-  const [klarnaMode, setKlarnaMode] = useState('new'); // 'new' | 'returning'
+  const [klarnaMode, setKlarnaMode] = useState('new');
   const [klarnaData, setKlarnaData] = useState({
     phone: '',
     dob: '',
@@ -452,7 +495,7 @@ export default function CheckoutModal({
   const [paymentCategory, setPaymentCategory] = useState('all');
 
   // Regional Payment States
-  const [revolutMode, setRevolutMode] = useState('app'); // 'app' | 'card'
+  const [revolutMode, setRevolutMode] = useState('app');
   const [revolutData, setRevolutData] = useState({ phone: '', cardNumber: '', cardExpiry: '', cardCvc: '' });
   const [idealBank, setIdealBank] = useState('ing');
   const [blikCode, setBlikCode] = useState('');
@@ -465,11 +508,11 @@ export default function CheckoutModal({
 
   const standardInputStyle = {
     width: '100%',
-    height: '38px',
-    padding: '8px 11px',
+    height: '36px',
+    padding: '7px 10px',
     borderRadius: '7px',
     border: '1px solid var(--color-border)',
-    fontSize: '11.5px',
+    fontSize: '11px',
     outline: 'none',
     boxSizing: 'border-box',
     backgroundColor: '#FFFFFF',
@@ -477,10 +520,10 @@ export default function CheckoutModal({
     transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
   };
 
-  // Currency multiplier / symbol
-  const isNgn = formData.currency === "NGN";
-  const currencySymbol = isNgn ? "₦" : "£";
-  const rate = isNgn ? 1800 : 1;
+  // Selected Currency Details from Supported Currencies List
+  const currentCurrency = STRIPE_SUPPORTED_CURRENCIES.find(c => c.code === (formData.currency || 'GBP')) || STRIPE_SUPPORTED_CURRENCIES[0];
+  const currencySymbol = currentCurrency.symbol;
+  const rate = currentCurrency.rate;
 
   const rawSubtotal = cartItems.reduce((acc, item) => {
     const itemPrice = typeof item.price === 'number' ? item.price : 200;
@@ -492,14 +535,23 @@ export default function CheckoutModal({
   const discount = rawDiscount * rate;
 
   const standardShippingCost = 0; // Complimentary standard delivery
-  const expressShippingCost = isNgn ? 15000 : 8.5; // Royal Mail Special Delivery Guaranteed by 1pm
+  const expressShippingCost = Math.round(8.5 * rate); // Royal Mail Special Delivery Guaranteed by 1pm
   const shippingCost = formData.deliveryMethod === 'express'
     ? expressShippingCost
     : (formData.deliveryMethod === 'standard' ? standardShippingCost : 0);
 
   const total = Math.max(0, subtotal - discount + shippingCost);
 
-  const formatPrice = (val) => `${currencySymbol}${val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  const formatPrice = (val) => {
+    const decimals = ['JPY', 'KRW', 'VND', 'IDR', 'HUF'].includes(formData.currency) ? 0 : 2;
+    return `${currencySymbol}${val.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
+  };
+
+  const filteredCurrencies = STRIPE_SUPPORTED_CURRENCIES.filter(c => 
+    c.code.toLowerCase().includes(currencySearch.toLowerCase()) || 
+    c.name.toLowerCase().includes(currencySearch.toLowerCase()) || 
+    c.country.toLowerCase().includes(currencySearch.toLowerCase())
+  );
 
   const shouldShowMethod = (m) => {
     if (paymentCategory === 'all') return true;
@@ -953,12 +1005,6 @@ export default function CheckoutModal({
                       ══════════════════════════════════════════════════════════ */}
               {checkoutStep === 1 && (
                 <>
-                  {/* Express 1-Tap Checkout Bar */}
-                  <ExpressCheckoutBar
-                    onExpressPay={handleExpressPay}
-                    isSubmitting={isSubmitting}
-                  />
-
                   {/* 1. Contact Information Card */}
                   <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
                     <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -1437,7 +1483,7 @@ export default function CheckoutModal({
                           Billing Currency
                         </span>
                         <span style={{ fontSize: '10.5px', color: '#8C8074', whiteSpace: 'nowrap' }}>
-                          ({formData.currency === 'GBP' ? 'British Pound' : 'Nigerian Naira'})
+                          ({currentCurrency.name})
                         </span>
                       </div>
 
@@ -1452,7 +1498,7 @@ export default function CheckoutModal({
                           border: '1px solid var(--color-border-light)',
                           whiteSpace: 'nowrap'
                         }}>
-                          {formData.currency === 'GBP' ? '£ GBP (UK & Global)' : '₦ NGN (Nigeria)'}
+                          {currentCurrency.symbol} {currentCurrency.code}
                         </span>
                         {isCurrencyDropdownOpen ? (
                           <ChevronUp size={15} color="var(--color-deep-espresso)" />
@@ -1466,87 +1512,94 @@ export default function CheckoutModal({
                       <div style={{
                         borderTop: '1px solid var(--color-border-light)',
                         backgroundColor: '#FAF8F5',
-                        padding: '8px',
+                        padding: '10px 12px',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '6px'
+                        gap: '8px'
                       }}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleChange('currency', 'GBP');
-                            setIsCurrencyDropdownOpen(false);
-                          }}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '9px 12px',
-                            borderRadius: '8px',
-                            backgroundColor: formData.currency === 'GBP' ? '#FFFFFF' : 'transparent',
-                            border: '1px solid',
-                            borderColor: formData.currency === 'GBP' ? 'var(--color-deep-espresso)' : 'transparent',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            gap: '8px',
-                            boxShadow: formData.currency === 'GBP' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none'
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
-                              £ GBP — British Pound Sterling
-                            </div>
-                            <div style={{ fontSize: '10.5px', color: '#8C8074' }}>
-                              UK &amp; International card processing
-                            </div>
-                          </div>
-                          {formData.currency === 'GBP' && <Check size={14} color="var(--color-deep-espresso)" />}
-                        </button>
+                        {/* Currency Search Input */}
+                        <div style={{ position: 'relative', width: '100%' }}>
+                          <Search size={14} color="#8C8074" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                          <input
+                            type="text"
+                            value={currencySearch}
+                            onChange={(e) => setCurrencySearch(e.target.value)}
+                            placeholder="Search currency or country (e.g. USD, EUR, Naira)..."
+                            autoFocus
+                            style={{
+                              ...standardInputStyle,
+                              height: '34px',
+                              paddingLeft: '32px',
+                              fontSize: '11px',
+                              backgroundColor: '#FFFFFF'
+                            }}
+                          />
+                        </div>
 
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleChange('currency', 'NGN');
-                            setIsCurrencyDropdownOpen(false);
-                          }}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '9px 12px',
-                            borderRadius: '8px',
-                            backgroundColor: formData.currency === 'NGN' ? '#FFFFFF' : 'transparent',
-                            border: '1px solid',
-                            borderColor: formData.currency === 'NGN' ? 'var(--color-deep-espresso)' : 'transparent',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            gap: '8px',
-                            boxShadow: formData.currency === 'NGN' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none'
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
-                              ₦ NGN — Nigerian Naira
+                        {/* Scrollable Currencies List (Max Height ~185px) */}
+                        <div style={{
+                          maxHeight: '185px',
+                          overflowY: 'auto',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '4px',
+                          paddingRight: '2px',
+                          scrollbarWidth: 'thin'
+                        }}>
+                          {filteredCurrencies.map(curr => (
+                            <button
+                              key={curr.code}
+                              type="button"
+                              onClick={() => {
+                                handleChange('currency', curr.code);
+                                setIsCurrencyDropdownOpen(false);
+                                setCurrencySearch('');
+                              }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '8px 10px',
+                                borderRadius: '6px',
+                                backgroundColor: formData.currency === curr.code ? '#FFFFFF' : 'transparent',
+                                border: '1px solid',
+                                borderColor: formData.currency === curr.code ? 'var(--color-deep-espresso)' : 'transparent',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                                gap: '8px',
+                                boxShadow: formData.currency === curr.code ? '0 1px 4px rgba(0,0,0,0.06)' : 'none'
+                              }}
+                            >
+                              <div style={{ minWidth: 0 }}>
+                                <div style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap' }}>
+                                  {curr.symbol} {curr.code} — {curr.name}
+                                </div>
+                                <div style={{ fontSize: '10px', color: '#8C8074', whiteSpace: 'nowrap' }}>
+                                  {curr.country}
+                                </div>
+                              </div>
+                              {formData.currency === curr.code && <Check size={13} color="var(--color-deep-espresso)" />}
+                            </button>
+                          ))}
+                          {filteredCurrencies.length === 0 && (
+                            <div style={{ padding: '12px', textAlign: 'center', fontSize: '11px', color: '#8C8074' }}>
+                              No matching currencies found
                             </div>
-                            <div style={{ fontSize: '10.5px', color: '#8C8074' }}>
-                              Nigeria Deliveries (Exchange rate: £1 ≈ ₦1,800)
-                            </div>
-                          </div>
-                          {formData.currency === 'NGN' && <Check size={14} color="var(--color-deep-espresso)" />}
-                        </button>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
 
                   {/* Express 1-Tap Checkout Bar */}
                   <div style={{
-                    padding: '16px',
+                    padding: '14px 16px',
                     borderRadius: '12px',
                     border: '1px solid var(--color-border)',
                     backgroundColor: '#FFFFFF',
                     boxSizing: 'border-box'
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <div style={{ marginBottom: '10px' }}>
                       <span style={{
                         fontSize: '11px',
                         fontWeight: 700,
@@ -1555,9 +1608,6 @@ export default function CheckoutModal({
                         color: 'var(--color-deep-espresso)'
                       }}>
                         Express 1-Tap Checkout
-                      </span>
-                      <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                        Instant on-page authorization
                       </span>
                     </div>
 
@@ -1677,21 +1727,17 @@ export default function CheckoutModal({
                       Or Select Payment Below
                     </span>
                     <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
-                  </div>                      {/* Payment Options Selection */}
+                  </div>
+
+                  {/* Payment Options Selection */}
                   <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                      <div>
-                        <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                          Payment Method Selection
-                        </h3>
-                        <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                          All 17 Stripe payment methods enabled on your account
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#8C8074', backgroundColor: '#FAF7F2', padding: '3px 8px', borderRadius: '6px', border: '1px solid var(--color-border-light)' }}>
-                        <Lock size={12} color="#635BFF" />
-                        <span>Powered by</span>
-                        <span style={{ fontWeight: 800, color: '#635BFF', letterSpacing: '-0.02em' }}>stripe</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        Payment Method
+                      </h3>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#685C50' }}>
+                        <Lock size={12} color="#1E7E34" />
+                        <span>Encrypted &amp; Secure</span>
                       </div>
                     </div>
 
@@ -1706,11 +1752,11 @@ export default function CheckoutModal({
                       borderBottom: '1px solid var(--color-border-light)'
                     }}>
                       {[
-                        { id: 'all', label: 'All Methods (17)' },
-                        { id: 'uk_global', label: '🇬🇧 Popular / UK (6)' },
-                        { id: 'europe', label: '🇪🇺 Europe (7)' },
-                        { id: 'asia', label: '🇰🇷 South Korea (4)' },
-                        { id: 'bank', label: '🏦 Studio Wire (1)' }
+                        { id: 'all', label: 'All' },
+                        { id: 'uk_global', label: 'Popular' },
+                        { id: 'europe', label: 'Europe' },
+                        { id: 'asia', label: 'Asia' },
+                        { id: 'bank', label: 'Bank Wire' }
                       ].map(cat => (
                         <button
                           key={cat.id}
@@ -1759,16 +1805,11 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                    Apple Pay
-                                  </strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Stripe Verified
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                                  Apple Pay
+                                </strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Biometric checkout via Apple Wallet (iPhone, Mac Safari)
+                                  Touch ID / Face ID
                                 </span>
                               </div>
                             </div>
@@ -1777,222 +1818,57 @@ export default function CheckoutModal({
 
                           {formData.paymentMethod === 'apple_pay' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
-                                <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Customer Wallet Status:</span>
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => setApplePayMode('no_card')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: applePayMode === 'no_card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: applePayMode === 'no_card' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: applePayMode === 'no_card' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    No Card in Wallet (First-Time)
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setApplePayMode('ready')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: applePayMode === 'ready' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: applePayMode === 'ready' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: applePayMode === 'ready' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    Card in Wallet (Touch ID / Face ID)
-                                  </button>
+                              <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '11.5px', color: '#8C8074' }}>Merchant</span>
+                                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina London</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
+                                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total Due</span>
+                                  <span style={{ fontSize: '14.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
                                 </div>
                               </div>
 
-                              {applePayMode === 'no_card' && (
-                                <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1.5px dashed #D8C7B8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#F0E5DA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                      <AlertCircle size={17} color="#B35A00" />
-                                    </div>
-                                    <div>
-                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
-                                        No Card Configured in Apple Wallet
-                                      </strong>
-                                      <span style={{ fontSize: '11.5px', color: '#685C50', lineHeight: 1.4, display: 'block' }}>
-                                        Apple Pay requires a card saved to Apple Wallet on Safari (iOS / macOS). Since this customer has no card added yet, they can enter their card details directly below or switch to Credit/Debit Card:
-                                      </span>
-                                    </div>
-                                  </div>
+                              <button
+                                type="button"
+                                onClick={() => handlePlaceOrder(null, 'apple_pay')}
+                                disabled={isSubmitting}
+                                style={{
+                                  height: '46px',
+                                  backgroundColor: '#000000',
+                                  color: '#FFFFFF',
+                                  border: 'none',
+                                  borderRadius: '8px',
+                                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '8px',
+                                  fontSize: '13.5px',
+                                  fontWeight: 600
+                                }}
+                              >
+                                <span>Pay {formatPrice(total)} with</span>
+                                <ApplePayLogo height={20} color="#FFFFFF" />
+                              </button>
 
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleChange('paymentMethod', 'card')}
-                                      style={{
-                                        height: '42px',
-                                        backgroundColor: 'var(--color-deep-espresso)',
-                                        color: '#FFFFFF',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        fontSize: '12.5px',
-                                        fontWeight: 600,
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '8px'
-                                      }}
-                                    >
-                                      <CreditCard size={15} />
-                                      <span>Pay with Credit / Debit Card Instead</span>
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => setApplePayMode('add_card')}
-                                      style={{
-                                        height: '38px',
-                                        backgroundColor: '#FFFFFF',
-                                        color: 'var(--color-deep-espresso)',
-                                        border: '1px solid var(--color-border)',
-                                        borderRadius: '8px',
-                                        fontSize: '12px',
-                                        fontWeight: 600,
-                                        cursor: 'pointer'
-                                      }}
-                                    >
-                                      + Add Card to Apple Wallet Now
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-
-                              {applePayMode === 'add_card' && (
-                                <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
-                                      Add Card to Apple Wallet
-                                    </span>
-                                    <button
-                                      type="button"
-                                      onClick={() => setAppleCardData({ number: '4242 4242 4242 8821', expiry: '09/28', cvc: '882', name: formData.fullName || 'Amara Okafor' })}
-                                      style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
-                                    >
-                                      Auto-Fill Card (•••• 8821)
-                                    </button>
-                                  </div>
-                                  <input
-                                    type="text"
-                                    placeholder="Cardholder name"
-                                    value={appleCardData.name}
-                                    onChange={(e) => setAppleCardData(prev => ({ ...prev, name: e.target.value }))}
-                                    style={standardInputStyle}
-                                  />
-                                  <input
-                                    type="text"
-                                    placeholder="Card number (•••• •••• •••• ••••)"
-                                    value={appleCardData.number}
-                                    onChange={(e) => {
-                                      const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                      setAppleCardData(prev => ({ ...prev, number: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-                                    }}
-                                    maxLength={19}
-                                    style={standardInputStyle}
-                                  />
-                                  <div className="checkout-row-2">
-                                    <input
-                                      type="text"
-                                      placeholder="MM/YY"
-                                      value={appleCardData.expiry}
-                                      onChange={(e) => {
-                                        const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                        setAppleCardData(prev => ({ ...prev, expiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
-                                      }}
-                                      maxLength={5}
-                                      style={standardInputStyle}
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="CVC"
-                                      value={appleCardData.cvc}
-                                      onChange={(e) => setAppleCardData(prev => ({ ...prev, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                                      maxLength={4}
-                                      style={standardInputStyle}
-                                    />
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePlaceOrder(null, 'apple_pay')}
-                                    disabled={isSubmitting}
-                                    style={{
-                                      height: '44px',
-                                      backgroundColor: '#000000',
-                                      color: '#FFFFFF',
-                                      border: 'none',
-                                      borderRadius: '8px',
-                                      fontSize: '13px',
-                                      fontWeight: 600,
-                                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      gap: '8px'
-                                    }}
-                                  >
-                                    <span>Save to Wallet &amp; Pay {formatPrice(total)}</span>
-                                    <ApplePayLogo height={18} color="#FFFFFF" />
-                                  </button>
-                                </div>
-                              )}
-
-                              {applePayMode === 'ready' && (
-                                <>
-                                  <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
-                                      <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Card •••• 8821</span>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <span style={{ fontSize: '11px', color: '#8C8074' }}>Pay To:</span>
-                                      <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina Ltd</span>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
-                                      <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total:</span>
-                                      <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
-                                    </div>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePlaceOrder(null, 'apple_pay')}
-                                    disabled={isSubmitting}
-                                    style={{
-                                      height: '46px',
-                                      backgroundColor: '#000000',
-                                      color: '#FFFFFF',
-                                      border: 'none',
-                                      borderRadius: '10px',
-                                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      gap: '8px',
-                                      fontSize: '13.5px',
-                                      fontWeight: 600
-                                    }}
-                                  >
-                                    <span>Pay {formatPrice(total)} with</span>
-                                    <ApplePayLogo height={20} color="#FFFFFF" />
-                                  </button>
-                                </>
-                              )}
+                              <div style={{ textAlign: 'center' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleChange('paymentMethod', 'card')}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#8C8074',
+                                    fontSize: '11px',
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer',
+                                    padding: '4px'
+                                  }}
+                                >
+                                  Or pay with credit / debit card
+                                </button>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -2021,16 +1897,11 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                    Google Pay
-                                  </strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Stripe Verified
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                                  Google Pay
+                                </strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Fast, encrypted checkout via your Google Account
+                                  Google Wallet &amp; saved cards
                                 </span>
                               </div>
                             </div>
@@ -2039,155 +1910,57 @@ export default function CheckoutModal({
 
                           {formData.paymentMethod === 'google_pay' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
-                                <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Google Account Card Status:</span>
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => setGooglePayMode('new')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: googlePayMode === 'new' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: googlePayMode === 'new' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: googlePayMode === 'new' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    No Card Saved (Add Card)
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setGooglePayMode('saved')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: googlePayMode === 'saved' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: googlePayMode === 'saved' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: googlePayMode === 'saved' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    Saved Card (•••• 4012)
-                                  </button>
+                              <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '11.5px', color: '#8C8074' }}>Merchant</span>
+                                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina London</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
+                                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total Due</span>
+                                  <span style={{ fontSize: '14.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
                                 </div>
                               </div>
 
-                              {googlePayMode === 'new' ? (
-                                <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div>
-                                      <strong style={{ fontSize: '12.5px', color: 'var(--color-deep-espresso)', display: 'block' }}>
-                                        Add Credit or Debit Card to Google Pay
-                                      </strong>
-                                      <span style={{ fontSize: '11px', color: '#685C50' }}>
-                                        Google Account: {formData.email || 'client@houseofnina.co.uk'}
-                                      </span>
-                                    </div>
-                                    <button
-                                      type="button"
-                                      onClick={() => setGpayCardData({ number: '4242 4242 4242 4012', expiry: '11/29', cvc: '401', name: formData.fullName || 'Amara Okafor', zip: formData.postalCode || 'W1J 8AJ' })}
-                                      style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
-                                    >
-                                      Auto-Fill Test Card
-                                    </button>
-                                  </div>
+                              <button
+                                type="button"
+                                onClick={() => handlePlaceOrder(null, 'google_pay')}
+                                disabled={isSubmitting}
+                                style={{
+                                  height: '46px',
+                                  backgroundColor: '#1C1614',
+                                  color: '#FFFFFF',
+                                  border: 'none',
+                                  borderRadius: '8px',
+                                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '8px',
+                                  fontSize: '13.5px',
+                                  fontWeight: 600
+                                }}
+                              >
+                                <span>Pay {formatPrice(total)} with</span>
+                                <GooglePayLogo height={18} />
+                              </button>
 
-                                  <input
-                                    type="text"
-                                    placeholder="Cardholder name"
-                                    value={gpayCardData.name}
-                                    onChange={(e) => setGpayCardData(prev => ({ ...prev, name: e.target.value }))}
-                                    style={standardInputStyle}
-                                  />
-                                  <input
-                                    type="text"
-                                    placeholder="Card number (•••• •••• •••• ••••)"
-                                    value={gpayCardData.number}
-                                    onChange={(e) => {
-                                      const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                      setGpayCardData(prev => ({ ...prev, number: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-                                    }}
-                                    maxLength={19}
-                                    style={standardInputStyle}
-                                  />
-                                  <div className="checkout-row-2">
-                                    <input
-                                      type="text"
-                                      placeholder="MM/YY"
-                                      value={gpayCardData.expiry}
-                                      onChange={(e) => {
-                                        const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                        setGpayCardData(prev => ({ ...prev, expiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
-                                      }}
-                                      maxLength={5}
-                                      style={standardInputStyle}
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="CVC"
-                                      value={gpayCardData.cvc}
-                                      onChange={(e) => setGpayCardData(prev => ({ ...prev, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                                      maxLength={4}
-                                      style={standardInputStyle}
-                                    />
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePlaceOrder(null, 'google_pay')}
-                                    disabled={isSubmitting}
-                                    style={{
-                                      height: '44px',
-                                      backgroundColor: '#1C1614',
-                                      color: '#FFFFFF',
-                                      border: 'none',
-                                      borderRadius: '8px',
-                                      fontSize: '13px',
-                                      fontWeight: 600,
-                                      cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                                    }}
-                                  >
-                                    <span>Save to Google Pay &amp; Pay {formatPrice(total)}</span>
-                                  </button>
-                                </div>
-                              ) : (
-                                <>
-                                  <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
-                                      <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Google Pay • Visa (•••• 4012)</span>
-                                    </div>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePlaceOrder(null, 'google_pay')}
-                                    disabled={isSubmitting}
-                                    style={{
-                                      height: '46px',
-                                      backgroundColor: '#FFFFFF',
-                                      color: '#1C1614',
-                                      border: '1.5px solid #1C1614',
-                                      borderRadius: '10px',
-                                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      gap: '8px',
-                                      fontSize: '13.5px',
-                                      fontWeight: 600
-                                    }}
-                                  >
-                                    <span>Pay {formatPrice(total)} with</span>
-                                    <GooglePayLogo height={20} />
-                                  </button>
-                                </>
-                              )}
+                              <div style={{ textAlign: 'center' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleChange('paymentMethod', 'card')}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#8C8074',
+                                    fontSize: '11px',
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer',
+                                    padding: '4px'
+                                  }}
+                                >
+                                  Or pay with credit / debit card
+                                </button>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -2215,16 +1988,11 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                    Credit or Debit Card
-                                  </strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#FAF2E6', color: '#976624' }}>
-                                    Universal
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                                  Credit or Debit Card
+                                </strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Standard on-page entry for Visa, Mastercard, AMEX cards
+                                  Visa, Mastercard, American Express
                                 </span>
                               </div>
                             </div>
@@ -2239,22 +2007,7 @@ export default function CheckoutModal({
                           {formData.paymentMethod === 'card' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#FFFFFF' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#685C50' }}>Enter Card Details</span>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setFormData(prev => ({
-                                      ...prev,
-                                      cardName: prev.cardName || 'Amara Okafor',
-                                      cardNumber: '4242 4242 4242 4892',
-                                      cardExpiry: '12/28',
-                                      cardCvc: '312'
-                                    }));
-                                  }}
-                                  style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', cursor: 'pointer', padding: 0, textDecoration: 'underline', fontWeight: 600 }}
-                                >
-                                  Auto-Fill Demo Card (•••• 4892)
-                                </button>
+                                <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#685C50' }}>Card Information</span>
                               </div>
 
                               <div>
@@ -2342,14 +2095,11 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Revolut Pay</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    UK &amp; Europe
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                                  Revolut Pay
+                                </strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Instant 1-tap in-app approval or Revolut card
+                                  Instant in-app approval
                                 </span>
                               </div>
                             </div>
@@ -2358,132 +2108,57 @@ export default function CheckoutModal({
 
                           {formData.paymentMethod === 'revolut' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
-                                <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Revolut Checkout Method:</span>
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => setRevolutMode('app')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: revolutMode === 'app' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: revolutMode === 'app' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: revolutMode === 'app' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    Revolut App (1-Tap Push)
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setRevolutMode('card')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: revolutMode === 'card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: revolutMode === 'card' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: revolutMode === 'card' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    Enter Revolut Card
-                                  </button>
-                                </div>
+                              <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
+                                  Mobile Phone linked to Revolut
+                                </label>
+                                <input
+                                  type="tel"
+                                  value={revolutData.phone || formData.phone}
+                                  onChange={(e) => setRevolutData(prev => ({ ...prev, phone: e.target.value }))}
+                                  placeholder="+44 7776 759731"
+                                  style={standardInputStyle}
+                                />
+                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                  An instant push notification will be sent to your Revolut app to approve {formatPrice(total)}.
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handlePlaceOrder(null, 'revolut')}
+                                  disabled={isSubmitting}
+                                  style={{
+                                    height: '44px',
+                                    backgroundColor: '#000000',
+                                    color: '#FFFFFF',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '13px',
+                                    fontWeight: 600,
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                    marginTop: '4px'
+                                  }}
+                                >
+                                  <span>Approve with Revolut Pay ({formatPrice(total)})</span>
+                                </button>
                               </div>
 
-                              {revolutMode === 'app' ? (
-                                <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                  <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
-                                    Mobile Phone linked to Revolut
-                                  </label>
-                                  <input
-                                    type="tel"
-                                    value={revolutData.phone || formData.phone}
-                                    onChange={(e) => setRevolutData(prev => ({ ...prev, phone: e.target.value }))}
-                                    placeholder="+44 7776 759731"
-                                    style={standardInputStyle}
-                                  />
-                                  <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                    ✓ You will receive an instant push notification on your Revolut app to approve {formatPrice(total)} with 1 tap.
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePlaceOrder(null, 'revolut')}
-                                    disabled={isSubmitting}
-                                    style={{
-                                      height: '44px',
-                                      backgroundColor: '#000000',
-                                      color: '#FFFFFF',
-                                      border: 'none',
-                                      borderRadius: '8px',
-                                      fontSize: '13px',
-                                      fontWeight: 600,
-                                      cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                                    }}
-                                  >
-                                    <span>Approve with Revolut Pay ({formatPrice(total)})</span>
-                                  </button>
-                                </div>
-                              ) : (
-                                <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                  <input
-                                    type="text"
-                                    placeholder="Revolut card number (•••• •••• •••• ••••)"
-                                    value={revolutData.cardNumber}
-                                    onChange={(e) => {
-                                      const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                      setRevolutData(prev => ({ ...prev, cardNumber: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-                                    }}
-                                    maxLength={19}
-                                    style={standardInputStyle}
-                                  />
-                                  <div className="checkout-row-2">
-                                    <input
-                                      type="text"
-                                      placeholder="MM/YY"
-                                      value={revolutData.cardExpiry}
-                                      onChange={(e) => {
-                                        const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                        setRevolutData(prev => ({ ...prev, cardExpiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
-                                      }}
-                                      maxLength={5}
-                                      style={standardInputStyle}
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="CVC"
-                                      value={revolutData.cardCvc}
-                                      onChange={(e) => setRevolutData(prev => ({ ...prev, cardCvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                                      maxLength={4}
-                                      style={standardInputStyle}
-                                    />
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePlaceOrder(null, 'revolut')}
-                                    disabled={isSubmitting}
-                                    style={{
-                                      height: '44px',
-                                      backgroundColor: '#000000',
-                                      color: '#FFFFFF',
-                                      border: 'none',
-                                      borderRadius: '8px',
-                                      fontSize: '13px',
-                                      fontWeight: 600,
-                                      cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                                    }}
-                                  >
-                                    <span>Pay {formatPrice(total)} with Revolut Card</span>
-                                  </button>
-                                </div>
-                              )}
+                              <div style={{ textAlign: 'center' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleChange('paymentMethod', 'card')}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#8C8074',
+                                    fontSize: '11px',
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer',
+                                    padding: '4px'
+                                  }}
+                                >
+                                  Or pay with credit / debit card
+                                </button>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -2577,10 +2252,10 @@ export default function CheckoutModal({
                               />
                               <div>
                                 <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                  Klarna (Pay in 3)
+                                  Klarna
                                 </strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  3 payments of {currencySymbol}{(total / 3).toFixed(2)} • 0% APR interest
+                                  Pay in 3 installments • 0% APR
                                 </span>
                               </div>
                             </div>
@@ -2590,142 +2265,59 @@ export default function CheckoutModal({
                           {formData.paymentMethod === 'klarna' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                               <div style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>
-                                Your 3 Interest-Free Installments:
+                                3 Interest-Free Installments:
                               </div>
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
                                 <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
                                   <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>1. Today</span>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
+                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{formatPrice(total / 3)}</strong>
                                 </div>
                                 <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>2. In 30 Days</span>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
+                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>2. 30 Days</span>
+                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{formatPrice(total / 3)}</strong>
                                 </div>
                                 <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>3. In 60 Days</span>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
+                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>3. 60 Days</span>
+                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{formatPrice(total / 3)}</strong>
                                 </div>
                               </div>
 
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
-                                <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Klarna Account Status:</span>
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => setKlarnaMode('new')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: klarnaMode === 'new' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: klarnaMode === 'new' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: klarnaMode === 'new' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    First-Time Setup
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setKlarnaMode('returning')}
-                                    style={{
-                                      padding: '3px 8px',
-                                      borderRadius: '5px',
-                                      fontSize: '10.5px',
-                                      fontWeight: 600,
-                                      border: '1px solid',
-                                      borderColor: klarnaMode === 'returning' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                      backgroundColor: klarnaMode === 'returning' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                      color: klarnaMode === 'returning' ? '#FFFFFF' : '#685C50',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    Returning (1-Tap)
-                                  </button>
-                                </div>
-                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handlePlaceOrder(null, 'klarna')}
+                                disabled={isSubmitting}
+                                style={{
+                                  height: '44px',
+                                  backgroundColor: '#FFB3C7',
+                                  color: '#1C1614',
+                                  border: 'none',
+                                  borderRadius: '8px',
+                                  fontSize: '13px',
+                                  fontWeight: 700,
+                                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                  marginTop: '4px'
+                                }}
+                              >
+                                Pay 1st Part {formatPrice(total / 3)} with Klarna
+                              </button>
 
-                              {klarnaMode === 'new' ? (
-                                <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>
-                                      First-Time Klarna Application
-                                    </strong>
-                                    <button
-                                      type="button"
-                                      onClick={() => setKlarnaData({ phone: '+44 7776 759731', dob: '14/06/1995', cardNumber: '4242 4242 4242 4892', cardExpiry: '10/28', cardCvc: '489' })}
-                                      style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
-                                    >
-                                      Auto-Fill Klarna Details
-                                    </button>
-                                  </div>
-                                  <input
-                                    type="tel"
-                                    value={klarnaData.phone || formData.phone}
-                                    onChange={(e) => setKlarnaData(prev => ({ ...prev, phone: e.target.value }))}
-                                    placeholder="Mobile (+44 7776 759731) for SMS PIN"
-                                    style={standardInputStyle}
-                                  />
-                                  <input
-                                    type="text"
-                                    value={klarnaData.dob}
-                                    onChange={(e) => setKlarnaData(prev => ({ ...prev, dob: e.target.value }))}
-                                    placeholder="Date of Birth (DD / MM / YYYY)"
-                                    style={standardInputStyle}
-                                  />
-                                  <input
-                                    type="text"
-                                    value={klarnaData.cardNumber}
-                                    onChange={(e) => {
-                                      const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                      setKlarnaData(prev => ({ ...prev, cardNumber: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-                                    }}
-                                    placeholder="Card number (•••• •••• •••• 4892)"
-                                    maxLength={19}
-                                    style={standardInputStyle}
-                                  />
-                                  <div className="checkout-row-2">
-                                    <input
-                                      type="text"
-                                      value={klarnaData.cardExpiry}
-                                      onChange={(e) => {
-                                        const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                        setKlarnaData(prev => ({ ...prev, cardExpiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
-                                      }}
-                                      placeholder="MM/YY"
-                                      maxLength={5}
-                                      style={standardInputStyle}
-                                    />
-                                    <input
-                                      type="text"
-                                      value={klarnaData.cardCvc}
-                                      onChange={(e) => setKlarnaData(prev => ({ ...prev, cardCvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                                      placeholder="CVC"
-                                      maxLength={4}
-                                      style={standardInputStyle}
-                                    />
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handlePlaceOrder(null, 'klarna')}
-                                    disabled={isSubmitting}
-                                    style={{ height: '44px', backgroundColor: '#FFB3C7', color: '#1C1614', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
-                                  >
-                                    Authorize Klarna Pay in 3 ({currencySymbol}{(total / 3).toFixed(2)} Today)
-                                  </button>
-                                </div>
-                              ) : (
+                              <div style={{ textAlign: 'center' }}>
                                 <button
                                   type="button"
-                                  onClick={() => handlePlaceOrder(null, 'klarna')}
-                                  disabled={isSubmitting}
-                                  style={{ height: '44px', backgroundColor: '#FFB3C7', color: '#1C1614', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  onClick={() => handleChange('paymentMethod', 'card')}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#8C8074',
+                                    fontSize: '11px',
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer',
+                                    padding: '4px'
+                                  }}
                                 >
-                                  Pay 1st Part {formatPrice(total / 3)} with Klarna
+                                  Or pay with credit / debit card
                                 </button>
-                              )}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -2753,14 +2345,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Bancontact</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Belgium #1
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Bancontact</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Direct Belgian bank debit or Payconiq app
+                                  Belgian card &amp; Payconiq
                                 </span>
                               </div>
                             </div>
@@ -2813,14 +2400,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>iDEAL</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Netherlands Standard
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>iDEAL</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Direct online transfer via your Dutch bank
+                                  Dutch online banking
                                 </span>
                               </div>
                             </div>
@@ -2877,14 +2459,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>BLIK</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Poland #1 Mobile
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>BLIK</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Instant 6-digit code from your Polish banking app
+                                  6-digit banking code
                                 </span>
                               </div>
                             </div>
@@ -2942,14 +2519,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>MB WAY</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Portugal
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>MB WAY</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Mobile phone approval in the MB WAY app
+                                  Portuguese mobile payment
                                 </span>
                               </div>
                             </div>
@@ -3003,14 +2575,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>EPS Überweisung</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Austria
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>EPS Überweisung</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Austrian online banking direct payment
+                                  Austrian online banking
                                 </span>
                               </div>
                             </div>
@@ -3065,14 +2632,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Satispay</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    Italy
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Satispay</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Independent Italian mobile payment network
+                                  Italian mobile payment
                                 </span>
                               </div>
                             </div>
@@ -3124,14 +2686,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Kakao Pay (카카오페이)</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#FFF9C4', color: '#F57F17' }}>
-                                    South Korea #1
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Kakao Pay (카카오페이)</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Instant checkout via KakaoTalk
+                                  Kakao mobile payment
                                 </span>
                               </div>
                             </div>
@@ -3176,14 +2733,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Naver Pay (네이버페이)</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                    South Korea
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Naver Pay (네이버페이)</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Pay with Naver Points &amp; Korean Cards
+                                  Naver account checkout
                                 </span>
                               </div>
                             </div>
@@ -3228,14 +2780,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Samsung Pay (삼성페이)</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E3F2FD', color: '#1565C0' }}>
-                                    Biometric Korea
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Samsung Pay (삼성페이)</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Fingerprint authentication for Korean credit cards
+                                  Samsung biometric pay
                                 </span>
                               </div>
                             </div>
@@ -3279,14 +2826,9 @@ export default function CheckoutModal({
                                 style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                               />
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>PAYCO (페이코)</strong>
-                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#FFEBEE', color: '#C62828' }}>
-                                    South Korea
-                                  </span>
-                                </div>
+                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>PAYCO (페이코)</strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  NHN PAYCO online payment &amp; point redemption
+                                  PAYCO quick checkout
                                 </span>
                               </div>
                             </div>
@@ -3334,7 +2876,7 @@ export default function CheckoutModal({
                                   Direct Studio Bank Wire
                                 </strong>
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  UK Barclays Studio transfer with order reference
+                                  Barclays studio transfer with reference
                                 </span>
                               </div>
                             </div>
@@ -3473,7 +3015,7 @@ export default function CheckoutModal({
                       }}
                     >
                       {isSubmitting ? (
-                        <span style={{ whiteSpace: 'nowrap' }}>Authorizing with Stripe...</span>
+                        <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
                       ) : (
                         <>
                           <Lock size={14} style={{ flexShrink: 0 }} />
@@ -3649,7 +3191,7 @@ export default function CheckoutModal({
                     }}
                   >
                     {isSubmitting ? (
-                      <span style={{ whiteSpace: 'nowrap' }}>Authorizing with Stripe...</span>
+                      <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
                     ) : (
                       <>
                         <Lock size={14} style={{ flexShrink: 0 }} />
