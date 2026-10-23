@@ -407,7 +407,7 @@ export default function WishlistDrawer({
                 color: 'var(--color-deep-espresso)',
                 backgroundColor: '#FFFFFF',
                 border: '1px solid var(--color-border)',
-                borderRadius: '30px',
+                borderRadius: '8px',
                 cursor: 'pointer'
               }}
               onClick={onClose}

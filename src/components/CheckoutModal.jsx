@@ -1396,15 +1396,16 @@ export default function CheckoutModal({
                     className="btn-primary-editorial"
                     style={{
                       width: '100%',
-                      height: '48px',
+                      minHeight: '52px',
+                      height: '52px',
                       borderRadius: '8px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      padding: '0 18px',
-                      fontSize: '13.5px',
-                      fontWeight: 600,
+                      padding: '14px 20px',
+                      fontSize: '14px',
+                      fontWeight: 700,
                       cursor: 'pointer'
                     }}
                   >
@@ -3143,16 +3144,18 @@ export default function CheckoutModal({
                     onClick={handleProceedToPayment}
                     style={{
                       width: '100%',
-                      height: '48px',
+                      minHeight: '52px',
+                      height: '52px',
                       marginTop: '18px',
-                      padding: '0 18px',
+                      padding: '14px 20px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '8px',
-                      fontSize: '13.5px',
-                      fontWeight: 600,
-                      whiteSpace: 'nowrap'
+                      fontSize: '14px',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      borderRadius: '8px'
                     }}
                   >
                     <span>Continue to Payment</span>
@@ -3166,19 +3169,22 @@ export default function CheckoutModal({
                     disabled={isSubmitting || cartItems.length === 0}
                     style={{
                       width: '100%',
-                      height: '48px',
+                      minHeight: '52px',
+                      height: '52px',
                       marginTop: '18px',
-                      padding: '0 14px',
-                      borderRadius: '8px'
+                      padding: '14px 20px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: 700
                     }}
                   >
                     {isSubmitting ? (
                       <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
                     ) : (
                       <>
-                        <Lock size={14} style={{ flexShrink: 0 }} />
+                        <Lock size={15} style={{ flexShrink: 0 }} />
                         <span style={{ whiteSpace: 'nowrap' }}>
-                          {getPaymentButtonLabel(formData.paymentMethod)}
+                          Authorize Payment
                         </span>
                       </>
                     )}
