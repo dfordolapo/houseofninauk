@@ -636,9 +636,6 @@ export default function CartDrawer({
                   </svg>
                 </span>
               </div>
-              <span style={{ fontSize: '10.5px', color: '#8C8074', letterSpacing: '0.02em' }}>
-                Secure On-Page Payment • Apple Pay, Google Pay, Klarna & Cards Accepted
-              </span>
             </div>
           </div>
         )}

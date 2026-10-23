@@ -249,8 +249,8 @@ export default function CheckoutModal({
     city: "",
     state: "",
     postalCode: "",
-    deliveryMethod: "", // standard | express (none selected initially)
-    paymentMethod: "", // card | klarna | bank (none selected initially)
+    deliveryMethod: "standard", // standard | express
+    paymentMethod: "card", // card | apple_pay | google_pay | klarna | bank
     currency: "GBP", // GBP | NGN
     cardName: "",
     cardNumber: "",
@@ -412,37 +412,29 @@ export default function CheckoutModal({
   };
 
   const handleExpressPay = (method) => {
-    // If essential delivery info is already provided
-    if (formData.email && formData.fullName && formData.address && formData.city && formData.postalCode) {
-      if (!formData.deliveryMethod) {
-        handleChange('deliveryMethod', 'standard');
-      }
-      handleChange('paymentMethod', method);
-      handlePlaceOrder(null, method);
-    } else {
-      // Auto-select the default Saved Home address for instant 1-tap checkout
-      const defaultAddr = savedAddresses.find(a => a.id === 'home') || savedAddresses[0];
-      if (defaultAddr) {
-        setFormData(prev => ({
-          ...prev,
-          fullName: defaultAddr.fullName,
-          address: defaultAddr.address,
-          city: defaultAddr.city,
-          state: defaultAddr.state,
-          postalCode: defaultAddr.postalCode,
-          phone: defaultAddr.phone,
-          email: prev.email || 'amara.okafor@gmail.com',
-          deliveryMethod: prev.deliveryMethod || 'standard',
-          paymentMethod: method
-        }));
-        setSelectedAddressId(defaultAddr.id);
-        handlePlaceOrder(null, method);
-      } else {
-        // If no saved addresses exist, switch to Step 2 with method pre-selected
-        handleChange('paymentMethod', method);
-        setCheckoutStep(2);
-      }
+    // Select the chosen express payment method
+    handleChange('paymentMethod', method);
+
+    // Auto-select the default Saved Home address if empty so details are pre-filled
+    const defaultAddr = savedAddresses.find(a => a.id === 'home') || savedAddresses[0];
+    if (defaultAddr && (!formData.fullName || !formData.address)) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: prev.fullName || defaultAddr.fullName,
+        address: prev.address || defaultAddr.address,
+        city: prev.city || defaultAddr.city,
+        state: prev.state || defaultAddr.state,
+        postalCode: prev.postalCode || defaultAddr.postalCode,
+        phone: prev.phone || defaultAddr.phone,
+        email: prev.email || 'amara.okafor@gmail.com',
+        deliveryMethod: prev.deliveryMethod || 'standard',
+        paymentMethod: method
+      }));
+      setSelectedAddressId(defaultAddr.id);
     }
+
+    // Switch directly to Step 2 so the user sees the payment method view
+    setCheckoutStep(2);
   };
 
   const handlePlaceOrder = (e, explicitMethod = null) => {
@@ -463,26 +455,6 @@ export default function CheckoutModal({
 
     setStepError('');
     setIsSubmitting(true);
-    setAuthStatus('Securing 256-bit encrypted channel with Stripe...');
-
-    // Multi-stage authentic on-page authorization that NEVER leaves the site
-    setTimeout(() => {
-      if (chosenPayment === 'apple_pay') {
-        setAuthStatus('Authenticating Apple Pay biometric token via Stripe...');
-      } else if (chosenPayment === 'google_pay') {
-        setAuthStatus('Authenticating Google Pay wallet via Stripe...');
-      } else if (chosenPayment === 'klarna') {
-        setAuthStatus('Confirming Klarna Pay in 3 Schedule with Stripe...');
-      } else if (chosenPayment === 'card') {
-        setAuthStatus('Authorizing Card Payment with Stripe...');
-      } else {
-        setAuthStatus('Registering Direct Bank Wire reference...');
-      }
-    }, 450);
-
-    setTimeout(() => {
-      setAuthStatus('Stripe Authorization Approved. Generating Order...');
-    }, 950);
 
     setTimeout(() => {
       const randomOrderNum = Math.floor(1000 + Math.random() * 9000);
@@ -572,88 +544,6 @@ export default function CheckoutModal({
         aria-label="Secure Luxury Checkout"
         style={{ maxWidth: '980px', position: 'relative' }}
       >
-        <style>{`
-          @keyframes checkoutSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
-
-        {/* ON-PAGE STRIPE REALTIME AUTHORIZATION OVERLAY (ZERO EXTERNAL REDIRECTS) */}
-        {isSubmitting && (
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'rgba(28, 22, 20, 0.94)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 99999,
-            borderRadius: '16px',
-            padding: '36px 24px',
-            textAlign: 'center',
-            color: '#FAF7F2'
-          }}>
-            <div style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              border: '3px solid rgba(197, 160, 89, 0.2)',
-              borderTopColor: '#C5A059',
-              animation: 'checkoutSpin 0.75s linear infinite',
-              marginBottom: '22px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 0 24px rgba(197, 160, 89, 0.25)'
-            }}>
-              <Lock size={22} color="#C5A059" />
-            </div>
-
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: '22px',
-              fontWeight: 600,
-              margin: '0 0 8px 0',
-              color: '#FFFFFF',
-              letterSpacing: '0.02em'
-            }}>
-              {authStatus || 'Securing Payment...'}
-            </h3>
-
-            <p style={{
-              fontSize: '13px',
-              color: '#D8C7B8',
-              margin: '0 0 20px 0',
-              maxWidth: '360px',
-              lineHeight: 1.5
-            }}>
-              Authorizing directly on-page via Stripe 256-Bit TLS Bank Encryption. Please do not close this window.
-            </p>
-
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '7px 18px',
-              borderRadius: '20px',
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(197, 160, 89, 0.35)',
-              fontSize: '11px',
-              color: '#C5A059',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              fontWeight: 600
-            }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#28A745', display: 'inline-block' }} />
-              On-Site Protected Checkout
-            </div>
-          </div>
-        )}
-
         {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
         <div className="checkout-modal-header">
               <div className="checkout-header-branding" style={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: '1 1 0' }}>
@@ -679,7 +569,7 @@ export default function CheckoutModal({
 
                 <button 
                   type="button" 
-                  onClick={handleProceedToPayment} 
+                  onClick={() => setCheckoutStep(2)} 
                   className={`checkout-step-icon-btn ${checkoutStep === 2 ? 'active' : ''}`}
                   title="Step 2: Payment & Review"
                   aria-label="Step 2: Payment & Review"
@@ -1289,33 +1179,66 @@ export default function CheckoutModal({
                             </label>
 
                             {formData.paymentMethod === 'apple_pay' && (
-                              <div style={{ padding: '14px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#685C50' }}>
-                                  <CheckCircle2 size={14} color="#1E7E34" />
-                                  <span>Device biometric wallet ready. Authorize directly on-page.</span>
+                              <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <div style={{
+                                  backgroundColor: '#FAF8F5',
+                                  borderRadius: '10px',
+                                  border: '1px solid #E8DBD0',
+                                  padding: '12px 14px',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '8px'
+                                }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Card •••• 8821</span>
+                                  </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>Pay To:</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina Ltd</span>
+                                  </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total:</span>
+                                    <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
+                                  </div>
                                 </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#1E7E34' }}>
+                                  <CheckCircle2 size={14} color="#1E7E34" />
+                                  <span>Face ID / Touch ID biometric ready. Authorize directly on-page.</span>
+                                </div>
+
                                 <button
                                   type="button"
                                   onClick={() => handlePlaceOrder(null, 'apple_pay')}
                                   disabled={isSubmitting}
                                   style={{
-                                    height: '44px',
+                                    height: '46px',
                                     backgroundColor: '#000000',
                                     color: '#FFFFFF',
                                     border: 'none',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
+                                    borderRadius: '10px',
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     gap: '8px',
-                                    fontSize: '13px',
+                                    fontSize: '13.5px',
                                     fontWeight: 600,
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                                    boxShadow: '0 2px 10px rgba(0,0,0,0.18)',
+                                    transition: 'opacity 0.2s ease'
                                   }}
+                                  onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.opacity = '0.9'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
                                 >
-                                  <span>Pay {formatPrice(total)} with</span>
-                                  <ApplePayLogo height={20} color="#FFFFFF" />
+                                  {isSubmitting ? (
+                                    <span>Authenticating Face ID / Touch ID...</span>
+                                  ) : (
+                                    <>
+                                      <span>Pay {formatPrice(total)} with</span>
+                                      <ApplePayLogo height={20} color="#FFFFFF" />
+                                    </>
+                                  )}
                                 </button>
                               </div>
                             )}
@@ -1360,33 +1283,66 @@ export default function CheckoutModal({
                             </label>
 
                             {formData.paymentMethod === 'google_pay' && (
-                              <div style={{ padding: '14px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#685C50' }}>
-                                  <CheckCircle2 size={14} color="#1E7E34" />
-                                  <span>Google Wallet ready. Authorize directly on-page.</span>
+                              <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <div style={{
+                                  backgroundColor: '#FAF8F5',
+                                  borderRadius: '10px',
+                                  border: '1px solid #E8DBD0',
+                                  padding: '12px 14px',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '8px'
+                                }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>Google Account:</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>{formData.email || 'client@houseofnina.co.uk'}</span>
+                                  </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Google Pay • Visa (•••• 4012)</span>
+                                  </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total:</span>
+                                    <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
+                                  </div>
                                 </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#1E7E34' }}>
+                                  <CheckCircle2 size={14} color="#1E7E34" />
+                                  <span>Google Wallet ready. Encrypted on-page authorization via Stripe.</span>
+                                </div>
+
                                 <button
                                   type="button"
                                   onClick={() => handlePlaceOrder(null, 'google_pay')}
                                   disabled={isSubmitting}
                                   style={{
-                                    height: '44px',
+                                    height: '46px',
                                     backgroundColor: '#FFFFFF',
                                     color: '#1C1614',
                                     border: '1.5px solid #1C1614',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
+                                    borderRadius: '10px',
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     gap: '8px',
-                                    fontSize: '13px',
+                                    fontSize: '13.5px',
                                     fontWeight: 600,
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                                    transition: 'background-color 0.2s ease'
                                   }}
+                                  onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = '#F5F2EC'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; }}
                                 >
-                                  <span>Pay {formatPrice(total)} with</span>
-                                  <GooglePayLogo height={20} />
+                                  {isSubmitting ? (
+                                    <span>Authorizing with Google Wallet...</span>
+                                  ) : (
+                                    <>
+                                      <span>Pay {formatPrice(total)} with</span>
+                                      <GooglePayLogo height={20} />
+                                    </>
+                                  )}
                                 </button>
                               </div>
                             )}
@@ -1430,7 +1386,35 @@ export default function CheckoutModal({
                             </label>
 
                             {formData.paymentMethod === 'card' && (
-                              <div style={{ padding: '14px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FFFFFF' }}>
+                              <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#FFFFFF' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#685C50' }}>Enter Card Details</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setFormData(prev => ({
+                                        ...prev,
+                                        cardName: prev.cardName || 'Amara Okafor',
+                                        cardNumber: '4242 4242 4242 4892',
+                                        cardExpiry: '12/28',
+                                        cardCvc: '312'
+                                      }));
+                                    }}
+                                    style={{
+                                      background: 'none',
+                                      border: 'none',
+                                      color: 'var(--color-gold-dark)',
+                                      fontSize: '11px',
+                                      cursor: 'pointer',
+                                      padding: 0,
+                                      textDecoration: 'underline',
+                                      fontWeight: 600
+                                    }}
+                                  >
+                                    Auto-Fill Test Card (•••• 4892)
+                                  </button>
+                                </div>
+
                                 <div>
                                   <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Cardholder Name</label>
                                   <input
