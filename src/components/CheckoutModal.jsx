@@ -80,7 +80,130 @@ function KlarnaBadge() {
   );
 }
 
-/** Express 1-Tap Checkout Bar Component (Clean, Minimalist, No Clutter) */
+/** Authentic Revolut Pay Badge */
+function RevolutPayBadge() {
+  return (
+    <span style={{
+      fontSize: '11px',
+      fontWeight: 800,
+      padding: '3px 8px',
+      borderRadius: '5px',
+      background: '#000000',
+      color: '#FFFFFF',
+      letterSpacing: '0.04em',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '4px',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
+    }}>
+      <span style={{ color: '#0075FF', fontWeight: 900 }}>R</span>evolut <span style={{ fontSize: '9px', backgroundColor: '#0075FF', color: '#FFFFFF', padding: '1px 4px', borderRadius: '3px', fontWeight: 700 }}>PAY</span>
+    </span>
+  );
+}
+
+/** Authentic Amazon Pay Badge */
+function AmazonPayBadge() {
+  return (
+    <span style={{
+      fontSize: '11px',
+      fontWeight: 700,
+      padding: '3px 8px',
+      borderRadius: '5px',
+      background: '#FFFFFF',
+      color: '#131921',
+      border: '1px solid #D5D9D9',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '2px',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
+    }}>
+      amazon<span style={{ color: '#FF9900', fontWeight: 800 }}>pay</span>
+    </span>
+  );
+}
+
+/** Regional Method Badges */
+function BancontactBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#003A70', color: '#FFCC00', letterSpacing: '0.02em' }}>
+      Bancontact
+    </span>
+  );
+}
+
+function IdealBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#CC0066', color: '#FFFFFF' }}>
+      iDEAL
+    </span>
+  );
+}
+
+function BlikBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E60000', color: '#FFFFFF', letterSpacing: '0.05em' }}>
+      BLIK
+    </span>
+  );
+}
+
+function MbWayBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E30613', color: '#FFFFFF' }}>
+      MB WAY
+    </span>
+  );
+}
+
+function EpsBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E30613', color: '#FFFFFF' }}>
+      eps
+    </span>
+  );
+}
+
+function SatispayBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FD3743', color: '#FFFFFF' }}>
+      satispay
+    </span>
+  );
+}
+
+function KakaoPayBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FFEB00', color: '#3C1E1E' }}>
+      kakao pay
+    </span>
+  );
+}
+
+function NaverPayBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#03C75A', color: '#FFFFFF' }}>
+      N Pay
+    </span>
+  );
+}
+
+function SamsungPayBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#0C2340', color: '#FFFFFF' }}>
+      SAMSUNG pay
+    </span>
+  );
+}
+
+function PaycoBadge() {
+  return (
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FA142B', color: '#FFFFFF' }}>
+      PAYCO
+    </span>
+  );
+}
+
+/** Express 1-Tap Checkout Bar Component (Clean, Minimalist, 4 Wallets) */
 function ExpressCheckoutBar({ onExpressPay, isSubmitting }) {
   return (
     <div style={{
@@ -106,8 +229,8 @@ function ExpressCheckoutBar({ onExpressPay, isSubmitting }) {
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '10px'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+        gap: '8px'
       }}>
         {/* Apple Pay Button */}
         <button
@@ -116,23 +239,20 @@ function ExpressCheckoutBar({ onExpressPay, isSubmitting }) {
           disabled={isSubmitting}
           title="Pay with Apple Pay"
           style={{
-            height: '46px',
+            height: '42px',
             backgroundColor: '#000000',
             color: '#FFFFFF',
             border: 'none',
-            borderRadius: '10px',
+            borderRadius: '9px',
             cursor: isSubmitting ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '0 16px',
-            transition: 'opacity 0.2s ease',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.16)'
+            padding: '0 10px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.16)'
           }}
-          onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.opacity = '0.88'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
         >
-          <ApplePayLogo height={21} color="#FFFFFF" />
+          <ApplePayLogo height={19} color="#FFFFFF" />
         </button>
 
         {/* Google Pay Button */}
@@ -142,23 +262,66 @@ function ExpressCheckoutBar({ onExpressPay, isSubmitting }) {
           disabled={isSubmitting}
           title="Pay with Google Pay"
           style={{
-            height: '46px',
+            height: '42px',
             backgroundColor: '#FFFFFF',
             color: '#1C1614',
             border: '1.5px solid #D8DFE8',
-            borderRadius: '10px',
+            borderRadius: '9px',
             cursor: isSubmitting ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '0 16px',
-            transition: 'border-color 0.2s ease',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
+            padding: '0 10px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)'
           }}
-          onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.borderColor = '#1C1614'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#D8DFE8'; }}
         >
-          <GooglePayLogo height={20} />
+          <GooglePayLogo height={18} />
+        </button>
+
+        {/* Revolut Pay Button */}
+        <button
+          type="button"
+          onClick={() => onExpressPay('revolut')}
+          disabled={isSubmitting}
+          title="Pay with Revolut Pay"
+          style={{
+            height: '42px',
+            backgroundColor: '#000000',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '9px',
+            cursor: isSubmitting ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 8px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.16)'
+          }}
+        >
+          <RevolutPayBadge />
+        </button>
+
+        {/* Amazon Pay Button */}
+        <button
+          type="button"
+          onClick={() => onExpressPay('amazon_pay')}
+          disabled={isSubmitting}
+          title="Pay with Amazon Pay"
+          style={{
+            height: '42px',
+            backgroundColor: '#FFFFFF',
+            color: '#131921',
+            border: '1.5px solid #D8DFE8',
+            borderRadius: '9px',
+            cursor: isSubmitting ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 8px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)'
+          }}
+        >
+          <AmazonPayBadge />
         </button>
       </div>
     </div>
@@ -282,6 +445,19 @@ export default function CheckoutModal({
 
   const [saveCardForFuture, setSaveCardForFuture] = useState(true);
 
+  // Payment categories filter: 'all' | 'uk_global' | 'europe' | 'asia' | 'bank'
+  const [paymentCategory, setPaymentCategory] = useState('all');
+
+  // Regional Payment States
+  const [revolutMode, setRevolutMode] = useState('app'); // 'app' | 'card'
+  const [revolutData, setRevolutData] = useState({ phone: '', cardNumber: '', cardExpiry: '', cardCvc: '' });
+  const [idealBank, setIdealBank] = useState('ing');
+  const [blikCode, setBlikCode] = useState('');
+  const [mbWayPhone, setMbWayPhone] = useState('');
+  const [epsBank, setEpsBank] = useState('erste');
+  const [satispayPhone, setSatispayPhone] = useState('');
+  const [koreanWalletData, setKoreanWalletData] = useState({ phone: '', provider: 'kakao' });
+
   if (!isOpen) return null;
 
   const standardInputStyle = {
@@ -321,6 +497,63 @@ export default function CheckoutModal({
   const total = Math.max(0, subtotal - discount + shippingCost);
 
   const formatPrice = (val) => `${currencySymbol}${val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+
+  const shouldShowMethod = (m) => {
+    if (paymentCategory === 'all') return true;
+    if (paymentCategory === 'uk_global') {
+      return ['card', 'apple_pay', 'google_pay', 'revolut', 'amazon_pay', 'klarna'].includes(m);
+    }
+    if (paymentCategory === 'europe') {
+      return ['revolut', 'bancontact', 'ideal', 'blik', 'mbway', 'eps', 'satispay'].includes(m);
+    }
+    if (paymentCategory === 'asia') {
+      return ['kakao_pay', 'naver_pay', 'samsung_pay', 'payco'].includes(m);
+    }
+    if (paymentCategory === 'bank') {
+      return m === 'bank';
+    }
+    return true;
+  };
+
+  const getPaymentButtonLabel = (method) => {
+    switch (method) {
+      case 'apple_pay':
+        return `Pay ${formatPrice(total)} with Apple Pay`;
+      case 'google_pay':
+        return `Pay ${formatPrice(total)} with Google Pay`;
+      case 'revolut':
+        return `Pay ${formatPrice(total)} with Revolut Pay`;
+      case 'amazon_pay':
+        return `Pay ${formatPrice(total)} with Amazon Pay`;
+      case 'klarna':
+        return `Pay 1st Part ${formatPrice(total / 3)} with Klarna`;
+      case 'bancontact':
+        return `Pay ${formatPrice(total)} with Bancontact`;
+      case 'ideal':
+        return `Proceed with iDEAL (${formatPrice(total)})`;
+      case 'blik':
+        return `Confirm BLIK Payment (${formatPrice(total)})`;
+      case 'mbway':
+        return `Authorize with MB WAY (${formatPrice(total)})`;
+      case 'eps':
+        return `Proceed to Bank via EPS (${formatPrice(total)})`;
+      case 'satispay':
+        return `Authorize Satispay (${formatPrice(total)})`;
+      case 'kakao_pay':
+        return `Pay with Kakao Pay (${formatPrice(total)})`;
+      case 'naver_pay':
+        return `Pay with Naver Pay (${formatPrice(total)})`;
+      case 'samsung_pay':
+        return `Pay with Samsung Pay (${formatPrice(total)})`;
+      case 'payco':
+        return `Pay with PAYCO (${formatPrice(total)})`;
+      case 'bank':
+        return `Confirm Bank Wire Booking (${formatPrice(total)})`;
+      case 'card':
+      default:
+        return `Pay ${formatPrice(total)} with Card`;
+    }
+  };
 
   const handleChange = (field, val) => {
     setFormData(prev => ({ ...prev, [field]: val }));
@@ -493,6 +726,21 @@ export default function CheckoutModal({
         setStepError('Please enter your mobile phone and installment card details for Klarna Pay in 3.');
         return;
       }
+    } else if (chosenPayment === 'revolut') {
+      if (revolutMode === 'card' && (!revolutData.cardNumber || !revolutData.cardExpiry)) {
+        setStepError('Please enter your Revolut card details.');
+        return;
+      }
+    } else if (chosenPayment === 'blik') {
+      if (!blikCode || blikCode.replace(/\D/g, '').length < 6) {
+        setStepError('Please enter your 6-digit BLIK code from your Polish banking app.');
+        return;
+      }
+    } else if (chosenPayment === 'mbway') {
+      if (!mbWayPhone && !formData.phone) {
+        setStepError('Please enter your Portuguese mobile phone number for MB WAY approval.');
+        return;
+      }
     } else if (chosenPayment === 'bank') {
       if (!bankWireData.accountHolder?.trim()) {
         setStepError('Please provide your sender account holder name for bank transfer verification.');
@@ -519,9 +767,33 @@ export default function CheckoutModal({
       } else if (chosenPayment === 'google_pay') {
         const last4 = gpayCardData.number ? gpayCardData.number.replace(/\s/g, '').slice(-4) : '4012';
         paymentLabel = `Google Pay (•••• ${last4})`;
+      } else if (chosenPayment === 'revolut') {
+        paymentLabel = 'Revolut Pay (UK/EU Verified)';
+      } else if (chosenPayment === 'amazon_pay') {
+        paymentLabel = 'Amazon Pay (Verified)';
       } else if (chosenPayment === 'klarna') {
         const last4 = klarnaData.cardNumber ? klarnaData.cardNumber.replace(/\s/g, '').slice(-4) : '4892';
         paymentLabel = `Klarna Pay in 3 (•••• ${last4})`;
+      } else if (chosenPayment === 'bancontact') {
+        paymentLabel = 'Bancontact (Belgium Direct)';
+      } else if (chosenPayment === 'ideal') {
+        paymentLabel = `iDEAL (${idealBank.toUpperCase()} Netherlands)`;
+      } else if (chosenPayment === 'blik') {
+        paymentLabel = `BLIK (${blikCode || '729 481'} Poland)`;
+      } else if (chosenPayment === 'mbway') {
+        paymentLabel = `MB WAY (${mbWayPhone || '+351'} Portugal)`;
+      } else if (chosenPayment === 'eps') {
+        paymentLabel = `EPS (${epsBank.toUpperCase()} Austria)`;
+      } else if (chosenPayment === 'satispay') {
+        paymentLabel = `Satispay (Italy Direct)`;
+      } else if (chosenPayment === 'kakao_pay') {
+        paymentLabel = 'Kakao Pay (South Korea)';
+      } else if (chosenPayment === 'naver_pay') {
+        paymentLabel = 'Naver Pay (South Korea)';
+      } else if (chosenPayment === 'samsung_pay') {
+        paymentLabel = 'Samsung Pay (South Korea)';
+      } else if (chosenPayment === 'payco') {
+        paymentLabel = 'PAYCO (South Korea)';
       } else if (chosenPayment === 'bank') {
         paymentLabel = `Direct Bank Wire (${bankWireData.senderBank || 'Barclays'} - ${bankWireData.accountHolder || 'Client'})`;
       }
@@ -1171,17 +1443,155 @@ export default function CheckoutModal({
                       </div>
 
                       {/* Express 1-Tap Checkout Bar */}
-                      <ExpressCheckoutBar 
-                        onExpressPay={handleExpressPay}
-                        isSubmitting={isSubmitting}
-                      />
+                      <div style={{
+                        padding: '16px',
+                        borderRadius: '12px',
+                        border: '1px solid var(--color-border)',
+                        backgroundColor: '#FFFFFF',
+                        boxSizing: 'border-box'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                          <span style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            letterSpacing: '0.08em',
+                            textTransform: 'uppercase',
+                            color: 'var(--color-deep-espresso)'
+                          }}>
+                            Express 1-Tap Checkout
+                          </span>
+                          <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                            Instant on-page authorization
+                          </span>
+                        </div>
 
-                      {/* Payment Options Selection */}
+                        {/* 4 Express Buttons: Apple Pay, Google Pay, Revolut Pay, Amazon Pay */}
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+                          gap: '8px'
+                        }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleChange('paymentMethod', 'apple_pay');
+                              setApplePayMode('ready');
+                            }}
+                            style={{
+                              height: '42px',
+                              backgroundColor: '#000000',
+                              color: '#FFFFFF',
+                              border: formData.paymentMethod === 'apple_pay' ? '2px solid #D4AF37' : '1px solid #000000',
+                              borderRadius: '8px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              transition: 'transform 0.15s ease'
+                            }}
+                          >
+                            <ApplePayLogo height={20} color="#FFFFFF" />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleChange('paymentMethod', 'google_pay');
+                              setGooglePayMode('saved');
+                            }}
+                            style={{
+                              height: '42px',
+                              backgroundColor: '#000000',
+                              color: '#FFFFFF',
+                              border: formData.paymentMethod === 'google_pay' ? '2px solid #D4AF37' : '1px solid #000000',
+                              borderRadius: '8px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              transition: 'transform 0.15s ease'
+                            }}
+                          >
+                            <GooglePayLogo height={20} />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleChange('paymentMethod', 'revolut');
+                              setRevolutMode('app');
+                            }}
+                            style={{
+                              height: '42px',
+                              backgroundColor: '#FFFFFF',
+                              color: '#191C1F',
+                              border: formData.paymentMethod === 'revolut' ? '2px solid #0075FF' : '1.5px solid #0075FF',
+                              borderRadius: '8px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '4px',
+                              fontWeight: 700,
+                              fontSize: '13px',
+                              transition: 'transform 0.15s ease'
+                            }}
+                          >
+                            <RevolutPayBadge />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleChange('paymentMethod', 'amazon_pay')}
+                            style={{
+                              height: '42px',
+                              backgroundColor: '#FAD676',
+                              color: '#111111',
+                              border: formData.paymentMethod === 'amazon_pay' ? '2px solid #E68A00' : '1px solid #E68A00',
+                              borderRadius: '8px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontWeight: 700,
+                              fontSize: '13px',
+                              transition: 'transform 0.15s ease'
+                            }}
+                          >
+                            <AmazonPayBadge />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Divider */}
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        margin: '2px 0'
+                      }}>
+                        <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
+                        <span style={{
+                          fontSize: '11px',
+                          color: '#8C8074',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.06em',
+                          fontWeight: 600
+                        }}>
+                          Or Select Payment Below
+                        </span>
+                        <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
+                      </div>                      {/* Payment Options Selection */}
                       <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
-                          <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                            Payment Selection
-                          </h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                          <div>
+                            <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                              Payment Method Selection
+                            </h3>
+                            <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              All 17 Stripe payment methods enabled on your account
+                            </span>
+                          </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#8C8074', backgroundColor: '#FAF7F2', padding: '3px 8px', borderRadius: '6px', border: '1px solid var(--color-border-light)' }}>
                             <Lock size={12} color="#635BFF" />
                             <span>Powered by</span>
@@ -1189,886 +1599,986 @@ export default function CheckoutModal({
                           </div>
                         </div>
 
+                        {/* Region & Category Filter Tabs */}
+                        <div style={{
+                          display: 'flex',
+                          gap: '6px',
+                          overflowX: 'auto',
+                          paddingBottom: '8px',
+                          marginBottom: '14px',
+                          scrollbarWidth: 'none',
+                          borderBottom: '1px solid var(--color-border-light)'
+                        }}>
+                          {[
+                            { id: 'all', label: 'All Methods (17)' },
+                            { id: 'uk_global', label: '🇬🇧 Popular / UK (6)' },
+                            { id: 'europe', label: '🇪🇺 Europe (7)' },
+                            { id: 'asia', label: '🇰🇷 South Korea (4)' },
+                            { id: 'bank', label: '🏦 Studio Wire (1)' }
+                          ].map(cat => (
+                            <button
+                              key={cat.id}
+                              type="button"
+                              onClick={() => setPaymentCategory(cat.id)}
+                              style={{
+                                padding: '5px 12px',
+                                borderRadius: '20px',
+                                fontSize: '11px',
+                                fontWeight: paymentCategory === cat.id ? 700 : 500,
+                                backgroundColor: paymentCategory === cat.id ? 'var(--color-deep-espresso)' : '#FAF7F2',
+                                color: paymentCategory === cat.id ? '#FFFFFF' : '#685C50',
+                                border: '1px solid',
+                                borderColor: paymentCategory === cat.id ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                cursor: 'pointer',
+                                whiteSpace: 'nowrap',
+                                transition: 'all 0.15s ease'
+                              }}
+                            >
+                              {cat.label}
+                            </button>
+                          ))}
+                        </div>
+
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                           {/* Option 1: Apple Pay */}
-                          <div style={{
-                            borderRadius: '10px',
-                            border: '1.5px solid',
-                            borderColor: formData.paymentMethod === 'apple_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                            backgroundColor: formData.paymentMethod === 'apple_pay' ? '#FAF8F5' : '#FFFFFF',
-                            overflow: 'hidden',
-                            transition: 'border-color 0.2s ease'
-                          }}>
-                            <label 
-                              onClick={() => handleChange('paymentMethod', 'apple_pay')}
-                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
-                                <input 
-                                  type="radio" 
-                                  name="paymentMethod"
-                                  checked={formData.paymentMethod === 'apple_pay'}
-                                  onChange={() => {}}
-                                  style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
-                                />
-                                <div>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                      Apple Pay
-                                    </strong>
-                                    <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                      Stripe Verified
+                          {shouldShowMethod('apple_pay') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'apple_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'apple_pay' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden',
+                              transition: 'border-color 0.2s ease'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'apple_pay')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod"
+                                    checked={formData.paymentMethod === 'apple_pay'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                                        Apple Pay
+                                      </strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Stripe Verified
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Biometric checkout via Apple Wallet (iPhone, Mac Safari)
                                     </span>
                                   </div>
-                                  <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                    Biometric checkout via Apple Wallet (iPhone, Mac Safari)
-                                  </span>
                                 </div>
-                              </div>
-                              <ApplePayLogo height={22} color="#1C1614" />
-                            </label>
+                                <ApplePayLogo height={22} color="#1C1614" />
+                              </label>
 
-                            {formData.paymentMethod === 'apple_pay' && (
-                              <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {/* Mode Toggle: First-time (No card in wallet) vs Returning (Saved card in wallet) */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
-                                  <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Customer Wallet Status:</span>
-                                  <div style={{ display: 'flex', gap: '4px' }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => setApplePayMode('no_card')}
-                                      style={{
-                                        padding: '3px 8px',
-                                        borderRadius: '5px',
-                                        fontSize: '10.5px',
-                                        fontWeight: 600,
-                                        border: '1px solid',
-                                        borderColor: applePayMode === 'no_card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                        backgroundColor: applePayMode === 'no_card' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                        color: applePayMode === 'no_card' ? '#FFFFFF' : '#685C50',
-                                        cursor: 'pointer'
-                                      }}
-                                    >
-                                      No Card in Apple Wallet (First-Time)
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => setApplePayMode('ready')}
-                                      style={{
-                                        padding: '3px 8px',
-                                        borderRadius: '5px',
-                                        fontSize: '10.5px',
-                                        fontWeight: 600,
-                                        border: '1px solid',
-                                        borderColor: applePayMode === 'ready' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                        backgroundColor: applePayMode === 'ready' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                        color: applePayMode === 'ready' ? '#FFFFFF' : '#685C50',
-                                        cursor: 'pointer'
-                                      }}
-                                    >
-                                      Card in Wallet (Touch ID / Face ID)
-                                    </button>
-                                  </div>
-                                </div>
-
-                                {/* View 1: When user has NO card in Apple Wallet */}
-                                {applePayMode === 'no_card' && (
-                                  <div style={{
-                                    backgroundColor: '#FAF8F5',
-                                    borderRadius: '10px',
-                                    border: '1.5px dashed #D8C7B8',
-                                    padding: '14px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '12px'
-                                  }}>
-                                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                                      <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#F0E5DA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                        <AlertCircle size={17} color="#B35A00" />
-                                      </div>
-                                      <div>
-                                        <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
-                                          No Card Configured in Apple Wallet
-                                        </strong>
-                                        <span style={{ fontSize: '11.5px', color: '#685C50', lineHeight: 1.4, display: 'block' }}>
-                                          Apple Pay requires a card saved to Apple Wallet on Safari (iOS / macOS). Since this customer has no card added yet, they can enter their card details directly below or switch to Credit/Debit Card:
-                                        </span>
-                                      </div>
-                                    </div>
-
-                                    {/* Action Buttons for User without Wallet Card */}
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                              {formData.paymentMethod === 'apple_pay' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
+                                    <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Customer Wallet Status:</span>
+                                    <div style={{ display: 'flex', gap: '4px' }}>
                                       <button
                                         type="button"
-                                        onClick={() => handleChange('paymentMethod', 'card')}
+                                        onClick={() => setApplePayMode('no_card')}
                                         style={{
-                                          height: '42px',
-                                          backgroundColor: 'var(--color-deep-espresso)',
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
+                                          fontWeight: 600,
+                                          border: '1px solid',
+                                          borderColor: applePayMode === 'no_card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: applePayMode === 'no_card' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: applePayMode === 'no_card' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
+                                      >
+                                        No Card in Wallet (First-Time)
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setApplePayMode('ready')}
+                                        style={{
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
+                                          fontWeight: 600,
+                                          border: '1px solid',
+                                          borderColor: applePayMode === 'ready' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: applePayMode === 'ready' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: applePayMode === 'ready' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
+                                      >
+                                        Card in Wallet (Touch ID / Face ID)
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  {applePayMode === 'no_card' && (
+                                    <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1.5px dashed #D8C7B8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                                        <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#F0E5DA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                          <AlertCircle size={17} color="#B35A00" />
+                                        </div>
+                                        <div>
+                                          <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
+                                            No Card Configured in Apple Wallet
+                                          </strong>
+                                          <span style={{ fontSize: '11.5px', color: '#685C50', lineHeight: 1.4, display: 'block' }}>
+                                            Apple Pay requires a card saved to Apple Wallet on Safari (iOS / macOS). Since this customer has no card added yet, they can enter their card details directly below or switch to Credit/Debit Card:
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleChange('paymentMethod', 'card')}
+                                          style={{
+                                            height: '42px',
+                                            backgroundColor: 'var(--color-deep-espresso)',
+                                            color: '#FFFFFF',
+                                            border: 'none',
+                                            borderRadius: '8px',
+                                            fontSize: '12.5px',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px'
+                                          }}
+                                        >
+                                          <CreditCard size={15} />
+                                          <span>Pay with Credit / Debit Card Instead</span>
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => setApplePayMode('add_card')}
+                                          style={{
+                                            height: '38px',
+                                            backgroundColor: '#FFFFFF',
+                                            color: 'var(--color-deep-espresso)',
+                                            border: '1px solid var(--color-border)',
+                                            borderRadius: '8px',
+                                            fontSize: '12px',
+                                            fontWeight: 600,
+                                            cursor: 'pointer'
+                                          }}
+                                        >
+                                          + Add Card to Apple Wallet Now
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {applePayMode === 'add_card' && (
+                                    <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
+                                          Add Card to Apple Wallet
+                                        </span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setAppleCardData({ number: '4242 4242 4242 8821', expiry: '09/28', cvc: '882', name: formData.fullName || 'Amara Okafor' })}
+                                          style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
+                                        >
+                                          Auto-Fill Card (•••• 8821)
+                                        </button>
+                                      </div>
+                                      <input
+                                        type="text"
+                                        placeholder="Cardholder name"
+                                        value={appleCardData.name}
+                                        onChange={(e) => setAppleCardData(prev => ({ ...prev, name: e.target.value }))}
+                                        style={standardInputStyle}
+                                      />
+                                      <input
+                                        type="text"
+                                        placeholder="Card number (•••• •••• •••• ••••)"
+                                        value={appleCardData.number}
+                                        onChange={(e) => {
+                                          const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
+                                          setAppleCardData(prev => ({ ...prev, number: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
+                                        }}
+                                        maxLength={19}
+                                        style={standardInputStyle}
+                                      />
+                                      <div className="checkout-row-2">
+                                        <input
+                                          type="text"
+                                          placeholder="MM/YY"
+                                          value={appleCardData.expiry}
+                                          onChange={(e) => {
+                                            const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                            setAppleCardData(prev => ({ ...prev, expiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
+                                          }}
+                                          maxLength={5}
+                                          style={standardInputStyle}
+                                        />
+                                        <input
+                                          type="text"
+                                          placeholder="CVC"
+                                          value={appleCardData.cvc}
+                                          onChange={(e) => setAppleCardData(prev => ({ ...prev, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                                          maxLength={4}
+                                          style={standardInputStyle}
+                                        />
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handlePlaceOrder(null, 'apple_pay')}
+                                        disabled={isSubmitting}
+                                        style={{
+                                          height: '44px',
+                                          backgroundColor: '#000000',
                                           color: '#FFFFFF',
                                           border: 'none',
                                           borderRadius: '8px',
-                                          fontSize: '12.5px',
+                                          fontSize: '13px',
                                           fontWeight: 600,
-                                          cursor: 'pointer',
+                                          cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          gap: '8px'
+                                        }}
+                                      >
+                                        <span>Save to Wallet &amp; Pay {formatPrice(total)}</span>
+                                        <ApplePayLogo height={18} color="#FFFFFF" />
+                                      </button>
+                                    </div>
+                                  )}
+
+                                  {applePayMode === 'ready' && (
+                                    <>
+                                      <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                          <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
+                                          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Card •••• 8821</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                          <span style={{ fontSize: '11px', color: '#8C8074' }}>Pay To:</span>
+                                          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina Ltd</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
+                                          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total:</span>
+                                          <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
+                                        </div>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handlePlaceOrder(null, 'apple_pay')}
+                                        disabled={isSubmitting}
+                                        style={{
+                                          height: '46px',
+                                          backgroundColor: '#000000',
+                                          color: '#FFFFFF',
+                                          border: 'none',
+                                          borderRadius: '10px',
+                                          cursor: isSubmitting ? 'not-allowed' : 'pointer',
                                           display: 'flex',
                                           alignItems: 'center',
                                           justifyContent: 'center',
                                           gap: '8px',
-                                          boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+                                          fontSize: '13.5px',
+                                          fontWeight: 600
                                         }}
                                       >
-                                        <CreditCard size={15} />
-                                        <span>Pay with Credit / Debit Card Instead (Instant On-Page)</span>
+                                        <span>Pay {formatPrice(total)} with</span>
+                                        <ApplePayLogo height={20} color="#FFFFFF" />
                                       </button>
+                                    </>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
 
+                          {/* Option 2: Google Pay */}
+                          {shouldShowMethod('google_pay') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'google_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'google_pay' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden',
+                              transition: 'border-color 0.2s ease'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'google_pay')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod"
+                                    checked={formData.paymentMethod === 'google_pay'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                                        Google Pay
+                                      </strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Stripe Verified
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Fast, encrypted checkout via your Google Account
+                                    </span>
+                                  </div>
+                                </div>
+                                <GooglePayLogo height={20} />
+                              </label>
+
+                              {formData.paymentMethod === 'google_pay' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
+                                    <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Google Account Card Status:</span>
+                                    <div style={{ display: 'flex', gap: '4px' }}>
                                       <button
                                         type="button"
-                                        onClick={() => setApplePayMode('add_card')}
+                                        onClick={() => setGooglePayMode('new')}
                                         style={{
-                                          height: '38px',
-                                          backgroundColor: '#FFFFFF',
-                                          color: 'var(--color-deep-espresso)',
-                                          border: '1px solid var(--color-border)',
-                                          borderRadius: '8px',
-                                          fontSize: '12px',
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
                                           fontWeight: 600,
-                                          cursor: 'pointer',
+                                          border: '1px solid',
+                                          borderColor: googlePayMode === 'new' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: googlePayMode === 'new' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: googlePayMode === 'new' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
+                                      >
+                                        No Card Saved (Add Card)
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setGooglePayMode('saved')}
+                                        style={{
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
+                                          fontWeight: 600,
+                                          border: '1px solid',
+                                          borderColor: googlePayMode === 'saved' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: googlePayMode === 'saved' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: googlePayMode === 'saved' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
+                                      >
+                                        Saved Card (•••• 4012)
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  {googlePayMode === 'new' ? (
+                                    <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                          <strong style={{ fontSize: '12.5px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                                            Add Credit or Debit Card to Google Pay
+                                          </strong>
+                                          <span style={{ fontSize: '11px', color: '#685C50' }}>
+                                            Google Account: {formData.email || 'client@houseofnina.co.uk'}
+                                          </span>
+                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => setGpayCardData({ number: '4242 4242 4242 4012', expiry: '11/29', cvc: '401', name: formData.fullName || 'Amara Okafor', zip: formData.postalCode || 'W1J 8AJ' })}
+                                          style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
+                                        >
+                                          Auto-Fill Test Card
+                                        </button>
+                                      </div>
+
+                                      <input
+                                        type="text"
+                                        placeholder="Cardholder name"
+                                        value={gpayCardData.name}
+                                        onChange={(e) => setGpayCardData(prev => ({ ...prev, name: e.target.value }))}
+                                        style={standardInputStyle}
+                                      />
+                                      <input
+                                        type="text"
+                                        placeholder="Card number (•••• •••• •••• ••••)"
+                                        value={gpayCardData.number}
+                                        onChange={(e) => {
+                                          const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
+                                          setGpayCardData(prev => ({ ...prev, number: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
+                                        }}
+                                        maxLength={19}
+                                        style={standardInputStyle}
+                                      />
+                                      <div className="checkout-row-2">
+                                        <input
+                                          type="text"
+                                          placeholder="MM/YY"
+                                          value={gpayCardData.expiry}
+                                          onChange={(e) => {
+                                            const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                            setGpayCardData(prev => ({ ...prev, expiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
+                                          }}
+                                          maxLength={5}
+                                          style={standardInputStyle}
+                                        />
+                                        <input
+                                          type="text"
+                                          placeholder="CVC"
+                                          value={gpayCardData.cvc}
+                                          onChange={(e) => setGpayCardData(prev => ({ ...prev, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                                          maxLength={4}
+                                          style={standardInputStyle}
+                                        />
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handlePlaceOrder(null, 'google_pay')}
+                                        disabled={isSubmitting}
+                                        style={{
+                                          height: '44px',
+                                          backgroundColor: '#1C1614',
+                                          color: '#FFFFFF',
+                                          border: 'none',
+                                          borderRadius: '8px',
+                                          fontSize: '13px',
+                                          fontWeight: 600,
+                                          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                                        }}
+                                      >
+                                        <span>Save to Google Pay &amp; Pay {formatPrice(total)}</span>
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                          <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
+                                          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Google Pay • Visa (•••• 4012)</span>
+                                        </div>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handlePlaceOrder(null, 'google_pay')}
+                                        disabled={isSubmitting}
+                                        style={{
+                                          height: '46px',
+                                          backgroundColor: '#FFFFFF',
+                                          color: '#1C1614',
+                                          border: '1.5px solid #1C1614',
+                                          borderRadius: '10px',
+                                          cursor: isSubmitting ? 'not-allowed' : 'pointer',
                                           display: 'flex',
                                           alignItems: 'center',
                                           justifyContent: 'center',
-                                          gap: '6px'
+                                          gap: '8px',
+                                          fontSize: '13.5px',
+                                          fontWeight: 600
                                         }}
                                       >
-                                        <span>+ Add Card to Apple Wallet Now</span>
+                                        <span>Pay {formatPrice(total)} with</span>
+                                        <GooglePayLogo height={20} />
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 3: Credit or Debit Card */}
+                          {shouldShowMethod('card') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'card' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'card')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod"
+                                    checked={formData.paymentMethod === 'card'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                                        Credit or Debit Card
+                                      </strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#FAF2E6', color: '#976624' }}>
+                                        Universal
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Standard on-page entry for Visa, Mastercard, AMEX cards
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '4px', flexShrink: 0, alignItems: 'center' }}>
+                                  <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #D0D8E4', color: '#1A1F71' }}>VISA</span>
+                                  <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #E8DBD0', color: '#EB001B' }}>MC</span>
+                                  <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #C7DFEE', color: '#006FCF' }}>AMEX</span>
+                                </div>
+                              </label>
+
+                              {formData.paymentMethod === 'card' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#FFFFFF' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#685C50' }}>Enter Card Details</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          cardName: prev.cardName || 'Amara Okafor',
+                                          cardNumber: '4242 4242 4242 4892',
+                                          cardExpiry: '12/28',
+                                          cardCvc: '312'
+                                        }));
+                                      }}
+                                      style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', cursor: 'pointer', padding: 0, textDecoration: 'underline', fontWeight: 600 }}
+                                    >
+                                      Auto-Fill Demo Card (•••• 4892)
+                                    </button>
+                                  </div>
+
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Cardholder Name</label>
+                                    <input
+                                      type="text"
+                                      value={formData.cardName}
+                                      onChange={(e) => handleChange('cardName', e.target.value)}
+                                      placeholder="Name as it appears on card (e.g. Amara Okafor)"
+                                      style={standardInputStyle}
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Card Number</label>
+                                    <input
+                                      type="text"
+                                      value={formData.cardNumber}
+                                      onChange={(e) => handleCardNumberChange(e.target.value)}
+                                      placeholder="16-digit card number (•••• •••• •••• 4892)"
+                                      maxLength={19}
+                                      style={standardInputStyle}
+                                    />
+                                  </div>
+
+                                  <div className="checkout-row-2">
+                                    <div>
+                                      <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Expiry</label>
+                                      <input
+                                        type="text"
+                                        value={formData.cardExpiry}
+                                        onChange={(e) => handleCardExpiryChange(e.target.value)}
+                                        placeholder="MM/YY"
+                                        maxLength={5}
+                                        style={standardInputStyle}
+                                      />
+                                    </div>
+                                    <div>
+                                      <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>CVC / CVV</label>
+                                      <input
+                                        type="text"
+                                        value={formData.cardCvc}
+                                        onChange={(e) => handleCardCvcChange(e.target.value)}
+                                        placeholder="3 or 4 digits"
+                                        maxLength={4}
+                                        style={standardInputStyle}
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'card')}
+                                    disabled={isSubmitting}
+                                    className="btn-primary-editorial"
+                                    style={{ height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, marginTop: '4px' }}
+                                  >
+                                    <Lock size={13} />
+                                    <span>Pay {formatPrice(total)} with Card</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 4: Revolut Pay (UK & Europe) */}
+                          {shouldShowMethod('revolut') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'revolut' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'revolut' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'revolut')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'revolut'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Revolut Pay</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        UK &amp; Europe
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Instant 1-tap in-app approval or Revolut card
+                                    </span>
+                                  </div>
+                                </div>
+                                <RevolutPayBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'revolut' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
+                                    <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Revolut Checkout Method:</span>
+                                    <div style={{ display: 'flex', gap: '4px' }}>
+                                      <button
+                                        type="button"
+                                        onClick={() => setRevolutMode('app')}
+                                        style={{
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
+                                          fontWeight: 600,
+                                          border: '1px solid',
+                                          borderColor: revolutMode === 'app' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: revolutMode === 'app' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: revolutMode === 'app' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
+                                      >
+                                        Revolut App (1-Tap Push)
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setRevolutMode('card')}
+                                        style={{
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
+                                          fontWeight: 600,
+                                          border: '1px solid',
+                                          borderColor: revolutMode === 'card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: revolutMode === 'card' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: revolutMode === 'card' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
+                                      >
+                                        Enter Revolut Card
                                       </button>
                                     </div>
                                   </div>
-                                )}
 
-                                {/* View 2: Add Card to Apple Wallet Inline Form */}
-                                {applePayMode === 'add_card' && (
-                                  <div style={{
-                                    backgroundColor: '#FAF8F5',
-                                    borderRadius: '10px',
-                                    border: '1px solid #E0D4C8',
-                                    padding: '14px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '10px'
-                                  }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
-                                        Add Card to Apple Wallet
+                                  {revolutMode === 'app' ? (
+                                    <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                      <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
+                                        Mobile Phone linked to Revolut
+                                      </label>
+                                      <input
+                                        type="tel"
+                                        value={revolutData.phone || formData.phone}
+                                        onChange={(e) => setRevolutData(prev => ({ ...prev, phone: e.target.value }))}
+                                        placeholder="+44 7776 759731"
+                                        style={standardInputStyle}
+                                      />
+                                      <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                        ✓ You will receive an instant push notification on your Revolut app to approve {formatPrice(total)} with 1 tap.
                                       </span>
                                       <button
                                         type="button"
-                                        onClick={() => setAppleCardData({ number: '4242 4242 4242 8821', expiry: '09/28', cvc: '882', name: formData.fullName || 'Amara Okafor' })}
-                                        style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
+                                        onClick={() => handlePlaceOrder(null, 'revolut')}
+                                        disabled={isSubmitting}
+                                        style={{
+                                          height: '44px',
+                                          backgroundColor: '#000000',
+                                          color: '#FFFFFF',
+                                          border: 'none',
+                                          borderRadius: '8px',
+                                          fontSize: '13px',
+                                          fontWeight: 600,
+                                          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                                        }}
                                       >
-                                        Auto-Fill Card (•••• 8821)
+                                        <span>Approve with Revolut Pay ({formatPrice(total)})</span>
                                       </button>
                                     </div>
-
-                                    <input
-                                      type="text"
-                                      placeholder="Cardholder name"
-                                      value={appleCardData.name}
-                                      onChange={(e) => setAppleCardData(prev => ({ ...prev, name: e.target.value }))}
-                                      style={standardInputStyle}
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="Card number (•••• •••• •••• ••••)"
-                                      value={appleCardData.number}
-                                      onChange={(e) => {
-                                        const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                        setAppleCardData(prev => ({ ...prev, number: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-                                      }}
-                                      maxLength={19}
-                                      style={standardInputStyle}
-                                    />
-                                    <div className="checkout-row-2">
+                                  ) : (
+                                    <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                       <input
                                         type="text"
-                                        placeholder="MM/YY"
-                                        value={appleCardData.expiry}
+                                        placeholder="Revolut card number (•••• •••• •••• ••••)"
+                                        value={revolutData.cardNumber}
                                         onChange={(e) => {
-                                          const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                          setAppleCardData(prev => ({ ...prev, expiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
+                                          const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
+                                          setRevolutData(prev => ({ ...prev, cardNumber: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
                                         }}
-                                        maxLength={5}
+                                        maxLength={19}
                                         style={standardInputStyle}
                                       />
-                                      <input
-                                        type="text"
-                                        placeholder="CVC"
-                                        value={appleCardData.cvc}
-                                        onChange={(e) => setAppleCardData(prev => ({ ...prev, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                                        maxLength={4}
-                                        style={standardInputStyle}
-                                      />
-                                    </div>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => handlePlaceOrder(null, 'apple_pay')}
-                                      disabled={isSubmitting}
-                                      style={{
-                                        height: '44px',
-                                        backgroundColor: '#000000',
-                                        color: '#FFFFFF',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        fontSize: '13px',
-                                        fontWeight: 600,
-                                        cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '8px'
-                                      }}
-                                    >
-                                      <span>Save to Wallet &amp; Pay {formatPrice(total)}</span>
-                                      <ApplePayLogo height={18} color="#FFFFFF" />
-                                    </button>
-                                  </div>
-                                )}
-
-                                {/* View 3: Card Already Saved in Apple Wallet (Biometric 1-Tap) */}
-                                {applePayMode === 'ready' && (
-                                  <>
-                                    <div style={{
-                                      backgroundColor: '#FAF8F5',
-                                      borderRadius: '10px',
-                                      border: '1px solid #E8DBD0',
-                                      padding: '12px 14px',
-                                      display: 'flex',
-                                      flexDirection: 'column',
-                                      gap: '8px'
-                                    }}>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
-                                        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Card •••• 8821</span>
-                                      </div>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '11px', color: '#8C8074' }}>Pay To:</span>
-                                        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina Ltd</span>
-                                      </div>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total:</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
-                                      </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#1E7E34' }}>
-                                      <CheckCircle2 size={14} color="#1E7E34" />
-                                      <span>Face ID / Touch ID biometric ready. Authorize directly on-page.</span>
-                                    </div>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => handlePlaceOrder(null, 'apple_pay')}
-                                      disabled={isSubmitting}
-                                      style={{
-                                        height: '46px',
-                                        backgroundColor: '#000000',
-                                        color: '#FFFFFF',
-                                        border: 'none',
-                                        borderRadius: '10px',
-                                        cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '8px',
-                                        fontSize: '13.5px',
-                                        fontWeight: 600,
-                                        boxShadow: '0 2px 10px rgba(0,0,0,0.18)',
-                                        transition: 'opacity 0.2s ease'
-                                      }}
-                                    >
-                                      {isSubmitting ? (
-                                        <span>Authenticating Face ID / Touch ID...</span>
-                                      ) : (
-                                        <>
-                                          <span>Pay {formatPrice(total)} with</span>
-                                          <ApplePayLogo height={20} color="#FFFFFF" />
-                                        </>
-                                      )}
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Option 2: Google Pay */}
-                          <div style={{
-                            borderRadius: '10px',
-                            border: '1.5px solid',
-                            borderColor: formData.paymentMethod === 'google_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                            backgroundColor: formData.paymentMethod === 'google_pay' ? '#FAF8F5' : '#FFFFFF',
-                            overflow: 'hidden',
-                            transition: 'border-color 0.2s ease'
-                          }}>
-                            <label 
-                              onClick={() => handleChange('paymentMethod', 'google_pay')}
-                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
-                                <input 
-                                  type="radio" 
-                                  name="paymentMethod"
-                                  checked={formData.paymentMethod === 'google_pay'}
-                                  onChange={() => {}}
-                                  style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
-                                />
-                                <div>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                      Google Pay
-                                    </strong>
-                                    <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
-                                      Stripe Verified
-                                    </span>
-                                  </div>
-                                  <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                    Fast, encrypted checkout via your Google Account
-                                  </span>
-                                </div>
-                              </div>
-                              <GooglePayLogo height={20} />
-                            </label>
-
-                            {formData.paymentMethod === 'google_pay' && (
-                              <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {/* Mode Toggle: First-Time User (Add Card) vs Returning User (Saved Card) */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
-                                  <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Google Account Card Status:</span>
-                                  <div style={{ display: 'flex', gap: '4px' }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => setGooglePayMode('new')}
-                                      style={{
-                                        padding: '3px 8px',
-                                        borderRadius: '5px',
-                                        fontSize: '10.5px',
-                                        fontWeight: 600,
-                                        border: '1px solid',
-                                        borderColor: googlePayMode === 'new' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                        backgroundColor: googlePayMode === 'new' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                        color: googlePayMode === 'new' ? '#FFFFFF' : '#685C50',
-                                        cursor: 'pointer'
-                                      }}
-                                    >
-                                      No Card Saved (Add Card)
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => setGooglePayMode('saved')}
-                                      style={{
-                                        padding: '3px 8px',
-                                        borderRadius: '5px',
-                                        fontSize: '10.5px',
-                                        fontWeight: 600,
-                                        border: '1px solid',
-                                        borderColor: googlePayMode === 'saved' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                        backgroundColor: googlePayMode === 'saved' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                        color: googlePayMode === 'saved' ? '#FFFFFF' : '#685C50',
-                                        cursor: 'pointer'
-                                      }}
-                                    >
-                                      Saved Card (•••• 4012)
-                                    </button>
-                                  </div>
-                                </div>
-
-                                {/* View 1: When user has NO card in Google Pay yet */}
-                                {googlePayMode === 'new' && (
-                                  <div style={{
-                                    backgroundColor: '#FAF8F5',
-                                    borderRadius: '10px',
-                                    border: '1px solid #E0D4C8',
-                                    padding: '14px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '10px'
-                                  }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <div>
-                                        <strong style={{ fontSize: '12.5px', color: 'var(--color-deep-espresso)', display: 'block' }}>
-                                          Add Credit or Debit Card to Google Pay
-                                        </strong>
-                                        <span style={{ fontSize: '11px', color: '#685C50' }}>
-                                          Google Account: {formData.email || 'client@houseofnina.co.uk'}
-                                        </span>
+                                      <div className="checkout-row-2">
+                                        <input
+                                          type="text"
+                                          placeholder="MM/YY"
+                                          value={revolutData.cardExpiry}
+                                          onChange={(e) => {
+                                            const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                            setRevolutData(prev => ({ ...prev, cardExpiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
+                                          }}
+                                          maxLength={5}
+                                          style={standardInputStyle}
+                                        />
+                                        <input
+                                          type="text"
+                                          placeholder="CVC"
+                                          value={revolutData.cardCvc}
+                                          onChange={(e) => setRevolutData(prev => ({ ...prev, cardCvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                                          maxLength={4}
+                                          style={standardInputStyle}
+                                        />
                                       </div>
                                       <button
                                         type="button"
-                                        onClick={() => setGpayCardData({ number: '4242 4242 4242 4012', expiry: '11/29', cvc: '401', name: formData.fullName || 'Amara Okafor', zip: formData.postalCode || 'W1J 8AJ' })}
-                                        style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
+                                        onClick={() => handlePlaceOrder(null, 'revolut')}
+                                        disabled={isSubmitting}
+                                        style={{
+                                          height: '44px',
+                                          backgroundColor: '#000000',
+                                          color: '#FFFFFF',
+                                          border: 'none',
+                                          borderRadius: '8px',
+                                          fontSize: '13px',
+                                          fontWeight: 600,
+                                          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                                        }}
                                       >
-                                        Auto-Fill Test Card
+                                        <span>Pay {formatPrice(total)} with Revolut Card</span>
                                       </button>
                                     </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
 
-                                    <input
-                                      type="text"
-                                      placeholder="Cardholder name"
-                                      value={gpayCardData.name}
-                                      onChange={(e) => setGpayCardData(prev => ({ ...prev, name: e.target.value }))}
-                                      style={standardInputStyle}
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="Card number (•••• •••• •••• ••••)"
-                                      value={gpayCardData.number}
-                                      onChange={(e) => {
-                                        const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                        setGpayCardData(prev => ({ ...prev, number: raw.replace(/(\d{4})(?=\d)/g, '$1 ') }));
-                                      }}
-                                      maxLength={19}
-                                      style={standardInputStyle}
-                                    />
-                                    <div className="checkout-row-2">
-                                      <input
-                                        type="text"
-                                        placeholder="MM/YY"
-                                        value={gpayCardData.expiry}
-                                        onChange={(e) => {
-                                          const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                          setGpayCardData(prev => ({ ...prev, expiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
-                                        }}
-                                        maxLength={5}
-                                        style={standardInputStyle}
-                                      />
-                                      <input
-                                        type="text"
-                                        placeholder="CVC"
-                                        value={gpayCardData.cvc}
-                                        onChange={(e) => setGpayCardData(prev => ({ ...prev, cvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                                        maxLength={4}
-                                        style={standardInputStyle}
-                                      />
-                                    </div>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#685C50' }}>
-                                      <input type="checkbox" defaultChecked id="gpay_save" style={{ accentColor: 'var(--color-deep-espresso)', width: '14px', height: '14px' }} />
-                                      <label htmlFor="gpay_save" style={{ cursor: 'pointer' }}>
-                                        Save card to my Google Account for 1-tap checkout next time
-                                      </label>
-                                    </div>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => handlePlaceOrder(null, 'google_pay')}
-                                      disabled={isSubmitting}
-                                      style={{
-                                        height: '44px',
-                                        backgroundColor: '#1C1614',
-                                        color: '#FFFFFF',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        fontSize: '13px',
-                                        fontWeight: 600,
-                                        cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '8px',
-                                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                                      }}
-                                    >
-                                      <span>Save to Google Pay &amp; Pay {formatPrice(total)}</span>
-                                    </button>
-                                  </div>
-                                )}
-
-                                {/* View 2: Saved Card in Google Pay */}
-                                {googlePayMode === 'saved' && (
-                                  <>
-                                    <div style={{
-                                      backgroundColor: '#FAF8F5',
-                                      borderRadius: '10px',
-                                      border: '1px solid #E8DBD0',
-                                      padding: '12px 14px',
-                                      display: 'flex',
-                                      flexDirection: 'column',
-                                      gap: '8px'
-                                    }}>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '11px', color: '#8C8074' }}>Google Account:</span>
-                                        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>{formData.email || 'client@houseofnina.co.uk'}</span>
-                                      </div>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '11px', color: '#8C8074' }}>Wallet Card:</span>
-                                        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>Google Pay • Visa (•••• 4012)</span>
-                                      </div>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total:</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
-                                      </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#1E7E34' }}>
-                                      <CheckCircle2 size={14} color="#1E7E34" />
-                                      <span>Google Wallet ready. Encrypted on-page authorization via Stripe.</span>
-                                    </div>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => handlePlaceOrder(null, 'google_pay')}
-                                      disabled={isSubmitting}
-                                      style={{
-                                        height: '46px',
-                                        backgroundColor: '#FFFFFF',
-                                        color: '#1C1614',
-                                        border: '1.5px solid #1C1614',
-                                        borderRadius: '10px',
-                                        cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '8px',
-                                        fontSize: '13.5px',
-                                        fontWeight: 600,
-                                        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                                        transition: 'background-color 0.2s ease'
-                                      }}
-                                    >
-                                      {isSubmitting ? (
-                                        <span>Authorizing with Google Wallet...</span>
-                                      ) : (
-                                        <>
-                                          <span>Pay {formatPrice(total)} with</span>
-                                          <GooglePayLogo height={20} />
-                                        </>
-                                      )}
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Option 3: Credit or Debit Card (Universal Standard Default) */}
-                          <div style={{
-                            borderRadius: '10px',
-                            border: '1.5px solid',
-                            borderColor: formData.paymentMethod === 'card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                            backgroundColor: formData.paymentMethod === 'card' ? '#FAF8F5' : '#FFFFFF',
-                            overflow: 'hidden'
-                          }}>
-                            <label 
-                              onClick={() => handleChange('paymentMethod', 'card')}
-                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
-                                <input 
-                                  type="radio" 
-                                  name="paymentMethod"
-                                  checked={formData.paymentMethod === 'card'}
-                                  onChange={() => {}}
-                                  style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
-                                />
-                                <div>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                      Credit or Debit Card
-                                    </strong>
-                                    <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#FAF2E6', color: '#976624' }}>
-                                      Universal
+                          {/* Option 5: Amazon Pay */}
+                          {shouldShowMethod('amazon_pay') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'amazon_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'amazon_pay' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'amazon_pay')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'amazon_pay'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Amazon Pay</strong>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Checkout with stored Amazon address &amp; payment methods
                                     </span>
                                   </div>
-                                  <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                    Standard on-page entry for all Visa, Mastercard, AMEX cards
-                                  </span>
                                 </div>
-                              </div>
+                                <AmazonPayBadge />
+                              </label>
 
-                              <div style={{ display: 'flex', gap: '4px', flexShrink: 0, alignItems: 'center' }}>
-                                <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #D0D8E4', color: '#1A1F71' }}>VISA</span>
-                                <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #E8DBD0', color: '#EB001B' }}>MC</span>
-                                <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #C7DFEE', color: '#006FCF' }}>AMEX</span>
-                              </div>
-                            </label>
-
-                            {formData.paymentMethod === 'card' && (
-                              <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#FFFFFF' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#685C50' }}>Enter Card Details (Zero Pre-fill Required)</span>
+                              {formData.paymentMethod === 'amazon_pay' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                  <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
+                                      <span>Amazon Account:</span>
+                                      <strong style={{ color: 'var(--color-deep-espresso)' }}>{formData.email || 'client@houseofnina.co.uk'}</strong>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
+                                      <span>Linked Method:</span>
+                                      <strong style={{ color: 'var(--color-deep-espresso)' }}>Amazon Prime Visa (•••• 9912)</strong>
+                                    </div>
+                                  </div>
                                   <button
                                     type="button"
-                                    onClick={() => {
-                                      setFormData(prev => ({
-                                        ...prev,
-                                        cardName: prev.cardName || 'Amara Okafor',
-                                        cardNumber: '4242 4242 4242 4892',
-                                        cardExpiry: '12/28',
-                                        cardCvc: '312'
-                                      }));
-                                    }}
+                                    onClick={() => handlePlaceOrder(null, 'amazon_pay')}
+                                    disabled={isSubmitting}
                                     style={{
-                                      background: 'none',
+                                      height: '44px',
+                                      backgroundColor: '#FF9900',
+                                      color: '#111111',
                                       border: 'none',
-                                      color: 'var(--color-gold-dark)',
-                                      fontSize: '11px',
-                                      cursor: 'pointer',
-                                      padding: 0,
-                                      textDecoration: 'underline',
-                                      fontWeight: 600
+                                      borderRadius: '8px',
+                                      fontSize: '13px',
+                                      fontWeight: 700,
+                                      cursor: isSubmitting ? 'not-allowed' : 'pointer'
                                     }}
                                   >
-                                    Auto-Fill Demo Card (•••• 4892)
+                                    Pay {formatPrice(total)} with Amazon Pay
                                   </button>
                                 </div>
+                              )}
+                            </div>
+                          )}
 
-                                <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Cardholder Name</label>
-                                  <input
-                                    type="text"
-                                    value={formData.cardName}
-                                    onChange={(e) => handleChange('cardName', e.target.value)}
-                                    placeholder="Name as it appears on card (e.g. Amara Okafor)"
-                                    style={standardInputStyle}
+                          {/* Option 6: Klarna */}
+                          {shouldShowMethod('klarna') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'klarna' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'klarna' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'klarna')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod"
+                                    checked={formData.paymentMethod === 'klarna'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
                                   />
-                                </div>
-
-                                <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Card Number</label>
-                                  <input
-                                    type="text"
-                                    value={formData.cardNumber}
-                                    onChange={(e) => handleCardNumberChange(e.target.value)}
-                                    placeholder="16-digit card number (•••• •••• •••• 4892)"
-                                    maxLength={19}
-                                    style={standardInputStyle}
-                                  />
-                                </div>
-
-                                <div className="checkout-row-2">
                                   <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Expiry</label>
-                                    <input
-                                      type="text"
-                                      value={formData.cardExpiry}
-                                      onChange={(e) => handleCardExpiryChange(e.target.value)}
-                                      placeholder="MM/YY"
-                                      maxLength={5}
-                                      style={standardInputStyle}
-                                    />
-                                  </div>
-                                  <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>CVC / CVV</label>
-                                    <input
-                                      type="text"
-                                      value={formData.cardCvc}
-                                      onChange={(e) => handleCardCvcChange(e.target.value)}
-                                      placeholder="3 or 4 digits"
-                                      maxLength={4}
-                                      style={standardInputStyle}
-                                    />
+                                    <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                                      Klarna (Pay in 3)
+                                    </strong>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      3 payments of {currencySymbol}{(total / 3).toFixed(2)} • 0% APR interest
+                                    </span>
                                   </div>
                                 </div>
+                                <KlarnaBadge />
+                              </label>
 
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#685C50' }}>
-                                    <input 
-                                      type="checkbox" 
-                                      id="save_card_checkbox"
-                                      checked={saveCardForFuture}
-                                      onChange={(e) => setSaveCardForFuture(e.target.checked)}
-                                      style={{ accentColor: 'var(--color-deep-espresso)', width: '14px', height: '14px' }} 
-                                    />
-                                    <label htmlFor="save_card_checkbox" style={{ cursor: 'pointer' }}>
-                                      Save card securely for 1-tap checkout next time
-                                    </label>
+                              {formData.paymentMethod === 'klarna' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                  <div style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>
+                                    Your 3 Interest-Free Installments:
+                                  </div>
+                                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                                    <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
+                                      <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>1. Today</span>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
+                                    </div>
+                                    <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
+                                      <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>2. In 30 Days</span>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
+                                    </div>
+                                    <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
+                                      <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>3. In 60 Days</span>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
+                                    </div>
                                   </div>
 
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10.5px', color: '#8C8074' }}>
-                                    <ShieldCheck size={13} color="#28A745" />
-                                    <span>256-bit SSL encrypted via Stripe</span>
-                                  </div>
-                                </div>
-
-                                <button
-                                  type="button"
-                                  onClick={() => handlePlaceOrder(null, 'card')}
-                                  disabled={isSubmitting}
-                                  className="btn-primary-editorial"
-                                  style={{
-                                    height: '44px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '8px',
-                                    fontSize: '13px',
-                                    fontWeight: 600,
-                                    marginTop: '4px'
-                                  }}
-                                >
-                                  <Lock size={13} />
-                                  <span>Pay {formatPrice(total)} with Card</span>
-                                </button>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Option 4: Klarna */}
-                          <div style={{
-                            borderRadius: '10px',
-                            border: '1.5px solid',
-                            borderColor: formData.paymentMethod === 'klarna' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                            backgroundColor: formData.paymentMethod === 'klarna' ? '#FAF8F5' : '#FFFFFF',
-                            overflow: 'hidden'
-                          }}>
-                            <label 
-                              onClick={() => handleChange('paymentMethod', 'klarna')}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                padding: '12px 14px',
-                                cursor: 'pointer',
-                                gap: '12px',
-                                minHeight: '56px'
-                              }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
-                                <input 
-                                  type="radio" 
-                                  name="paymentMethod"
-                                  checked={formData.paymentMethod === 'klarna'}
-                                  onChange={() => {}}
-                                  style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
-                                />
-                                <div>
-                                  <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                    Klarna (Pay in 3)
-                                  </strong>
-                                  <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                    3 payments of {currencySymbol}{(total / 3).toFixed(2)} • 0% APR interest
-                                  </span>
-                                </div>
-                              </div>
-                              <KlarnaBadge />
-                            </label>
-
-                            {formData.paymentMethod === 'klarna' && (
-                              <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {/* 3 Installments Schedule */}
-                                <div style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>
-                                  Your 3 Interest-Free Installments:
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                                  <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>1. Today</span>
-                                    <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
-                                  </div>
-                                  <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>2. In 30 Days</span>
-                                    <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
-                                  </div>
-                                  <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>3. In 60 Days</span>
-                                    <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{currencySymbol}{(total / 3).toFixed(2)}</strong>
-                                  </div>
-                                </div>
-
-                                {/* Mode Toggle: First-Time Klarna User vs Returning */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
-                                  <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Klarna Account Status:</span>
-                                  <div style={{ display: 'flex', gap: '4px' }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => setKlarnaMode('new')}
-                                      style={{
-                                        padding: '3px 8px',
-                                        borderRadius: '5px',
-                                        fontSize: '10.5px',
-                                        fontWeight: 600,
-                                        border: '1px solid',
-                                        borderColor: klarnaMode === 'new' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                        backgroundColor: klarnaMode === 'new' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                        color: klarnaMode === 'new' ? '#FFFFFF' : '#685C50',
-                                        cursor: 'pointer'
-                                      }}
-                                    >
-                                      First-Time Setup (Enter Info)
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => setKlarnaMode('returning')}
-                                      style={{
-                                        padding: '3px 8px',
-                                        borderRadius: '5px',
-                                        fontSize: '10.5px',
-                                        fontWeight: 600,
-                                        border: '1px solid',
-                                        borderColor: klarnaMode === 'returning' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                        backgroundColor: klarnaMode === 'returning' ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                        color: klarnaMode === 'returning' ? '#FFFFFF' : '#685C50',
-                                        cursor: 'pointer'
-                                      }}
-                                    >
-                                      Returning Customer (1-Tap)
-                                    </button>
-                                  </div>
-                                </div>
-
-                                {/* View 1: First-Time Klarna Customer Setup */}
-                                {klarnaMode === 'new' && (
-                                  <div style={{
-                                    backgroundColor: '#FAF8F5',
-                                    borderRadius: '10px',
-                                    border: '1px solid #E0D4C8',
-                                    padding: '14px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '10px'
-                                  }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>
-                                        First-Time Klarna Application
-                                      </strong>
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: '#FAF7F2', borderRadius: '8px', border: '1px solid var(--color-border-light)', flexWrap: 'wrap', gap: '6px' }}>
+                                    <span style={{ fontSize: '10.5px', fontWeight: 600, color: '#685C50' }}>Klarna Account Status:</span>
+                                    <div style={{ display: 'flex', gap: '4px' }}>
                                       <button
                                         type="button"
-                                        onClick={() => setKlarnaData({ phone: '+44 7776 759731', dob: '14/06/1995', cardNumber: '4242 4242 4242 4892', cardExpiry: '10/28', cardCvc: '489' })}
-                                        style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
+                                        onClick={() => setKlarnaMode('new')}
+                                        style={{
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
+                                          fontWeight: 600,
+                                          border: '1px solid',
+                                          borderColor: klarnaMode === 'new' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: klarnaMode === 'new' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: klarnaMode === 'new' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
                                       >
-                                        Auto-Fill Klarna Details
+                                        First-Time Setup
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setKlarnaMode('returning')}
+                                        style={{
+                                          padding: '3px 8px',
+                                          borderRadius: '5px',
+                                          fontSize: '10.5px',
+                                          fontWeight: 600,
+                                          border: '1px solid',
+                                          borderColor: klarnaMode === 'returning' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                          backgroundColor: klarnaMode === 'returning' ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                          color: klarnaMode === 'returning' ? '#FFFFFF' : '#685C50',
+                                          cursor: 'pointer'
+                                        }}
+                                      >
+                                        Returning (1-Tap)
                                       </button>
                                     </div>
+                                  </div>
 
-                                    <div>
-                                      <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
-                                        1. Mobile Number (to receive 6-digit SMS verification code)
-                                      </label>
+                                  {klarnaMode === 'new' ? (
+                                    <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>
+                                          First-Time Klarna Application
+                                        </strong>
+                                        <button
+                                          type="button"
+                                          onClick={() => setKlarnaData({ phone: '+44 7776 759731', dob: '14/06/1995', cardNumber: '4242 4242 4242 4892', cardExpiry: '10/28', cardCvc: '489' })}
+                                          style={{ background: 'none', border: 'none', color: 'var(--color-gold-dark)', fontSize: '11px', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
+                                        >
+                                          Auto-Fill Klarna Details
+                                        </button>
+                                      </div>
                                       <input
                                         type="tel"
                                         value={klarnaData.phone || formData.phone}
                                         onChange={(e) => setKlarnaData(prev => ({ ...prev, phone: e.target.value }))}
-                                        placeholder="+44 7776 759731"
+                                        placeholder="Mobile (+44 7776 759731) for SMS PIN"
                                         style={standardInputStyle}
                                       />
-                                    </div>
-
-                                    <div>
-                                      <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
-                                        2. Date of Birth (Required for UK 18+ BNPL eligibility check)
-                                      </label>
                                       <input
                                         type="text"
                                         value={klarnaData.dob}
                                         onChange={(e) => setKlarnaData(prev => ({ ...prev, dob: e.target.value }))}
-                                        placeholder="DD / MM / YYYY"
+                                        placeholder="Date of Birth (DD / MM / YYYY)"
                                         style={standardInputStyle}
                                       />
-                                    </div>
-
-                                    <div>
-                                      <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
-                                        3. Card Details to Charge 1st Installment ({currencySymbol}{(total / 3).toFixed(2)} today)
-                                      </label>
                                       <input
                                         type="text"
                                         value={klarnaData.cardNumber}
@@ -2080,204 +2590,745 @@ export default function CheckoutModal({
                                         maxLength={19}
                                         style={standardInputStyle}
                                       />
+                                      <div className="checkout-row-2">
+                                        <input
+                                          type="text"
+                                          value={klarnaData.cardExpiry}
+                                          onChange={(e) => {
+                                            const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                            setKlarnaData(prev => ({ ...prev, cardExpiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
+                                          }}
+                                          placeholder="MM/YY"
+                                          maxLength={5}
+                                          style={standardInputStyle}
+                                        />
+                                        <input
+                                          type="text"
+                                          value={klarnaData.cardCvc}
+                                          onChange={(e) => setKlarnaData(prev => ({ ...prev, cardCvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                                          placeholder="CVC"
+                                          maxLength={4}
+                                          style={standardInputStyle}
+                                        />
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handlePlaceOrder(null, 'klarna')}
+                                        disabled={isSubmitting}
+                                        style={{ height: '44px', backgroundColor: '#FFB3C7', color: '#1C1614', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                      >
+                                        Authorize Klarna Pay in 3 ({currencySymbol}{(total / 3).toFixed(2)} Today)
+                                      </button>
                                     </div>
-
-                                    <div className="checkout-row-2">
-                                      <input
-                                        type="text"
-                                        value={klarnaData.cardExpiry}
-                                        onChange={(e) => {
-                                          const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                          setKlarnaData(prev => ({ ...prev, cardExpiry: clean.length >= 3 ? `${clean.slice(0, 2)}/${clean.slice(2)}` : clean }));
-                                        }}
-                                        placeholder="MM/YY"
-                                        maxLength={5}
-                                        style={standardInputStyle}
-                                      />
-                                      <input
-                                        type="text"
-                                        value={klarnaData.cardCvc}
-                                        onChange={(e) => setKlarnaData(prev => ({ ...prev, cardCvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
-                                        placeholder="CVC"
-                                        maxLength={4}
-                                        style={standardInputStyle}
-                                      />
-                                    </div>
-
+                                  ) : (
                                     <button
                                       type="button"
                                       onClick={() => handlePlaceOrder(null, 'klarna')}
                                       disabled={isSubmitting}
-                                      style={{
-                                        height: '44px',
-                                        backgroundColor: '#FFB3C7',
-                                        color: '#1C1614',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        fontSize: '13px',
-                                        fontWeight: 700,
-                                        cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                        marginTop: '4px'
-                                      }}
-                                    >
-                                      Authorize Klarna Pay in 3 ({currencySymbol}{(total / 3).toFixed(2)} Today)
-                                    </button>
-                                  </div>
-                                )}
-
-                                {/* View 2: Returning Klarna Customer */}
-                                {klarnaMode === 'returning' && (
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                    <div style={{ padding: '12px', backgroundColor: '#FAF8F5', borderRadius: '8px', border: '1px solid #E8DBD0', fontSize: '11.5px', color: '#685C50' }}>
-                                      <strong style={{ display: 'block', color: 'var(--color-deep-espresso)', marginBottom: '2px' }}>
-                                        Pre-Approved Klarna Account
-                                      </strong>
-                                      <span>Account linked to: {formData.email || 'client@houseofnina.co.uk'}</span>
-                                    </div>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => handlePlaceOrder(null, 'klarna')}
-                                      disabled={isSubmitting}
-                                      style={{
-                                        height: '44px',
-                                        backgroundColor: '#FFB3C7',
-                                        color: '#1C1614',
-                                        border: 'none',
-                                        borderRadius: '8px',
-                                        fontSize: '13px',
-                                        fontWeight: 700,
-                                        cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                                      }}
+                                      style={{ height: '44px', backgroundColor: '#FFB3C7', color: '#1C1614', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
                                     >
                                       Pay 1st Part {formatPrice(total / 3)} with Klarna
                                     </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 7: Bancontact (Belgium) */}
+                          {shouldShowMethod('bancontact') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'bancontact' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'bancontact' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'bancontact')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'bancontact'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Bancontact</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Belgium #1
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Direct Belgian bank debit or Payconiq app
+                                    </span>
                                   </div>
-                                )}
+                                </div>
+                                <BancontactBadge />
+                              </label>
 
-                                <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
-                                  ✓ No fees when paid on time. Pre-qualified on-page via Stripe Klarna integration.
-                                </span>
-                              </div>
-                            )}
-                          </div>
+                              {formData.paymentMethod === 'bancontact' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <input
+                                    type="text"
+                                    placeholder="Bancontact Card Number (16-19 digits)"
+                                    style={standardInputStyle}
+                                  />
+                                  <div className="checkout-row-2">
+                                    <input type="text" placeholder="Cardholder Name" style={standardInputStyle} />
+                                    <input type="text" placeholder="MM/YY" maxLength={5} style={standardInputStyle} />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'bancontact')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#003A70', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Pay {formatPrice(total)} with Bancontact
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
 
-                          {/* Option 5: Direct Bank Wire */}
-                          <div style={{
-                            borderRadius: '10px',
-                            border: '1.5px solid',
-                            borderColor: formData.paymentMethod === 'bank' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                            backgroundColor: formData.paymentMethod === 'bank' ? '#FAF8F5' : '#FFFFFF',
-                            overflow: 'hidden'
-                          }}>
-                            <label 
-                              onClick={() => handleChange('paymentMethod', 'bank')}
-                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
-                                <input 
-                                  type="radio" 
-                                  name="paymentMethod"
-                                  checked={formData.paymentMethod === 'bank'}
-                                  onChange={() => {}}
-                                  style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
-                                />
-                                <div>
-                                  <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                                    Direct Studio Bank Wire
-                                  </strong>
-                                  <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                    UK Barclays Studio transfer with order reference
+                          {/* Option 8: iDEAL (Netherlands) */}
+                          {shouldShowMethod('ideal') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'ideal' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'ideal' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'ideal')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'ideal'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>iDEAL</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Netherlands Standard
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Direct online transfer via your Dutch bank
+                                    </span>
+                                  </div>
+                                </div>
+                                <IdealBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'ideal' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>Select Your Dutch Bank:</label>
+                                  <select 
+                                    value={idealBank} 
+                                    onChange={(e) => setIdealBank(e.target.value)}
+                                    style={{ ...standardInputStyle, cursor: 'pointer' }}
+                                  >
+                                    <option value="ing">ING Bank</option>
+                                    <option value="rabobank">Rabobank</option>
+                                    <option value="abn_amro">ABN AMRO</option>
+                                    <option value="sns_bank">SNS Bank</option>
+                                    <option value="bunq">bunq</option>
+                                    <option value="asn_bank">ASN Bank</option>
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'ideal')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#CC0066', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Proceed with iDEAL ({formatPrice(total)})
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 9: BLIK (Poland) */}
+                          {shouldShowMethod('blik') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'blik' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'blik' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'blik')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'blik'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>BLIK</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Poland #1 Mobile
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Instant 6-digit code from your Polish banking app
+                                    </span>
+                                  </div>
+                                </div>
+                                <BlikBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'blik' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
+                                    Enter 6-digit BLIK Code:
+                                  </label>
+                                  <input
+                                    type="text"
+                                    placeholder="• • •  • • • (e.g. 729 481)"
+                                    value={blikCode}
+                                    onChange={(e) => setBlikCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                    maxLength={6}
+                                    style={{ ...standardInputStyle, fontSize: '18px', textAlign: 'center', letterSpacing: '0.2em', fontWeight: 700 }}
+                                  />
+                                  <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
+                                    Open your mBank, PKO, Santander, or ING app, tap BLIK, and enter the code.
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'blik')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#E60000', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Confirm BLIK Payment ({formatPrice(total)})
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 10: MB WAY (Portugal) */}
+                          {shouldShowMethod('mbway') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'mbway' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'mbway' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'mbway')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'mbway'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>MB WAY</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Portugal
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Mobile phone approval in the MB WAY app
+                                    </span>
+                                  </div>
+                                </div>
+                                <MbWayBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'mbway' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
+                                    Portuguese Mobile Phone Number (+351):
+                                  </label>
+                                  <input
+                                    type="tel"
+                                    placeholder="+351 912 345 678"
+                                    value={mbWayPhone}
+                                    onChange={(e) => setMbWayPhone(e.target.value)}
+                                    style={standardInputStyle}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'mbway')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#E30613', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Send MB WAY Request ({formatPrice(total)})
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 11: EPS (Austria) */}
+                          {shouldShowMethod('eps') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'eps' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'eps' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'eps')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'eps'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>EPS Überweisung</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Austria
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Austrian online banking direct payment
+                                    </span>
+                                  </div>
+                                </div>
+                                <EpsBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'eps' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>Select Austrian Bank:</label>
+                                  <select 
+                                    value={epsBank} 
+                                    onChange={(e) => setEpsBank(e.target.value)}
+                                    style={{ ...standardInputStyle, cursor: 'pointer' }}
+                                  >
+                                    <option value="erste">Erste Bank und Sparkassen</option>
+                                    <option value="raiffeisen">Raiffeisen Bankengruppe</option>
+                                    <option value="bawag">BAWAG P.S.K.</option>
+                                    <option value="bank_austria">Bank Austria</option>
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'eps')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#E30613', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Proceed to Austrian Bank via EPS
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 12: Satispay (Italy) */}
+                          {shouldShowMethod('satispay') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'satispay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'satispay' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'satispay')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'satispay'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Satispay</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        Italy
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Independent Italian mobile payment network
+                                    </span>
+                                  </div>
+                                </div>
+                                <SatispayBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'satispay' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>Italian Mobile Number (+39):</label>
+                                  <input
+                                    type="tel"
+                                    placeholder="+39 345 678 9012"
+                                    value={satispayPhone}
+                                    onChange={(e) => setSatispayPhone(e.target.value)}
+                                    style={standardInputStyle}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'satispay')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#FD3743', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Authorize with Satispay App
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 13: Kakao Pay (South Korea) */}
+                          {shouldShowMethod('kakao_pay') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'kakao_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'kakao_pay' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'kakao_pay')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'kakao_pay'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Kakao Pay (카카오페이)</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#FFF9C4', color: '#F57F17' }}>
+                                        South Korea #1
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Instant checkout via KakaoTalk
+                                    </span>
+                                  </div>
+                                </div>
+                                <KakaoPayBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'kakao_pay' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <input type="tel" placeholder="Korean Mobile Number (+82)" style={standardInputStyle} />
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'kakao_pay')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#FFEB00', color: '#3C1E1E', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Pay with Kakao Pay ({formatPrice(total)})
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 14: Naver Pay (South Korea) */}
+                          {shouldShowMethod('naver_pay') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'naver_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'naver_pay' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'naver_pay')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'naver_pay'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Naver Pay (네이버페이)</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E8F5E9', color: '#1E7E34' }}>
+                                        South Korea
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Pay with Naver Points &amp; Korean Cards
+                                    </span>
+                                  </div>
+                                </div>
+                                <NaverPayBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'naver_pay' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <input type="text" placeholder="Naver Account / ID" style={standardInputStyle} />
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'naver_pay')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#03C75A', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Pay with Naver Pay ({formatPrice(total)})
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 15: Samsung Pay (South Korea) */}
+                          {shouldShowMethod('samsung_pay') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'samsung_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'samsung_pay' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'samsung_pay')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'samsung_pay'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Samsung Pay (삼성페이)</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#E3F2FD', color: '#1565C0' }}>
+                                        Biometric Korea
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      Fingerprint authentication for Korean credit cards
+                                    </span>
+                                  </div>
+                                </div>
+                                <SamsungPayBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'samsung_pay' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'samsung_pay')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#0C2340', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Authorize Samsung Pay ({formatPrice(total)})
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 16: PAYCO (South Korea) */}
+                          {shouldShowMethod('payco') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'payco' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'payco' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'payco')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'payco'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>PAYCO (페이코)</strong>
+                                      <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', backgroundColor: '#FFEBEE', color: '#C62828' }}>
+                                        South Korea
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      NHN PAYCO online payment &amp; point redemption
+                                    </span>
+                                  </div>
+                                </div>
+                                <PaycoBadge />
+                              </label>
+
+                              {formData.paymentMethod === 'payco' && (
+                                <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'payco')}
+                                    disabled={isSubmitting}
+                                    style={{ height: '44px', backgroundColor: '#FA142B', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                                  >
+                                    Pay with PAYCO ({formatPrice(total)})
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Option 17: Direct Studio Bank Wire */}
+                          {shouldShowMethod('bank') && (
+                            <div style={{
+                              borderRadius: '10px',
+                              border: '1.5px solid',
+                              borderColor: formData.paymentMethod === 'bank' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                              backgroundColor: formData.paymentMethod === 'bank' ? '#FAF8F5' : '#FFFFFF',
+                              overflow: 'hidden'
+                            }}>
+                              <label 
+                                onClick={() => handleChange('paymentMethod', 'bank')}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    checked={formData.paymentMethod === 'bank'}
+                                    onChange={() => {}}
+                                    style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                  />
+                                  <div>
+                                    <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                                      Direct Studio Bank Wire
+                                    </strong>
+                                    <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                      UK Barclays Studio transfer with order reference
+                                    </span>
+                                  </div>
+                                </div>
+                                <Building2 size={16} color="#8C8074" style={{ flexShrink: 0 }} />
+                              </label>
+
+                              {formData.paymentMethod === 'bank' && (
+                                <div style={{
+                                  padding: '16px',
+                                  borderTop: '1px solid var(--color-border-light)',
+                                  backgroundColor: '#FAF7F2',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '12px'
+                                }}>
+                                  <span style={{ display: 'block', fontWeight: 700, color: 'var(--color-deep-espresso)', fontSize: '12.5px' }}>
+                                    House of Nina UK Studio Bank Details:
+                                  </span>
+                                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
+                                    <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                      <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bank</span>
+                                      <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>Barclays UK</strong>
+                                    </div>
+                                    <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                      <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sort Code</span>
+                                      <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>20-04-15</strong>
+                                    </div>
+                                    <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                      <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Account No.</span>
+                                      <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>83920194</strong>
+                                    </div>
+                                    <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
+                                      <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Beneficiary</span>
+                                      <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>House of Nina UK Ltd</strong>
+                                    </div>
+                                  </div>
+
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                                    <div>
+                                      <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                        Sender Account Holder Name (as it appears on your transfer)
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={bankWireData.accountHolder}
+                                        onChange={(e) => setBankWireData(prev => ({ ...prev, accountHolder: e.target.value }))}
+                                        placeholder="e.g. Amara Okafor (Barclays UK)"
+                                        style={standardInputStyle}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                        Transfer Reference Note
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={bankWireData.referenceNote}
+                                        onChange={(e) => setBankWireData(prev => ({ ...prev, referenceNote: e.target.value }))}
+                                        placeholder="e.g. HN-BESPOKE-HAIR"
+                                        style={standardInputStyle}
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePlaceOrder(null, 'bank')}
+                                    disabled={isSubmitting}
+                                    style={{
+                                      height: '44px',
+                                      backgroundColor: 'var(--color-deep-espresso)',
+                                      color: '#FFFFFF',
+                                      border: 'none',
+                                      borderRadius: '8px',
+                                      fontSize: '13px',
+                                      fontWeight: 600,
+                                      cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                                    }}
+                                  >
+                                    Confirm Bank Wire Booking ({formatPrice(total)})
+                                  </button>
+
+                                  <span style={{ display: 'block', fontSize: '10.5px', color: '#8C8074', fontStyle: 'italic' }}>
+                                    *Hair is dispatched upon transfer receipt. Your invoice and reference will be generated on placement.
                                   </span>
                                 </div>
-                              </div>
-                              <Building2 size={16} color="#8C8074" style={{ flexShrink: 0 }} />
-                            </label>
-
-                            {formData.paymentMethod === 'bank' && (
-                              <div style={{
-                                padding: '16px',
-                                borderTop: '1px solid var(--color-border-light)',
-                                backgroundColor: '#FAF7F2',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '12px'
-                              }}>
-                                <span style={{ display: 'block', fontWeight: 700, color: 'var(--color-deep-espresso)', fontSize: '12.5px' }}>
-                                  House of Nina UK Studio Bank Details:
-                                </span>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
-                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
-                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bank</span>
-                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>Barclays UK</strong>
-                                  </div>
-                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
-                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sort Code</span>
-                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>20-04-15</strong>
-                                  </div>
-                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
-                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Account No.</span>
-                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>83920194</strong>
-                                  </div>
-                                  <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
-                                    <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Beneficiary</span>
-                                    <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>House of Nina UK Ltd</strong>
-                                  </div>
-                                </div>
-
-                                {/* Inputs for customer bank transfer info */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
-                                  <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
-                                      Sender Account Holder Name (as it appears on your transfer)
-                                    </label>
-                                    <input
-                                      type="text"
-                                      value={bankWireData.accountHolder}
-                                      onChange={(e) => setBankWireData(prev => ({ ...prev, accountHolder: e.target.value }))}
-                                      placeholder="e.g. Amara Okafor (Barclays UK)"
-                                      style={standardInputStyle}
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
-                                      Transfer Reference Note
-                                    </label>
-                                    <input
-                                      type="text"
-                                      value={bankWireData.referenceNote}
-                                      onChange={(e) => setBankWireData(prev => ({ ...prev, referenceNote: e.target.value }))}
-                                      placeholder="e.g. HN-BESPOKE-HAIR"
-                                      style={standardInputStyle}
-                                    />
-                                  </div>
-                                </div>
-
-                                <button
-                                  type="button"
-                                  onClick={() => handlePlaceOrder(null, 'bank')}
-                                  disabled={isSubmitting}
-                                  style={{
-                                    height: '44px',
-                                    backgroundColor: 'var(--color-deep-espresso)',
-                                    color: '#FFFFFF',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    fontSize: '13px',
-                                    fontWeight: 600,
-                                    cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                                  }}
-                                >
-                                  Confirm Bank Wire Booking ({formatPrice(total)})
-                                </button>
-
-                                <span style={{ display: 'block', fontSize: '10.5px', color: '#8C8074', fontStyle: 'italic' }}>
-                                  *Hair is dispatched upon transfer receipt. Your invoice and reference will be generated on placement.
-                                </span>
-                              </div>
-                            )}
-                          </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -2331,13 +3382,7 @@ export default function CheckoutModal({
                             <>
                               <Lock size={14} style={{ flexShrink: 0 }} />
                               <span style={{ whiteSpace: 'nowrap' }}>
-                                {formData.paymentMethod === 'apple_pay'
-                                  ? `Pay ${formatPrice(total)} with Apple Pay`
-                                  : formData.paymentMethod === 'google_pay'
-                                  ? `Pay ${formatPrice(total)} with Google Pay`
-                                  : formData.paymentMethod === 'klarna'
-                                  ? `Pay 1st Part ${formatPrice(total / 3)} with Klarna`
-                                  : `Authorize & Pay ${formatPrice(total)}`}
+                                {getPaymentButtonLabel(formData.paymentMethod)}
                               </span>
                             </>
                           )}
