@@ -96,13 +96,26 @@ export default function OrderSuccessReceipt({
         }
       ];
 
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = '/images/house-of-nina-ribbon-mobile.webp';
+    if (img.complete) {
+      setIsImageLoaded(true);
+    } else {
+      img.onload = () => setIsImageLoaded(true);
+      img.onerror = () => setIsImageLoaded(true);
+    }
+  }, []);
+
   const currencySymbol = order?.currencySymbol || '£';
   const subtotal = typeof order?.subtotal === 'number' 
     ? order.subtotal.toFixed(2) 
     : (order?.subtotal || '495.00');
   const shippingCost = typeof order?.shippingCost === 'number' && order.shippingCost > 0
     ? `${currencySymbol}${order.shippingCost.toFixed(2)}`
-    : 'Complimentary';
+    : 'Free';
   const discount = order?.discount 
     ? `- ${currencySymbol}${typeof order.discount === 'number' ? order.discount.toFixed(2) : order.discount}` 
     : null;
@@ -110,7 +123,7 @@ export default function OrderSuccessReceipt({
     ? order.total.toFixed(2)
     : (order?.total || subtotal);
 
-  const deliveryMethod = order?.deliveryMethod || 'Royal Mail 48 Tracked (Complimentary)';
+  const deliveryMethod = order?.deliveryMethod || 'Royal Mail 48 Tracked (Free)';
   const paymentMethod = order?.paymentMethod || 'Stripe Verified Card (•••• 4892)';
   const customerName = order?.customer?.fullName || 'Valued Client';
   const customerEmail = order?.customer?.email || 'client@houseofnina.co.uk';
@@ -310,50 +323,88 @@ export default function OrderSuccessReceipt({
             src="/images/house-of-nina-ribbon-mobile.jpg" 
             alt="House of Nina satin ribbon wrapped around glossy dark hair" 
             className="ribbon-hero-img"
+            onLoad={() => setIsImageLoaded(true)}
+            loading="eager"
+            fetchPriority="high"
+            style={{
+              opacity: isImageLoaded ? 1 : 0,
+              transition: 'opacity 0.4s ease'
+            }}
           />
         </picture>
 
-        {/* Unified Ribbon Surface: Order Confirmed + Order No & Est. Arrival */}
-        <div className="ribbon-unified-text-surface animate-ribbon-text">
-          <h1 className="ribbon-serif-heading">
-            Order Confirmed
-          </h1>
-
-          {/* 2 Columns with fine vertical divider */}
-          <div className="ribbon-columns-container">
-            <div className="ribbon-col-entry">
-              <span className="ribbon-val-text">{formattedOrderId}</span>
-              <span className="ribbon-lbl-text">ORDER NO.</span>
-            </div>
-
-            <div className="ribbon-divider-line" aria-hidden="true" />
-
-            <div className="ribbon-col-entry">
-              <span className="ribbon-val-text">{estimatedArrival}</span>
-              <span className="ribbon-lbl-text">EST. ARRIVAL</span>
-            </div>
+        {/* Elegant Placeholder while image loads */}
+        {!isImageLoaded && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#1C1614',
+            zIndex: 4,
+            gap: '12px'
+          }}>
+            <div style={{
+              width: '28px',
+              height: '28px',
+              border: '2px solid rgba(197, 160, 89, 0.25)',
+              borderTopColor: '#C5A059',
+              borderRadius: '50%',
+              animation: 'spin 0.8s linear infinite'
+            }} />
+            <span style={{ fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#D4AF37', fontWeight: 600 }}>
+              Preparing Order Confirmation...
+            </span>
           </div>
-        </div>
+        )}
 
-        {/* Modal Action Footer directly within modal: View Order Details first, Continue Shopping second */}
-        <div className="ribbon-modal-footer">
-          <button
-            type="button"
-            className="ribbon-details-btn"
-            onClick={() => setShowDetails(true)}
-          >
-            <FileText size={14} strokeWidth={1.8} />
-            <span>View Order Details</span>
-          </button>
+        {/* Unified Ribbon Surface: Order Confirmed + Order No & Est. Arrival - Appears only after image is ready */}
+        {isImageLoaded && (
+          <>
+            <div className="ribbon-unified-text-surface animate-ribbon-text">
+              <h1 className="ribbon-serif-heading">
+                Order Confirmed
+              </h1>
 
-          <button
-            type="button"
-            className="ribbon-continue-btn"
-            onClick={handleContinue}
-          >
-            Continue Shopping
-          </button>
-        </div>
+              {/* 2 Columns with fine vertical divider */}
+              <div className="ribbon-columns-container">
+                <div className="ribbon-col-entry">
+                  <span className="ribbon-val-text">{formattedOrderId}</span>
+                  <span className="ribbon-lbl-text">ORDER NO.</span>
+                </div>
+
+                <div className="ribbon-divider-line" aria-hidden="true" />
+
+                <div className="ribbon-col-entry">
+                  <span className="ribbon-val-text">{estimatedArrival}</span>
+                  <span className="ribbon-lbl-text">EST. ARRIVAL</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Action Footer directly within modal: View Order Details first, Continue Shopping second */}
+            <div className="ribbon-modal-footer">
+              <button
+                type="button"
+                className="ribbon-details-btn"
+                onClick={() => setShowDetails(true)}
+              >
+                <FileText size={14} strokeWidth={1.8} />
+                <span>View Order Details</span>
+              </button>
+
+              <button
+                type="button"
+                className="ribbon-continue-btn"
+                onClick={handleContinue}
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </>
+        )}
       </div>
       )}
 

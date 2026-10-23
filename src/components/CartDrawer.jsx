@@ -24,34 +24,13 @@ export default function CartDrawer({
   onProceedToCheckout,
   onOpenLegal 
 }) {
-  const [promoCode, setPromoCode] = useState('');
-  const [promoApplied, setPromoApplied] = useState(false);
-  const [promoError, setPromoError] = useState('');
   const [showOrderNote, setShowOrderNote] = useState(false);
   const [orderNote, setOrderNote] = useState('');
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
-  const discountAmount = promoApplied ? Math.round(subtotal * 0.10) : 0;
   const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - subtotal);
   const freeShippingProgress = Math.min(100, Math.round((subtotal / BRAND_INFO.freeShippingThreshold) * 100));
-  const finalTotal = Math.max(0, subtotal - discountAmount);
-
-  const handleApplyPromo = (e) => {
-    e.preventDefault();
-    const code = promoCode.trim().toUpperCase();
-    if (code === 'HOUSE10' || code === 'NINA10' || code === 'WELCOME10') {
-      setPromoApplied(true);
-      setPromoError('');
-    } else if (code) {
-      setPromoError('Invalid discount code. Please check and try again.');
-    }
-  };
-
-  const handleRemovePromo = () => {
-    setPromoApplied(false);
-    setPromoCode('');
-    setPromoError('');
-  };
+  const finalTotal = subtotal;
 
   return (
     <>
@@ -394,16 +373,19 @@ export default function CartDrawer({
                   value={orderNote}
                   onChange={(e) => setOrderNote(e.target.value)}
                   placeholder="e.g. Please pluck hairline slightly deeper on left temple, head circumference: 22.5 inches."
+                  className="cart-order-note-textarea"
                   style={{
                     width: '100%',
                     marginTop: '6px',
                     padding: '8px 10px',
                     borderRadius: '8px',
                     border: '1px solid var(--color-border)',
-                    fontSize: '11.5px',
+                    fontSize: '11px',
                     fontFamily: 'var(--font-sans)',
                     boxSizing: 'border-box',
-                    outline: 'none'
+                    outline: 'none',
+                    resize: 'none',
+                    lineHeight: '1.4'
                   }}
                 />
               )}
@@ -418,81 +400,12 @@ export default function CartDrawer({
             borderTop: '1px solid var(--color-border)',
             flexShrink: 0
           }}>
-            {/* Privilege / Promo Code Form */}
-            {!promoApplied ? (
-              <form onSubmit={handleApplyPromo} style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
-                <input
-                  type="text"
-                  value={promoCode}
-                  onChange={(e) => {
-                    setPromoCode(e.target.value);
-                    setPromoError('');
-                  }}
-                  placeholder="Discount code"
-                  style={{
-                    flexGrow: 1,
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    border: promoError ? '1px solid #D32F2F' : '1px solid var(--color-border)',
-                    fontSize: '11px',
-                    outline: 'none',
-                    backgroundColor: '#FFFFFF'
-                  }}
-                />
-                <button
-                  type="submit"
-                  className="btn-outline-editorial"
-                  style={{ padding: '8px 14px', fontSize: '11px', whiteSpace: 'nowrap' }}
-                >
-                  Apply
-                </button>
-              </form>
-            ) : (
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                backgroundColor: '#EBF7EE',
-                border: '1px solid #C3E6CB',
-                marginBottom: '12px',
-                fontSize: '11.5px',
-                color: '#1E7E34'
-              }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <Tag size={12} />
-                  <span>Code <strong>{promoCode}</strong> applied (10% off)</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={handleRemovePromo}
-                  style={{ background: 'none', border: 'none', color: '#1E7E34', cursor: 'pointer', padding: 0, fontSize: '11px', textDecoration: 'underline' }}
-                >
-                  Remove
-                </button>
-              </div>
-            )}
-
-            {promoError && (
-              <p style={{ margin: '-8px 0 10px', fontSize: '11px', color: '#D32F2F' }}>
-                {promoError}
-              </p>
-            )}
-
             {/* Financial Summary */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
                 <span>Subtotal</span>
                 <span>£{subtotal}</span>
               </div>
-
-              {promoApplied && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#1E7E34' }}>
-                  <span>Discount (10%)</span>
-                  <span>−£{discountAmount}</span>
-                </div>
-              )}
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
                 <span>UK Shipping</span>
@@ -524,63 +437,69 @@ export default function CartDrawer({
               onClick={() => {
                 if (onProceedToCheckout) {
                   onProceedToCheckout({
-                    discountAmount,
-                    promoCode: promoApplied ? promoCode : null,
+                    discountAmount: 0,
+                    promoCode: null,
                     orderNote
                   });
                 }
               }}
             >
-              <span>Proceed to Secure Checkout</span>
+              <span>Proceed to Checkout</span>
               <ArrowRight size={16} />
             </button>
 
-            {/* Accepted Cards & Payment Icons */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {/* Accepted Cards & Payment Icons - Fits on one line even on mobile */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '12px', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap', justifyContent: 'center', width: '100%', overflowX: 'auto', scrollbarWidth: 'none' }}>
                 <span style={{ 
                   display: 'inline-flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  padding: '3px 7px', 
+                  padding: '2.5px 5px', 
                   borderRadius: '4px', 
                   border: '1px solid #D8DFE8', 
                   backgroundColor: '#FFFFFF', 
-                  fontSize: '10px', 
+                  fontSize: '9.5px', 
                   fontWeight: 800, 
                   letterSpacing: '0.04em',
-                  color: '#1A1F71'
+                  color: '#1A1F71',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}>
                   VISA
                 </span>
                 <span style={{ 
                   display: 'inline-flex', 
                   alignItems: 'center', 
-                  gap: '3px',
-                  padding: '3px 7px', 
+                  gap: '2px',
+                  padding: '2.5px 5px', 
                   borderRadius: '4px', 
                   border: '1px solid #E8DBD0', 
                   backgroundColor: '#FFFFFF', 
-                  fontSize: '10px', 
+                  fontSize: '9.5px', 
                   fontWeight: 700,
-                  color: '#241C19'
+                  color: '#241C19',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#EB001B', display: 'inline-block' }} />
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F79E1B', display: 'inline-block', marginLeft: '-5px' }} />
-                  <span style={{ marginLeft: '2px' }}>Mastercard</span>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#EB001B', display: 'inline-block' }} />
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#F79E1B', display: 'inline-block', marginLeft: '-4px' }} />
+                  <span style={{ marginLeft: '1px' }}>MC</span>
                 </span>
                 <span style={{ 
                   display: 'inline-flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  padding: '3px 7px', 
+                  padding: '2.5px 5px', 
                   borderRadius: '4px', 
                   border: '1px solid #C7DFEE', 
                   backgroundColor: '#FFFFFF', 
-                  fontSize: '10px', 
+                  fontSize: '9.5px', 
                   fontWeight: 800, 
                   letterSpacing: '0.04em',
-                  color: '#006FCF'
+                  color: '#006FCF',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}>
                   AMEX
                 </span>
@@ -588,14 +507,16 @@ export default function CartDrawer({
                   display: 'inline-flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  padding: '3px 7px', 
+                  padding: '2.5px 5px', 
                   borderRadius: '4px', 
                   border: '1px solid #FFD0DC', 
                   backgroundColor: '#FFB3C7', 
-                  fontSize: '10px', 
+                  fontSize: '9.5px', 
                   fontWeight: 800, 
                   letterSpacing: '0.02em',
-                  color: '#0A0A0A'
+                  color: '#0A0A0A',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}>
                   Klarna.
                 </span>
@@ -603,13 +524,15 @@ export default function CartDrawer({
                   display: 'inline-flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  padding: '3px 8px', 
+                  padding: '2.5px 6px', 
                   borderRadius: '4px', 
                   border: '1px solid #000000', 
                   backgroundColor: '#000000', 
-                  lineHeight: 1
+                  lineHeight: 1,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}>
-                  <svg width="28" height="12" viewBox="13.5 19.5 93 41" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block' }}>
+                  <svg width="24" height="11" viewBox="13.5 19.5 93 41" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block' }}>
                     <path d="M31.7358 25.6955C32.8058 24.3572 33.5319 22.5603 33.3404 20.724C31.7741 20.8019 29.8627 21.7573 28.7562 23.0967C27.7626 24.2436 26.8832 26.1158 27.1124 27.8751C28.8707 28.0276 30.6273 26.9962 31.7358 25.6955Z" fill="#FFFFFF"/>
                     <path d="M33.3204 28.2186C30.7671 28.0665 28.5961 29.6678 27.3767 29.6678C26.1567 29.6678 24.2894 28.2952 22.2698 28.3322C19.6412 28.3708 17.2022 29.8571 15.8682 32.2209C13.1246 36.9497 15.1442 43.9642 17.8122 47.8155C19.1079 49.7209 20.6694 51.8189 22.7269 51.7435C24.6709 51.6672 25.4328 50.4847 27.7958 50.4847C30.1571 50.4847 30.8435 51.7435 32.9013 51.7054C35.0353 51.6672 36.3695 49.799 37.6651 47.8918C39.1515 45.7198 39.7599 43.6225 39.7982 43.5073C39.7599 43.4692 35.6832 41.9053 35.6454 37.2158C35.6069 33.2892 38.8461 31.4215 38.9985 31.3057C37.1694 28.6003 34.3113 28.2952 33.3204 28.2186Z" fill="#FFFFFF"/>
                     <path d="M55.5533 22.9046C61.103 22.9046 64.9675 26.7301 64.9675 32.2997C64.9675 37.8892 61.0235 41.7345 55.4142 41.7345H49.2696V51.5062H44.8301V22.9046L55.5533 22.9046ZM49.2695 38.0081H54.3635C58.2288 38.0081 60.4286 35.9271 60.4286 32.3196C60.4286 28.7124 58.2288 26.6509 54.3834 26.6509H49.2695V38.0081Z" fill="#FFFFFF"/>
@@ -621,13 +544,15 @@ export default function CartDrawer({
                   display: 'inline-flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  padding: '3px 8px', 
+                  padding: '2.5px 6px', 
                   borderRadius: '4px', 
                   border: '1px solid #D8DFE8', 
                   backgroundColor: '#FFFFFF', 
-                  lineHeight: 1
+                  lineHeight: 1,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}>
-                  <svg width="29" height="12" viewBox="14 20.5 92 38" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block' }}>
+                  <svg width="25" height="11" viewBox="14 20.5 92 38" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block' }}>
                     <path d="M44.1722 36.8948C44.1722 35.8542 44.0842 34.8488 43.917 33.8896H29.9602V39.5832H37.955C37.6239 41.4215 36.5557 43.0445 34.9982 44.0756V47.7716H39.77C42.564 45.1976 44.1722 41.3916 44.1722 36.8948Z" fill="#4285F4"/>
                     <path d="M29.9603 51.34C33.9555 51.34 37.3171 50.031 39.7701 47.7738L34.9983 44.0756C33.6717 44.9688 31.9623 45.4902 29.9603 45.4902C26.1015 45.4902 22.8235 42.8898 21.6531 39.3874H16.7383V43.1956C19.2527 48.1909 24.3678 51.3425 29.9603 51.3422" fill="#34A853"/>
                     <path d="M21.6529 39.3874C21.0355 37.5518 21.0355 35.5646 21.6529 33.729V29.9208H16.7381C15.6991 31.9782 15.1587 34.2512 15.1606 36.556C15.1606 38.943 15.7327 41.198 16.7381 43.1934L21.6529 39.3852V39.3874Z" fill="#FABB05"/>

@@ -210,7 +210,7 @@ export default function UnboxingExperience() {
                     <span className="cert-stamp">UK STUDIO VERIFIED • NO. 0842</span>
                   </div>
 
-                  {/* Item 3: Complimentary Pure Silk Scarf & Care Essentials */}
+                  {/* Item 3: Free Pure Silk Scarf & Care Essentials */}
                   <div 
                     className={`reveal-accessory-card ${activeHotspot === 'silk' ? 'active-hotspot' : ''}`}
                     onClick={() => setActiveHotspot(activeHotspot === 'silk' ? null : 'silk')}
@@ -223,7 +223,7 @@ export default function UnboxingExperience() {
                       />
                     </div>
                     <div className="reveal-acc-info">
-                      <span className="acc-tag">COMPLIMENTARY INCLUSION</span>
+                      <span className="acc-tag">FREE INCLUSION</span>
                       <h5 className="acc-title">22-Momme Mulberry Silk Scarf</h5>
                       <p className="acc-desc">Protects melted hairline while sleeping &amp; lounging</p>
                     </div>

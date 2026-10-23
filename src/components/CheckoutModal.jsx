@@ -209,130 +209,769 @@ function PaycoBadge() {
   );
 }
 
-/** Express 1-Tap Checkout Bar Component (Clean, Minimalist, 4 Wallets) */
-function ExpressCheckoutBar({ onExpressPay, isSubmitting }) {
-  return (
-    <div style={{
-      backgroundColor: '#FAF8F5',
-      border: '1.5px solid rgba(197, 160, 89, 0.4)',
-      borderRadius: '14px',
-      padding: '16px 18px',
-      marginBottom: '18px',
-      textAlign: 'center',
-      boxShadow: '0 4px 18px rgba(36, 28, 25, 0.04)',
-      boxSizing: 'border-box'
-    }}>
-      <div style={{
-        fontSize: '11px',
-        fontWeight: 700,
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        color: 'var(--color-deep-espresso)',
-        marginBottom: '12px'
-      }}>
-        Express 1-Tap Checkout
-      </div>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
-        gap: '8px'
-      }}>
-        {/* Apple Pay Button */}
-        <button
-          type="button"
-          onClick={() => onExpressPay('apple_pay')}
-          disabled={isSubmitting}
-          title="Pay with Apple Pay"
-          style={{
-            height: '42px',
-            backgroundColor: '#000000',
-            color: '#FFFFFF',
-            border: 'none',
-            borderRadius: '9px',
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 10px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.16)'
-          }}
-        >
-          <ApplePayLogo height={19} color="#FFFFFF" />
-        </button>
-
-        {/* Google Pay Button */}
-        <button
-          type="button"
-          onClick={() => onExpressPay('google_pay')}
-          disabled={isSubmitting}
-          title="Pay with Google Pay"
-          style={{
-            height: '42px',
-            backgroundColor: '#FFFFFF',
-            color: '#1C1614',
-            border: '1.5px solid #D8DFE8',
-            borderRadius: '9px',
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 10px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)'
-          }}
-        >
-          <GooglePayLogo height={18} />
-        </button>
-
-        {/* Revolut Pay Button */}
-        <button
-          type="button"
-          onClick={() => onExpressPay('revolut')}
-          disabled={isSubmitting}
-          title="Pay with Revolut Pay"
-          style={{
-            height: '42px',
-            backgroundColor: '#000000',
-            color: '#FFFFFF',
-            border: 'none',
-            borderRadius: '9px',
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 8px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.16)'
-          }}
-        >
-          <RevolutPayBadge />
-        </button>
-
-        {/* Amazon Pay Button */}
-        <button
-          type="button"
-          onClick={() => onExpressPay('amazon_pay')}
-          disabled={isSubmitting}
-          title="Pay with Amazon Pay"
-          style={{
-            height: '42px',
-            backgroundColor: '#FFFFFF',
-            color: '#131921',
-            border: '1.5px solid #D8DFE8',
-            borderRadius: '9px',
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 8px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)'
-          }}
-        >
-          <AmazonPayBadge />
-        </button>
-      </div>
-    </div>
-  );
-}
+/**
+ * Official Store Delivery Destinations & Shipping Rates Configuration
+ * Location determines courier availability, timeframes, pricing, and eligible payment methods.
+ */
+export const SUPPORTED_DESTINATIONS = [
+  {
+    code: 'GB',
+    name: 'United Kingdom',
+    flag: '🇬🇧',
+    currency: 'GBP',
+    phonePrefix: '+44',
+    phonePlaceholder: '+44 7776 000000',
+    postalCodeLabel: 'Postcode',
+    postalCodePlaceholder: 'W1J 8AJ',
+    postalCodeRequired: true,
+    stateLabel: 'County (Optional)',
+    statePlaceholder: 'Greater London',
+    stateRequired: false,
+    region: 'United Kingdom',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'standard',
+        name: 'Royal Mail 48 Tracked',
+        carrier: 'Royal Mail',
+        timeframe: '2 – 4 working days',
+        priceGbp: 0,
+        notes: 'Free luxury insured delivery • Signature required'
+      },
+      {
+        id: 'express',
+        name: 'Royal Mail Special Delivery Guaranteed (1pm)',
+        carrier: 'Royal Mail',
+        timeframe: 'Next business day (by 1pm)',
+        priceGbp: 8.50,
+        notes: 'Guaranteed next business day by 1:00 PM • Priority dispatch'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'amazon_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna']
+  },
+  {
+    code: 'US',
+    name: 'United States',
+    flag: '🇺🇸',
+    currency: 'USD',
+    phonePrefix: '+1',
+    phonePlaceholder: '+1 (555) 000-0000',
+    postalCodeLabel: 'ZIP Code',
+    postalCodePlaceholder: '10001',
+    postalCodeRequired: true,
+    stateLabel: 'State',
+    statePlaceholder: 'New York',
+    stateRequired: true,
+    region: 'North America',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Tracked & Signed',
+        carrier: 'Royal Mail / USPS',
+        timeframe: '7 – 10 working days',
+        priceGbp: 16.00,
+        notes: 'Transatlantic insured air freight • Fully tracked to your door'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Worldwide Priority Air',
+        carrier: 'DHL Express',
+        timeframe: '3 – 5 working days',
+        priceGbp: 32.00,
+        notes: 'Fast express courier • Priority customs clearance'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'amazon_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
+  },
+  {
+    code: 'NG',
+    name: 'Nigeria',
+    flag: '🇳🇬',
+    currency: 'NGN',
+    phonePrefix: '+234',
+    phonePlaceholder: '+234 803 000 0000',
+    postalCodeLabel: 'Postal Code (Optional)',
+    postalCodePlaceholder: '101233',
+    postalCodeRequired: false,
+    stateLabel: 'State / Region',
+    statePlaceholder: 'Lagos / Abuja FCT',
+    stateRequired: true,
+    region: 'West Africa',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Signed',
+        carrier: 'Royal Mail / NIPOST',
+        timeframe: '7 – 12 working days',
+        priceGbp: 18.00,
+        notes: 'Insured air parcel • Requires signature on arrival'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Nigeria Priority Air',
+        carrier: 'DHL Express',
+        timeframe: '3 – 5 working days',
+        priceGbp: 34.00,
+        notes: 'Direct express flight to Lagos & Abuja • Door-to-door concierge'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
+  },
+  {
+    code: 'CA',
+    name: 'Canada',
+    flag: '🇨🇦',
+    currency: 'CAD',
+    phonePrefix: '+1',
+    phonePlaceholder: '+1 (416) 000-0000',
+    postalCodeLabel: 'Postal Code',
+    postalCodePlaceholder: 'M5V 2T6',
+    postalCodeRequired: true,
+    stateLabel: 'Province',
+    statePlaceholder: 'Ontario',
+    stateRequired: true,
+    region: 'North America',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Tracked & Signed',
+        carrier: 'Royal Mail / Canada Post',
+        timeframe: '7 – 10 working days',
+        priceGbp: 16.00,
+        notes: 'Insured transatlantic air delivery • Tracked & signed'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Worldwide Priority',
+        carrier: 'DHL Express',
+        timeframe: '3 – 5 working days',
+        priceGbp: 32.00,
+        notes: 'Priority courier to Canadian provinces'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'amazon_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
+  },
+  {
+    code: 'GH',
+    name: 'Ghana',
+    flag: '🇬🇭',
+    currency: 'GHS',
+    phonePrefix: '+233',
+    phonePlaceholder: '+233 24 000 0000',
+    postalCodeLabel: 'Digital Address / Postcode (Optional)',
+    postalCodePlaceholder: 'GA-183-9302',
+    postalCodeRequired: false,
+    stateLabel: 'Region',
+    statePlaceholder: 'Greater Accra',
+    stateRequired: true,
+    region: 'West Africa',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Signed',
+        carrier: 'Royal Mail / Ghana Post',
+        timeframe: '7 – 12 working days',
+        priceGbp: 18.00,
+        notes: 'Insured international air dispatch'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Worldwide Air Cargo',
+        carrier: 'DHL Express',
+        timeframe: '3 – 5 working days',
+        priceGbp: 34.00,
+        notes: 'Express courier delivery to Accra & nationwide'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
+  },
+  {
+    code: 'AE',
+    name: 'United Arab Emirates',
+    flag: '🇦🇪',
+    currency: 'AED',
+    phonePrefix: '+971',
+    phonePlaceholder: '+971 50 000 0000',
+    postalCodeLabel: 'Makani / P.O. Box (Optional)',
+    postalCodePlaceholder: 'P.O. Box / Makani',
+    postalCodeRequired: false,
+    stateLabel: 'Emirate',
+    statePlaceholder: 'Dubai / Abu Dhabi',
+    stateRequired: true,
+    region: 'Middle East',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Tracked',
+        carrier: 'Royal Mail / Emirates Post',
+        timeframe: '6 – 9 working days',
+        priceGbp: 18.00,
+        notes: 'Insured international parcel to UAE'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Gulf VIP Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 4 working days',
+        priceGbp: 34.00,
+        notes: 'Direct priority air courier to residence or hotel'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
+  },
+  {
+    code: 'FR',
+    name: 'France',
+    flag: '🇫🇷',
+    currency: 'EUR',
+    phonePrefix: '+33',
+    phonePlaceholder: '+33 6 00 00 00 00',
+    postalCodeLabel: 'Code Postal',
+    postalCodePlaceholder: '75008',
+    postalCodeRequired: true,
+    stateLabel: 'Région (Optionnel)',
+    statePlaceholder: 'Île-de-France',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / La Poste',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European parcel with tracking'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Next-flight priority courier across Europe'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
+  },
+  {
+    code: 'DE',
+    name: 'Germany',
+    flag: '🇩🇪',
+    currency: 'EUR',
+    phonePrefix: '+49',
+    phonePlaceholder: '+49 151 00000000',
+    postalCodeLabel: 'Postleitzahl',
+    postalCodePlaceholder: '10115',
+    postalCodeRequired: true,
+    stateLabel: 'Bundesland (Optional)',
+    statePlaceholder: 'Berlin / Bayern',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / Deutsche Post',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Priority courier to German destinations'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut']
+  },
+  {
+    code: 'IE',
+    name: 'Ireland',
+    flag: '🇮🇪',
+    currency: 'EUR',
+    phonePrefix: '+353',
+    phonePlaceholder: '+353 85 000 0000',
+    postalCodeLabel: 'Eircode / Postcode',
+    postalCodePlaceholder: 'D02 X285',
+    postalCodeRequired: true,
+    stateLabel: 'County',
+    statePlaceholder: 'Dublin',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / An Post',
+        timeframe: '3 – 5 working days',
+        priceGbp: 12.00,
+        notes: 'Fast tracked cross-Irish Sea delivery'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '1 – 2 working days',
+        priceGbp: 22.00,
+        notes: 'Express 24-48h courier delivery'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
+  },
+  {
+    code: 'AU',
+    name: 'Australia',
+    flag: '🇦🇺',
+    currency: 'AUD',
+    phonePrefix: '+61',
+    phonePlaceholder: '+61 400 000 000',
+    postalCodeLabel: 'Postcode',
+    postalCodePlaceholder: '2000',
+    postalCodeRequired: true,
+    stateLabel: 'State',
+    statePlaceholder: 'NSW / Victoria',
+    stateRequired: true,
+    region: 'Asia Pacific',
+    isPopular: true,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Tracked',
+        carrier: 'Royal Mail / Australia Post',
+        timeframe: '7 – 12 working days',
+        priceGbp: 18.00,
+        notes: 'Insured international air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Worldwide Priority',
+        carrier: 'DHL Express',
+        timeframe: '3 – 6 working days',
+        priceGbp: 36.00,
+        notes: 'Express courier directly to Australia'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
+  },
+  {
+    code: 'NL',
+    name: 'Netherlands',
+    flag: '🇳🇱',
+    currency: 'EUR',
+    phonePrefix: '+31',
+    phonePlaceholder: '+31 6 00000000',
+    postalCodeLabel: 'Postcode',
+    postalCodePlaceholder: '1012 JS',
+    postalCodeRequired: true,
+    stateLabel: 'Provincie (Optioneel)',
+    statePlaceholder: 'Noord-Holland',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / PostNL',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Priority air courier'
+      }
+    ],
+    eligiblePaymentMethods: ['ideal', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['ideal', 'card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'BE',
+    name: 'Belgium',
+    flag: '🇧🇪',
+    currency: 'EUR',
+    phonePrefix: '+32',
+    phonePlaceholder: '+32 470 00 00 00',
+    postalCodeLabel: 'Code Postal / Postcode',
+    postalCodePlaceholder: '1000',
+    postalCodeRequired: true,
+    stateLabel: 'Province (Optionnel)',
+    statePlaceholder: 'Bruxelles',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / bpost',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Priority express courier'
+      }
+    ],
+    eligiblePaymentMethods: ['bancontact', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['bancontact', 'card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'PL',
+    name: 'Poland',
+    flag: '🇵🇱',
+    currency: 'PLN',
+    phonePrefix: '+48',
+    phonePlaceholder: '+48 500 000 000',
+    postalCodeLabel: 'Kod Pocztowy',
+    postalCodePlaceholder: '00-001',
+    postalCodeRequired: true,
+    stateLabel: 'Województwo (Opcjonalnie)',
+    statePlaceholder: 'Mazowieckie',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / Poczta Polska',
+        timeframe: '5 – 8 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Express courier delivery'
+      }
+    ],
+    eligiblePaymentMethods: ['blik', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['blik', 'card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'PT',
+    name: 'Portugal',
+    flag: '🇵🇹',
+    currency: 'EUR',
+    phonePrefix: '+351',
+    phonePlaceholder: '+351 910 000 000',
+    postalCodeLabel: 'Código Postal',
+    postalCodePlaceholder: '1000-001',
+    postalCodeRequired: true,
+    stateLabel: 'Distrito (Opcional)',
+    statePlaceholder: 'Lisboa',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / CTT',
+        timeframe: '5 – 8 working days',
+        priceGbp: 14.00,
+        notes: 'Insured continental delivery'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Direct courier delivery'
+      }
+    ],
+    eligiblePaymentMethods: ['mbway', 'card', 'apple_pay', 'google_pay', 'revolut', 'bank'],
+    primaryPaymentMethods: ['mbway', 'card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'AT',
+    name: 'Austria',
+    flag: '🇦🇹',
+    currency: 'EUR',
+    phonePrefix: '+43',
+    phonePlaceholder: '+43 664 0000000',
+    postalCodeLabel: 'Postleitzahl',
+    postalCodePlaceholder: '1010',
+    postalCodeRequired: true,
+    stateLabel: 'Bundesland (Optional)',
+    statePlaceholder: 'Wien',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / Österreichische Post',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Express courier delivery'
+      }
+    ],
+    eligiblePaymentMethods: ['eps', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['eps', 'card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'IT',
+    name: 'Italy',
+    flag: '🇮🇹',
+    currency: 'EUR',
+    phonePrefix: '+39',
+    phonePlaceholder: '+39 340 0000000',
+    postalCodeLabel: 'CAP',
+    postalCodePlaceholder: '20121',
+    postalCodeRequired: true,
+    stateLabel: 'Provincia (Opzionale)',
+    statePlaceholder: 'Milano',
+    stateRequired: false,
+    region: 'Europe (EU)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / Poste Italiane',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Europe Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Express courier delivery'
+      }
+    ],
+    eligiblePaymentMethods: ['satispay', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['satispay', 'card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'KR',
+    name: 'South Korea',
+    flag: '🇰🇷',
+    currency: 'KRW',
+    phonePrefix: '+82',
+    phonePlaceholder: '+82 10 0000 0000',
+    postalCodeLabel: 'Postal Code (우편번호)',
+    postalCodePlaceholder: '04524',
+    postalCodeRequired: true,
+    stateLabel: 'City / Province (시/도)',
+    statePlaceholder: 'Seoul',
+    stateRequired: true,
+    region: 'East Asia',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Tracked',
+        carrier: 'Royal Mail / Korea Post',
+        timeframe: '7 – 12 working days',
+        priceGbp: 18.00,
+        notes: 'Insured air parcel to Korea'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Worldwide Air',
+        carrier: 'DHL Express',
+        timeframe: '3 – 5 working days',
+        priceGbp: 36.00,
+        notes: 'Priority express courier'
+      }
+    ],
+    eligiblePaymentMethods: ['kakao_pay', 'naver_pay', 'samsung_pay', 'payco', 'card', 'apple_pay', 'bank'],
+    primaryPaymentMethods: ['kakao_pay', 'naver_pay', 'card', 'apple_pay']
+  },
+  {
+    code: 'JP',
+    name: 'Japan',
+    flag: '🇯🇵',
+    currency: 'JPY',
+    phonePrefix: '+81',
+    phonePlaceholder: '+81 90 0000 0000',
+    postalCodeLabel: 'Postal Code (〒)',
+    postalCodePlaceholder: '100-0001',
+    postalCodeRequired: true,
+    stateLabel: 'Prefecture (都道府県)',
+    statePlaceholder: 'Tokyo',
+    stateRequired: true,
+    region: 'East Asia',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Tracked',
+        carrier: 'Royal Mail / Japan Post',
+        timeframe: '7 – 12 working days',
+        priceGbp: 18.00,
+        notes: 'Insured international parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Tokyo Priority',
+        carrier: 'DHL Express',
+        timeframe: '3 – 5 working days',
+        priceGbp: 36.00,
+        notes: 'Door-to-door express courier'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'ZA',
+    name: 'South Africa',
+    flag: '🇿🇦',
+    currency: 'ZAR',
+    phonePrefix: '+27',
+    phonePlaceholder: '+27 82 000 0000',
+    postalCodeLabel: 'Postal Code',
+    postalCodePlaceholder: '2001',
+    postalCodeRequired: true,
+    stateLabel: 'Province',
+    statePlaceholder: 'Gauteng',
+    stateRequired: true,
+    region: 'Southern Africa',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Signed',
+        carrier: 'Royal Mail / SAPO',
+        timeframe: '8 – 14 working days',
+        priceGbp: 18.00,
+        notes: 'Insured international air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express South Africa Priority',
+        carrier: 'DHL Express',
+        timeframe: '3 – 6 working days',
+        priceGbp: 36.00,
+        notes: 'Priority courier to Johannesburg, Cape Town, etc.'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay']
+  },
+  {
+    code: 'CH',
+    name: 'Switzerland',
+    flag: '🇨🇭',
+    currency: 'CHF',
+    phonePrefix: '+41',
+    phonePlaceholder: '+41 79 000 00 00',
+    postalCodeLabel: 'PLZ / NPA',
+    postalCodePlaceholder: '8001',
+    postalCodeRequired: true,
+    stateLabel: 'Kanton / Canton (Optionnel)',
+    statePlaceholder: 'Zürich / Genève',
+    stateRequired: false,
+    region: 'Europe (Non-EU)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / Swiss Post',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Switzerland Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Express courier delivery'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
+  },
+  {
+    code: 'SE',
+    name: 'Sweden',
+    flag: '🇸🇪',
+    currency: 'SEK',
+    phonePrefix: '+46',
+    phonePlaceholder: '+46 70 000 00 00',
+    postalCodeLabel: 'Postnummer',
+    postalCodePlaceholder: '111 22',
+    postalCodeRequired: true,
+    stateLabel: 'Län (Valfritt)',
+    statePlaceholder: 'Stockholm',
+    stateRequired: false,
+    region: 'Europe (Nordics)',
+    isPopular: false,
+    shippingOptions: [
+      {
+        id: 'intl_standard',
+        name: 'Royal Mail International Europe Tracked',
+        carrier: 'Royal Mail / PostNord',
+        timeframe: '4 – 7 working days',
+        priceGbp: 14.00,
+        notes: 'Insured European air parcel'
+      },
+      {
+        id: 'intl_express',
+        name: 'DHL Express Nordics Priority',
+        carrier: 'DHL Express',
+        timeframe: '2 – 3 working days',
+        priceGbp: 26.00,
+        notes: 'Express courier delivery'
+      }
+    ],
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut', 'bank'],
+    primaryPaymentMethods: ['klarna', 'card', 'apple_pay', 'google_pay']
+  }
+];
 
 const DEFAULT_SAVED_ADDRESSES = [
   {
@@ -344,6 +983,8 @@ const DEFAULT_SAVED_ADDRESSES = [
     state: 'Greater London',
     postalCode: 'W1J 8AJ',
     phone: '+44 7776 759731',
+    countryCode: 'GB',
+    country: 'United Kingdom',
     isDefault: false
   },
   {
@@ -355,6 +996,8 @@ const DEFAULT_SAVED_ADDRESSES = [
     state: 'Greater London',
     postalCode: 'SW1Y 4JU',
     phone: '+44 7776 759731',
+    countryCode: 'GB',
+    country: 'United Kingdom',
     isDefault: false
   },
   {
@@ -366,6 +1009,8 @@ const DEFAULT_SAVED_ADDRESSES = [
     state: 'Greater Manchester',
     postalCode: 'M20 2EA',
     phone: '+44 7780 123456',
+    countryCode: 'GB',
+    country: 'United Kingdom',
     isDefault: false
   }
 ];
@@ -450,6 +1095,31 @@ export default function CheckoutModal({
   const [saveAsLabel, setSaveAsLabel] = useState('Home');
   const [showSaveAddressPrompt, setShowSaveAddressPrompt] = useState(false);
 
+  // Location-First Destination Selection with session restoration
+  const [selectedCountryCode, setSelectedCountryCode] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('house_of_nina_checkout_destination');
+      if (saved && SUPPORTED_DESTINATIONS.some(d => d.code === saved)) {
+        return saved;
+      }
+    } catch (e) {}
+    return 'GB'; // United Kingdom as default destination
+  });
+
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [showMorePaymentOptions, setShowMorePaymentOptions] = useState(false);
+
+  // Sync selected destination to session storage
+  useEffect(() => {
+    try {
+      if (selectedCountryCode) {
+        sessionStorage.setItem('house_of_nina_checkout_destination', selectedCountryCode);
+      } else {
+        sessionStorage.removeItem('house_of_nina_checkout_destination');
+      }
+    } catch {}
+  }, [selectedCountryCode]);
+
   // Form State - Nothing auto-filled or pre-selected
   const [formData, setFormData] = useState({
     email: "",
@@ -460,18 +1130,16 @@ export default function CheckoutModal({
     city: "",
     state: "",
     postalCode: "",
-    deliveryMethod: "standard", // standard | express
+    deliveryMethod: "standard", // standard | express | intl_standard | intl_express
     paymentMethod: "", // Empty by default: user chooses method themselves
-    currency: "GBP", // GBP | NGN
+    currency: "GBP", // Synced to destination currency
     cardName: "",
     cardNumber: "",
     cardExpiry: "",
     cardCvc: ""
   });
 
-  // Billing currency dropdown drawer and search state
-  const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
-  const [currencySearch, setCurrencySearch] = useState('');
+
 
   // Auxiliary states
   const [applePayMode, setApplePayMode] = useState('ready');
@@ -497,9 +1165,6 @@ export default function CheckoutModal({
 
   const [saveCardForFuture, setSaveCardForFuture] = useState(true);
 
-  // Payment categories filter: 'all' | 'uk_global' | 'europe' | 'asia' | 'bank'
-  const [paymentCategory, setPaymentCategory] = useState('all');
-
   // Regional Payment States
   const [revolutMode, setRevolutMode] = useState('app');
   const [revolutData, setRevolutData] = useState({ phone: '', cardNumber: '', cardExpiry: '', cardCvc: '' });
@@ -510,7 +1175,7 @@ export default function CheckoutModal({
   const [satispayPhone, setSatispayPhone] = useState('');
   const [koreanWalletData, setKoreanWalletData] = useState({ phone: '', provider: 'kakao' });
 
-  if (!isOpen) return null;
+
 
   const standardInputStyle = {
     width: '100%',
@@ -526,8 +1191,9 @@ export default function CheckoutModal({
     transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
   };
 
-  // Selected Currency Details from Supported Currencies List
-  const currentCurrency = STRIPE_SUPPORTED_CURRENCIES.find(c => c.code === (formData.currency || 'GBP')) || STRIPE_SUPPORTED_CURRENCIES[0];
+  // Active Destination and Currency Resolution
+  const currentDestination = SUPPORTED_DESTINATIONS.find(d => d.code === selectedCountryCode) || null;
+  const currentCurrency = STRIPE_SUPPORTED_CURRENCIES.find(c => c.code === (formData.currency || (currentDestination?.currency || 'GBP'))) || STRIPE_SUPPORTED_CURRENCIES[0];
   const currencySymbol = currentCurrency.symbol;
   const rate = currentCurrency.rate;
 
@@ -540,41 +1206,262 @@ export default function CheckoutModal({
   const rawDiscount = checkoutData.discountAmount || 0;
   const discount = rawDiscount * rate;
 
-  const standardShippingCost = 0; // Complimentary standard delivery
-  const expressShippingCost = Math.round(8.5 * rate); // Royal Mail Special Delivery Guaranteed by 1pm
-  const shippingCost = formData.deliveryMethod === 'express'
-    ? expressShippingCost
-    : (formData.deliveryMethod === 'standard' ? standardShippingCost : 0);
+  // Real Shipping Rates based on selected destination
+  const availableShippingOptions = currentDestination?.shippingOptions || [];
+  const selectedShippingOption = availableShippingOptions.find(o => o.id === formData.deliveryMethod) || availableShippingOptions[0] || null;
 
-  const total = Math.max(0, subtotal - discount + shippingCost);
+  const shippingCost = (selectedCountryCode && selectedShippingOption)
+    ? Math.round(selectedShippingOption.priceGbp * rate)
+    : 0;
+
+  const total = Math.max(0, subtotal - discount + (selectedCountryCode ? shippingCost : 0));
 
   const formatPrice = (val) => {
     const decimals = ['JPY', 'KRW', 'VND', 'IDR', 'HUF'].includes(formData.currency) ? 0 : 2;
     return `${currencySymbol}${val.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
   };
 
-  const filteredCurrencies = STRIPE_SUPPORTED_CURRENCIES.filter(c => 
-    c.code.toLowerCase().includes(currencySearch.toLowerCase()) || 
-    c.name.toLowerCase().includes(currencySearch.toLowerCase()) || 
-    c.country.toLowerCase().includes(currencySearch.toLowerCase())
+
+
+  const matchingSavedAddresses = savedAddresses.filter(a =>
+    !selectedCountryCode || a.countryCode === selectedCountryCode
   );
 
-  const shouldShowMethod = (m) => {
-    if (paymentCategory === 'all') return true;
-    if (paymentCategory === 'uk_global') {
-      return ['card', 'apple_pay', 'google_pay', 'revolut', 'amazon_pay', 'klarna'].includes(m);
+  // Address validation: required fields match selected destination requirements
+  const isContactAndAddressValid = Boolean(
+    selectedCountryCode &&
+    formData.email?.trim() &&
+    formData.email.includes('@') &&
+    formData.phone?.trim() &&
+    formData.phone.trim().length >= 6 &&
+    formData.fullName?.trim() &&
+    formData.address?.trim() &&
+    formData.city?.trim() &&
+    (!currentDestination?.postalCodeRequired || formData.postalCode?.trim()) &&
+    (!currentDestination?.stateRequired || formData.state?.trim())
+  );
+
+  const isDeliveryOptionSelected = Boolean(selectedCountryCode && formData.deliveryMethod && selectedShippingOption);
+
+  const canProceedToPayment = Boolean(selectedCountryCode && isContactAndAddressValid && isDeliveryOptionSelected);
+
+  // Dynamic Browser & Device Wallet Detection State
+  const [deviceWallets, setDeviceWallets] = useState(() => {
+    if (typeof window === 'undefined') return { applePay: false, googlePay: false };
+    const ua = window.navigator?.userAgent || '';
+    const isSafariOrApple = /Macintosh|iPhone|iPad|iPod/.test(ua) && !/Chrome|CriOS|Edg/.test(ua);
+    const isChromeOrAndroid = /Chrome|Android|Edg/.test(ua);
+    const hasNativeApplePay = Boolean(window.ApplePaySession && window.ApplePaySession.canMakePayments && window.ApplePaySession.canMakePayments());
+    const hasPaymentRequest = Boolean(window.PaymentRequest);
+
+    return {
+      applePay: hasNativeApplePay || isSafariOrApple,
+      googlePay: hasPaymentRequest || isChromeOrAndroid
+    };
+  });
+
+  // Stripe.js Dynamic Payment Method & Wallet Verification
+  useEffect(() => {
+    let isMounted = true;
+    const stripeKey = import.meta.env?.VITE_STRIPE_PUBLISHABLE_KEY;
+
+    if (window.Stripe && stripeKey && !stripeKey.includes('your_publishable_key')) {
+      try {
+        const stripe = window.Stripe(stripeKey);
+        const pr = stripe.paymentRequest({
+          country: selectedCountryCode || 'GB',
+          currency: (formData.currency || 'GBP').toLowerCase(),
+          total: {
+            label: 'House of Nina Order',
+            amount: Math.max(100, Math.round(total * 100))
+          },
+          requestPayerName: true,
+          requestPayerEmail: true
+        });
+
+        pr.canMakePayment().then(result => {
+          if (!isMounted) return;
+          if (result) {
+            setDeviceWallets({
+              applePay: Boolean(result.applePay),
+              googlePay: Boolean(result.googlePay)
+            });
+          }
+        }).catch(() => {});
+      } catch (e) {}
+    } else if (window.ApplePaySession && typeof window.ApplePaySession.canMakePayments === 'function') {
+      try {
+        const canApple = window.ApplePaySession.canMakePayments();
+        if (isMounted) {
+          setDeviceWallets(prev => ({ ...prev, applePay: Boolean(canApple) }));
+        }
+      } catch (e) {}
     }
-    if (paymentCategory === 'europe') {
-      return ['revolut', 'bancontact', 'ideal', 'blik', 'mbway', 'eps', 'satispay'].includes(m);
+
+    return () => { isMounted = false; };
+  }, [selectedCountryCode, formData.currency, total]);
+
+  // Comprehensive Stripe & Transaction Payment Method Eligibility Evaluator
+  const isMethodEligible = (m) => {
+    if (!currentDestination) return false;
+    const countryCode = currentDestination.code;
+    const curr = formData.currency || currentDestination.currency || 'GBP';
+
+    switch (m) {
+      case 'card':
+        // Global credit and debit cards
+        return true;
+
+      case 'apple_pay':
+        // Device/browser support + destination capability
+        return Boolean(deviceWallets.applePay) && (currentDestination.eligiblePaymentMethods || []).includes('apple_pay');
+
+      case 'google_pay':
+        // Device/browser support + destination capability
+        return Boolean(deviceWallets.googlePay) && (currentDestination.eligiblePaymentMethods || []).includes('google_pay');
+
+      case 'klarna': {
+        // Stripe Klarna requirements: Supported countries, currencies, and minimum amount threshold
+        const klarnaCountries = ['GB', 'US', 'DE', 'FR', 'IE', 'NL', 'BE', 'AT', 'SE', 'IT', 'ES', 'PL', 'PT', 'AU', 'CA', 'CH', 'DK', 'NO', 'FI'];
+        const klarnaCurrencies = ['GBP', 'EUR', 'USD', 'CAD', 'AUD', 'SEK', 'PLN', 'CHF', 'DKK', 'NOK'];
+        const isCountryEligible = klarnaCountries.includes(countryCode);
+        const isCurrencyEligible = klarnaCurrencies.includes(curr);
+        const isAmountEligible = total >= 35;
+        return isCountryEligible && isCurrencyEligible && isAmountEligible && (currentDestination.eligiblePaymentMethods || []).includes('klarna');
+      }
+
+      case 'ideal':
+        // Netherlands only, EUR only
+        return countryCode === 'NL' && curr === 'EUR';
+
+      case 'bancontact':
+        // Belgium only, EUR only
+        return countryCode === 'BE' && curr === 'EUR';
+
+      case 'blik':
+        // Poland only, PLN or EUR
+        return countryCode === 'PL' && ['PLN', 'EUR'].includes(curr);
+
+      case 'mbway':
+        // Portugal only, EUR only
+        return countryCode === 'PT' && curr === 'EUR';
+
+      case 'eps':
+        // Austria only, EUR only
+        return countryCode === 'AT' && curr === 'EUR';
+
+      case 'satispay':
+        // Italy only, EUR only
+        return countryCode === 'IT' && curr === 'EUR';
+
+      case 'revolut':
+        // UK & EEA destinations with GBP or EUR
+        return ['GB', 'FR', 'DE', 'IE', 'IT', 'ES', 'NL', 'BE', 'AT', 'PT', 'PL', 'SE', 'CH'].includes(countryCode) && ['GBP', 'EUR'].includes(curr);
+
+      case 'amazon_pay':
+        // UK, US, Western EU with GBP, USD, EUR
+        return ['GB', 'US', 'DE', 'FR', 'IT', 'ES', 'IE', 'AT', 'BE', 'NL'].includes(countryCode) && ['GBP', 'USD', 'EUR'].includes(curr);
+
+      case 'kakao_pay':
+      case 'naver_pay':
+      case 'samsung_pay':
+      case 'payco':
+        // South Korea only with KRW or USD
+        return countryCode === 'KR' && ['KRW', 'USD'].includes(curr);
+
+      case 'bank':
+        // Direct Studio Bank Wire available globally for couture orders
+        return true;
+
+      default:
+        return (currentDestination.eligiblePaymentMethods || []).includes(m);
     }
-    if (paymentCategory === 'asia') {
-      return ['kakao_pay', 'naver_pay', 'samsung_pay', 'payco'].includes(m);
-    }
-    if (paymentCategory === 'bank') {
-      return m === 'bank';
-    }
-    return true;
   };
+
+  // Master candidate methods in evaluated priority order
+  const ALL_CANDIDATE_METHODS = [
+    'card',
+    'apple_pay',
+    'google_pay',
+    'klarna',
+    'ideal',
+    'bancontact',
+    'blik',
+    'mbway',
+    'eps',
+    'satispay',
+    'revolut',
+    'amazon_pay',
+    'kakao_pay',
+    'naver_pay',
+    'samsung_pay',
+    'payco',
+    'bank'
+  ];
+
+  // All genuinely eligible methods for current transaction
+  const allEligibleMethods = React.useMemo(() => {
+    if (!currentDestination) return [];
+    return ALL_CANDIDATE_METHODS.filter(m => isMethodEligible(m));
+  }, [currentDestination, formData.currency, total, deviceWallets]);
+
+  // Initial recommended list: short & relevant (3 to 4 methods maximum)
+  const initialMethods = React.useMemo(() => {
+    if (!currentDestination || allEligibleMethods.length === 0) return [];
+    const list = [];
+
+    // 1. Credit or debit card (Global primary)
+    if (allEligibleMethods.includes('card')) {
+      list.push('card');
+    }
+
+    // 2. Domestic dominant standard if applicable
+    const dominantLocalMap = {
+      NL: 'ideal',
+      BE: 'bancontact',
+      PL: 'blik',
+      PT: 'mbway',
+      AT: 'eps',
+      IT: 'satispay',
+      KR: 'kakao_pay'
+    };
+    const localDominant = dominantLocalMap[currentDestination.code];
+    if (localDominant && allEligibleMethods.includes(localDominant) && !list.includes(localDominant)) {
+      list.push(localDominant);
+    }
+
+    // 3. Apple Pay and/or Google Pay when supported by device/browser & eligible
+    if (deviceWallets.applePay && allEligibleMethods.includes('apple_pay') && !list.includes('apple_pay')) {
+      list.push('apple_pay');
+    }
+    if (deviceWallets.googlePay && allEligibleMethods.includes('google_pay') && !list.includes('google_pay')) {
+      list.push('google_pay');
+    }
+
+    // 4. Eligible BNPL methods such as Klarna
+    if (allEligibleMethods.includes('klarna') && !list.includes('klarna')) {
+      list.push('klarna');
+    }
+
+    // 5. If initial list is very short (e.g. international destinations without BNPL), include bank
+    if (list.length < 3 && allEligibleMethods.includes('bank') && !list.includes('bank')) {
+      list.push('bank');
+    }
+
+    return list.slice(0, 4);
+  }, [currentDestination, allEligibleMethods, deviceWallets]);
+
+  // Remaining eligible methods: strictly exclude initialMethods (zero duplicates)
+  const remainingMethods = React.useMemo(() => {
+    return allEligibleMethods.filter(m => !initialMethods.includes(m));
+  }, [allEligibleMethods, initialMethods]);
+
+  // Guard: if current selected payment method becomes ineligible on destination or currency change, adapt gracefully
+  useEffect(() => {
+    if (formData.paymentMethod && allEligibleMethods.length > 0 && !allEligibleMethods.includes(formData.paymentMethod)) {
+      setFormData(prev => ({ ...prev, paymentMethod: initialMethods[0] || 'card' }));
+    }
+  }, [selectedCountryCode, formData.currency, allEligibleMethods, initialMethods]);
 
   const getPaymentButtonLabel = (method) => {
     if (!method) return 'Select Payment Method';
@@ -624,12 +1511,81 @@ export default function CheckoutModal({
   };
 
   const handleTogglePaymentMethod = (method) => {
-    handleChange('paymentMethod', formData.paymentMethod === method ? '' : method);
+    handleChange('paymentMethod', method);
+  };
+
+  // Destination Selection & Invalidation Handler
+  const handleSelectCountry = (countryCode) => {
+    if (selectedCountryCode === countryCode) {
+      setIsCountryDropdownOpen(false);
+      return;
+    }
+    const newDest = SUPPORTED_DESTINATIONS.find(d => d.code === countryCode);
+    if (!newDest) return;
+
+    setSelectedCountryCode(countryCode);
+    setIsCountryDropdownOpen(false);
+    setStepError('');
+
+    const prevDest = SUPPORTED_DESTINATIONS.find(d => d.code === selectedCountryCode);
+
+    // 1. Re-align currency if user was using previous destination's currency
+    if (!prevDest || formData.currency === prevDest.currency) {
+      handleChange('currency', newDest.currency);
+    }
+
+    // 2. Re-evaluate dependent fields
+    setFormData(prev => {
+      let updatedPhone = prev.phone;
+      if (!updatedPhone || (prevDest && updatedPhone.startsWith(prevDest.phonePrefix))) {
+        updatedPhone = newDest.phonePrefix + ' ';
+      }
+
+      // Re-evaluate delivery option
+      const defaultDelivery = newDest.shippingOptions[0]?.id || 'standard';
+
+      // Invalidate payment method if it cannot actually be used for the new destination
+      let updatedPayment = prev.paymentMethod;
+      if (updatedPayment && !newDest.eligiblePaymentMethods.includes(updatedPayment)) {
+        updatedPayment = ''; // Cleared!
+      }
+
+      // Invalidate saved address if it was from a different country
+      const activeSaved = savedAddresses.find(a => a.id === selectedAddressId);
+      let updatedAddressId = selectedAddressId;
+      let updatedCity = prev.city;
+      let updatedPostal = prev.postalCode;
+      let updatedState = prev.state;
+      let updatedAddress = prev.address;
+      if (activeSaved && activeSaved.countryCode && activeSaved.countryCode !== countryCode) {
+        updatedAddressId = null;
+        updatedCity = '';
+        updatedPostal = '';
+        updatedState = '';
+        updatedAddress = '';
+      }
+
+      return {
+        ...prev,
+        phone: updatedPhone,
+        countryCode: newDest.phonePrefix,
+        deliveryMethod: defaultDelivery,
+        paymentMethod: updatedPayment,
+        city: updatedCity,
+        postalCode: updatedPostal,
+        state: updatedState,
+        address: updatedAddress
+      };
+    });
+
+    // If client was on Step 2 (payment), return to Step 1 so they confirm address & shipping
+    if (checkoutStep === 2) {
+      setCheckoutStep(1);
+    }
   };
 
   const handleSelectSavedAddress = (addr) => {
     if (selectedAddressId === addr.id) {
-      // Toggle off if tapping selected address chip again
       setSelectedAddressId(null);
       setIsEditingAddress(false);
       setShowSaveAddressPrompt(false);
@@ -674,7 +1630,7 @@ export default function CheckoutModal({
   };
 
   const handleSaveAddressToBook = () => {
-    if (!formData.address || !formData.city || !formData.postalCode) return;
+    if (!formData.address || !formData.city) return;
     const newId = `addr_${Date.now()}`;
     const newEntry = {
       id: newId,
@@ -684,7 +1640,9 @@ export default function CheckoutModal({
       city: formData.city,
       state: formData.state,
       postalCode: formData.postalCode,
-      phone: formData.phone
+      phone: formData.phone,
+      countryCode: selectedCountryCode || 'GB',
+      country: currentDestination?.name || 'United Kingdom'
     };
     const updated = [...savedAddresses, newEntry];
     setSavedAddresses(updated);
@@ -699,12 +1657,28 @@ export default function CheckoutModal({
   };
 
   const handleProceedToPayment = () => {
-    if (!formData.email || !formData.email.includes('@')) {
-      setStepError('Please enter a valid email address.');
+    if (!selectedCountryCode || !currentDestination) {
+      setStepError('Please select your delivery destination country or region first.');
       return;
     }
-    if (!formData.fullName?.trim() || !formData.address?.trim() || !formData.city?.trim() || !formData.postalCode?.trim()) {
-      setStepError('Please complete your recipient name and delivery address.');
+    if (!formData.email || !formData.email.includes('@')) {
+      setStepError('Please enter a valid email address for order confirmation & tracking.');
+      return;
+    }
+    if (!formData.phone || formData.phone.trim().length < 6) {
+      setStepError('Please enter a valid mobile phone number for courier updates.');
+      return;
+    }
+    if (!formData.fullName?.trim() || !formData.address?.trim() || !formData.city?.trim()) {
+      setStepError('Please complete your recipient full name and street delivery address.');
+      return;
+    }
+    if (currentDestination.postalCodeRequired && !formData.postalCode?.trim()) {
+      setStepError(`Please enter your ${currentDestination.postalCodeLabel}.`);
+      return;
+    }
+    if (currentDestination.stateRequired && !formData.state?.trim()) {
+      setStepError(`Please enter your ${currentDestination.stateLabel}.`);
       return;
     }
     if (!formData.deliveryMethod) {
@@ -736,25 +1710,35 @@ export default function CheckoutModal({
   };
 
   const handleExpressPay = (method) => {
+    if (!selectedCountryCode) {
+      setStepError('Please select your delivery destination country first.');
+      return;
+    }
+
+    if (!isMethodEligible(method)) {
+      setStepError(`${method} is not eligible for delivery to ${currentDestination?.name || 'this destination'}.`);
+      return;
+    }
+
     // Select the chosen express payment method
     handleChange('paymentMethod', method);
 
-    // Auto-select the default Saved Home address if empty so details are pre-filled
-    const defaultAddr = savedAddresses.find(a => a.id === 'home') || savedAddresses[0];
-    if (defaultAddr && (!formData.fullName || !formData.address)) {
+    // Auto-select matching saved address for destination if empty
+    const matchingAddr = savedAddresses.find(a => a.countryCode === selectedCountryCode);
+    if (matchingAddr && (!formData.fullName || !formData.address)) {
       setFormData(prev => ({
         ...prev,
-        fullName: prev.fullName || defaultAddr.fullName,
-        address: prev.address || defaultAddr.address,
-        city: prev.city || defaultAddr.city,
-        state: prev.state || defaultAddr.state,
-        postalCode: prev.postalCode || defaultAddr.postalCode,
-        phone: prev.phone || defaultAddr.phone,
-        email: prev.email || 'amara.okafor@gmail.com',
-        deliveryMethod: prev.deliveryMethod || 'standard',
+        fullName: prev.fullName || matchingAddr.fullName,
+        address: prev.address || matchingAddr.address,
+        city: prev.city || matchingAddr.city,
+        state: prev.state || matchingAddr.state,
+        postalCode: prev.postalCode || matchingAddr.postalCode,
+        phone: prev.phone || matchingAddr.phone,
+        email: prev.email || 'client@houseofnina.co.uk',
+        deliveryMethod: prev.deliveryMethod || availableShippingOptions[0]?.id || 'standard',
         paymentMethod: method
       }));
-      setSelectedAddressId(defaultAddr.id);
+      setSelectedAddressId(matchingAddr.id);
     }
 
     // Switch directly to Step 2 so the user sees the payment method view
@@ -766,7 +1750,12 @@ export default function CheckoutModal({
     const chosenPayment = explicitMethod || formData.paymentMethod;
 
     if (!chosenPayment) {
-      setStepError('Please select your preferred payment method or use Express 1-Tap.');
+      setStepError('Please select an eligible payment method to complete your order.');
+      return;
+    }
+
+    if (!allEligibleMethods.includes(chosenPayment)) {
+      setStepError('Selected payment method is not eligible for delivery to ' + (currentDestination?.name || 'your destination') + ' in ' + formData.currency + '. Please choose an eligible payment method.');
       return;
     }
 
@@ -789,8 +1778,13 @@ export default function CheckoutModal({
         return;
       }
     } else if (chosenPayment === 'klarna') {
-      if (klarnaMode === 'new' && (!klarnaData.cardNumber?.trim() || !klarnaData.cardExpiry?.trim() || !(klarnaData.phone || formData.phone)?.trim())) {
-        setStepError('Please enter your mobile phone and installment card details for Klarna Pay in 3.');
+      const activePhone = (klarnaData.phone || formData.phone)?.trim();
+      if (!activePhone) {
+        setStepError('Please enter your mobile phone number for Klarna Pay in 3 approval.');
+        return;
+      }
+      if (klarnaData.cardNumber?.trim() && !klarnaData.cardExpiry?.trim()) {
+        setStepError('Please enter your installment card expiry date (MM/YY).');
         return;
       }
     } else if (chosenPayment === 'revolut') {
@@ -865,8 +1859,9 @@ export default function CheckoutModal({
         paymentLabel = `Direct Bank Wire (${bankWireData.senderBank || 'Barclays'} - ${bankWireData.accountHolder || 'Client'})`;
       }
 
-      let deliveryLabel = 'Royal Mail 48 Tracked (Complimentary)';
-      if (formData.deliveryMethod === 'express') deliveryLabel = 'Royal Mail Special Delivery Guaranteed (1pm)';
+      const deliveryLabel = selectedShippingOption
+        ? `${selectedShippingOption.name} (${selectedShippingOption.priceGbp === 0 ? 'Free' : formatPrice(shippingCost)})`
+        : 'Free Delivery';
 
       const newOrder = {
         orderId: `HN${randomOrderNum}`,
@@ -878,7 +1873,9 @@ export default function CheckoutModal({
           address: formData.address,
           city: formData.city,
           state: formData.state,
-          postalCode: formData.postalCode
+          postalCode: formData.postalCode,
+          country: currentDestination ? currentDestination.name : "United Kingdom",
+          countryCode: selectedCountryCode || "GB"
         },
         items: cartItems.map(item => ({
           ...item,
@@ -908,6 +1905,9 @@ export default function CheckoutModal({
   const activeSaved = savedAddresses.find(a => a.id === selectedAddressId);
   const currentAddressTag = activeSaved ? activeSaved.label : (selectedAddressId === 'new' ? 'New Address' : 'Custom');
 
+    // Modal visibility guard (MUST be after all Hook calls to respect React Rules of Hooks)
+  if (!isOpen) return null;
+
   // When order is confirmed, render the luxury OrderSuccessReceipt directly without nested modal backdrops
   if (isConfirmed) {
     return (
@@ -923,852 +1923,12 @@ export default function CheckoutModal({
     );
   }
 
-  return (
-    <div className={`checkout-modal-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
-      <div
-        className="checkout-modal-dialog"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Secure Luxury Checkout"
-        style={{ maxWidth: '980px', position: 'relative' }}
-      >
-        {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
-        <div className="checkout-modal-header">
-          <div className="checkout-header-branding">
-            <span className="checkout-brand-title">
-              House of Nina
-            </span>
-          </div>
-
-          {/* Luxury Compact Icon Step Indicator (Never Crowds House of Nina on Mobile) */}
-          <div className="checkout-step-icons">
-            <button
-              type="button"
-              onClick={() => setCheckoutStep(1)}
-              className={`checkout-step-icon-btn ${checkoutStep === 1 ? 'active' : 'completed'}`}
-              title="Step 1: Delivery Details"
-              aria-label="Step 1: Delivery Details"
-            >
-              {checkoutStep > 1 ? <Check size={13} strokeWidth={2.5} /> : <Truck size={14} />}
-              <span className="step-icon-label">Delivery</span>
-            </button>
-
-            <div className="checkout-step-icon-line" />
-
-            <button
-              type="button"
-              onClick={() => setCheckoutStep(2)}
-              className={`checkout-step-icon-btn ${checkoutStep === 2 ? 'active' : ''}`}
-              title="Step 2: Payment & Review"
-              aria-label="Step 2: Payment & Review"
-            >
-              <CreditCard size={14} />
-              <span className="step-icon-label">Payment</span>
-            </button>
-          </div>
-
-          {/* Close Button Pinned at Top Right */}
-          <div className="checkout-header-actions">
-            <button
-              type="button"
-              className="checkout-close-btn"
-              onClick={onClose}
-              aria-label="Close checkout"
-            >
-              <X size={16} strokeWidth={2.2} />
-            </button>
-          </div>
-        </div>
-
-        {/* SCROLLABLE CHECKOUT BODY */}
-        <div className="checkout-content-container">
-          <div className="checkout-grid-layout">
-
-            {/* Left Column: Form Details based on Step */}
-            <div className="checkout-form-column" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-
-              {stepError && (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '12px 14px',
-                  backgroundColor: '#FDF2F2',
-                  border: '1px solid #F8B4B4',
-                  borderRadius: '10px',
-                  color: '#9B1C1C',
-                  fontSize: '12px',
-                  fontWeight: 500
-                }}>
-                  <AlertCircle size={16} flexShrink={0} />
-                  <span>{stepError}</span>
-                </div>
-              )}
-
-              {/* ══════════════════════════════════════════════════════════
-                      STEP 1: DELIVERY & ADDRESS MANAGEMENT
-                      ══════════════════════════════════════════════════════════ */}
-              {checkoutStep === 1 && (
-                <>
-                  {/* 1. Contact Information Card */}
-                  <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
-                    <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      1. Contact Information
-                    </h3>
-
-                    <div className="checkout-row-2">
-                      <div>
-                        <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                          Email Address
-                        </label>
-                        <input
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => handleChange('email', e.target.value)}
-                          placeholder="you@domain.com"
-                          required
-                          style={standardInputStyle}
-                        />
-                      </div>
-
-                      <div>
-                        <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                          Phone Number (Delivery SMS)
-                        </label>
-                        <input
-                          type="tel"
-                          value={formData.phone}
-                          onChange={(e) => handleChange('phone', e.target.value)}
-                          placeholder="+44 7776 000000"
-                          required
-                          style={standardInputStyle}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 2. Saved Addresses & Shipping Selection */}
-                  <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '6px' }}>
-                      <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        2. Delivery Address
-                      </h3>
-                      <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                        Saved Client Book
-                      </span>
-                    </div>
-
-                    {/* Saved Address Chips */}
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '14px' }}>
-                      {savedAddresses.map((addr) => {
-                        const isSelected = selectedAddressId === addr.id;
-                        let IconComponent = Home;
-                        if (addr.label.toLowerCase().includes('work')) IconComponent = Briefcase;
-                        if (addr.label.toLowerCase().includes('gift')) IconComponent = Gift;
-
-                        return (
-                          <button
-                            key={addr.id}
-                            type="button"
-                            onClick={() => handleSelectSavedAddress(addr)}
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '6px',
-                              padding: '6px 12px',
-                              borderRadius: '20px',
-                              fontSize: '11.5px',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              border: '1.5px solid',
-                              borderColor: isSelected ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                              backgroundColor: isSelected ? 'var(--color-deep-espresso)' : '#FAF8F5',
-                              color: isSelected ? '#FFFFFF' : 'var(--color-deep-espresso)',
-                              transition: 'all 0.2s ease'
-                            }}
-                          >
-                            <IconComponent size={12} />
-                            <span>{addr.label}</span>
-                            {isSelected && <Check size={11} />}
-                          </button>
-                        );
-                      })}
-
-                      <button
-                        type="button"
-                        onClick={handleSelectNewAddress}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontSize: '11.5px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          border: '1.5px dashed',
-                          borderColor: selectedAddressId === 'new' ? 'var(--color-gold-dark)' : 'var(--color-border)',
-                          backgroundColor: selectedAddressId === 'new' ? '#FAF5EB' : '#FFFFFF',
-                          color: selectedAddressId === 'new' ? 'var(--color-gold-dark)' : '#685C50'
-                        }}
-                      >
-                        <Plus size={12} />
-                        <span>Add Address</span>
-                      </button>
-                    </div>
-
-                    {/* Selected Address Display Card when NOT in manual edit mode */}
-                    {!isEditingAddress && activeSaved && (
-                      <div style={{
-                        padding: '14px',
-                        backgroundColor: '#FAF8F5',
-                        borderRadius: '10px',
-                        border: '1px solid var(--color-border)',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        gap: '10px'
-                      }}>
-                        <div>
-                          <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
-                            {formData.fullName} • {activeSaved.label}
-                          </strong>
-                          <span style={{ fontSize: '12px', color: '#685C50', display: 'block' }}>
-                            {formData.address}, {formData.city}, {formData.state} {formData.postalCode}
-                          </span>
-                          <span style={{ fontSize: '11.5px', color: '#8C8074', display: 'block', marginTop: '2px' }}>
-                            Tel: {formData.phone}
-                          </span>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => setIsEditingAddress(true)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--color-gold-dark)',
-                            fontSize: '11.5px',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            padding: '4px 6px',
-                            textDecoration: 'underline'
-                          }}
-                        >
-                          Edit Address
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Full Address Inputs (Shown if editing, no saved address selected, or new) */}
-                    {(isEditingAddress || !activeSaved || selectedAddressId === 'new') && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: activeSaved ? '10px' : '0' }}>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                            Recipient Full Name
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.fullName}
-                            onChange={(e) => handleChange('fullName', e.target.value)}
-                            placeholder="Recipient full name"
-                            required
-                            style={standardInputStyle}
-                          />
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                            Street Address &amp; Suite / Apt
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.address}
-                            onChange={(e) => handleChange('address', e.target.value)}
-                            placeholder="House number, street name, apartment"
-                            required
-                            style={standardInputStyle}
-                          />
-                        </div>
-
-                        <div className="checkout-row-3">
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                              City
-                            </label>
-                            <input
-                              type="text"
-                              value={formData.city}
-                              onChange={(e) => handleChange('city', e.target.value)}
-                              placeholder="City"
-                              required
-                              style={standardInputStyle}
-                            />
-                          </div>
-
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                              County / State
-                            </label>
-                            <input
-                              type="text"
-                              value={formData.state}
-                              onChange={(e) => handleChange('state', e.target.value)}
-                              placeholder="Greater London"
-                              required
-                              style={standardInputStyle}
-                            />
-                          </div>
-
-                          <div>
-                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                              Postcode
-                            </label>
-                            <input
-                              type="text"
-                              value={formData.postalCode}
-                              onChange={(e) => handleChange('postalCode', e.target.value)}
-                              placeholder="W1J 8AJ"
-                              required
-                              style={standardInputStyle}
-                            />
-                          </div>
-                        </div>
-
-                        {/* Save to Client Book Prompt */}
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '10px 12px',
-                          backgroundColor: '#FAF8F5',
-                          borderRadius: '8px',
-                          border: '1px solid var(--color-border)',
-                          flexWrap: 'wrap',
-                          gap: '8px',
-                          marginTop: '4px'
-                        }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '11.5px', color: 'var(--color-deep-espresso)', fontWeight: 600 }}>
-                              Save to Book as:
-                            </span>
-                            <div style={{ display: 'flex', gap: '4px' }}>
-                              {['Home', 'Work', 'Gift', 'Other'].map(lbl => (
-                                <button
-                                  key={lbl}
-                                  type="button"
-                                  onClick={() => setSaveAsLabel(lbl)}
-                                  style={{
-                                    padding: '2px 8px',
-                                    borderRadius: '4px',
-                                    fontSize: '11px',
-                                    fontWeight: 600,
-                                    border: '1px solid',
-                                    borderColor: saveAsLabel === lbl ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                                    backgroundColor: saveAsLabel === lbl ? 'var(--color-deep-espresso)' : '#FFFFFF',
-                                    color: saveAsLabel === lbl ? '#FFFFFF' : '#685C50',
-                                    cursor: 'pointer'
-                                  }}
-                                >
-                                  {lbl}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={handleSaveAddressToBook}
-                            style={{
-                              padding: '5px 12px',
-                              borderRadius: '6px',
-                              backgroundColor: 'var(--color-gold-dark)',
-                              color: '#FFFFFF',
-                              fontSize: '11px',
-                              fontWeight: 600,
-                              border: 'none',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Save Address
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 3. Delivery Method */}
-                  <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
-                    <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      3. Delivery Speed
-                    </h3>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {/* Standard Delivery */}
-                      <label
-                        onClick={() => handleChange('deliveryMethod', 'standard')}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '12px 14px',
-                          borderRadius: '10px',
-                          border: '1.5px solid',
-                          borderColor: formData.deliveryMethod === 'standard' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                          backgroundColor: formData.deliveryMethod === 'standard' ? '#FAF8F5' : '#FFFFFF',
-                          cursor: 'pointer',
-                          boxSizing: 'border-box',
-                          width: '100%',
-                          minHeight: '58px',
-                          gap: '12px'
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
-                          <input
-                            type="radio"
-                            name="deliveryMethod"
-                            checked={formData.deliveryMethod === 'standard'}
-                            onChange={() => { }}
-                            style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
-                          />
-                          <div style={{ minWidth: 0 }}>
-                            <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                              Royal Mail 48 Tracked
-                            </strong>
-                            <span style={{ fontSize: '11.5px', color: '#8C8074' }}>
-                              2 – 4 working days • Insured packaging
-                            </span>
-                          </div>
-                        </div>
-                        <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#2E7D32', flexShrink: 0 }}>
-                          Complimentary
-                        </span>
-                      </label>
-
-                      {/* Special Delivery */}
-                      <label
-                        onClick={() => handleChange('deliveryMethod', 'express')}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '12px 14px',
-                          borderRadius: '10px',
-                          border: '1.5px solid',
-                          borderColor: formData.deliveryMethod === 'express' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                          backgroundColor: formData.deliveryMethod === 'express' ? '#FAF8F5' : '#FFFFFF',
-                          cursor: 'pointer',
-                          boxSizing: 'border-box',
-                          width: '100%',
-                          minHeight: '58px',
-                          gap: '12px'
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
-                          <input
-                            type="radio"
-                            name="deliveryMethod"
-                            checked={formData.deliveryMethod === 'express'}
-                            onChange={() => { }}
-                            style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
-                          />
-                          <div style={{ minWidth: 0 }}>
-                            <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
-                              Royal Mail Special Delivery (Guaranteed 1pm)
-                            </strong>
-                            <span style={{ fontSize: '11.5px', color: '#8C8074' }}>
-                              Next business day tracked &amp; signed
-                            </span>
-                          </div>
-                        </div>
-                        <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-deep-espresso)', flexShrink: 0 }}>
-                          {formatPrice(expressShippingCost)}
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Continue to Payment Button */}
-                  <button
-                    type="button"
-                    onClick={handleProceedToPayment}
-                    className="btn-primary-editorial"
-                    style={{
-                      width: '100%',
-                      minHeight: '52px',
-                      height: '52px',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      padding: '14px 20px',
-                      fontSize: '14px',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <span>Continue to Payment</span>
-                    <ArrowRight size={16} />
-                  </button>
-                </>
-              )}
-
-              {/* ══════════════════════════════════════════════════════════
-                      STEP 2: PAYMENT METHOD & AUTHORIZATION
-                      ══════════════════════════════════════════════════════════ */}
-              {checkoutStep === 2 && (
-                <>
-                  {/* Active Delivery Summary Banner */}
-                  <div style={{
-                    padding: '12px 16px',
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '12px',
-                    border: '1px solid var(--color-border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '10px',
-                    boxSizing: 'border-box'
-                  }}>
-                    <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                      <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        Delivering To ({currentAddressTag})
-                      </span>
-                      <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {formData.fullName} • {formData.address}, {formData.city} {formData.postalCode}
-                      </strong>
-                      <span style={{ fontSize: '11px', color: '#2E7D32', fontWeight: 500 }}>
-                        {formData.deliveryMethod === 'express' ? 'Royal Mail Special Delivery (1pm)' : 'Royal Mail 48 Tracked (Complimentary)'}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutStep(1)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--color-gold-dark)',
-                        fontSize: '11.5px',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                        flexShrink: 0
-                      }}
-                    >
-                      Change
-                    </button>
-                  </div>
-
-                  {/* Billing Currency Dropdown Chevron Drawer */}
-                  <div style={{
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '12px',
-                    border: '1px solid var(--color-border)',
-                    overflow: 'hidden',
-                    boxSizing: 'border-box'
-                  }}>
-                    <button
-                      type="button"
-                      onClick={() => setIsCurrencyDropdownOpen(prev => !prev)}
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '11px 14px',
-                        backgroundColor: '#FFFFFF',
-                        border: 'none',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        gap: '10px'
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-                        <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap' }}>
-                          Billing Currency
-                        </span>
-                        <span style={{ fontSize: '10.5px', color: '#8C8074', whiteSpace: 'nowrap' }}>
-                          ({currentCurrency.name})
-                        </span>
-                      </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                        <span style={{
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          color: 'var(--color-deep-espresso)',
-                          backgroundColor: '#FAF7F2',
-                          padding: '3px 8px',
-                          borderRadius: '6px',
-                          border: '1px solid var(--color-border-light)',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          {currentCurrency.symbol} {currentCurrency.code}
-                        </span>
-                        {isCurrencyDropdownOpen ? (
-                          <ChevronUp size={15} color="var(--color-deep-espresso)" />
-                        ) : (
-                          <ChevronDown size={15} color="var(--color-deep-espresso)" />
-                        )}
-                      </div>
-                    </button>
-
-                    {isCurrencyDropdownOpen && (
-                      <div style={{
-                        borderTop: '1px solid var(--color-border-light)',
-                        backgroundColor: '#FAF8F5',
-                        padding: '10px 12px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px'
-                      }}>
-                        {/* Currency Search Input */}
-                        <div style={{ position: 'relative', width: '100%' }}>
-                          <Search size={14} color="#8C8074" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                          <input
-                            type="text"
-                            value={currencySearch}
-                            onChange={(e) => setCurrencySearch(e.target.value)}
-                            placeholder="Search currency or country (e.g. USD, EUR, Naira)..."
-                            autoFocus
-                            style={{
-                              ...standardInputStyle,
-                              height: '34px',
-                              paddingLeft: '32px',
-                              fontSize: '11px',
-                              backgroundColor: '#FFFFFF'
-                            }}
-                          />
-                        </div>
-
-                        {/* Scrollable Currencies List (Max Height ~185px) */}
-                        <div style={{
-                          maxHeight: '185px',
-                          overflowY: 'auto',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '4px',
-                          paddingRight: '2px',
-                          scrollbarWidth: 'thin'
-                        }}>
-                          {filteredCurrencies.map(curr => (
-                            <button
-                              key={curr.code}
-                              type="button"
-                              onClick={() => {
-                                handleChange('currency', curr.code);
-                                setIsCurrencyDropdownOpen(false);
-                                setCurrencySearch('');
-                              }}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                padding: '8px 10px',
-                                borderRadius: '6px',
-                                backgroundColor: formData.currency === curr.code ? '#FFFFFF' : 'transparent',
-                                border: '1px solid',
-                                borderColor: formData.currency === curr.code ? 'var(--color-deep-espresso)' : 'transparent',
-                                cursor: 'pointer',
-                                textAlign: 'left',
-                                gap: '8px',
-                                boxShadow: formData.currency === curr.code ? '0 1px 4px rgba(0,0,0,0.06)' : 'none'
-                              }}
-                            >
-                              <div style={{ minWidth: 0 }}>
-                                <div style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap' }}>
-                                  {curr.symbol} {curr.code} — {curr.name}
-                                </div>
-                                <div style={{ fontSize: '10px', color: '#8C8074', whiteSpace: 'nowrap' }}>
-                                  {curr.country}
-                                </div>
-                              </div>
-                              {formData.currency === curr.code && <Check size={13} color="var(--color-deep-espresso)" />}
-                            </button>
-                          ))}
-                          {filteredCurrencies.length === 0 && (
-                            <div style={{ padding: '12px', textAlign: 'center', fontSize: '11px', color: '#8C8074' }}>
-                              No matching currencies found
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Express 1-Tap Checkout Bar */}
-                  <div style={{
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    border: '1px solid var(--color-border)',
-                    backgroundColor: '#FFFFFF',
-                    boxSizing: 'border-box'
-                  }}>
-                    <div style={{ marginBottom: '10px' }}>
-                      <span style={{
-                        fontSize: '11px',
-                        fontWeight: 700,
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        color: 'var(--color-deep-espresso)'
-                      }}>
-                        Express 1-Tap Checkout
-                      </span>
-                    </div>
-
-                    {/* 4 Express Buttons: Apple Pay, Google Pay, Revolut Pay, Amazon Pay */}
-                    <div className="checkout-express-btn-grid">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleTogglePaymentMethod('apple_pay');
-                          setApplePayMode('ready');
-                        }}
-                        style={{
-                          height: '42px',
-                          backgroundColor: '#000000',
-                          color: '#FFFFFF',
-                          border: formData.paymentMethod === 'apple_pay' ? '2px solid #D4AF37' : '1px solid #000000',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          transition: 'transform 0.15s ease'
-                        }}
-                      >
-                        <ApplePayLogo height={20} color="#FFFFFF" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleTogglePaymentMethod('google_pay');
-                          setGooglePayMode('saved');
-                        }}
-                        style={{
-                          height: '42px',
-                          backgroundColor: '#000000',
-                          color: '#FFFFFF',
-                          border: formData.paymentMethod === 'google_pay' ? '2px solid #D4AF37' : '1px solid #000000',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          transition: 'transform 0.15s ease'
-                        }}
-                      >
-                        <GooglePayLogo height={20} />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleTogglePaymentMethod('revolut');
-                          setRevolutMode('app');
-                        }}
-                        style={{
-                          height: '42px',
-                          backgroundColor: '#FFFFFF',
-                          color: '#191C1F',
-                          border: formData.paymentMethod === 'revolut' ? '2px solid #0075FF' : '1.5px solid #0075FF',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '4px',
-                          fontWeight: 700,
-                          fontSize: '13px',
-                          transition: 'transform 0.15s ease'
-                        }}
-                      >
-                        <RevolutPayBadge />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleTogglePaymentMethod('amazon_pay')}
-                        style={{
-                          height: '42px',
-                          backgroundColor: '#FAD676',
-                          color: '#111111',
-                          border: formData.paymentMethod === 'amazon_pay' ? '2px solid #E68A00' : '1px solid #E68A00',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 700,
-                          fontSize: '13px',
-                          transition: 'transform 0.15s ease'
-                        }}
-                      >
-                        <AmazonPayBadge />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Divider */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    margin: '2px 0'
-                  }}>
-                    <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
-                    <span style={{
-                      fontSize: '11px',
-                      color: '#8C8074',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.06em',
-                      fontWeight: 600
-                    }}>
-                      Or Select Payment Below
-                    </span>
-                    <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
-                  </div>
-
-                  {/* Payment Options Selection */}
-                  <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        Payment Method
-                      </h3>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#685C50' }}>
-                        <Lock size={12} color="#1E7E34" />
-                        <span>Encrypted &amp; Secure</span>
-                      </div>
-                    </div>
-
-                    {/* Region & Category Filter Tabs */}
-                    <div className="checkout-category-tabs">
-                      {[
-                        { id: 'all', label: 'All' },
-                        { id: 'uk_global', label: 'Popular' },
-                        { id: 'europe', label: 'Europe' },
-                        { id: 'asia', label: 'Asia' },
-                        { id: 'bank', label: 'Bank Wire' }
-                      ].map(cat => (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => setPaymentCategory(cat.id)}
-                          className={`checkout-category-tab-btn ${paymentCategory === cat.id ? 'active' : ''}`}
-                        >
-                          {cat.label}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {/* Option 1: Apple Pay */}
-                      {shouldShowMethod('apple_pay') && (
-                        <div style={{
+  // Render Individual Payment Option Item
+  const renderPaymentOption = (methodId) => {
+    switch (methodId) {
+      case 'apple_pay':
+        return (
+          <div key="apple_pay" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'apple_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -1785,7 +1945,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'apple_pay'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('apple_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -1858,11 +2018,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 2: Google Pay */}
-                      {shouldShowMethod('google_pay') && (
-                        <div style={{
+        );
+      case 'google_pay':
+        return (
+          <div key="google_pay" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'google_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -1879,7 +2038,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'google_pay'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('google_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -1952,11 +2111,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 3: Credit or Debit Card */}
-                      {shouldShowMethod('card') && (
-                        <div style={{
+        );
+      case 'card':
+        return (
+          <div key="card" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'card' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -1972,7 +2130,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'card'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('card')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2059,11 +2217,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 4: Revolut Pay (UK & Europe) */}
-                      {shouldShowMethod('revolut') && (
-                        <div style={{
+        );
+      case 'revolut':
+        return (
+          <div key="revolut" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'revolut' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2079,7 +2236,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'revolut'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('revolut')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2152,11 +2309,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 5: Amazon Pay */}
-                      {shouldShowMethod('amazon_pay') && (
-                        <div style={{
+        );
+      case 'amazon_pay':
+        return (
+          <div key="amazon_pay" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'amazon_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2172,7 +2328,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'amazon_pay'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('amazon_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2219,11 +2375,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 6: Klarna */}
-                      {shouldShowMethod('klarna') && (
-                        <div style={{
+        );
+      case 'klarna':
+        return (
+          <div key="klarna" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'klarna' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2239,7 +2394,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'klarna'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('klarna')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2276,23 +2431,98 @@ export default function CheckoutModal({
                                 </div>
                               </div>
 
+                              {/* Klarna Verification & Card Details */}
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '14px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-deep-espresso)' }}>
+                                    Klarna Verification &amp; Card
+                                  </span>
+                                  <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
+                                    0% APR • Instant Decision
+                                  </span>
+                                </div>
+
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                    Mobile Phone for Klarna SMS Approval <span style={{ color: '#C53030' }}>*</span>
+                                  </label>
+                                  <input
+                                    type="tel"
+                                    value={klarnaData.phone || formData.phone}
+                                    onChange={(e) => setKlarnaData(prev => ({ ...prev, phone: e.target.value }))}
+                                    placeholder="+44 7776 759731"
+                                    style={standardInputStyle}
+                                  />
+                                </div>
+
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                    Card for 3 Installments (charged on Day 1, 30, 60)
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={klarnaData.cardNumber}
+                                    onChange={(e) => {
+                                      const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
+                                      const formatted = raw.match(/.{1,4}/g)?.join(' ') || raw;
+                                      setKlarnaData(prev => ({ ...prev, cardNumber: formatted }));
+                                    }}
+                                    placeholder="Installment card number (•••• •••• •••• 4892)"
+                                    maxLength={19}
+                                    style={standardInputStyle}
+                                  />
+                                </div>
+
+                                <div className="checkout-row-2">
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Expiry</label>
+                                    <input
+                                      type="text"
+                                      value={klarnaData.cardExpiry}
+                                      onChange={(e) => {
+                                        let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                        if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2);
+                                        setKlarnaData(prev => ({ ...prev, cardExpiry: v }));
+                                      }}
+                                      placeholder="MM/YY"
+                                      maxLength={5}
+                                      style={standardInputStyle}
+                                    />
+                                  </div>
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>CVC</label>
+                                    <input
+                                      type="text"
+                                      value={klarnaData.cardCvc}
+                                      onChange={(e) => setKlarnaData(prev => ({ ...prev, cardCvc: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                                      placeholder="3 digits"
+                                      maxLength={4}
+                                      style={standardInputStyle}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
                               <button
                                 type="button"
                                 onClick={() => handlePlaceOrder(null, 'klarna')}
                                 disabled={isSubmitting}
                                 style={{
-                                  height: '44px',
+                                  height: '46px',
                                   backgroundColor: '#FFB3C7',
-                                  color: '#1C1614',
+                                  color: '#0A0A0A',
                                   border: 'none',
                                   borderRadius: '8px',
-                                  fontSize: '13px',
+                                  fontSize: '13.5px',
                                   fontWeight: 700,
                                   cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                  marginTop: '4px'
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '6px'
                                 }}
                               >
-                                Pay 1st Part {formatPrice(total / 3)} with Klarna
+                                <span>Pay 1st Part {formatPrice(total / 3)} with Klarna</span>
                               </button>
 
                               <div style={{ textAlign: 'center' }}>
@@ -2315,11 +2545,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 7: Bancontact (Belgium) */}
-                      {shouldShowMethod('bancontact') && (
-                        <div style={{
+        );
+      case 'bancontact':
+        return (
+          <div key="bancontact" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'bancontact' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2335,7 +2564,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bancontact'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('bancontact')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2372,11 +2601,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 8: iDEAL (Netherlands) */}
-                      {shouldShowMethod('ideal') && (
-                        <div style={{
+        );
+      case 'ideal':
+        return (
+          <div key="ideal" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'ideal' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2392,7 +2620,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'ideal'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('ideal')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2433,11 +2661,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 9: BLIK (Poland) */}
-                      {shouldShowMethod('blik') && (
-                        <div style={{
+        );
+      case 'blik':
+        return (
+          <div key="blik" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'blik' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2453,7 +2680,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'blik'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('blik')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2495,11 +2722,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 10: MB WAY (Portugal) */}
-                      {shouldShowMethod('mbway') && (
-                        <div style={{
+        );
+      case 'mbway':
+        return (
+          <div key="mbway" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'mbway' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2515,7 +2741,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'mbway'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('mbway')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2553,11 +2779,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 11: EPS (Austria) */}
-                      {shouldShowMethod('eps') && (
-                        <div style={{
+        );
+      case 'eps':
+        return (
+          <div key="eps" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'eps' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2573,7 +2798,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'eps'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('eps')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2612,11 +2837,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 12: Satispay (Italy) */}
-                      {shouldShowMethod('satispay') && (
-                        <div style={{
+        );
+      case 'satispay':
+        return (
+          <div key="satispay" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'satispay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2632,7 +2856,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'satispay'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('satispay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2668,11 +2892,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 13: Kakao Pay (South Korea) */}
-                      {shouldShowMethod('kakao_pay') && (
-                        <div style={{
+        );
+      case 'kakao_pay':
+        return (
+          <div key="kakao_pay" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'kakao_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2688,7 +2911,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'kakao_pay'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('kakao_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2717,11 +2940,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 14: Naver Pay (South Korea) */}
-                      {shouldShowMethod('naver_pay') && (
-                        <div style={{
+        );
+      case 'naver_pay':
+        return (
+          <div key="naver_pay" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'naver_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2737,7 +2959,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'naver_pay'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('naver_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2766,11 +2988,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 15: Samsung Pay (South Korea) */}
-                      {shouldShowMethod('samsung_pay') && (
-                        <div style={{
+        );
+      case 'samsung_pay':
+        return (
+          <div key="samsung_pay" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'samsung_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2786,7 +3007,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'samsung_pay'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('samsung_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2814,11 +3035,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 16: PAYCO (South Korea) */}
-                      {shouldShowMethod('payco') && (
-                        <div style={{
+        );
+      case 'payco':
+        return (
+          <div key="payco" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'payco' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2834,7 +3054,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'payco'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('payco')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2862,11 +3082,10 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
-                      )}
-
-                      {/* Option 17: Direct Studio Bank Wire */}
-                      {shouldShowMethod('bank') && (
-                        <div style={{
+        );
+      case 'bank':
+        return (
+          <div key="bank" style={{
                           borderRadius: '10px',
                           border: '1.5px solid',
                           borderColor: formData.paymentMethod === 'bank' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
@@ -2882,7 +3101,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bank'}
-                                onChange={() => { }}
+                                onChange={() => handleTogglePaymentMethod('bank')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2982,8 +3201,730 @@ export default function CheckoutModal({
                             </div>
                           )}
                         </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className={`checkout-modal-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
+      <div
+        className="checkout-modal-dialog"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Secure Luxury Checkout"
+        style={{ maxWidth: '980px', position: 'relative' }}
+      >
+        {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
+        <div className="checkout-modal-header">
+          <div className="checkout-header-branding">
+            <span className="checkout-brand-title">
+              House of Nina
+            </span>
+          </div>
+
+          {/* Luxury Compact Icon Step Indicator (Never Crowds House of Nina on Mobile) */}
+          <div className="checkout-step-icons">
+            <button
+              type="button"
+              onClick={() => setCheckoutStep(1)}
+              className={`checkout-step-icon-btn ${checkoutStep === 1 ? 'active' : 'completed'}`}
+              title="Step 1: Delivery Details"
+              aria-label="Step 1: Delivery Details"
+            >
+              {checkoutStep > 1 ? <Check size={13} strokeWidth={2.5} /> : <Truck size={14} />}
+              <span className="step-icon-label">Delivery</span>
+            </button>
+
+            <div className="checkout-step-icon-line" />
+
+            <button
+              type="button"
+              onClick={() => setCheckoutStep(2)}
+              className={`checkout-step-icon-btn ${checkoutStep === 2 ? 'active' : ''}`}
+              title="Step 2: Payment & Review"
+              aria-label="Step 2: Payment & Review"
+            >
+              <CreditCard size={14} />
+              <span className="step-icon-label">Payment</span>
+            </button>
+          </div>
+
+          {/* Close Button Pinned at Top Right */}
+          <div className="checkout-header-actions">
+            <button
+              type="button"
+              className="checkout-close-btn"
+              onClick={onClose}
+              aria-label="Close checkout"
+            >
+              <X size={16} strokeWidth={2.2} />
+            </button>
+          </div>
+        </div>
+
+        {/* SCROLLABLE CHECKOUT BODY */}
+        <div className="checkout-content-container">
+          <div className="checkout-grid-layout">
+
+            {/* Left Column: Form Details based on Step */}
+            <div className="checkout-form-column" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+              {stepError && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 14px',
+                  backgroundColor: '#FDF2F2',
+                  border: '1px solid #F8B4B4',
+                  borderRadius: '10px',
+                  color: '#9B1C1C',
+                  fontSize: '12px',
+                  fontWeight: 500
+                }}>
+                  <AlertCircle size={16} flexShrink={0} />
+                  <span>{stepError}</span>
+                </div>
+              )}
+
+              {/* ══════════════════════════════════════════════════════════
+                      STEP 1: LOCATION-FIRST PROGRESSIVE DISCLOSURE
+                      ══════════════════════════════════════════════════════════ */}
+              {checkoutStep === 1 && (
+                <>
+                  {/* STEP 1: DELIVERY LOCATION */}
+                  <div className="checkout-location-card">
+                    <div style={{ marginBottom: '8px' }}>
+                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
+                        Step 1 • Delivery Destination
+                      </span>
+                      <h2 style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: 'var(--color-deep-espresso)',
+                        margin: '0 0 5px 0',
+                        lineHeight: 1.25
+                      }}>
+                        Where are we sending your order?
+                      </h2>
+                      <p style={{ margin: 0, fontSize: '11.5px', color: '#685C50', lineHeight: 1.4 }}>
+                        Select your destination for shipping speeds and payment options.
+                      </p>
+                    </div>
+
+                    {/* Chevron Dropdown Selector (Default: United Kingdom) */}
+                    <div style={{ position: 'relative', width: '100%', marginTop: '14px' }}>
+                      <button
+                        type="button"
+                        onClick={() => setIsCountryDropdownOpen(prev => !prev)}
+                        style={{
+                          width: '100%',
+                          minHeight: '48px',
+                          padding: '10px 14px',
+                          backgroundColor: '#FFFFFF',
+                          borderRadius: '10px',
+                          border: '1.5px solid var(--color-border)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          cursor: 'pointer',
+                          gap: '12px',
+                          boxSizing: 'border-box',
+                          transition: 'all 0.2s ease',
+                          textAlign: 'left'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                          <span style={{ fontSize: '22px', lineHeight: 1 }} role="img" aria-label={currentDestination?.name || 'United Kingdom'}>
+                            {currentDestination?.flag || '🇬🇧'}
+                          </span>
+                          <div style={{ minWidth: 0 }}>
+                            <strong style={{ fontSize: '13.5px', color: 'var(--color-deep-espresso)', display: 'block', lineHeight: 1.2 }}>
+                              {currentDestination?.name || 'United Kingdom'}
+                            </strong>
+                            <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              {currentDestination?.region || 'United Kingdom'} • Currency: {currentDestination?.currency || 'GBP'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, color: 'var(--color-deep-espresso)' }}>
+                          {isCountryDropdownOpen ? (
+                            <ChevronUp size={16} strokeWidth={2.2} />
+                          ) : (
+                            <ChevronDown size={16} strokeWidth={2.2} />
+                          )}
+                        </div>
+                      </button>
+
+                      {/* Dropdown Options Drawer */}
+                      {isCountryDropdownOpen && (
+                        <div style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 6px)',
+                          left: 0,
+                          right: 0,
+                          zIndex: 60,
+                          maxHeight: '260px',
+                          overflowY: 'auto',
+                          borderRadius: '10px',
+                          border: '1px solid var(--color-border)',
+                          backgroundColor: '#FFFFFF',
+                          boxShadow: '0 10px 32px rgba(26, 20, 18, 0.14)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          padding: '6px'
+                        }}>
+                          {SUPPORTED_DESTINATIONS.map(dest => {
+                            const isSelected = (selectedCountryCode || 'GB') === dest.code;
+                            return (
+                              <button
+                                key={dest.code}
+                                type="button"
+                                onClick={() => handleSelectCountry(dest.code)}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  padding: '10px 12px',
+                                  borderRadius: '7px',
+                                  backgroundColor: isSelected ? '#FAF5EB' : 'transparent',
+                                  border: 'none',
+                                  textAlign: 'left',
+                                  cursor: 'pointer',
+                                  gap: '10px',
+                                  transition: 'background 0.15s ease'
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                  <span style={{ fontSize: '18px' }}>{dest.flag}</span>
+                                  <div>
+                                    <strong style={{ fontSize: '12.5px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                                      {dest.name}
+                                    </strong>
+                                    <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
+                                      {dest.region} • Currency: {dest.currency}
+                                    </span>
+                                  </div>
+                                </div>
+                                {isSelected && (
+                                  <Check size={14} color="var(--color-deep-espresso)" strokeWidth={2.5} />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
                       )}
                     </div>
+                  </div>
+
+                  {/* Contact, Delivery Address, and Shipping */}
+                  {currentDestination && (
+                    <div className="checkout-revealed-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      {/* STEP 2: CONTACT INFORMATION AND ADDRESS */}
+                      <div style={{ backgroundColor: '#FFFFFF', padding: '18px 20px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '6px' }}>
+                          <div>
+                            <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700, display: 'block' }}>
+                              Step 2 • Contact &amp; Address
+                            </span>
+                            <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '2px 0 0 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                              Contact &amp; Delivery Address
+                            </h3>
+                          </div>
+                          {matchingSavedAddresses.length > 0 && (
+                            <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              Saved in Client Book
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Contact Fields: Email & Phone */}
+                        <div className="checkout-row-2" style={{ marginBottom: '14px' }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                              Email Address <span style={{ color: '#C53030' }}>*</span>
+                            </label>
+                            <input
+                              type="email"
+                              value={formData.email}
+                              onChange={(e) => handleChange('email', e.target.value)}
+                              placeholder="client@domain.com"
+                              required
+                              style={standardInputStyle}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                              Phone Number (SMS updates) <span style={{ color: '#C53030' }}>*</span>
+                            </label>
+                            <input
+                              type="tel"
+                              value={formData.phone}
+                              onChange={(e) => handleChange('phone', e.target.value)}
+                              placeholder={currentDestination.phonePlaceholder}
+                              required
+                              style={standardInputStyle}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Saved Address Chips for this country */}
+                        {matchingSavedAddresses.length > 0 && (
+                          <div style={{ marginBottom: '14px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                              Saved Addresses for {currentDestination.name}
+                            </span>
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                              {matchingSavedAddresses.map((addr) => {
+                                const isSelected = selectedAddressId === addr.id;
+                                let IconComponent = Home;
+                                if (addr.label.toLowerCase().includes('work')) IconComponent = Briefcase;
+                                if (addr.label.toLowerCase().includes('gift')) IconComponent = Gift;
+
+                                return (
+                                  <button
+                                    key={addr.id}
+                                    type="button"
+                                    onClick={() => handleSelectSavedAddress(addr)}
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                      padding: '6px 12px',
+                                      borderRadius: '20px',
+                                      fontSize: '11.5px',
+                                      fontWeight: 600,
+                                      cursor: 'pointer',
+                                      border: '1.5px solid',
+                                      borderColor: isSelected ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                      backgroundColor: isSelected ? 'var(--color-deep-espresso)' : '#FAF8F5',
+                                      color: isSelected ? '#FFFFFF' : 'var(--color-deep-espresso)',
+                                      transition: 'all 0.2s ease'
+                                    }}
+                                  >
+                                    <IconComponent size={12} />
+                                    <span>{addr.label}</span>
+                                    {isSelected && <Check size={11} />}
+                                  </button>
+                                );
+                              })}
+
+                              <button
+                                type="button"
+                                onClick={handleSelectNewAddress}
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  padding: '6px 12px',
+                                  borderRadius: '20px',
+                                  fontSize: '11.5px',
+                                  fontWeight: 600,
+                                  cursor: 'pointer',
+                                  border: '1.5px dashed',
+                                  borderColor: selectedAddressId === 'new' ? 'var(--color-gold-dark)' : 'var(--color-border)',
+                                  backgroundColor: selectedAddressId === 'new' ? '#FAF5EB' : '#FFFFFF',
+                                  color: selectedAddressId === 'new' ? 'var(--color-gold-dark)' : '#685C50'
+                                }}
+                              >
+                                <Plus size={12} />
+                                <span>Custom Address</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Active Saved Address Summary Box (when not manually editing) */}
+                        {!isEditingAddress && activeSaved && activeSaved.countryCode === selectedCountryCode && (
+                          <div style={{
+                            padding: '14px',
+                            backgroundColor: '#FAF8F5',
+                            borderRadius: '10px',
+                            border: '1px solid var(--color-border)',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            gap: '10px',
+                            marginBottom: '10px'
+                          }}>
+                            <div>
+                              <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
+                                {formData.fullName} • {activeSaved.label}
+                              </strong>
+                              <span style={{ fontSize: '12px', color: '#685C50', display: 'block' }}>
+                                {formData.address}, {formData.city}{formData.state ? `, ${formData.state}` : ''} {formData.postalCode}
+                              </span>
+                              <span style={{ fontSize: '11.5px', color: '#8C8074', display: 'block', marginTop: '2px' }}>
+                                {currentDestination.flag} {currentDestination.name} • Tel: {formData.phone}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => setIsEditingAddress(true)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: 'var(--color-gold-dark)',
+                                fontSize: '11.5px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                padding: '4px 6px',
+                                textDecoration: 'underline'
+                              }}
+                            >Edit</button>
+                          </div>
+                        )}
+
+                        {/* Address Input Fields */}
+                        {(isEditingAddress || !activeSaved || activeSaved.countryCode !== selectedCountryCode || selectedAddressId === 'new') && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                Recipient Full Name <span style={{ color: '#C53030' }}>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.fullName}
+                                onChange={(e) => handleChange('fullName', e.target.value)}
+                                placeholder="Full name of recipient"
+                                required
+                                style={standardInputStyle}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                Street Address &amp; Suite / Apt <span style={{ color: '#C53030' }}>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.address}
+                                onChange={(e) => handleChange('address', e.target.value)}
+                                placeholder="House / building number, street name, suite or apartment"
+                                required
+                                style={standardInputStyle}
+                              />
+                            </div>
+
+                            <div className="checkout-row-3">
+                              <div>
+                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                  City / Town <span style={{ color: '#C53030' }}>*</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  value={formData.city}
+                                  onChange={(e) => handleChange('city', e.target.value)}
+                                  placeholder="City"
+                                  required
+                                  style={standardInputStyle}
+                                />
+                              </div>
+
+                              <div>
+                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                  {currentDestination.stateLabel} {currentDestination.stateRequired && <span style={{ color: '#C53030' }}>*</span>}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={formData.state}
+                                  onChange={(e) => handleChange('state', e.target.value)}
+                                  placeholder={currentDestination.statePlaceholder}
+                                  required={currentDestination.stateRequired}
+                                  style={standardInputStyle}
+                                />
+                              </div>
+
+                              <div>
+                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                  {currentDestination.postalCodeLabel} {currentDestination.postalCodeRequired && <span style={{ color: '#C53030' }}>*</span>}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={formData.postalCode}
+                                  onChange={(e) => handleChange('postalCode', e.target.value)}
+                                  placeholder={currentDestination.postalCodePlaceholder}
+                                  required={currentDestination.postalCodeRequired}
+                                  style={standardInputStyle}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Save to Client Book Prompt */}
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '10px 12px',
+                              backgroundColor: '#FAF8F5',
+                              borderRadius: '8px',
+                              border: '1px solid var(--color-border)',
+                              flexWrap: 'wrap',
+                              gap: '8px',
+                              marginTop: '4px'
+                            }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '11.5px', color: 'var(--color-deep-espresso)', fontWeight: 600 }}>
+                                  Save to Client Book:
+                                </span>
+                                <div style={{ display: 'flex', gap: '4px' }}>
+                                  {['Home', 'Work', 'Gift', 'Other'].map(lbl => (
+                                    <button
+                                      key={lbl}
+                                      type="button"
+                                      onClick={() => setSaveAsLabel(lbl)}
+                                      style={{
+                                        padding: '2px 8px',
+                                        borderRadius: '4px',
+                                        fontSize: '11px',
+                                        fontWeight: 600,
+                                        border: '1px solid',
+                                        borderColor: saveAsLabel === lbl ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                        backgroundColor: saveAsLabel === lbl ? 'var(--color-deep-espresso)' : '#FFFFFF',
+                                        color: saveAsLabel === lbl ? '#FFFFFF' : '#685C50',
+                                        cursor: 'pointer'
+                                      }}
+                                    >
+                                      {lbl}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={handleSaveAddressToBook}
+                                style={{
+                                  padding: '5px 12px',
+                                  borderRadius: '6px',
+                                  backgroundColor: 'var(--color-gold-dark)',
+                                  color: '#FFFFFF',
+                                  fontSize: '11px',
+                                  fontWeight: 600,
+                                  border: 'none',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Save Address
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* STEP 3: DELIVERY OPTIONS (Progressively revealed once address is complete) */}
+                      <div style={{
+                        backgroundColor: '#FFFFFF',
+                        padding: '18px 20px',
+                        borderRadius: '14px',
+                        border: '1px solid var(--color-border)',
+                        boxSizing: 'border-box'
+                      }}>
+                        <div style={{ marginBottom: '12px' }}>
+                          <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700, display: 'block' }}>
+                            Step 3 • Courier Options
+                          </span>
+                          <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '2px 0 0 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            Available Shipping to {currentDestination.name}
+                          </h3>
+                        </div>
+
+                        {!isContactAndAddressValid ? (
+                          <div style={{
+                            padding: '14px',
+                            borderRadius: '8px',
+                            backgroundColor: '#FAF8F5',
+                            border: '1px dashed var(--color-border)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            color: '#685C50',
+                            fontSize: '12px'
+                          }}>
+                            <Truck size={16} color="#8C8074" flexShrink={0} />
+                            <span>
+                              Complete your recipient name and delivery address above to reveal available courier speeds.
+                            </span>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {availableShippingOptions.map((opt) => {
+                              const isSelected = formData.deliveryMethod === opt.id;
+                              const optCost = Math.round(opt.priceGbp * rate);
+                              const isFree = optCost === 0;
+
+                              return (
+                                <label
+                                  key={opt.id}
+                                  onClick={() => handleChange('deliveryMethod', opt.id)}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: '12px 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid',
+                                    borderColor: isSelected ? 'var(--color-deep-espresso)' : 'var(--color-border)',
+                                    backgroundColor: isSelected ? '#FAF8F5' : '#FFFFFF',
+                                    cursor: 'pointer',
+                                    boxSizing: 'border-box',
+                                    width: '100%',
+                                    minHeight: '58px',
+                                    gap: '12px',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                                    <input
+                                      type="radio"
+                                      name="deliveryMethod"
+                                      checked={isSelected}
+                                      onChange={() => { }}
+                                      style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                    />
+                                    <div style={{ minWidth: 0 }}>
+                                      <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                                        {opt.name}
+                                      </strong>
+                                      <span style={{ fontSize: '11.5px', color: '#8C8074' }}>
+                                        {opt.timeframe}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <span style={{ fontSize: '12.5px', fontWeight: 700, color: isFree ? '#2E7D32' : 'var(--color-deep-espresso)', flexShrink: 0 }}>
+                                    {isFree ? 'Free' : formatPrice(optCost)}
+                                  </span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Continue to Payment Button */}
+                      <button
+                        type="button"
+                        onClick={handleProceedToPayment}
+                        disabled={!canProceedToPayment}
+                        className="btn-primary-editorial"
+                        style={{
+                          width: '100%',
+                          minHeight: '52px',
+                          height: '52px',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          padding: '14px 20px',
+                          fontSize: '14px',
+                          fontWeight: 700,
+                          cursor: canProceedToPayment ? 'pointer' : 'not-allowed',
+                          opacity: canProceedToPayment ? 1 : 0.6
+                        }}
+                      >
+                        <span>Continue to Payment</span>
+                        <ArrowRight size={16} />
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* ══════════════════════════════════════════════════════════
+                      STEP 2: PAYMENT METHOD & AUTHORIZATION
+                      ══════════════════════════════════════════════════════════ */}
+              {checkoutStep === 2 && (
+                <>
+                  {/* Active Delivery Summary Banner */}
+                  <div style={{
+                    padding: '12px 16px',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '12px',
+                    border: '1px solid var(--color-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    boxSizing: 'border-box'
+                  }}>
+                    <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                      <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Delivering To {currentDestination ? `${currentDestination.flag} ${currentDestination.name}` : ''} ({currentAddressTag})
+                      </span>
+                      <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {formData.fullName} • {formData.address}, {formData.city}{formData.state ? `, ${formData.state}` : ''} {formData.postalCode}
+                      </strong>
+                      <span style={{ fontSize: '11px', color: '#2E7D32', fontWeight: 500 }}>
+                        {selectedShippingOption
+                          ? `${selectedShippingOption.name} (${selectedShippingOption.priceGbp === 0 ? 'Free' : formatPrice(shippingCost)})`
+                          : 'Free Delivery'}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutStep(1)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--color-gold-dark)',
+                        fontSize: '11.5px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        flexShrink: 0
+                      }}
+                    >
+                      Change
+                    </button>
+                  </div>
+
+                  {/* Payment Options Selection */}
+                  <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                      <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        Payment method
+                      </h3>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#685C50' }}>
+                        <Lock size={12} color="#1E7E34" />
+                        <span>Encrypted &amp; Secure</span>
+                      </div>
+                    </div>
+
+                    {/* Recommended / Initial Eligible Methods */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {initialMethods.map(methodId => renderPaymentOption(methodId))}
+                    </div>
+
+                    {/* Expandable "More payment options" row for remaining eligible methods */}
+                    {remainingMethods.length > 0 && (
+                      <div style={{ marginTop: '12px' }}>
+                        <button
+                          type="button"
+                          onClick={() => setShowMorePaymentOptions(prev => !prev)}
+                          className="btn-more-payment-options"
+                          aria-expanded={showMorePaymentOptions}
+                          id="btn-more-payment-options"
+                        >
+                          <span>{showMorePaymentOptions ? 'Fewer payment options' : 'More payment options'}</span>
+                          {showMorePaymentOptions ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        </button>
+
+                        {showMorePaymentOptions && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                            {remainingMethods.map(methodId => renderPaymentOption(methodId))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Step 2 Action Buttons */}
@@ -3007,9 +3948,9 @@ export default function CheckoutModal({
                         <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
                       ) : (
                         <>
-                          <Lock size={14} style={{ flexShrink: 0 }} />
+                          <Lock size={15} style={{ flexShrink: 0 }} />
                           <span style={{ whiteSpace: 'nowrap' }}>
-                            {getPaymentButtonLabel(formData.paymentMethod)}
+                            Authorize Payment • {formatPrice(total)}
                           </span>
                         </>
                       )}
@@ -3105,8 +4046,14 @@ export default function CheckoutModal({
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50', width: '100%', boxSizing: 'border-box' }}>
                     <span>Delivery</span>
-                    <strong style={{ color: !formData.deliveryMethod ? '#8C8074' : (shippingCost === 0 ? '#1E7E34' : 'var(--color-deep-espresso)') }}>
-                      {!formData.deliveryMethod ? 'Calculated at delivery' : (shippingCost === 0 ? 'Complimentary' : formatPrice(shippingCost))}
+                    <strong style={{ color: !selectedCountryCode ? '#8C8074' : (shippingCost === 0 ? '#1E7E34' : 'var(--color-deep-espresso)') }}>
+                      {!selectedCountryCode
+                        ? 'Select destination'
+                        : (!formData.deliveryMethod
+                          ? 'Select courier speed'
+                          : (shippingCost === 0 ? 'Free' : formatPrice(shippingCost))
+                        )
+                      }
                     </strong>
                   </div>
 
@@ -3127,7 +4074,10 @@ export default function CheckoutModal({
                         Total Due
                       </strong>
                       <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
-                        Includes UK VAT
+                        {selectedCountryCode === 'GB'
+                          ? 'Includes UK VAT (20%)'
+                          : 'Excludes local customs & import duties'
+                        }
                       </span>
                     </div>
                     <strong style={{ fontSize: '22px', color: 'var(--color-deep-espresso)', fontFamily: 'var(--font-display)' }}>
@@ -3136,60 +4086,67 @@ export default function CheckoutModal({
                   </div>
                 </div>
 
-                {/* Contextual Step CTA on Right Column */}
-                {checkoutStep === 1 ? (
-                  <button
-                    type="button"
-                    className="btn-primary-editorial"
-                    onClick={handleProceedToPayment}
-                    style={{
-                      width: '100%',
-                      minHeight: '52px',
-                      height: '52px',
-                      marginTop: '18px',
-                      padding: '14px 20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      fontWeight: 700,
-                      whiteSpace: 'nowrap',
-                      borderRadius: '8px'
-                    }}
-                  >
-                    <span>Continue to Payment</span>
-                    <ArrowRight size={15} />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="checkout-btn-submit"
-                    onClick={handlePlaceOrder}
-                    disabled={isSubmitting || cartItems.length === 0}
-                    style={{
-                      width: '100%',
-                      minHeight: '52px',
-                      height: '52px',
-                      marginTop: '18px',
-                      padding: '14px 20px',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: 700
-                    }}
-                  >
-                    {isSubmitting ? (
-                      <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
-                    ) : (
-                      <>
-                        <Lock size={15} style={{ flexShrink: 0 }} />
-                        <span style={{ whiteSpace: 'nowrap' }}>
-                          Authorize Payment
-                        </span>
-                      </>
-                    )}
-                  </button>
-                )}
+                {/* Desktop Contextual Step CTA on Right Column (Hidden on mobile to avoid duplicate buttons) */}
+                <div className="checkout-summary-cta">
+                  {checkoutStep === 1 ? (
+                    <button
+                      type="button"
+                      className="btn-primary-editorial"
+                      onClick={handleProceedToPayment}
+                      disabled={!canProceedToPayment}
+                      style={{
+                        width: '100%',
+                        minHeight: '52px',
+                        height: '52px',
+                        marginTop: '18px',
+                        padding: '14px 20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        whiteSpace: 'nowrap',
+                        borderRadius: '8px',
+                        cursor: canProceedToPayment ? 'pointer' : 'not-allowed',
+                        opacity: canProceedToPayment ? 1 : 0.6
+                      }}
+                    >
+                      <span>Continue to Payment</span>
+                      <ArrowRight size={15} />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="checkout-btn-submit"
+                      onClick={handlePlaceOrder}
+                      disabled={isSubmitting || cartItems.length === 0}
+                      style={{
+                        width: '100%',
+                        minHeight: '52px',
+                        height: '52px',
+                        marginTop: '18px',
+                        padding: '14px 20px',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        fontWeight: 700
+                      }}
+                    >
+                      {isSubmitting ? (
+                        <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
+                      ) : (
+                        <>
+                          <Lock size={15} style={{ flexShrink: 0 }} />
+                          <span style={{ whiteSpace: 'nowrap' }}>
+                            Authorize Payment • {formatPrice(total)}
+                          </span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+
+
               </div>
             </div>
 
