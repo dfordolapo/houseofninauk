@@ -577,44 +577,44 @@ export default function CheckoutModal({
   };
 
   const getPaymentButtonLabel = (method) => {
-    if (!method) return `Select Payment Method (${formatPrice(total)})`;
+    if (!method) return 'Select Payment Method';
     switch (method) {
       case 'apple_pay':
-        return `Pay ${formatPrice(total)} with Apple Pay`;
+        return 'Pay with Apple Pay';
       case 'google_pay':
-        return `Pay ${formatPrice(total)} with Google Pay`;
+        return 'Pay with Google Pay';
       case 'revolut':
-        return `Pay ${formatPrice(total)} with Revolut Pay`;
+        return 'Pay with Revolut Pay';
       case 'amazon_pay':
-        return `Pay ${formatPrice(total)} with Amazon Pay`;
+        return 'Pay with Amazon Pay';
       case 'klarna':
-        return `Pay 1st Part ${formatPrice(total / 3)} with Klarna`;
+        return 'Pay with Klarna';
       case 'bancontact':
-        return `Pay ${formatPrice(total)} with Bancontact`;
+        return 'Pay with Bancontact';
       case 'ideal':
-        return `Proceed with iDEAL (${formatPrice(total)})`;
+        return 'Proceed with iDEAL';
       case 'blik':
-        return `Confirm BLIK Payment (${formatPrice(total)})`;
+        return 'Confirm BLIK Payment';
       case 'mbway':
-        return `Authorize with MB WAY (${formatPrice(total)})`;
+        return 'Authorize with MB WAY';
       case 'eps':
-        return `Proceed to Bank via EPS (${formatPrice(total)})`;
+        return 'Proceed to Bank via EPS';
       case 'satispay':
-        return `Authorize Satispay (${formatPrice(total)})`;
+        return 'Authorize Satispay';
       case 'kakao_pay':
-        return `Pay with Kakao Pay (${formatPrice(total)})`;
+        return 'Pay with Kakao Pay';
       case 'naver_pay':
-        return `Pay with Naver Pay (${formatPrice(total)})`;
+        return 'Pay with Naver Pay';
       case 'samsung_pay':
-        return `Pay with Samsung Pay (${formatPrice(total)})`;
+        return 'Pay with Samsung Pay';
       case 'payco':
-        return `Pay with PAYCO (${formatPrice(total)})`;
+        return 'Pay with PAYCO';
       case 'bank':
-        return `Confirm Bank Wire Booking (${formatPrice(total)})`;
+        return 'Confirm Bank Wire Booking';
       case 'card':
-        return `Pay ${formatPrice(total)} with Card`;
+        return 'Pay with Card';
       default:
-        return `Select Payment Method (${formatPrice(total)})`;
+        return 'Select Payment Method';
     }
   };
 
@@ -1397,6 +1397,7 @@ export default function CheckoutModal({
                     style={{
                       width: '100%',
                       height: '48px',
+                      borderRadius: '8px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -2997,7 +2998,7 @@ export default function CheckoutModal({
 
                     <button
                       type="button"
-                      className="btn-primary-editorial checkout-btn-submit"
+                      className="checkout-btn-submit"
                       onClick={handlePlaceOrder}
                       disabled={isSubmitting || cartItems.length === 0}
                     >
@@ -3160,7 +3161,7 @@ export default function CheckoutModal({
                 ) : (
                   <button
                     type="button"
-                    className="btn-primary-editorial"
+                    className="checkout-btn-submit"
                     onClick={handlePlaceOrder}
                     disabled={isSubmitting || cartItems.length === 0}
                     style={{
@@ -3168,13 +3169,7 @@ export default function CheckoutModal({
                       height: '48px',
                       marginTop: '18px',
                       padding: '0 14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '6px',
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      whiteSpace: 'nowrap'
+                      borderRadius: '8px'
                     }}
                   >
                     {isSubmitting ? (
@@ -3183,13 +3178,7 @@ export default function CheckoutModal({
                       <>
                         <Lock size={14} style={{ flexShrink: 0 }} />
                         <span style={{ whiteSpace: 'nowrap' }}>
-                          {formData.paymentMethod === 'apple_pay'
-                            ? `Pay ${formatPrice(total)} with Apple Pay`
-                            : formData.paymentMethod === 'google_pay'
-                              ? `Pay ${formatPrice(total)} with Google Pay`
-                              : formData.paymentMethod === 'klarna'
-                                ? `Pay 1st Part ${formatPrice(total / 3)} with Klarna`
-                                : `Authorize & Pay ${formatPrice(total)}`}
+                          {getPaymentButtonLabel(formData.paymentMethod)}
                         </span>
                       </>
                     )}
