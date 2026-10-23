@@ -8566,12 +8566,21 @@ video::-moz-media-controls {
   font-size: 26px;
   color: var(--color-deep-espresso);
   line-height: 1;
+  white-space: nowrap;
+}
+
+.checkout-header-branding {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 0;
 }
 
 .checkout-step-icons {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex: 0 0 auto;
 }
 
 .checkout-step-icon-btn {
@@ -8582,12 +8591,13 @@ video::-moz-media-controls {
   background: transparent;
   border: 1px solid transparent;
   border-radius: 20px;
-  padding: 5px 10px;
+  padding: 5px 11px;
   color: #8C8074;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 11.5px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .checkout-step-icon-btn.active {
@@ -8608,22 +8618,180 @@ video::-moz-media-controls {
   background: var(--color-border);
 }
 
-@media (max-width: 540px) {
-  .step-icon-label {
-    display: none !important;
-  }
-  .checkout-step-icon-btn {
-    width: 28px !important;
-    height: 28px !important;
-    padding: 0 !important;
-    border-radius: 50% !important;
-  }
-  .checkout-step-icon-line {
-    width: 8px !important;
-  }
-  .checkout-brand-title {
-    font-size: 22px !important;
-  }
+.checkout-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1 1 0;
+}
+
+/* Category Filter Tabs */
+.checkout-category-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid var(--color-border-light);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.checkout-category-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.checkout-category-tab-btn {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  background-color: #FAF7F2;
+  color: #685C50;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.checkout-category-tab-btn.active {
+  background-color: var(--color-deep-espresso);
+  color: #FFFFFF;
+  border-color: var(--color-deep-espresso);
+  font-weight: 700;
+}
+
+/* Payment Method Options (Single Line Titles, Zero Cramping) */
+.payment-option-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  cursor: pointer;
+  gap: 12px;
+  min-height: 54px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.payment-option-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.payment-option-radio {
+  accent-color: var(--color-deep-espresso);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.payment-option-text {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.payment-option-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-deep-espresso);
+  display: block;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.25;
+}
+
+.payment-option-subtitle {
+  font-size: 11px;
+  color: #8C8074;
+  display: block;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.2;
+  margin-top: 1px;
+}
+
+.payment-badge-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.card-chip-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: #FFFFFF;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Step 2 Bottom Action Buttons */
+.checkout-step2-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+
+.checkout-btn-back {
+  height: 48px;
+  padding: 0 18px;
+  background-color: #FFFFFF;
+  color: var(--color-deep-espresso);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.checkout-btn-back:hover {
+  background-color: #FAF8F5;
+  border-color: var(--color-deep-espresso);
+}
+
+.checkout-btn-submit {
+  flex: 1;
+  height: 48px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.checkout-express-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
 .checkout-grid-layout {
@@ -10198,12 +10366,161 @@ video::-moz-media-controls {
   }
 
   .checkout-modal-header {
-    padding: 12px 14px !important;
+    padding: 10px 14px !important;
     flex-shrink: 0 !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 50 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    min-height: 48px !important;
     overflow-x: hidden !important;
+  }
+
+  .checkout-header-branding {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .checkout-brand-title {
+    font-size: 19px !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+  }
+
+  /* Icons positioned with generous separation from House of Nina */
+  .checkout-step-icons {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    margin-right: 6px !important;
+    gap: 4px !important;
+  }
+
+  .checkout-step-icon-btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    gap: 4px !important;
+    border-radius: 14px !important;
+  }
+
+  .checkout-step-icon-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .checkout-step-icon-line {
+    width: 8px !important;
+  }
+
+  .step-icon-label {
+    display: inline-block !important;
+    font-size: 10px !important;
+  }
+
+  .checkout-header-actions {
+    flex: 0 0 auto !important;
+  }
+
+  .checkout-close-btn {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  /* Wrapped category tabs — Bank Wire never cut off on right */
+  .checkout-category-tabs {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+    gap: 6px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .checkout-category-tab-btn {
+    padding: 4px 9px !important;
+    font-size: 10.5px !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* Payment option cards on mobile: uncramped, single-line titles */
+  .payment-option-label {
+    padding: 10px 10px !important;
+    gap: 8px !important;
+    min-height: 48px !important;
+  }
+
+  .payment-option-info {
+    gap: 8px !important;
+  }
+
+  .payment-option-radio {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  .payment-option-title {
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .payment-option-subtitle {
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .payment-badge-container {
+    gap: 3px !important;
+  }
+
+  .payment-badge-container svg {
+    max-height: 15px !important;
+    width: auto !important;
+  }
+
+  .card-chip-badge {
+    font-size: 8px !important;
+    padding: 1px 4px !important;
+  }
+
+  .payment-badge-revolut,
+  .payment-badge-amazon,
+  .payment-badge-klarna {
+    font-size: 9.5px !important;
+    padding: 2px 5px !important;
+  }
+
+  .apple-pay-logo-wrapper svg {
+    height: 16px !important;
+    width: auto !important;
+  }
+
+  .google-pay-logo-wrapper svg {
+    height: 14px !important;
+    width: auto !important;
+  }
+
+  /* Step 2 Action Buttons: Stacked column-reverse so neither button is cut off */
+  .checkout-step2-actions {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .checkout-btn-back,
+  .checkout-btn-submit {
+    width: 100% !important;
+    height: 46px !important;
+    font-size: 12.5px !important;
+    box-sizing: border-box !important;
+  }
+
+  .checkout-express-btn-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
   }
 
   .checkout-grid-layout {

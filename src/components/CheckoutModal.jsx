@@ -73,8 +73,10 @@ function KlarnaBadge() {
       display: 'inline-flex',
       alignItems: 'center',
       fontFamily: 'system-ui, -apple-system, sans-serif',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)'
-    }}>
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      whiteSpace: 'nowrap',
+      flexShrink: 0
+    }} className="payment-badge-klarna">
       Klarna.
     </span>
   );
@@ -94,9 +96,11 @@ function RevolutPayBadge() {
       display: 'inline-flex',
       alignItems: 'center',
       gap: '4px',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      <span style={{ color: '#0075FF', fontWeight: 900 }}>R</span>evolut <span style={{ fontSize: '9px', backgroundColor: '#0075FF', color: '#FFFFFF', padding: '1px 4px', borderRadius: '3px', fontWeight: 700 }}>PAY</span>
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      whiteSpace: 'nowrap',
+      flexShrink: 0
+    }} className="payment-badge-revolut">
+      <span style={{ color: '#0075FF', fontWeight: 900, whiteSpace: 'nowrap' }}>R</span><span style={{ whiteSpace: 'nowrap' }}>evolut</span> <span style={{ fontSize: '8.5px', backgroundColor: '#0075FF', color: '#FFFFFF', padding: '1px 4px', borderRadius: '3px', fontWeight: 700, whiteSpace: 'nowrap' }}>PAY</span>
     </span>
   );
 }
@@ -115,9 +119,11 @@ function AmazonPayBadge() {
       display: 'inline-flex',
       alignItems: 'center',
       gap: '2px',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      amazon<span style={{ color: '#FF9900', fontWeight: 800 }}>pay</span>
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      whiteSpace: 'nowrap',
+      flexShrink: 0
+    }} className="payment-badge-amazon">
+      <span style={{ whiteSpace: 'nowrap' }}>amazon<span style={{ color: '#FF9900', fontWeight: 800 }}>pay</span></span>
     </span>
   );
 }
@@ -125,7 +131,7 @@ function AmazonPayBadge() {
 /** Regional Method Badges */
 function BancontactBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#003A70', color: '#FFCC00', letterSpacing: '0.02em' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#003A70', color: '#FFCC00', letterSpacing: '0.02em', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       Bancontact
     </span>
   );
@@ -133,7 +139,7 @@ function BancontactBadge() {
 
 function IdealBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#CC0066', color: '#FFFFFF' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#CC0066', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       iDEAL
     </span>
   );
@@ -141,7 +147,7 @@ function IdealBadge() {
 
 function BlikBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E60000', color: '#FFFFFF', letterSpacing: '0.05em' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E60000', color: '#FFFFFF', letterSpacing: '0.05em', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       BLIK
     </span>
   );
@@ -149,7 +155,7 @@ function BlikBadge() {
 
 function MbWayBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E30613', color: '#FFFFFF' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E30613', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       MB WAY
     </span>
   );
@@ -157,7 +163,7 @@ function MbWayBadge() {
 
 function EpsBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E30613', color: '#FFFFFF' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#E30613', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       eps
     </span>
   );
@@ -165,7 +171,7 @@ function EpsBadge() {
 
 function SatispayBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FD3743', color: '#FFFFFF' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FD3743', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       satispay
     </span>
   );
@@ -173,7 +179,7 @@ function SatispayBadge() {
 
 function KakaoPayBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FFEB00', color: '#3C1E1E' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FFEB00', color: '#3C1E1E', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       kakao pay
     </span>
   );
@@ -181,7 +187,7 @@ function KakaoPayBadge() {
 
 function NaverPayBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#03C75A', color: '#FFFFFF' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#03C75A', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       N Pay
     </span>
   );
@@ -189,7 +195,7 @@ function NaverPayBadge() {
 
 function SamsungPayBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#0C2340', color: '#FFFFFF' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#0C2340', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       SAMSUNG pay
     </span>
   );
@@ -197,7 +203,7 @@ function SamsungPayBadge() {
 
 function PaycoBadge() {
   return (
-    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FA142B', color: '#FFFFFF' }}>
+    <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 7px', borderRadius: '4px', background: '#FA142B', color: '#FFFFFF', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>
       PAYCO
     </span>
   );
@@ -929,14 +935,14 @@ export default function CheckoutModal({
       >
         {/* STICKY TOP HEADER PINNED WITH CLOSE BUTTON & ICON STEP PROGRESS */}
         <div className="checkout-modal-header">
-          <div className="checkout-header-branding" style={{ display: 'flex', alignItems: 'center', minWidth: 0, flex: '1 1 0' }}>
+          <div className="checkout-header-branding">
             <span className="checkout-brand-title">
               House of Nina
             </span>
           </div>
 
-          {/* Luxury Compact Icon Step Indicator (Never Spills or Overflows) */}
-          <div className="checkout-step-icons" style={{ flex: '0 0 auto', display: 'flex', justifyContent: 'center' }}>
+          {/* Luxury Compact Icon Step Indicator (Never Crowds House of Nina on Mobile) */}
+          <div className="checkout-step-icons">
             <button
               type="button"
               onClick={() => setCheckoutStep(1)}
@@ -962,8 +968,8 @@ export default function CheckoutModal({
             </button>
           </div>
 
-          {/* Close Button Pinned at Top Right — Perfectly Centered in its flex column and Never Cut Off */}
-          <div style={{ flex: '1 1 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          {/* Close Button Pinned at Top Right */}
+          <div className="checkout-header-actions">
             <button
               type="button"
               className="checkout-close-btn"
@@ -1612,11 +1618,7 @@ export default function CheckoutModal({
                     </div>
 
                     {/* 4 Express Buttons: Apple Pay, Google Pay, Revolut Pay, Amazon Pay */}
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                      gap: '8px'
-                    }}>
+                    <div className="checkout-express-btn-grid">
                       <button
                         type="button"
                         onClick={() => {
@@ -1742,15 +1744,7 @@ export default function CheckoutModal({
                     </div>
 
                     {/* Region & Category Filter Tabs */}
-                    <div style={{
-                      display: 'flex',
-                      gap: '6px',
-                      overflowX: 'auto',
-                      paddingBottom: '8px',
-                      marginBottom: '14px',
-                      scrollbarWidth: 'none',
-                      borderBottom: '1px solid var(--color-border-light)'
-                    }}>
+                    <div className="checkout-category-tabs">
                       {[
                         { id: 'all', label: 'All' },
                         { id: 'uk_global', label: 'Popular' },
@@ -1762,19 +1756,7 @@ export default function CheckoutModal({
                           key={cat.id}
                           type="button"
                           onClick={() => setPaymentCategory(cat.id)}
-                          style={{
-                            padding: '5px 12px',
-                            borderRadius: '20px',
-                            fontSize: '11px',
-                            fontWeight: paymentCategory === cat.id ? 700 : 500,
-                            backgroundColor: paymentCategory === cat.id ? 'var(--color-deep-espresso)' : '#FAF7F2',
-                            color: paymentCategory === cat.id ? '#FFFFFF' : '#685C50',
-                            border: '1px solid',
-                            borderColor: paymentCategory === cat.id ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                            cursor: 'pointer',
-                            whiteSpace: 'nowrap',
-                            transition: 'all 0.15s ease'
-                          }}
+                          className={`checkout-category-tab-btn ${paymentCategory === cat.id ? 'active' : ''}`}
                         >
                           {cat.label}
                         </button>
@@ -1794,26 +1776,28 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('apple_pay')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'apple_pay'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">
                                   Apple Pay
                                 </strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                <span className="payment-option-subtitle">
                                   Touch ID / Face ID
                                 </span>
                               </div>
                             </div>
-                            <ApplePayLogo height={22} color="#1C1614" />
+                            <div className="payment-badge-container apple-pay-logo-wrapper">
+                              <ApplePayLogo height={20} color="#1C1614" />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'apple_pay' && (
@@ -1886,26 +1870,28 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('google_pay')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'google_pay'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">
                                   Google Pay
                                 </strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                <span className="payment-option-subtitle">
                                   Google Wallet &amp; saved cards
                                 </span>
                               </div>
                             </div>
-                            <GooglePayLogo height={20} />
+                            <div className="payment-badge-container google-pay-logo-wrapper">
+                              <GooglePayLogo height={18} />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'google_pay' && (
@@ -1977,30 +1963,30 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('card')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'card'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">
                                   Credit or Debit Card
                                 </strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                <span className="payment-option-subtitle">
                                   Visa, Mastercard, American Express
                                 </span>
                               </div>
                             </div>
 
-                            <div style={{ display: 'flex', gap: '4px', flexShrink: 0, alignItems: 'center' }}>
-                              <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #D0D8E4', color: '#1A1F71' }}>VISA</span>
-                              <span style={{ fontSize: '9.5px', fontWeight: 700, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #E8DBD0', color: '#EB001B' }}>MC</span>
-                              <span style={{ fontSize: '9.5px', fontWeight: 800, padding: '2px 5px', borderRadius: '3px', background: '#FFFFFF', border: '1px solid #C7DFEE', color: '#006FCF' }}>AMEX</span>
+                            <div className="payment-badge-container">
+                              <span className="card-chip-badge" style={{ border: '1px solid #D0D8E4', color: '#1A1F71' }}>VISA</span>
+                              <span className="card-chip-badge" style={{ border: '1px solid #E8DBD0', color: '#EB001B' }}>MC</span>
+                              <span className="card-chip-badge" style={{ border: '1px solid #C7DFEE', color: '#006FCF' }}>AMEX</span>
                             </div>
                           </label>
 
@@ -2084,26 +2070,28 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('revolut')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'revolut'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">
                                   Revolut Pay
                                 </strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                <span className="payment-option-subtitle">
                                   Instant in-app approval
                                 </span>
                               </div>
                             </div>
-                            <RevolutPayBadge />
+                            <div className="payment-badge-container">
+                              <RevolutPayBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'revolut' && (
@@ -2175,24 +2163,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('amazon_pay')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'amazon_pay'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Amazon Pay</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                                  Checkout with stored Amazon address &amp; payment methods
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">Amazon Pay</strong>
+                                <span className="payment-option-subtitle">
+                                  Checkout with stored Amazon cards
                                 </span>
                               </div>
                             </div>
-                            <AmazonPayBadge />
+                            <div className="payment-badge-container">
+                              <AmazonPayBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'amazon_pay' && (
@@ -2240,26 +2230,28 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('klarna')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'klarna'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">
                                   Klarna
                                 </strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                <span className="payment-option-subtitle">
                                   Pay in 3 installments • 0% APR
                                 </span>
                               </div>
                             </div>
-                            <KlarnaBadge />
+                            <div className="payment-badge-container">
+                              <KlarnaBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'klarna' && (
@@ -2334,24 +2326,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('bancontact')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bancontact'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Bancontact</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">Bancontact</strong>
+                                <span className="payment-option-subtitle">
                                   Belgian card &amp; Payconiq
                                 </span>
                               </div>
                             </div>
-                            <BancontactBadge />
+                            <div className="payment-badge-container">
+                              <BancontactBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'bancontact' && (
@@ -2389,24 +2383,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('ideal')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'ideal'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>iDEAL</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">iDEAL</strong>
+                                <span className="payment-option-subtitle">
                                   Dutch online banking
                                 </span>
                               </div>
                             </div>
-                            <IdealBadge />
+                            <div className="payment-badge-container">
+                              <IdealBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'ideal' && (
@@ -2448,24 +2444,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('blik')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'blik'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>BLIK</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">BLIK</strong>
+                                <span className="payment-option-subtitle">
                                   6-digit banking code
                                 </span>
                               </div>
                             </div>
-                            <BlikBadge />
+                            <div className="payment-badge-container">
+                              <BlikBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'blik' && (
@@ -2508,24 +2506,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('mbway')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'mbway'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>MB WAY</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">MB WAY</strong>
+                                <span className="payment-option-subtitle">
                                   Portuguese mobile payment
                                 </span>
                               </div>
                             </div>
-                            <MbWayBadge />
+                            <div className="payment-badge-container">
+                              <MbWayBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'mbway' && (
@@ -2564,24 +2564,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('eps')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'eps'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>EPS Überweisung</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">EPS Überweisung</strong>
+                                <span className="payment-option-subtitle">
                                   Austrian online banking
                                 </span>
                               </div>
                             </div>
-                            <EpsBadge />
+                            <div className="payment-badge-container">
+                              <EpsBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'eps' && (
@@ -2621,24 +2623,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('satispay')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'satispay'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Satispay</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">Satispay</strong>
+                                <span className="payment-option-subtitle">
                                   Italian mobile payment
                                 </span>
                               </div>
                             </div>
-                            <SatispayBadge />
+                            <div className="payment-badge-container">
+                              <SatispayBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'satispay' && (
@@ -2675,24 +2679,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('kakao_pay')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'kakao_pay'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Kakao Pay (카카오페이)</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">Kakao Pay (카카오페이)</strong>
+                                <span className="payment-option-subtitle">
                                   Kakao mobile payment
                                 </span>
                               </div>
                             </div>
-                            <KakaoPayBadge />
+                            <div className="payment-badge-container">
+                              <KakaoPayBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'kakao_pay' && (
@@ -2722,24 +2728,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('naver_pay')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'naver_pay'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Naver Pay (네이버페이)</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">Naver Pay (네이버페이)</strong>
+                                <span className="payment-option-subtitle">
                                   Naver account checkout
                                 </span>
                               </div>
                             </div>
-                            <NaverPayBadge />
+                            <div className="payment-badge-container">
+                              <NaverPayBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'naver_pay' && (
@@ -2769,24 +2777,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('samsung_pay')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'samsung_pay'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>Samsung Pay (삼성페이)</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">Samsung Pay (삼성페이)</strong>
+                                <span className="payment-option-subtitle">
                                   Samsung biometric pay
                                 </span>
                               </div>
                             </div>
-                            <SamsungPayBadge />
+                            <div className="payment-badge-container">
+                              <SamsungPayBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'samsung_pay' && (
@@ -2815,24 +2825,26 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('payco')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'payco'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)', display: 'block' }}>PAYCO (페이코)</strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">PAYCO (페이코)</strong>
+                                <span className="payment-option-subtitle">
                                   PAYCO quick checkout
                                 </span>
                               </div>
                             </div>
-                            <PaycoBadge />
+                            <div className="payment-badge-container">
+                              <PaycoBadge />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'payco' && (
@@ -2861,26 +2873,28 @@ export default function CheckoutModal({
                         }}>
                           <label
                             onClick={() => handleTogglePaymentMethod('bank')}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', cursor: 'pointer', gap: '12px', minHeight: '56px' }}
+                            className="payment-option-label"
                           >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: '1 1 auto' }}>
+                            <div className="payment-option-info">
                               <input
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bank'}
                                 onChange={() => { }}
-                                style={{ accentColor: 'var(--color-deep-espresso)', width: '16px', height: '16px', margin: 0, flexShrink: 0, cursor: 'pointer' }}
+                                className="payment-option-radio"
                               />
-                              <div>
-                                <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)' }}>
+                              <div className="payment-option-text">
+                                <strong className="payment-option-title">
                                   Direct Studio Bank Wire
                                 </strong>
-                                <span style={{ fontSize: '11px', color: '#8C8074' }}>
+                                <span className="payment-option-subtitle">
                                   Barclays studio transfer with reference
                                 </span>
                               </div>
                             </div>
-                            <Building2 size={16} color="#8C8074" style={{ flexShrink: 0 }} />
+                            <div className="payment-badge-container">
+                              <Building2 size={16} color="#8C8074" style={{ flexShrink: 0 }} />
+                            </div>
                           </label>
 
                           {formData.paymentMethod === 'bank' && (
@@ -2971,26 +2985,11 @@ export default function CheckoutModal({
                   </div>
 
                   {/* Step 2 Action Buttons */}
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div className="checkout-step2-actions">
                     <button
                       type="button"
                       onClick={() => setCheckoutStep(1)}
-                      style={{
-                        height: '48px',
-                        padding: '0 18px',
-                        backgroundColor: '#FFFFFF',
-                        color: 'var(--color-deep-espresso)',
-                        border: '1px solid var(--color-border)',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        flexShrink: 0
-                      }}
+                      className="checkout-btn-back"
                     >
                       <ArrowLeft size={15} />
                       <span>Back to Delivery</span>
@@ -2998,21 +2997,9 @@ export default function CheckoutModal({
 
                     <button
                       type="button"
-                      className="btn-primary-editorial"
+                      className="btn-primary-editorial checkout-btn-submit"
                       onClick={handlePlaceOrder}
                       disabled={isSubmitting || cartItems.length === 0}
-                      style={{
-                        flex: 1,
-                        height: '48px',
-                        padding: '0 14px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        fontSize: '13px',
-                        fontWeight: 600,
-                        whiteSpace: 'nowrap'
-                      }}
                     >
                       {isSubmitting ? (
                         <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
