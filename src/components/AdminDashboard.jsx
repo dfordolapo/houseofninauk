@@ -3778,11 +3778,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddProductOpen && (
         <div className="modalOverlay" onClick={() => setIsAddProductOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddProductOpen(false)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Add Product</h2>
             <p className="modalText">Create a new hair unit or silk styling care product.</p>
 
@@ -3849,7 +3844,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '8px' }}>
                 <button type="submit" className="modalBtnSubmit">Create Product</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setIsAddProductOpen(false)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddProductOpen(false)}>Close</button>
               </div>
             </form>
           </div>
@@ -3860,11 +3855,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingProduct && (
         <div className="modalOverlay" onClick={() => setEditingProduct(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingProduct(null)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Edit Product</h2>
             <p className="modalText">Update title, category, price, and stock count.</p>
 
@@ -3928,7 +3918,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '8px' }}>
                 <button type="submit" className="modalBtnSubmit">Save Changes</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setEditingProduct(null)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingProduct(null)}>Close</button>
               </div>
             </form>
           </div>
@@ -3939,11 +3929,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {(isAddCategoryOpen || editingCategory) && (
         <div className="modalOverlay" onClick={() => { setIsAddCategoryOpen(false); setEditingCategory(null); }}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => { setIsAddCategoryOpen(false); setEditingCategory(null); }} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">{editingCategory ? 'Rename Category' : 'New Category'}</h2>
             <p className="modalText">{editingCategory ? `Update name for "${editingCategory}".` : 'Add a new product category.'}</p>
 
@@ -3963,7 +3948,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '8px' }}>
                 <button type="submit" className="modalBtnSubmit">{editingCategory ? 'Save' : 'Create'}</button>
-                <button type="button" className="modalBtnCancel" onClick={() => { setIsAddCategoryOpen(false); setEditingCategory(null); }}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => { setIsAddCategoryOpen(false); setEditingCategory(null); }}>Close</button>
               </div>
             </form>
           </div>
@@ -3974,11 +3959,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddDiscountOpen && (
         <div className="modalOverlay" onClick={() => setIsAddDiscountOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddDiscountOpen(false)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">New Discount Code</h2>
             <p className="modalText">Active discount codes will automatically show the privilege code box in the client cart.</p>
 
@@ -4045,7 +4025,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '8px' }}>
                 <button type="submit" className="modalBtnSubmit">Activate Code</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setIsAddDiscountOpen(false)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddDiscountOpen(false)}>Close</button>
               </div>
             </form>
           </div>
@@ -4056,11 +4036,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingDiscount && (
         <div className="modalOverlay" onClick={() => setEditingDiscount(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingDiscount(null)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Edit Discount Code</h2>
             <p className="modalText">Update code terms, value, or usage limits.</p>
 
@@ -4123,7 +4098,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '8px' }}>
                 <button type="submit" className="modalBtnSubmit">Save Changes</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setEditingDiscount(null)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingDiscount(null)}>Close</button>
               </div>
             </form>
           </div>
@@ -4134,11 +4109,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isDispatchModalOpen && dispatchOrderTarget && (
         <div className="modalOverlay" onClick={() => setIsDispatchModalOpen(false)}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setIsDispatchModalOpen(false)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Ship Order {dispatchOrderTarget.orderNumber}</h2>
             <p className="modalText">Assign courier partner and tracking code to advance lifeline to Shipped.</p>
 
@@ -4181,9 +4151,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 type="button" 
                 className="modalBtnCancel" 
                 onClick={() => setIsDispatchModalOpen(false)}
-              >
-                Cancel
-              </button>
+              >Close</button>
             </div>
           </div>
         </div>
@@ -4193,11 +4161,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingOrder && (
         <div className="modalOverlay" onClick={() => setEditingOrder(null)}>
           <div className="editModalContent" style={{ maxWidth: '580px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingOrder(null)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Edit Order {editingOrder.orderNumber}</h2>
             <p className="modalText">Update recipient information, status, or fulfillment notes.</p>
 
@@ -4294,7 +4257,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '8px' }}>
                 <button type="submit" className="modalBtnSubmit">Save Order</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setEditingOrder(null)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingOrder(null)}>Close</button>
               </div>
             </form>
           </div>
@@ -4305,11 +4268,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {viewOrderDetails && (
         <div className="modalOverlay" onClick={() => setViewOrderDetails(null)}>
           <div className="editModalContent" style={{ maxWidth: '620px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setViewOrderDetails(null)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <div>
                 <h2 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.3rem' }}>{viewOrderDetails.orderNumber}</h2>
@@ -4459,11 +4417,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddReviewOpen && (
         <div className="modalOverlay" onClick={() => setIsAddReviewOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddReviewOpen(false)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Add Client Review</h2>
             <p className="modalText">Record a client testimonial, rating, and website display status.</p>
 
@@ -4547,7 +4500,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '12px' }}>
                 <button type="submit" className="modalBtnSubmit">Create Review</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setIsAddReviewOpen(false)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddReviewOpen(false)}>Close</button>
               </div>
             </form>
           </div>
@@ -4560,11 +4513,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingReview && (
         <div className="modalOverlay" onClick={() => setEditingReview(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingReview(null)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Edit Client Review</h2>
             <p className="modalText">Update testimonial contents, rating, or publication status.</p>
 
@@ -4646,7 +4594,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '12px' }}>
                 <button type="submit" className="modalBtnSubmit">Save Changes</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setEditingReview(null)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingReview(null)}>Close</button>
               </div>
             </form>
           </div>
@@ -4659,11 +4607,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddShippingRateOpen && (
         <div className="modalOverlay" onClick={() => setIsAddShippingRateOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddShippingRateOpen(false)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Add Shipping Rate</h2>
             <p className="modalText">Configure a new courier delivery service and fee.</p>
 
@@ -4720,7 +4663,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '12px' }}>
                 <button type="submit" className="modalBtnSubmit">Add Shipping Rate</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setIsAddShippingRateOpen(false)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddShippingRateOpen(false)}>Close</button>
               </div>
             </form>
           </div>
@@ -4733,11 +4676,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingShippingRate && (
         <div className="modalOverlay" onClick={() => setEditingShippingRate(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingShippingRate(null)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Edit Shipping Rate</h2>
             <p className="modalText">Update courier service title, delivery window, and fee.</p>
 
@@ -4791,7 +4729,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '12px' }}>
                 <button type="submit" className="modalBtnSubmit">Save Changes</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setEditingShippingRate(null)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingShippingRate(null)}>Close</button>
               </div>
             </form>
           </div>
@@ -4804,11 +4742,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddSubscriberOpen && (
         <div className="modalOverlay" onClick={() => setIsAddSubscriberOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddSubscriberOpen(false)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Add VIP Subscriber</h2>
             <p className="modalText">Manually enroll a client into restock alerts or notification drops.</p>
 
@@ -4865,7 +4798,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '12px' }}>
                 <button type="submit" className="modalBtnSubmit">Enroll Subscriber</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setIsAddSubscriberOpen(false)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddSubscriberOpen(false)}>Close</button>
               </div>
             </form>
           </div>
@@ -4878,11 +4811,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingSubscriber && (
         <div className="modalOverlay" onClick={() => setEditingSubscriber(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="adminModalStickyHeader">
-              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingSubscriber(null)} aria-label="Close modal">
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
             <h2 className="modalTitle">Edit Subscriber Details</h2>
             <p className="modalText">Update contact information or assigned waitlist drop.</p>
 
@@ -4937,7 +4865,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="modalActions" style={{ marginTop: '12px' }}>
                 <button type="submit" className="modalBtnSubmit">Save Changes</button>
-                <button type="button" className="modalBtnCancel" onClick={() => setEditingSubscriber(null)}>Cancel</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingSubscriber(null)}>Close</button>
               </div>
             </form>
           </div>
@@ -4948,16 +4876,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {recoveryOrderTarget && (
         <div className="modalOverlay" onClick={() => setRecoveryOrderTarget(null)}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px' }}>
-            <div className="adminModalStickyHeader">
-              <button 
-                type="button" 
-                className="adminModalCloseBtn" 
-                onClick={() => setRecoveryOrderTarget(null)} 
-                aria-label="Close modal"
-              >
-                <X size={18} strokeWidth={2} />
-              </button>
-            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
               <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#D99A83', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16110F' }}>
@@ -5065,14 +4983,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </button>
             </div>
 
-            <div style={{ textAlign: 'center' }}>
+            <div className="modalActions">
               <button 
                 type="button" 
-                className="btnSecondary" 
+                className="modalBtnCancel" 
                 onClick={() => setRecoveryOrderTarget(null)}
-                style={{ fontSize: '0.82rem', padding: '6px 16px' }}
               >
-                Dismiss
+                Close
               </button>
             </div>
           </div>
