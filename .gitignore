@@ -35,6 +35,3 @@ Thumbs.db
 # Scratch directory
 scratch/
 *.bak
-
-# Local Admin (Not pushed to remote)
-src/components/AdminDashboard.jsx

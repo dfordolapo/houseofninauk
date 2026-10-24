@@ -27,6 +27,9 @@ import CheckoutModal from './components/CheckoutModal';
 import OrderSuccessReceipt from './components/OrderSuccessReceipt';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
+// Dynamic import for local Atelier Admin Dashboard
+const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
+
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
 const WISHLIST_STORAGE_KEY = 'house_of_nina_wishlist_v1';
 const SEEN_HERO_STORAGE_KEY = 'house_of_nina_seen_welcome_v1';
@@ -51,9 +54,57 @@ export default function App() {
     }
   });
 
+  // Dedicated Admin Route (/admin, #admin, #/admin, or ?admin=true)
+  const checkIsAdminPath = () => {
+    try {
+      const path = window.location.pathname.toLowerCase().replace(/\/$/, '');
+      const hash = window.location.hash.toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      return path === '/admin' || hash === '#admin' || hash === '#/admin' || params.get('admin') === 'true';
+    } catch {
+      return false;
+    }
+  };
+
+  const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminPath);
+
   useEffect(() => {
     window.openOrderSuccessModal = () => setIsPreviewSuccessOpen(true);
     window.closeOrderSuccessModal = () => setIsPreviewSuccessOpen(false);
+
+    window.openAdminPortal = () => {
+      window.history.pushState(null, '', '/admin');
+      setIsAdminOpen(true);
+    };
+    window.closeAdminPortal = () => {
+      window.history.pushState(null, '', '/');
+      setIsAdminOpen(false);
+    };
+
+    const handleUrlChange = () => {
+      setIsAdminOpen(checkIsAdminPath());
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+
+    const handleKeyDown = (e) => {
+      // Alt + A to toggle Admin
+      if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault();
+        setIsAdminOpen(prev => {
+          const next = !prev;
+          if (next) window.history.pushState(null, '', '/admin');
+          else window.history.pushState(null, '', '/');
+          return next;
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const [cartItems, setCartItems] = useState(() => {
@@ -627,6 +678,39 @@ export default function App() {
         isOpen={isFaqOpen}
         onClose={() => setIsFaqOpen(false)}
       />
+
+      {/* HOUSE OF NINA ADMIN DASHBOARD */}
+      <React.Suspense fallback={null}>
+        {isAdminOpen && (
+          <AdminDashboard
+            isOpen={isAdminOpen}
+            onClose={() => {
+              setIsAdminOpen(false);
+              try {
+                if (window.location.pathname.toLowerCase().startsWith('/admin')) {
+                  window.history.pushState(null, '', '/');
+                } else if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
+                  window.history.pushState(null, '', window.location.pathname + window.location.search);
+                }
+              } catch (e) {
+                console.warn(e);
+              }
+            }}
+            onSwitchToStorefront={() => {
+              setIsAdminOpen(false);
+              try {
+                if (window.location.pathname.toLowerCase().startsWith('/admin')) {
+                  window.history.pushState(null, '', '/');
+                } else if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
+                  window.history.pushState(null, '', window.location.pathname + window.location.search);
+                }
+              } catch (e) {
+                console.warn(e);
+              }
+            }}
+          />
+        )}
+      </React.Suspense>
     </div>
   );
 }

@@ -4264,13 +4264,28 @@ export default function CheckoutModal({
                             })}
                           </div>
                         )}
+
+                        {/* Inline Error for Delivery Method if missing after continue attempt */}
+                        {fieldErrors.deliveryMethod && (touchedFields.deliveryMethod || hasAttemptedStep1) && (
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            color: '#C53030',
+                            fontSize: '12px',
+                            marginTop: '8px',
+                            fontWeight: 500
+                          }}>
+                            <AlertCircle size={13} />
+                            <span>{fieldErrors.deliveryMethod}</span>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Continue to Payment Button */}
+                      {/* Continue to Payment Button - Clickable to trigger inline validation immediately */}
                       <button
                         type="button"
                         onClick={handleProceedToPayment}
-                        disabled={!canProceedToPayment}
                         className="btn-primary-editorial checkout-step1-desktop-continue"
                         style={{
                           width: '100%',
@@ -4284,8 +4299,8 @@ export default function CheckoutModal({
                           padding: '14px 20px',
                           fontSize: '14px',
                           fontWeight: 700,
-                          cursor: canProceedToPayment ? 'pointer' : 'not-allowed',
-                          opacity: canProceedToPayment ? 1 : 0.6
+                          cursor: 'pointer',
+                          opacity: 1
                         }}
                       >
                         <span>Continue to Payment</span>
@@ -4706,7 +4721,6 @@ export default function CheckoutModal({
                       type="button"
                       className="btn-primary-editorial"
                       onClick={handleProceedToPayment}
-                      disabled={!canProceedToPayment}
                       style={{
                         width: '100%',
                         minHeight: '52px',
@@ -4721,8 +4735,8 @@ export default function CheckoutModal({
                         fontWeight: 700,
                         whiteSpace: 'nowrap',
                         borderRadius: '8px',
-                        cursor: canProceedToPayment ? 'pointer' : 'not-allowed',
-                        opacity: canProceedToPayment ? 1 : 0.6
+                        cursor: 'pointer',
+                        opacity: 1
                       }}
                     >
                       <span>Continue to Payment</span>
@@ -4870,13 +4884,16 @@ export default function CheckoutModal({
               </strong>
             </button>
 
-            {/* STICKY CONTINUE TO PAYMENT BUTTON */}
+            {/* STICKY CONTINUE TO PAYMENT BUTTON - ALWAYS CLICKABLE FOR INLINE VALIDATION */}
             <button
               type="button"
               onClick={handleProceedToPayment}
-              disabled={!canProceedToPayment}
               className="checkout-btn-submit checkout-sticky-submit-btn"
               id="checkout-mobile-sticky-continue-button"
+              style={{
+                cursor: 'pointer',
+                opacity: 1
+              }}
             >
               <span>Continue to Payment</span>
               <ArrowRight size={15} style={{ flexShrink: 0 }} />

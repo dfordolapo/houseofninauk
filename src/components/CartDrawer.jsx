@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Trash2, 
@@ -28,10 +28,74 @@ export default function CartDrawer({
   const [showOrderNote, setShowOrderNote] = useState(false);
   const [orderNote, setOrderNote] = useState('');
 
+  // Active Discounts from Admin (Only shows input if active codes exist in Admin!)
+  const [activeAdminDiscounts, setActiveAdminDiscounts] = useState([]);
+  const [promoInput, setPromoInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState(null); // { code, amount }
+  const [promoError, setPromoError] = useState('');
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('house_of_nina_admin_discounts_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const actives = parsed.filter(d => d.status === 'active');
+          setActiveAdminDiscounts(actives);
+          if (appliedPromo && !actives.some(d => d.code === appliedPromo.code)) {
+            setAppliedPromo(null);
+          }
+          return;
+        }
+      }
+      setActiveAdminDiscounts([]);
+    } catch {
+      setActiveAdminDiscounts([]);
+    }
+  }, [isOpen]);
+
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
-  const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - subtotal);
-  const freeShippingProgress = Math.min(100, Math.round((subtotal / BRAND_INFO.freeShippingThreshold) * 100));
-  const finalTotal = subtotal;
+  const discountAmount = appliedPromo ? appliedPromo.amount : 0;
+  const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - Math.max(0, subtotal - discountAmount));
+  const freeShippingProgress = Math.min(100, Math.round((Math.max(0, subtotal - discountAmount) / BRAND_INFO.freeShippingThreshold) * 100));
+  const finalTotal = Math.max(0, subtotal - discountAmount);
+
+  const handleApplyPromo = (e) => {
+    e?.preventDefault();
+    setPromoError('');
+    const clean = promoInput.trim().toUpperCase();
+    if (!clean) return;
+
+    const match = activeAdminDiscounts.find(d => d.code.toUpperCase() === clean);
+    if (!match) {
+      setPromoError('Invalid or expired discount code.');
+      return;
+    }
+
+    if (match.minSpend && subtotal < match.minSpend) {
+      setPromoError(`Minimum spend of £${match.minSpend} required for this code.`);
+      return;
+    }
+
+    let calculated = 0;
+    if (match.type === 'percentage') {
+      calculated = Math.round((subtotal * match.value) / 100);
+    } else {
+      calculated = Math.min(subtotal, match.value);
+    }
+
+    setAppliedPromo({
+      code: match.code,
+      amount: calculated
+    });
+    setPromoInput('');
+    setPromoError('');
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    setPromoError('');
+  };
 
   return (
     <>
@@ -44,7 +108,7 @@ export default function CartDrawer({
         className={`cart-drawer ${isOpen ? 'open' : ''}`}
         role="dialog" 
         aria-modal="true" 
-        aria-label="House of Nina Boutique Shopping Bag"
+        aria-label="House of Nina Shopping Bag"
       >
         {/* STICKY HEADER */}
         <div className="drawer-sticky-header">
@@ -401,12 +465,85 @@ export default function CartDrawer({
             borderTop: '1px solid var(--color-border)',
             flexShrink: 0
           }}>
+            {/* DYNAMIC PRIVILEGE DISCOUNT SECTION — ONLY APPEARS IF ADMIN HAS ACTIVE CODES */}
+            {activeAdminDiscounts.length > 0 && (
+              <div style={{
+                marginBottom: '12px',
+                padding: '9px 12px',
+                backgroundColor: 'var(--color-sand-light)',
+                borderRadius: '8px',
+                border: '1px solid var(--color-border)'
+              }}>
+                {appliedPromo ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#1E7E34', fontWeight: 600 }}>
+                      <Tag size={13} />
+                      <span>{appliedPromo.code} applied (-£{appliedPromo.amount})</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemovePromo}
+                      style={{ background: 'none', border: 'none', color: '#C53030', fontSize: '11px', cursor: 'pointer', fontWeight: 600, padding: '2px 4px' }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleApplyPromo} style={{ display: 'flex', gap: '6px' }}>
+                    <input
+                      type="text"
+                      value={promoInput}
+                      onChange={(e) => { setPromoInput(e.target.value); setPromoError(''); }}
+                      placeholder="Enter discount code"
+                      style={{
+                        flex: 1,
+                        padding: '7px 10px',
+                        borderRadius: '6px',
+                        border: promoError ? '1px solid #C53030' : '1px solid var(--color-border)',
+                        fontSize: '11.5px',
+                        fontFamily: 'var(--font-sans)',
+                        outline: 'none',
+                        textTransform: 'uppercase'
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      style={{
+                        padding: '0 12px',
+                        backgroundColor: 'var(--color-deep-espresso)',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Apply
+                    </button>
+                  </form>
+                )}
+                {promoError && (
+                  <span style={{ display: 'block', fontSize: '11px', color: '#C53030', marginTop: '4px' }}>
+                    {promoError}
+                  </span>
+                )}
+              </div>
+            )}
+
             {/* Financial Summary */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
                 <span>Subtotal</span>
                 <span>£{subtotal}</span>
               </div>
+
+              {appliedPromo && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#1E7E34', fontWeight: 600 }}>
+                  <span>Discount ({appliedPromo.code})</span>
+                  <span>-£{appliedPromo.amount}</span>
+                </div>
+              )}
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
                 <span>UK Shipping</span>
@@ -438,8 +575,8 @@ export default function CartDrawer({
               onClick={() => {
                 if (onProceedToCheckout) {
                   onProceedToCheckout({
-                    discountAmount: 0,
-                    promoCode: null,
+                    discountAmount: appliedPromo ? appliedPromo.amount : 0,
+                    promoCode: appliedPromo ? appliedPromo.code : null,
                     orderNote
                   });
                 }
