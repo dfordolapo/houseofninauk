@@ -9,7 +9,8 @@ import {
   Check, 
   Plus, 
   Minus, 
-  Tag 
+  Tag,
+  Truck
 } from 'lucide-react';
 import { BRAND_INFO } from '../data/wigData';
 
@@ -448,8 +449,32 @@ export default function CartDrawer({
               <ArrowRight size={16} />
             </button>
 
+            {/* EASY-TO-FIND SHIPPING & RETURNS LINK */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '8px' }}>
+              <button
+                type="button"
+                onClick={() => onOpenLegal && onOpenLegal('shipping')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  color: 'var(--color-gold-dark)',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <Truck size={12} />
+                <span>Shipping &amp; Returns Policy</span>
+              </button>
+            </div>
+
             {/* Accepted Cards & Payment Icons - Fits on one line even on mobile */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '12px', width: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '10px', width: '100%' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap', justifyContent: 'center', width: '100%', overflowX: 'auto', scrollbarWidth: 'none' }}>
                 <span style={{ 
                   display: 'inline-flex', 
@@ -561,6 +586,7 @@ export default function CartDrawer({
                   </svg>
                 </span>
               </div>
+
             </div>
           </div>
         )}

@@ -48,19 +48,157 @@ export default function OrderSuccessReceipt({
     }
   }, [isOpen]);
 
-  if (!isOpen && !order) return null;
+  if (!isOpen) return null;
+
+  // Authoritative Order Reconciliation: retrieve from prop or persistent confirmed storage
+  const activeOrder = order || (() => {
+    try {
+      const stored = sessionStorage.getItem('hn_confirmed_order') || localStorage.getItem('hn_last_confirmed_order');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && (parsed.orderNumber || parsed.orderId || parsed.id)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Could not read confirmed order from storage', e);
+    }
+    return null;
+  })();
+
+  // ══════════════════════════════════════════════════════════
+  // RECOVERY STATE: VISITING OR REFRESHING WITHOUT CONFIRMED ORDER
+  // ══════════════════════════════════════════════════════════
+  if (!activeOrder) {
+    return (
+      <div 
+        className="ribbon-success-backdrop open" 
+        onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Order Awaiting Confirmation"
+      >
+        <div 
+          className="ribbon-modal-window"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            maxWidth: '460px',
+            height: 'auto',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            padding: '28px 24px',
+            backgroundColor: '#FFFFFF',
+            borderRadius: '16px',
+            boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
+            border: '1px solid var(--color-border)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            position: 'relative'
+          }}
+        >
+          <button
+            type="button"
+            className="ribbon-modal-close-btn"
+            onClick={onClose}
+            aria-label="Close modal"
+          >
+            <X size={18} strokeWidth={2} />
+          </button>
+
+          <div style={{
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            backgroundColor: '#FAF8F5',
+            border: '1.5px solid var(--color-border)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '14px',
+            color: 'var(--color-gold-dark)'
+          }}>
+            <FileText size={24} />
+          </div>
+
+          <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700, marginBottom: '4px' }}>
+            Authoritative Status Check
+          </span>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', color: 'var(--color-deep-espresso)', margin: '0 0 10px' }}>
+            No Confirmed Order Found
+          </h2>
+
+          <p style={{ fontSize: '12.5px', color: '#685C50', lineHeight: 1.5, margin: '0 0 18px', maxWidth: '380px' }}>
+            We could not locate a verified transaction for this session. To prevent duplicate charges and maintain client security, House of Nina only displays receipts once confirmed by Stripe.
+          </p>
+
+          <div style={{
+            backgroundColor: '#FAF8F5',
+            borderRadius: '10px',
+            border: '1px solid var(--color-border)',
+            padding: '14px 16px',
+            width: '100%',
+            boxSizing: 'border-box',
+            textAlign: 'left',
+            marginBottom: '20px',
+            fontSize: '11.5px',
+            color: '#685C50',
+            lineHeight: 1.55
+          }}>
+            <strong style={{ color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '4px' }}>
+              Next Steps:
+            </strong>
+            <ul style={{ margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <li>If you were checking out, your cart items and shipping details remain intact.</li>
+              <li>If you authorized via banking push or SMS, please allow 60 seconds or check your confirmation email.</li>
+            </ul>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-primary-editorial"
+              style={{ width: '100%', height: '46px', justifyContent: 'center', fontSize: '13px' }}
+            >
+              Return to Checkout &amp; Bag
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                if (window.openTrackOrderModal) window.openTrackOrderModal();
+              }}
+              style={{
+                width: '100%',
+                height: '40px',
+                backgroundColor: '#FAF8F5',
+                border: '1px solid var(--color-border)',
+                borderRadius: '8px',
+                color: 'var(--color-deep-espresso)',
+                fontSize: '12px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              Track an Existing Order
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Real order identifier with clean formatting
-  const rawId = order?.orderId || order?.id || "HN-48291";
+  const rawId = activeOrder?.orderNumber || activeOrder?.orderId || activeOrder?.id || "HN-48291";
   const formattedOrderId = rawId.startsWith('HN') && !rawId.includes('-')
     ? rawId.replace('HN', 'HN-')
     : rawId;
 
   // Dynamic Estimated Arrival date calculation
   const getEstimatedArrival = () => {
-    if (order?.estimatedArrival) return order.estimatedArrival;
+    if (activeOrder?.estimatedArrival) return activeOrder.estimatedArrival;
     try {
-      const baseDate = order?.date ? new Date(order.date) : new Date();
+      const baseDate = activeOrder?.date ? new Date(activeOrder.date) : new Date();
       if (isNaN(baseDate.getTime())) {
         return "2–3 Working Days";
       }
@@ -74,15 +212,15 @@ export default function OrderSuccessReceipt({
   const estimatedArrival = getEstimatedArrival();
 
   // Order date string
-  const orderDate = order?.date || new Date().toLocaleDateString('en-GB', { 
+  const orderDate = activeOrder?.date || new Date().toLocaleDateString('en-GB', { 
     day: 'numeric', 
     month: 'short', 
     year: 'numeric' 
   });
 
   // Items fallback
-  const items = order?.items && order.items.length > 0
-    ? order.items
+  const items = activeOrder?.items && activeOrder.items.length > 0
+    ? activeOrder.items
     : [
         {
           id: 'hn-bespoke-01',
@@ -109,26 +247,26 @@ export default function OrderSuccessReceipt({
     }
   }, []);
 
-  const currencySymbol = order?.currencySymbol || '£';
-  const subtotal = typeof order?.subtotal === 'number' 
-    ? order.subtotal.toFixed(2) 
-    : (order?.subtotal || '495.00');
-  const shippingCost = typeof order?.shippingCost === 'number' && order.shippingCost > 0
-    ? `${currencySymbol}${order.shippingCost.toFixed(2)}`
+  const currencySymbol = activeOrder?.currencySymbol || '£';
+  const subtotal = typeof activeOrder?.subtotal === 'number' 
+    ? activeOrder.subtotal.toFixed(2) 
+    : (activeOrder?.subtotal || '495.00');
+  const shippingCost = typeof activeOrder?.shippingCost === 'number' && activeOrder.shippingCost > 0
+    ? `${currencySymbol}${activeOrder.shippingCost.toFixed(2)}`
     : 'Free';
-  const discount = order?.discount 
-    ? `- ${currencySymbol}${typeof order.discount === 'number' ? order.discount.toFixed(2) : order.discount}` 
+  const discount = activeOrder?.discount 
+    ? `- ${currencySymbol}${typeof activeOrder.discount === 'number' ? activeOrder.discount.toFixed(2) : activeOrder.discount}` 
     : null;
-  const total = typeof order?.total === 'number'
-    ? order.total.toFixed(2)
-    : (order?.total || subtotal);
+  const total = typeof activeOrder?.total === 'number'
+    ? activeOrder.total.toFixed(2)
+    : (activeOrder?.total || subtotal);
 
-  const deliveryMethod = order?.deliveryMethod || 'Royal Mail 48 Tracked (Free)';
-  const paymentMethod = order?.paymentMethod || 'Stripe Verified Card (•••• 4892)';
-  const customerName = order?.customer?.fullName || 'Valued Client';
-  const customerEmail = order?.customer?.email || 'client@houseofnina.co.uk';
-  const customerAddress = order?.customer?.address
-    ? [order.customer.address, order.customer.city, order.customer.state, order.customer.postalCode].filter(Boolean).join(', ')
+  const deliveryMethod = activeOrder?.deliveryMethod || 'Royal Mail 48 Tracked (Free)';
+  const paymentMethod = activeOrder?.paymentMethod || 'Stripe Verified Card (•••• 4892)';
+  const customerName = activeOrder?.customer?.fullName || 'Valued Client';
+  const customerEmail = activeOrder?.customer?.email || 'client@houseofnina.co.uk';
+  const customerAddress = activeOrder?.customer?.address
+    ? [activeOrder.customer.address, activeOrder.customer.city, activeOrder.customer.state, activeOrder.customer.postalCode].filter(Boolean).join(', ')
     : '42 Mayfair Square, Mayfair, London W1K 5JH';
 
   const handleContinue = () => {

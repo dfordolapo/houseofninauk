@@ -55,6 +55,7 @@ export default function App() {
     window.openOrderSuccessModal = () => setIsPreviewSuccessOpen(true);
     window.closeOrderSuccessModal = () => setIsPreviewSuccessOpen(false);
   }, []);
+
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -524,6 +525,7 @@ export default function App() {
           setIsCheckoutOpen(false);
           setIsTrackOrderOpen(true);
         }}
+        onOpenLegal={(tab) => setLegalModalTab(tab)}
       />
 
       {/* LUXURY BESPOKE RIBBON ORDER SUCCESS MODAL */}

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Check, ArrowRight, CreditCard, Building2, Edit3, Lock, Truck, 
   MapPin, Plus, Home, Briefcase, Gift, ChevronRight, ChevronDown, ChevronUp, AlertCircle, ArrowLeft,
-  ShieldCheck, Sparkles, CheckCircle2, Zap, Search
+  ShieldCheck, Sparkles, CheckCircle2, Zap, Search, ShoppingBag
 } from 'lucide-react';
 import OrderSuccessReceipt from './OrderSuccessReceipt';
 
 /** Authentic Official Apple Pay Mark (100% Vector Math - Official Apple Guidelines) */
-function ApplePayLogo({ height = 22, color = "#FFFFFF" }) {
+function ApplePayLogo({ height = 22, color = "#FFFFFF", className = "" }) {
   const width = Math.round(height * 2.27);
   return (
     <svg
@@ -16,6 +16,7 @@ function ApplePayLogo({ height = 22, color = "#FFFFFF" }) {
       viewBox="13.5 19.5 93 41"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
       style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0 }}
       role="img"
       aria-label="Apple Pay"
@@ -35,7 +36,7 @@ function ApplePayLogo({ height = 22, color = "#FFFFFF" }) {
 }
 
 /** Authentic Official Google Pay Mark (100% Vector Math - Official Google Brand Guidelines) */
-function GooglePayLogo({ height = 20, color = "#3C4043" }) {
+function GooglePayLogo({ height = 20, color = "#3C4043", className = "" }) {
   const width = Math.round(height * 2.42);
   return (
     <svg
@@ -44,9 +45,9 @@ function GooglePayLogo({ height = 20, color = "#3C4043" }) {
       viewBox="14 20.5 92 38"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
       style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0 }}
       role="img"
-      aria-label="Google Pay"
     >
       {/* 4-Color Google G */}
       <path d="M44.1722 36.8948C44.1722 35.8542 44.0842 34.8488 43.917 33.8896H29.9602V39.5832H37.955C37.6239 41.4215 36.5557 43.0445 34.9982 44.0756V47.7716H39.77C42.564 45.1976 44.1722 41.3916 44.1722 36.8948Z" fill="#4285F4" />
@@ -973,7 +974,7 @@ export const SUPPORTED_DESTINATIONS = [
   }
 ];
 
-const DEFAULT_SAVED_ADDRESSES = [
+export const DEFAULT_SAVED_ADDRESSES = [
   {
     id: 'home',
     label: 'Home',
@@ -1014,6 +1015,41 @@ const DEFAULT_SAVED_ADDRESSES = [
     isDefault: false
   }
 ];
+
+export const getAbbreviatedCountryName = (dest) => {
+  if (!dest) return 'UK';
+  const code = dest.code || dest;
+  const abbreviations = {
+    'GB': 'UK',
+    'US': 'US',
+    'AE': 'UAE',
+    'KR': 'S. Korea',
+    'EU': 'EU',
+    'NL': 'Netherlands',
+    'FR': 'France',
+    'DE': 'Germany',
+    'CA': 'Canada',
+    'AU': 'Australia',
+    'NG': 'Nigeria',
+    'JP': 'Japan',
+    'SA': 'Saudi',
+    'CH': 'Switzerland',
+    'SE': 'Sweden',
+    'DK': 'Denmark',
+    'NO': 'Norway',
+    'PL': 'Poland',
+    'ZA': 'S. Africa',
+    'GH': 'Ghana',
+    'KE': 'Kenya',
+    'IT': 'Italy',
+    'ES': 'Spain',
+    'BE': 'Belgium',
+    'AT': 'Austria',
+    'IE': 'Ireland',
+    'PT': 'Portugal'
+  };
+  return abbreviations[code] || dest.name || code;
+};
 
 /**
  * Stripe Accepted Global Currencies (Comprehensive list formatted for international luxury clients)
@@ -1071,7 +1107,8 @@ export default function CheckoutModal({
   cartItems = [],
   checkoutData = {},
   onClearCart,
-  onOpenCart
+  onOpenCart,
+  onOpenLegal
 }) {
   const [checkoutStep, setCheckoutStep] = useState(1); // 1: Delivery, 2: Payment
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -1079,12 +1116,39 @@ export default function CheckoutModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authStatus, setAuthStatus] = useState('');
   const [stepError, setStepError] = useState('');
+  const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
+  const [showReturnsModal, setShowReturnsModal] = useState(false);
+  const [activeExpressSheet, setActiveExpressSheet] = useState(null); // 'apple_pay' | 'google_pay' | null
 
-  // Saved addresses state with localStorage persistence
+  // Dedicated Field Validation & Form Error States
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
+  const [hasAttemptedStep1, setHasAttemptedStep1] = useState(false);
+
+  // Authoritative Stripe & Payment State Machine
+  const [paymentState, setPaymentState] = useState('idle'); // 'idle' | 'processing' | 'requires_action' | 'declined' | 'failed' | 'cancelled' | 'network_error' | 'succeeded'
+  const [paymentError, setPaymentError] = useState(null); // { code, title, message, actionableAdvice }
+  const [threeDSChallenge, setThreeDSChallenge] = useState(null); // 3D Secure 2.0 Challenge data
+  const [isRetryingShipping, setIsRetryingShipping] = useState(false);
+
+  // Field Input DOM Refs for Accessible Autofocus
+  const emailInputRef = React.useRef(null);
+  const phoneInputRef = React.useRef(null);
+  const fullNameInputRef = React.useRef(null);
+  const addressInputRef = React.useRef(null);
+  const cityInputRef = React.useRef(null);
+  const stateInputRef = React.useRef(null);
+  const postalCodeInputRef = React.useRef(null);
+
+  // Saved addresses state with localStorage persistence (Default addresses restored)
   const [savedAddresses, setSavedAddresses] = useState(() => {
     try {
       const stored = localStorage.getItem('house_of_nina_saved_addresses');
-      return stored ? JSON.parse(stored) : DEFAULT_SAVED_ADDRESSES;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return DEFAULT_SAVED_ADDRESSES;
     } catch {
       return DEFAULT_SAVED_ADDRESSES;
     }
@@ -1177,18 +1241,51 @@ export default function CheckoutModal({
 
 
 
+  // Unified Luxury Typography & Input Tokens
   const standardInputStyle = {
     width: '100%',
-    height: '36px',
-    padding: '7px 10px',
-    borderRadius: '7px',
+    height: '38px',
+    padding: '8px 11px',
+    borderRadius: '8px',
     border: '1px solid var(--color-border)',
-    fontSize: '11px',
+    fontSize: '12px',
+    fontFamily: 'var(--font-sans)',
     outline: 'none',
     boxSizing: 'border-box',
     backgroundColor: '#FFFFFF',
     color: 'var(--color-deep-espresso)',
     transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+  };
+
+  const formLabelStyle = {
+    display: 'block',
+    fontSize: '11px',
+    fontWeight: 600,
+    color: '#4A3E39',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    marginBottom: '5px',
+    fontFamily: 'var(--font-sans)'
+  };
+
+  const cardEyebrowStyle = {
+    fontSize: '10.5px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    color: 'var(--color-gold-dark)',
+    fontWeight: 700,
+    display: 'block',
+    marginBottom: '4px',
+    fontFamily: 'var(--font-sans)'
+  };
+
+  const cardTitleStyle = {
+    fontFamily: 'var(--font-display)',
+    fontSize: '18px',
+    fontWeight: 600,
+    color: 'var(--color-deep-espresso)',
+    margin: 0,
+    lineHeight: 1.25
   };
 
   // Active Destination and Currency Resolution
@@ -1227,18 +1324,82 @@ export default function CheckoutModal({
     !selectedCountryCode || a.countryCode === selectedCountryCode
   );
 
-  // Address validation: required fields match selected destination requirements
+  const activeSaved = savedAddresses.find(a => a.id === selectedAddressId);
+
+  // Destination-Aware Field Validation with Strict Verification
+  const validateField = (name, value, dest = currentDestination) => {
+    const val = (value || '').trim();
+    switch (name) {
+      case 'email':
+        if (!val) return 'Enter your contact email address.';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) return 'Email address is incorrect. Please enter the right one (e.g. name@domain.com).';
+        return '';
+      case 'phone':
+        if (!val) return 'Enter a mobile phone number for courier updates.';
+        const digits = val.replace(/\D/g, '');
+        if (digits.length < 7) return 'Phone number is incomplete. Please enter the right number including area code.';
+        return '';
+      case 'fullName':
+        if (!val) return 'Please enter the recipient full name.';
+        if (val.length < 2) return 'Please enter a complete recipient name.';
+        return '';
+      case 'address':
+        if (!val) return 'Enter your street address, house/suite number.';
+        if (val.length < 4) return 'Address is too short. Please enter a complete street address.';
+        return '';
+      case 'city':
+        if (!val) return 'Enter the delivery city or town.';
+        if (val.length < 2) return 'City is too short. Please enter the right city or town.';
+        return '';
+      case 'state':
+        if (dest?.stateRequired && !val) return `Enter the ${(dest.stateLabel || 'state').toLowerCase()} for this destination.`;
+        return '';
+      case 'postalCode':
+        if (dest?.postalCodeRequired) {
+          if (!val) return `Enter the ${(dest.postalCodeLabel || 'postcode').toLowerCase()} for this delivery address.`;
+          if (dest?.code === 'GB') {
+            const ukRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+            if (!ukRegex.test(val)) {
+              return 'Postcode is incorrect. Please enter the right UK postcode (e.g. W1J 8AJ).';
+            }
+          } else if (dest?.code === 'US') {
+            const usRegex = /^\d{5}(-\d{4})?$/;
+            if (!usRegex.test(val)) {
+              return 'ZIP code is incorrect. Please enter the right 5-digit ZIP code (e.g. 90210).';
+            }
+          } else if (dest?.code === 'CA') {
+            const caRegex = /^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/;
+            if (!caRegex.test(val)) {
+              return 'Postal code is incorrect. Please enter the right Canadian postal code (e.g. M5V 2T6).';
+            }
+          } else if (val.length < 3) {
+            return `This ${(dest.postalCodeLabel || 'postcode').toLowerCase()} is incorrect. Please enter the right one.`;
+          }
+        }
+        return '';
+      case 'deliveryMethod':
+        if (!val) return 'Please select a delivery speed option.';
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  // Address validation: required fields match selected destination requirements and validation rules
   const isContactAndAddressValid = Boolean(
     selectedCountryCode &&
     formData.email?.trim() &&
-    formData.email.includes('@') &&
+    !validateField('email', formData.email, currentDestination) &&
     formData.phone?.trim() &&
-    formData.phone.trim().length >= 6 &&
+    !validateField('phone', formData.phone, currentDestination) &&
     formData.fullName?.trim() &&
+    !validateField('fullName', formData.fullName, currentDestination) &&
     formData.address?.trim() &&
+    !validateField('address', formData.address, currentDestination) &&
     formData.city?.trim() &&
-    (!currentDestination?.postalCodeRequired || formData.postalCode?.trim()) &&
-    (!currentDestination?.stateRequired || formData.state?.trim())
+    !validateField('city', formData.city, currentDestination) &&
+    (!currentDestination?.postalCodeRequired || (formData.postalCode?.trim() && !validateField('postalCode', formData.postalCode, currentDestination))) &&
+    (!currentDestination?.stateRequired || (formData.state?.trim() && !validateField('state', formData.state, currentDestination)))
   );
 
   const isDeliveryOptionSelected = Boolean(selectedCountryCode && formData.deliveryMethod && selectedShippingOption);
@@ -1313,12 +1474,12 @@ export default function CheckoutModal({
         return true;
 
       case 'apple_pay':
-        // Device/browser support + destination capability
-        return Boolean(deviceWallets.applePay) && (currentDestination.eligiblePaymentMethods || []).includes('apple_pay');
+        // Prominently enabled for UK and all Apple Pay supported destinations
+        return ['GB', 'US', 'CA', 'AU', 'FR', 'DE', 'IE', 'NL', 'IT', 'ES', 'CH', 'SE', 'DK', 'NO', 'AE'].includes(countryCode) || Boolean(deviceWallets.applePay);
 
       case 'google_pay':
-        // Device/browser support + destination capability
-        return Boolean(deviceWallets.googlePay) && (currentDestination.eligiblePaymentMethods || []).includes('google_pay');
+        // Prominently enabled for UK and all Google Pay supported destinations
+        return ['GB', 'US', 'CA', 'AU', 'FR', 'DE', 'IE', 'NL', 'IT', 'ES', 'CH', 'SE', 'DK', 'NO', 'AE'].includes(countryCode) || Boolean(deviceWallets.googlePay);
 
       case 'klarna': {
         // Stripe Klarna requirements: Supported countries, currencies, and minimum amount threshold
@@ -1378,11 +1539,9 @@ export default function CheckoutModal({
     }
   };
 
-  // Master candidate methods in evaluated priority order
+  // Master candidate methods for standard selection (Apple Pay & Google Pay moved exclusively to Express Checkout element)
   const ALL_CANDIDATE_METHODS = [
     'card',
-    'apple_pay',
-    'google_pay',
     'klarna',
     'ideal',
     'bancontact',
@@ -1399,7 +1558,7 @@ export default function CheckoutModal({
     'bank'
   ];
 
-  // All genuinely eligible methods for current transaction
+  // All genuinely eligible standard methods for current transaction
   const allEligibleMethods = React.useMemo(() => {
     if (!currentDestination) return [];
     return ALL_CANDIDATE_METHODS.filter(m => isMethodEligible(m));
@@ -1430,21 +1589,15 @@ export default function CheckoutModal({
       list.push(localDominant);
     }
 
-    // 3. Apple Pay and/or Google Pay when supported by device/browser & eligible
-    if (deviceWallets.applePay && allEligibleMethods.includes('apple_pay') && !list.includes('apple_pay')) {
-      list.push('apple_pay');
-    }
-    if (deviceWallets.googlePay && allEligibleMethods.includes('google_pay') && !list.includes('google_pay')) {
-      list.push('google_pay');
-    }
-
-    // 4. Eligible BNPL methods such as Klarna
+    // 3. Eligible BNPL methods such as Klarna
     if (allEligibleMethods.includes('klarna') && !list.includes('klarna')) {
       list.push('klarna');
     }
 
-    // 5. If initial list is very short (e.g. international destinations without BNPL), include bank
-    if (list.length < 3 && allEligibleMethods.includes('bank') && !list.includes('bank')) {
+    // 4. Studio Bank Wire or Revolut
+    if (allEligibleMethods.includes('revolut') && !list.includes('revolut')) {
+      list.push('revolut');
+    } else if (allEligibleMethods.includes('bank') && !list.includes('bank')) {
       list.push('bank');
     }
 
@@ -1505,9 +1658,26 @@ export default function CheckoutModal({
     }
   };
 
+
   const handleChange = (field, val) => {
-    setFormData(prev => ({ ...prev, [field]: val }));
+    setFormData(prev => ({
+      ...prev,
+      [field]: val
+    }));
+    setTouchedFields(prev => ({ ...prev, [field]: true }));
+
+    // Live validation feedback: clear error once valid
+    const err = validateField(field, val, currentDestination);
+    setFieldErrors(prev => {
+      const next = { ...prev };
+      if (!err) delete next[field];
+      else next[field] = err;
+      return next;
+    });
+
     if (stepError) setStepError('');
+    if (paymentError) setPaymentError(null);
+    if (paymentState !== 'idle' && paymentState !== 'succeeded') setPaymentState('idle');
   };
 
   const handleTogglePaymentMethod = (method) => {
@@ -1657,34 +1827,54 @@ export default function CheckoutModal({
   };
 
   const handleProceedToPayment = () => {
-    if (!selectedCountryCode || !currentDestination) {
-      setStepError('Please select your delivery destination country or region first.');
+    setHasAttemptedStep1(true);
+
+    // Mark all required fields as touched
+    setTouchedFields({
+      email: true,
+      phone: true,
+      fullName: true,
+      address: true,
+      city: true,
+      state: true,
+      postalCode: true,
+      deliveryMethod: true
+    });
+
+    const errors = {};
+    ['email', 'phone', 'fullName', 'address', 'city', 'state', 'postalCode', 'deliveryMethod'].forEach(f => {
+      const err = validateField(f, formData[f], currentDestination);
+      if (err) errors[f] = err;
+    });
+
+    setFieldErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      // Focus first invalid field
+      if (errors.email && emailInputRef.current) emailInputRef.current.focus();
+      else if (errors.phone && phoneInputRef.current) phoneInputRef.current.focus();
+      else if (errors.fullName && fullNameInputRef.current) fullNameInputRef.current.focus();
+      else if (errors.address && addressInputRef.current) addressInputRef.current.focus();
+      else if (errors.city && cityInputRef.current) cityInputRef.current.focus();
+      else if (errors.state && stateInputRef.current) stateInputRef.current.focus();
+      else if (errors.postalCode && postalCodeInputRef.current) postalCodeInputRef.current.focus();
+
+      if (errors.postalCode && Object.keys(errors).length === 1) {
+        setStepError(errors.postalCode);
+      } else if (errors.postalCode) {
+        setStepError('Postcode or delivery details are incorrect. Please enter the right ones highlighted below.');
+      } else {
+        const firstErr = Object.values(errors)[0];
+        setStepError(firstErr || 'Some delivery details are incorrect. Please enter the right ones highlighted below.');
+      }
       return;
     }
-    if (!formData.email || !formData.email.includes('@')) {
-      setStepError('Please enter a valid email address for order confirmation & tracking.');
+
+    if (!selectedShippingOption || availableShippingOptions.length === 0) {
+      setStepError('No shipping option is available for this address. Please review your destination.');
       return;
     }
-    if (!formData.phone || formData.phone.trim().length < 6) {
-      setStepError('Please enter a valid mobile phone number for courier updates.');
-      return;
-    }
-    if (!formData.fullName?.trim() || !formData.address?.trim() || !formData.city?.trim()) {
-      setStepError('Please complete your recipient full name and street delivery address.');
-      return;
-    }
-    if (currentDestination.postalCodeRequired && !formData.postalCode?.trim()) {
-      setStepError(`Please enter your ${currentDestination.postalCodeLabel}.`);
-      return;
-    }
-    if (currentDestination.stateRequired && !formData.state?.trim()) {
-      setStepError(`Please enter your ${currentDestination.stateLabel}.`);
-      return;
-    }
-    if (!formData.deliveryMethod) {
-      setStepError('Please choose your preferred delivery speed.');
-      return;
-    }
+
     setStepError('');
     setCheckoutStep(2);
   };
@@ -1710,20 +1900,10 @@ export default function CheckoutModal({
   };
 
   const handleExpressPay = (method) => {
-    if (!selectedCountryCode) {
-      setStepError('Please select your delivery destination country first.');
-      return;
-    }
-
-    if (!isMethodEligible(method)) {
-      setStepError(`${method} is not eligible for delivery to ${currentDestination?.name || 'this destination'}.`);
-      return;
-    }
-
     // Select the chosen express payment method
     handleChange('paymentMethod', method);
 
-    // Auto-select matching saved address for destination if empty
+    // Auto-select matching saved address for destination if empty, or set smart client fallback
     const matchingAddr = savedAddresses.find(a => a.countryCode === selectedCountryCode);
     if (matchingAddr && (!formData.fullName || !formData.address)) {
       setFormData(prev => ({
@@ -1739,66 +1919,180 @@ export default function CheckoutModal({
         paymentMethod: method
       }));
       setSelectedAddressId(matchingAddr.id);
+    } else if (!formData.fullName || !formData.address) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: prev.fullName || 'Valued Client',
+        address: prev.address || 'Mayfair Atelier Residence',
+        city: prev.city || (selectedCountryCode === 'US' ? 'New York' : 'London'),
+        postalCode: prev.postalCode || (selectedCountryCode === 'US' ? '10001' : 'W1J 8AJ'),
+        phone: prev.phone || (selectedCountryCode === 'US' ? '+1 555 234 5678' : '+44 7776 759731'),
+        email: prev.email || 'client@houseofnina.co.uk',
+        deliveryMethod: prev.deliveryMethod || availableShippingOptions[0]?.id || 'standard',
+        paymentMethod: method
+      }));
     }
 
-    // Switch directly to Step 2 so the user sees the payment method view
-    setCheckoutStep(2);
+    if (stepError) setStepError('');
+    setActiveExpressSheet(method);
+  };
+
+  const handleCancel3DS = () => {
+    setThreeDSChallenge(null);
+    setPaymentState('cancelled');
+    setPaymentError({
+      code: 'authentication_cancelled',
+      title: 'Payment Authorization Cancelled',
+      message: 'Cardholder authentication was cancelled. No charge was created and no funds were debited.',
+      actionableAdvice: 'You can retry verification or select another payment method such as Apple Pay or Klarna.'
+    });
+  };
+
+  const handleComplete3DS = () => {
+    setThreeDSChallenge(null);
+    setIsSubmitting(true);
+    setAuthStatus('Authentication verified by bank. Creating confirmed order...');
+    setTimeout(() => {
+      completeSuccessfulOrder('card');
+    }, 700);
+  };
+
+  const completeSuccessfulOrder = (chosenPayment) => {
+    const randomOrderNum = Math.floor(1000 + Math.random() * 9000);
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) +
+      ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+    let paymentLabel = 'Stripe Verified Card (•••• 4892)';
+    if (chosenPayment === 'card' && formData.cardNumber) {
+      const last4 = formData.cardNumber.replace(/\s/g, '').slice(-4);
+      paymentLabel = `Stripe Card (•••• ${last4 || '4892'})`;
+    } else if (chosenPayment === 'apple_pay') {
+      paymentLabel = 'Apple Pay (•••• 8821)';
+    } else if (chosenPayment === 'google_pay') {
+      paymentLabel = 'Google Pay (•••• 4012)';
+    } else if (chosenPayment === 'revolut') {
+      paymentLabel = 'Revolut Pay (UK/EU Verified)';
+    } else if (chosenPayment === 'amazon_pay') {
+      paymentLabel = 'Amazon Pay (Verified)';
+    } else if (chosenPayment === 'klarna') {
+      paymentLabel = 'Klarna Pay in 3';
+    } else if (chosenPayment === 'bank') {
+      paymentLabel = `Direct Bank Wire (${bankWireData.senderBank || 'Barclays'} - ${bankWireData.accountHolder || 'Client'})`;
+    } else {
+      paymentLabel = chosenPayment.toUpperCase();
+    }
+
+    const deliveryLabel = selectedShippingOption
+      ? `${selectedShippingOption.name} (${selectedShippingOption.priceGbp === 0 ? 'Free' : formatPrice(shippingCost)})`
+      : 'Free Delivery';
+
+    const newOrder = {
+      orderId: `HN${randomOrderNum}`,
+      date: dateStr,
+      customer: {
+        fullName: formData.fullName || "Valued Client",
+        email: formData.email || "client@houseofnina.co.uk",
+        phone: formData.phone || "+44 7776 759731",
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        postalCode: formData.postalCode,
+        country: currentDestination ? currentDestination.name : "United Kingdom",
+        countryCode: selectedCountryCode || "GB"
+      },
+      items: cartItems.map(item => ({
+        ...item,
+        price: (typeof item.price === 'number' ? item.price : 200) * rate,
+        currencySymbol
+      })),
+      deliveryMethod: deliveryLabel,
+      paymentMethod: paymentLabel,
+      subtotal,
+      shippingCost,
+      discount,
+      promoCode: checkoutData.promoCode || null,
+      orderNote: checkoutData.orderNote || null,
+      total,
+      currencySymbol
+    };
+
+    setConfirmedOrder(newOrder);
+
+    // Persist to admin orders queue and session storage for authoritative reconciliation
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem('house_of_nina_client_orders') || '[]');
+      const updatedOrders = [newOrder, ...existingOrders.filter(o => o.orderNumber !== newOrder.orderNumber)];
+      localStorage.setItem('house_of_nina_client_orders', JSON.stringify(updatedOrders));
+      sessionStorage.setItem('hn_confirmed_order', JSON.stringify(newOrder));
+      localStorage.setItem('hn_last_confirmed_order', JSON.stringify(newOrder));
+    } catch (err) {
+      console.warn('Could not sync order to storage, maintaining in-memory confirmed order', err);
+      // Payment succeeded! Even if client storage fails, we safely proceed to receipt without asking customer to pay again.
+    }
+
+    setPaymentState('succeeded');
+    setIsSubmitting(false);
+    setIsConfirmed(true);
+
+    if (onClearCart) onClearCart();
   };
 
   const handlePlaceOrder = (e, explicitMethod = null) => {
     if (e && e.preventDefault) e.preventDefault();
+    if (isSubmitting) return; // Prevent duplicate clicks and duplicate order creation
+
     const chosenPayment = explicitMethod || formData.paymentMethod;
 
     if (!chosenPayment) {
-      setStepError('Please select an eligible payment method to complete your order.');
+      setStepError('Please select a payment method to complete your order.');
+      setPaymentError({
+        code: 'missing_payment_method',
+        title: 'Payment Method Required',
+        message: 'Please choose an eligible payment method to authorize your order.',
+        actionableAdvice: 'Select Apple Pay, Google Pay, Card, or Klarna below.'
+      });
       return;
     }
 
     if (!allEligibleMethods.includes(chosenPayment)) {
-      setStepError('Selected payment method is not eligible for delivery to ' + (currentDestination?.name || 'your destination') + ' in ' + formData.currency + '. Please choose an eligible payment method.');
+      const destName = currentDestination?.name || 'your destination';
+      setPaymentError({
+        code: 'payment_method_unavailable',
+        title: 'Payment Method Unavailable',
+        message: `The selected payment method is not available for delivery to ${destName} in ${formData.currency}.`,
+        actionableAdvice: 'Please select an eligible payment option below such as Credit/Debit Card or Apple Pay.'
+      });
+      setStepError('Selected payment method is no longer available for this destination.');
       return;
     }
 
     if (chosenPayment === 'card') {
-      if (!formData.cardName?.trim() || !formData.cardNumber?.trim() || !formData.cardExpiry?.trim() || !formData.cardCvc?.trim()) {
-        setStepError('Please complete your card details (Cardholder Name, 16-Digit Number, Expiry, and CVC).');
+      const cleanNum = (formData.cardNumber || '').replace(/\s/g, '');
+      if (!cleanNum || cleanNum.length < 13) {
+        setStepError('Please enter a valid credit or debit card number.');
         return;
       }
-    } else if (chosenPayment === 'google_pay') {
-      if (googlePayMode === 'new' && (!gpayCardData.number?.trim() || !gpayCardData.expiry?.trim() || !gpayCardData.cvc?.trim())) {
-        setStepError('Please enter your card number, expiry, and CVC to complete Google Pay.');
+      if (!formData.cardExpiry || formData.cardExpiry.length < 5) {
+        setStepError('Please enter your card expiry date (MM/YY).');
         return;
       }
-    } else if (chosenPayment === 'apple_pay') {
-      if (applePayMode === 'no_card') {
-        setStepError('No card detected in Apple Wallet. Please click "Pay with Credit/Debit Card Instead" below or add a card.');
-        return;
-      } else if (applePayMode === 'add_card' && (!appleCardData.number?.trim() || !appleCardData.expiry?.trim() || !appleCardData.cvc?.trim())) {
-        setStepError('Please enter your card number and expiry to add to Apple Wallet.');
+      if (!formData.cardCvc || formData.cardCvc.length < 3) {
+        setStepError('Please enter your card CVC security code.');
         return;
       }
     } else if (chosenPayment === 'klarna') {
-      const activePhone = (klarnaData.phone || formData.phone)?.trim();
-      if (!activePhone) {
-        setStepError('Please enter your mobile phone number for Klarna Pay in 3 approval.');
-        return;
-      }
-      if (klarnaData.cardNumber?.trim() && !klarnaData.cardExpiry?.trim()) {
-        setStepError('Please enter your installment card expiry date (MM/YY).');
-        return;
-      }
-    } else if (chosenPayment === 'revolut') {
-      if (revolutMode === 'card' && (!revolutData.cardNumber || !revolutData.cardExpiry)) {
-        setStepError('Please enter your Revolut card details.');
+      if (!klarnaData.phone || klarnaData.phone.trim().length < 6) {
+        setStepError('Please provide your phone number for Klarna pay later authorization.');
         return;
       }
     } else if (chosenPayment === 'blik') {
-      if (!blikCode || blikCode.replace(/\D/g, '').length < 6) {
-        setStepError('Please enter your 6-digit BLIK code from your Polish banking app.');
+      if (!blikCode || blikCode.replace(/\s/g, '').length !== 6) {
+        setStepError('Please enter your 6-digit BLIK banking code.');
         return;
       }
     } else if (chosenPayment === 'mbway') {
-      if (!mbWayPhone && !formData.phone) {
+      if (!mbWayPhone || mbWayPhone.trim().length < 6) {
         setStepError('Please enter your Portuguese mobile phone number for MB WAY approval.');
         return;
       }
@@ -1810,99 +2104,118 @@ export default function CheckoutModal({
     }
 
     setStepError('');
+    setPaymentError(null);
     setIsSubmitting(true);
+    setPaymentState('processing');
+    setAuthStatus('Securing encrypted authorization with payment gateway...');
 
+    const cleanCard = (formData.cardNumber || '').replace(/\s/g, '');
+
+    // ══════════════════════════════════════════════════════════
+    // STRIPE TEST CARDS & AUTHORITATIVE STATE MACHINE
+    // ══════════════════════════════════════════════════════════
+
+    // 1. Decline test: Card ending in 0002
+    if (chosenPayment === 'card' && cleanCard.endsWith('0002')) {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setPaymentState('declined');
+        setPaymentError({
+          code: 'card_declined',
+          declineCode: 'generic_decline',
+          title: 'Card Declined',
+          message: 'Your bank declined this card authorization. No funds have been debited from your account.',
+          actionableAdvice: 'Please check your card details, try another card, or select another payment method such as Apple Pay or Klarna.'
+        });
+      }, 1000);
+      return;
+    }
+
+    // 2. Insufficient Funds test: Card ending in 0005
+    if (chosenPayment === 'card' && cleanCard.endsWith('0005')) {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setPaymentState('declined');
+        setPaymentError({
+          code: 'insufficient_funds',
+          declineCode: 'insufficient_funds',
+          title: 'Insufficient Funds',
+          message: 'Your card issuer reported insufficient funds to complete this order.',
+          actionableAdvice: 'Please choose another card or payment method with sufficient balance.'
+        });
+      }, 1000);
+      return;
+    }
+
+    // 3. Expired Card test: Card ending in 0069
+    if (chosenPayment === 'card' && cleanCard.endsWith('0069')) {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setPaymentState('declined');
+        setPaymentError({
+          code: 'expired_card',
+          declineCode: 'expired_card',
+          title: 'Card Expired',
+          message: 'The expiration date provided for this card is in the past.',
+          actionableAdvice: 'Please verify the expiration date or use an active, unexpired card.'
+        });
+      }, 1000);
+      return;
+    }
+
+    // 4. Incorrect CVC test: Card ending in 0127
+    if (chosenPayment === 'card' && cleanCard.endsWith('0127')) {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setPaymentState('declined');
+        setPaymentError({
+          code: 'incorrect_cvc',
+          declineCode: 'incorrect_cvc',
+          title: 'Incorrect CVC Security Code',
+          message: 'The security code (CVC) provided does not match your card.',
+          actionableAdvice: 'Please check the 3 or 4-digit number on the back of your card and try again.'
+        });
+      }, 900);
+      return;
+    }
+
+    // 5. Processing / Network Timeout test: Card ending in 0082
+    if (chosenPayment === 'card' && cleanCard.endsWith('0082')) {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setPaymentState('network_error');
+        setPaymentError({
+          code: 'processing_error',
+          title: 'Payment Gateway Timeout',
+          message: 'A temporary connection timeout occurred while communicating with the card network. No charge was created.',
+          actionableAdvice: 'Please verify your internet connection and try again, or switch to an alternative payment method.'
+        });
+      }, 1300);
+      return;
+    }
+
+    // 6. Strong Customer Authentication (3D Secure 2.0 Challenge): Card ending in 3024 or 3065
+    if (chosenPayment === 'card' && (cleanCard.endsWith('3024') || cleanCard.endsWith('3065'))) {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setPaymentState('requires_action');
+        setThreeDSChallenge({
+          bankName: 'Barclays SecureID',
+          last4: cleanCard.slice(-4),
+          amount: formatPrice(total),
+          orderNumber: `HN${Math.floor(1000 + Math.random() * 9000)}`
+        });
+      }, 800);
+      return;
+    }
+
+    // Standard Success Path
     setTimeout(() => {
-      const randomOrderNum = Math.floor(1000 + Math.random() * 9000);
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) +
-        ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-
-      let paymentLabel = 'Stripe Verified Card (•••• 4892)';
-      if (chosenPayment === 'card' && formData.cardNumber) {
-        const last4 = formData.cardNumber.replace(/\s/g, '').slice(-4);
-        paymentLabel = `Stripe Card (•••• ${last4 || '4892'})`;
-      } else if (chosenPayment === 'apple_pay') {
-        const last4 = appleCardData.number ? appleCardData.number.replace(/\s/g, '').slice(-4) : '8821';
-        paymentLabel = `Apple Pay (•••• ${last4})`;
-      } else if (chosenPayment === 'google_pay') {
-        const last4 = gpayCardData.number ? gpayCardData.number.replace(/\s/g, '').slice(-4) : '4012';
-        paymentLabel = `Google Pay (•••• ${last4})`;
-      } else if (chosenPayment === 'revolut') {
-        paymentLabel = 'Revolut Pay (UK/EU Verified)';
-      } else if (chosenPayment === 'amazon_pay') {
-        paymentLabel = 'Amazon Pay (Verified)';
-      } else if (chosenPayment === 'klarna') {
-        const last4 = klarnaData.cardNumber ? klarnaData.cardNumber.replace(/\s/g, '').slice(-4) : '4892';
-        paymentLabel = `Klarna Pay in 3 (•••• ${last4})`;
-      } else if (chosenPayment === 'bancontact') {
-        paymentLabel = 'Bancontact (Belgium Direct)';
-      } else if (chosenPayment === 'ideal') {
-        paymentLabel = `iDEAL (${idealBank.toUpperCase()} Netherlands)`;
-      } else if (chosenPayment === 'blik') {
-        paymentLabel = `BLIK (${blikCode || '729 481'} Poland)`;
-      } else if (chosenPayment === 'mbway') {
-        paymentLabel = `MB WAY (${mbWayPhone || '+351'} Portugal)`;
-      } else if (chosenPayment === 'eps') {
-        paymentLabel = `EPS (${epsBank.toUpperCase()} Austria)`;
-      } else if (chosenPayment === 'satispay') {
-        paymentLabel = `Satispay (Italy Direct)`;
-      } else if (chosenPayment === 'kakao_pay') {
-        paymentLabel = 'Kakao Pay (South Korea)';
-      } else if (chosenPayment === 'naver_pay') {
-        paymentLabel = 'Naver Pay (South Korea)';
-      } else if (chosenPayment === 'samsung_pay') {
-        paymentLabel = 'Samsung Pay (South Korea)';
-      } else if (chosenPayment === 'payco') {
-        paymentLabel = 'PAYCO (South Korea)';
-      } else if (chosenPayment === 'bank') {
-        paymentLabel = `Direct Bank Wire (${bankWireData.senderBank || 'Barclays'} - ${bankWireData.accountHolder || 'Client'})`;
-      }
-
-      const deliveryLabel = selectedShippingOption
-        ? `${selectedShippingOption.name} (${selectedShippingOption.priceGbp === 0 ? 'Free' : formatPrice(shippingCost)})`
-        : 'Free Delivery';
-
-      const newOrder = {
-        orderId: `HN${randomOrderNum}`,
-        date: dateStr,
-        customer: {
-          fullName: formData.fullName || "Valued Client",
-          email: formData.email || "client@houseofnina.co.uk",
-          phone: formData.phone || "+44 7776 759731",
-          address: formData.address,
-          city: formData.city,
-          state: formData.state,
-          postalCode: formData.postalCode,
-          country: currentDestination ? currentDestination.name : "United Kingdom",
-          countryCode: selectedCountryCode || "GB"
-        },
-        items: cartItems.map(item => ({
-          ...item,
-          price: (typeof item.price === 'number' ? item.price : 200) * rate,
-          currencySymbol
-        })),
-        deliveryMethod: deliveryLabel,
-        paymentMethod: paymentLabel,
-        subtotal,
-        shippingCost,
-        discount,
-        promoCode: checkoutData.promoCode || null,
-        orderNote: checkoutData.orderNote || null,
-        total,
-        currencySymbol
-      };
-
-      setConfirmedOrder(newOrder);
-      setIsSubmitting(false);
-      setIsConfirmed(true);
-
-      if (onClearCart) onClearCart();
-    }, 1350);
+      completeSuccessfulOrder(chosenPayment);
+    }, 1200);
   };
 
   // Get active address label helper
-  const activeSaved = savedAddresses.find(a => a.id === selectedAddressId);
   const currentAddressTag = activeSaved ? activeSaved.label : (selectedAddressId === 'new' ? 'New Address' : 'Custom');
 
     // Modal visibility guard (MUST be after all Hook calls to respect React Rules of Hooks)
@@ -2153,11 +2466,11 @@ export default function CheckoutModal({
                           {formData.paymentMethod === 'card' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#FFFFFF' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#685C50' }}>Card Information</span>
+                                <span style={cardEyebrowStyle}>Card Information</span>
                               </div>
 
                               <div>
-                                <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Cardholder Name</label>
+                                <label style={formLabelStyle}>Cardholder Name</label>
                                 <input
                                   type="text"
                                   value={formData.cardName}
@@ -2168,7 +2481,7 @@ export default function CheckoutModal({
                               </div>
 
                               <div>
-                                <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Card Number</label>
+                                <label style={formLabelStyle}>Card Number</label>
                                 <input
                                   type="text"
                                   value={formData.cardNumber}
@@ -2181,7 +2494,7 @@ export default function CheckoutModal({
 
                               <div className="checkout-row-2">
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Expiry</label>
+                                  <label style={formLabelStyle}>Expiry</label>
                                   <input
                                     type="text"
                                     value={formData.cardExpiry}
@@ -2192,7 +2505,7 @@ export default function CheckoutModal({
                                   />
                                 </div>
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>CVC / CVV</label>
+                                  <label style={formLabelStyle}>CVC / CVV</label>
                                   <input
                                     type="text"
                                     value={formData.cardCvc}
@@ -2402,7 +2715,7 @@ export default function CheckoutModal({
                                   Klarna
                                 </strong>
                                 <span className="payment-option-subtitle">
-                                  Pay in 3 installments • 0% APR
+                                  3 payments of {formatPrice(total / 3)} • 0% interest
                                 </span>
                               </div>
                             </div>
@@ -2418,15 +2731,15 @@ export default function CheckoutModal({
                               </div>
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
                                 <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>1. Today</span>
+                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Due Today</span>
                                   <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{formatPrice(total / 3)}</strong>
                                 </div>
                                 <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>2. 30 Days</span>
+                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>In 30 Days</span>
                                   <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{formatPrice(total / 3)}</strong>
                                 </div>
                                 <div style={{ padding: '10px 8px', borderRadius: '8px', backgroundColor: '#FAF7F2', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>3. 60 Days</span>
+                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>In 60 Days</span>
                                   <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>{formatPrice(total / 3)}</strong>
                                 </div>
                               </div>
@@ -2438,13 +2751,13 @@ export default function CheckoutModal({
                                     Klarna Verification &amp; Card
                                   </span>
                                   <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
-                                    0% APR • Instant Decision
+                                    3 payments of {formatPrice(total / 3)} • Instant decision
                                   </span>
                                 </div>
 
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
-                                    Mobile Phone for Klarna SMS Approval <span style={{ color: '#C53030' }}>*</span>
+                                  <label style={formLabelStyle}>
+                                    Mobile Phone for Klarna Approval <span style={{ color: '#C53030' }}>*</span>
                                   </label>
                                   <input
                                     type="tel"
@@ -2456,7 +2769,7 @@ export default function CheckoutModal({
                                 </div>
 
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                  <label style={formLabelStyle}>
                                     Card for 3 Installments (charged on Day 1, 30, 60)
                                   </label>
                                   <input
@@ -2475,7 +2788,7 @@ export default function CheckoutModal({
 
                                 <div className="checkout-row-2">
                                   <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>Expiry</label>
+                                    <label style={formLabelStyle}>Expiry</label>
                                     <input
                                       type="text"
                                       value={klarnaData.cardExpiry}
@@ -2490,7 +2803,7 @@ export default function CheckoutModal({
                                     />
                                   </div>
                                   <div>
-                                    <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>CVC</label>
+                                    <label style={formLabelStyle}>CVC</label>
                                     <input
                                       type="text"
                                       value={klarnaData.cardCvc}
@@ -3151,8 +3464,8 @@ export default function CheckoutModal({
 
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
-                                    Sender Account Holder Name (as it appears on your transfer)
+                                  <label style={formLabelStyle}>
+                                    Sender Account Holder Name
                                   </label>
                                   <input
                                     type="text"
@@ -3164,7 +3477,7 @@ export default function CheckoutModal({
                                 </div>
 
                                 <div>
-                                  <label style={{ display: 'block', fontSize: '10.5px', color: '#685C50', marginBottom: '4px', fontWeight: 500 }}>
+                                  <label style={formLabelStyle}>
                                     Transfer Reference Note
                                   </label>
                                   <input
@@ -3231,8 +3544,8 @@ export default function CheckoutModal({
               type="button"
               onClick={() => setCheckoutStep(1)}
               className={`checkout-step-icon-btn ${checkoutStep === 1 ? 'active' : 'completed'}`}
-              title="Step 1: Delivery Details"
-              aria-label="Step 1: Delivery Details"
+              title="Delivery Details"
+              aria-label="Delivery Details"
             >
               {checkoutStep > 1 ? <Check size={13} strokeWidth={2.5} /> : <Truck size={14} />}
               <span className="step-icon-label">Delivery</span>
@@ -3244,8 +3557,8 @@ export default function CheckoutModal({
               type="button"
               onClick={() => setCheckoutStep(2)}
               className={`checkout-step-icon-btn ${checkoutStep === 2 ? 'active' : ''}`}
-              title="Step 2: Payment & Review"
-              aria-label="Step 2: Payment & Review"
+              title="Payment & Review"
+              aria-label="Payment & Review"
             >
               <CreditCard size={14} />
               <span className="step-icon-label">Payment</span>
@@ -3266,11 +3579,13 @@ export default function CheckoutModal({
         </div>
 
         {/* SCROLLABLE CHECKOUT BODY */}
-        <div className="checkout-content-container">
+        <div className="checkout-content-container" style={{ position: 'relative', zIndex: 1 }}>
+
+
           <div className="checkout-grid-layout">
 
             {/* Left Column: Form Details based on Step */}
-            <div className="checkout-form-column" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="checkout-form-column" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
               {stepError && (
                 <div style={{
@@ -3291,27 +3606,19 @@ export default function CheckoutModal({
               )}
 
               {/* ══════════════════════════════════════════════════════════
-                      STEP 1: LOCATION-FIRST PROGRESSIVE DISCLOSURE
+                      LOCATION-FIRST PROGRESSIVE DISCLOSURE
                       ══════════════════════════════════════════════════════════ */}
               {checkoutStep === 1 && (
                 <>
-                  {/* STEP 1: DELIVERY LOCATION */}
                   <div className="checkout-location-card">
                     <div style={{ marginBottom: '8px' }}>
-                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700, display: 'block', marginBottom: '4px' }}>
-                        Step 1 • Delivery Destination
+                      <span className="checkout-card-eyebrow" style={cardEyebrowStyle}>
+                        Delivery Destination
                       </span>
-                      <h2 style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        color: 'var(--color-deep-espresso)',
-                        margin: '0 0 5px 0',
-                        lineHeight: 1.25
-                      }}>
+                      <h2 className="checkout-card-title" style={cardTitleStyle}>
                         Where are we sending your order?
                       </h2>
-                      <p style={{ margin: 0, fontSize: '11.5px', color: '#685C50', lineHeight: 1.4 }}>
+                      <p style={{ margin: '4px 0 0', fontSize: '11.5px', color: '#685C50', lineHeight: 1.4, fontFamily: 'var(--font-sans)' }}>
                         Select your destination for shipping speeds and payment options.
                       </p>
                     </div>
@@ -3424,61 +3731,82 @@ export default function CheckoutModal({
 
                   {/* Contact, Delivery Address, and Shipping */}
                   {currentDestination && (
-                    <div className="checkout-revealed-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div className="checkout-revealed-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {/* STEP 2: CONTACT INFORMATION AND ADDRESS */}
-                      <div style={{ backgroundColor: '#FFFFFF', padding: '18px 20px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
+                      <div style={{ backgroundColor: '#FFFFFF', padding: '16px 18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '6px' }}>
                           <div>
-                            <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700, display: 'block' }}>
-                              Step 2 • Contact &amp; Address
+                            <span className="checkout-card-eyebrow" style={cardEyebrowStyle}>
+                              Contact &amp; Delivery
                             </span>
-                            <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '2px 0 0 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                              Contact &amp; Delivery Address
+                            <h3 className="checkout-card-title" style={cardTitleStyle}>
+                              Recipient &amp; Delivery Address
                             </h3>
                           </div>
-                          {matchingSavedAddresses.length > 0 && (
-                            <span style={{ fontSize: '11px', color: '#8C8074' }}>
-                              Saved in Client Book
-                            </span>
-                          )}
                         </div>
 
                         {/* Contact Fields: Email & Phone */}
                         <div className="checkout-row-2" style={{ marginBottom: '14px' }}>
                           <div>
-                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                            <label style={formLabelStyle}>
                               Email Address <span style={{ color: '#C53030' }}>*</span>
                             </label>
                             <input
+                              ref={emailInputRef}
                               type="email"
                               value={formData.email}
                               onChange={(e) => handleChange('email', e.target.value)}
+                              onBlur={() => setTouchedFields(prev => ({ ...prev, email: true }))}
                               placeholder="client@domain.com"
                               required
-                              style={standardInputStyle}
+                              aria-invalid={Boolean(fieldErrors.email && (touchedFields.email || hasAttemptedStep1))}
+                              aria-describedby={fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? 'err-email' : undefined}
+                              style={{
+                                ...standardInputStyle,
+                                borderColor: fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                backgroundColor: fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                              }}
                             />
+                            {fieldErrors.email && (touchedFields.email || hasAttemptedStep1) && (
+                              <span id="err-email" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                <AlertCircle size={11} /> {fieldErrors.email}
+                              </span>
+                            )}
                           </div>
 
                           <div>
-                            <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
-                              Phone Number (SMS updates) <span style={{ color: '#C53030' }}>*</span>
+                            <label style={formLabelStyle}>
+                              Phone Number <span style={{ color: '#C53030' }}>*</span>
                             </label>
                             <input
+                              ref={phoneInputRef}
                               type="tel"
                               value={formData.phone}
                               onChange={(e) => handleChange('phone', e.target.value)}
+                              onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
                               placeholder={currentDestination.phonePlaceholder}
                               required
-                              style={standardInputStyle}
+                              aria-invalid={Boolean(fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1))}
+                              aria-describedby={fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? 'err-phone' : undefined}
+                              style={{
+                                ...standardInputStyle,
+                                borderColor: fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                backgroundColor: fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                              }}
                             />
+                            {fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) && (
+                              <span id="err-phone" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                <AlertCircle size={11} /> {fieldErrors.phone}
+                              </span>
+                            )}
                           </div>
                         </div>
 
                         {/* Saved Address Chips for this country */}
                         {matchingSavedAddresses.length > 0 && (
-                          <div style={{ marginBottom: '14px' }}>
-                            <span style={{ fontSize: '11px', fontWeight: 600, color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
-                              Saved Addresses for {currentDestination.name}
+                          <div style={{ marginBottom: '16px' }}>
+                            <span style={{ ...formLabelStyle, display: 'block', marginBottom: '8px' }}>
+                              Saved Addresses
                             </span>
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                               {matchingSavedAddresses.map((addr) => {
@@ -3496,7 +3824,7 @@ export default function CheckoutModal({
                                       display: 'inline-flex',
                                       alignItems: 'center',
                                       gap: '6px',
-                                      padding: '6px 12px',
+                                      padding: '6px 14px',
                                       borderRadius: '20px',
                                       fontSize: '11.5px',
                                       fontWeight: 600,
@@ -3561,10 +3889,9 @@ export default function CheckoutModal({
                                 {formData.address}, {formData.city}{formData.state ? `, ${formData.state}` : ''} {formData.postalCode}
                               </span>
                               <span style={{ fontSize: '11.5px', color: '#8C8074', display: 'block', marginTop: '2px' }}>
-                                {currentDestination.flag} {currentDestination.name} • Tel: {formData.phone}
+                                {formData.phone}
                               </span>
                             </div>
-
                             <button
                               type="button"
                               onClick={() => setIsEditingAddress(true)}
@@ -3572,13 +3899,15 @@ export default function CheckoutModal({
                                 background: 'none',
                                 border: 'none',
                                 color: 'var(--color-gold-dark)',
-                                fontSize: '11.5px',
+                                fontSize: '12px',
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 padding: '4px 6px',
                                 textDecoration: 'underline'
                               }}
-                            >Edit</button>
+                            >
+                              Edit
+                            </button>
                           </div>
                         )}
 
@@ -3586,93 +3915,156 @@ export default function CheckoutModal({
                         {(isEditingAddress || !activeSaved || activeSaved.countryCode !== selectedCountryCode || selectedAddressId === 'new') && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <div>
-                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                              <label style={formLabelStyle}>
                                 Recipient Full Name <span style={{ color: '#C53030' }}>*</span>
                               </label>
                               <input
+                                ref={fullNameInputRef}
                                 type="text"
                                 value={formData.fullName}
                                 onChange={(e) => handleChange('fullName', e.target.value)}
+                                onBlur={() => setTouchedFields(prev => ({ ...prev, fullName: true }))}
                                 placeholder="Full name of recipient"
                                 required
-                                style={standardInputStyle}
+                                aria-invalid={Boolean(fieldErrors.fullName && (touchedFields.fullName || hasAttemptedStep1))}
+                                aria-describedby={fieldErrors.fullName && (touchedFields.fullName || hasAttemptedStep1) ? 'err-fullName' : undefined}
+                                style={{
+                                  ...standardInputStyle,
+                                  borderColor: fieldErrors.fullName && (touchedFields.fullName || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                  backgroundColor: fieldErrors.fullName && (touchedFields.fullName || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                                }}
                               />
+                              {fieldErrors.fullName && (touchedFields.fullName || hasAttemptedStep1) && (
+                                <span id="err-fullName" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                  <AlertCircle size={11} /> {fieldErrors.fullName}
+                                </span>
+                              )}
                             </div>
 
                             <div>
-                              <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                              <label style={formLabelStyle}>
                                 Street Address &amp; Suite / Apt <span style={{ color: '#C53030' }}>*</span>
                               </label>
                               <input
+                                ref={addressInputRef}
                                 type="text"
                                 value={formData.address}
                                 onChange={(e) => handleChange('address', e.target.value)}
+                                onBlur={() => setTouchedFields(prev => ({ ...prev, address: true }))}
                                 placeholder="House / building number, street name, suite or apartment"
                                 required
-                                style={standardInputStyle}
+                                aria-invalid={Boolean(fieldErrors.address && (touchedFields.address || hasAttemptedStep1))}
+                                aria-describedby={fieldErrors.address && (touchedFields.address || hasAttemptedStep1) ? 'err-address' : undefined}
+                                style={{
+                                  ...standardInputStyle,
+                                  borderColor: fieldErrors.address && (touchedFields.address || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                  backgroundColor: fieldErrors.address && (touchedFields.address || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                                }}
                               />
+                              {fieldErrors.address && (touchedFields.address || hasAttemptedStep1) && (
+                                <span id="err-address" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                  <AlertCircle size={11} /> {fieldErrors.address}
+                                </span>
+                              )}
                             </div>
 
                             <div className="checkout-row-3">
                               <div>
-                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                <label style={formLabelStyle}>
                                   City / Town <span style={{ color: '#C53030' }}>*</span>
                                 </label>
                                 <input
+                                  ref={cityInputRef}
                                   type="text"
                                   value={formData.city}
                                   onChange={(e) => handleChange('city', e.target.value)}
+                                  onBlur={() => setTouchedFields(prev => ({ ...prev, city: true }))}
                                   placeholder="City"
                                   required
-                                  style={standardInputStyle}
+                                  aria-invalid={Boolean(fieldErrors.city && (touchedFields.city || hasAttemptedStep1))}
+                                  aria-describedby={fieldErrors.city && (touchedFields.city || hasAttemptedStep1) ? 'err-city' : undefined}
+                                  style={{
+                                    ...standardInputStyle,
+                                    borderColor: fieldErrors.city && (touchedFields.city || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                    backgroundColor: fieldErrors.city && (touchedFields.city || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                                  }}
                                 />
+                                {fieldErrors.city && (touchedFields.city || hasAttemptedStep1) && (
+                                  <span id="err-city" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                    <AlertCircle size={11} /> {fieldErrors.city}
+                                  </span>
+                                )}
                               </div>
 
                               <div>
-                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                <label style={formLabelStyle}>
                                   {currentDestination.stateLabel} {currentDestination.stateRequired && <span style={{ color: '#C53030' }}>*</span>}
                                 </label>
                                 <input
+                                  ref={stateInputRef}
                                   type="text"
                                   value={formData.state}
                                   onChange={(e) => handleChange('state', e.target.value)}
+                                  onBlur={() => setTouchedFields(prev => ({ ...prev, state: true }))}
                                   placeholder={currentDestination.statePlaceholder}
                                   required={currentDestination.stateRequired}
-                                  style={standardInputStyle}
+                                  aria-invalid={Boolean(fieldErrors.state && (touchedFields.state || hasAttemptedStep1))}
+                                  aria-describedby={fieldErrors.state && (touchedFields.state || hasAttemptedStep1) ? 'err-state' : undefined}
+                                  style={{
+                                    ...standardInputStyle,
+                                    borderColor: fieldErrors.state && (touchedFields.state || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                    backgroundColor: fieldErrors.state && (touchedFields.state || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                                  }}
                                 />
+                                {fieldErrors.state && (touchedFields.state || hasAttemptedStep1) && (
+                                  <span id="err-state" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                    <AlertCircle size={11} /> {fieldErrors.state}
+                                  </span>
+                                )}
                               </div>
 
                               <div>
-                                <label style={{ display: 'block', fontSize: '11px', color: '#685C50', marginBottom: '5px', fontWeight: 500 }}>
+                                <label style={formLabelStyle}>
                                   {currentDestination.postalCodeLabel} {currentDestination.postalCodeRequired && <span style={{ color: '#C53030' }}>*</span>}
                                 </label>
                                 <input
+                                  ref={postalCodeInputRef}
                                   type="text"
                                   value={formData.postalCode}
                                   onChange={(e) => handleChange('postalCode', e.target.value)}
+                                  onBlur={() => setTouchedFields(prev => ({ ...prev, postalCode: true }))}
                                   placeholder={currentDestination.postalCodePlaceholder}
                                   required={currentDestination.postalCodeRequired}
-                                  style={standardInputStyle}
+                                  aria-invalid={Boolean(fieldErrors.postalCode && (touchedFields.postalCode || hasAttemptedStep1))}
+                                  aria-describedby={fieldErrors.postalCode && (touchedFields.postalCode || hasAttemptedStep1) ? 'err-postalCode' : undefined}
+                                  style={{
+                                    ...standardInputStyle,
+                                    borderColor: fieldErrors.postalCode && (touchedFields.postalCode || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                    backgroundColor: fieldErrors.postalCode && (touchedFields.postalCode || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                                  }}
                                 />
+                                {fieldErrors.postalCode && (touchedFields.postalCode || hasAttemptedStep1) && (
+                                  <span id="err-postalCode" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                    <AlertCircle size={11} /> {fieldErrors.postalCode}
+                                  </span>
+                                )}
                               </div>
                             </div>
 
-                            {/* Save to Client Book Prompt */}
+                            {/* Save Address As prompt (clean, e-commerce standard, NO "client book" wording) */}
                             <div style={{
+                              marginTop: '8px',
+                              paddingTop: '10px',
+                              borderTop: '1px dashed var(--color-border)',
                               display: 'flex',
-                              alignItems: 'center',
                               justifyContent: 'space-between',
-                              padding: '10px 12px',
-                              backgroundColor: '#FAF8F5',
-                              borderRadius: '8px',
-                              border: '1px solid var(--color-border)',
+                              alignItems: 'center',
                               flexWrap: 'wrap',
-                              gap: '8px',
-                              marginTop: '4px'
+                              gap: '8px'
                             }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ fontSize: '11.5px', color: 'var(--color-deep-espresso)', fontWeight: 600 }}>
-                                  Save to Client Book:
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                <span style={{ fontSize: '11px', color: 'var(--color-deep-espresso)', fontWeight: 600 }}>
+                                  Save address as:
                                 </span>
                                 <div style={{ display: 'flex', gap: '4px' }}>
                                   {['Home', 'Work', 'Gift', 'Other'].map(lbl => (
@@ -3681,7 +4073,7 @@ export default function CheckoutModal({
                                       type="button"
                                       onClick={() => setSaveAsLabel(lbl)}
                                       style={{
-                                        padding: '2px 8px',
+                                        padding: '3px 8px',
                                         borderRadius: '4px',
                                         fontSize: '11px',
                                         fontWeight: 600,
@@ -3689,7 +4081,8 @@ export default function CheckoutModal({
                                         borderColor: saveAsLabel === lbl ? 'var(--color-deep-espresso)' : 'var(--color-border)',
                                         backgroundColor: saveAsLabel === lbl ? 'var(--color-deep-espresso)' : '#FFFFFF',
                                         color: saveAsLabel === lbl ? '#FFFFFF' : '#685C50',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        transition: 'all 0.15s ease'
                                       }}
                                     >
                                       {lbl}
@@ -3722,17 +4115,25 @@ export default function CheckoutModal({
                       {/* STEP 3: DELIVERY OPTIONS (Progressively revealed once address is complete) */}
                       <div style={{
                         backgroundColor: '#FFFFFF',
-                        padding: '18px 20px',
+                        padding: '16px 18px',
                         borderRadius: '14px',
                         border: '1px solid var(--color-border)',
                         boxSizing: 'border-box'
                       }}>
                         <div style={{ marginBottom: '12px' }}>
-                          <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700, display: 'block' }}>
-                            Step 3 • Courier Options
+                          <span className="checkout-card-eyebrow" style={cardEyebrowStyle}>
+                            Courier &amp; Delivery Speed
                           </span>
-                          <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', margin: '2px 0 0 0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                            Available Shipping to {currentDestination.name}
+                          <h3
+                            className="checkout-card-title checkout-available-delivery-title"
+                            style={{
+                              ...cardTitleStyle,
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis'
+                            }}
+                          >
+                            Available Delivery to {getAbbreviatedCountryName(currentDestination)}
                           </h3>
                         </div>
 
@@ -3752,6 +4153,63 @@ export default function CheckoutModal({
                             <span>
                               Complete your recipient name and delivery address above to reveal available courier speeds.
                             </span>
+                          </div>
+                        ) : availableShippingOptions.length === 0 ? (
+                          <div style={{
+                            padding: '14px 16px',
+                            backgroundColor: '#FEF2F2',
+                            border: '1.5px solid #F87171',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px'
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <AlertCircle size={16} color="#DC2626" flexShrink={0} />
+                              <strong style={{ fontSize: '12.5px', color: '#991B1B' }}>
+                                No Courier Methods Available
+                              </strong>
+                            </div>
+                            <p style={{ margin: 0, fontSize: '11.5px', color: '#7F1D1D', lineHeight: 1.45 }}>
+                              Courier delivery cannot currently be calculated for the address entered. Please verify your postal code or select another destination country.
+                            </p>
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setIsRetryingShipping(true);
+                                  setTimeout(() => setIsRetryingShipping(false), 500);
+                                }}
+                                style={{
+                                  padding: '5px 12px',
+                                  borderRadius: '6px',
+                                  backgroundColor: '#DC2626',
+                                  color: '#FFFFFF',
+                                  border: 'none',
+                                  fontSize: '11px',
+                                  fontWeight: 600,
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                {isRetryingShipping ? 'Recalculating...' : 'Retry Rates'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setIsCountryDropdownOpen(true)}
+                                style={{
+                                  padding: '5px 12px',
+                                  borderRadius: '6px',
+                                  backgroundColor: '#FFFFFF',
+                                  color: '#7F1D1D',
+                                  border: '1px solid #FCA5A5',
+                                  fontSize: '11px',
+                                  fontWeight: 600,
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Change Destination
+                              </button>
+                            </div>
                           </div>
                         ) : (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -3813,7 +4271,7 @@ export default function CheckoutModal({
                         type="button"
                         onClick={handleProceedToPayment}
                         disabled={!canProceedToPayment}
-                        className="btn-primary-editorial"
+                        className="btn-primary-editorial checkout-step1-desktop-continue"
                         style={{
                           width: '100%',
                           minHeight: '52px',
@@ -3843,6 +4301,112 @@ export default function CheckoutModal({
                       ══════════════════════════════════════════════════════════ */}
               {checkoutStep === 2 && (
                 <>
+                  {/* PAYMENT ERROR RECOVERY BANNER (RESILIENT EXCEPTION STATE) */}
+                  {paymentError && (
+                    <div style={{
+                      backgroundColor: '#FEF2F2',
+                      border: '1.5px solid #F87171',
+                      borderRadius: '12px',
+                      padding: '14px 16px',
+                      marginBottom: '14px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                      boxShadow: '0 4px 14px rgba(220, 38, 38, 0.08)'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                        <div style={{
+                          width: '28px',
+                          height: '28px',
+                          borderRadius: '50%',
+                          backgroundColor: '#FEE2E2',
+                          color: '#DC2626',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <AlertCircle size={16} />
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: '13px', color: '#991B1B', display: 'block', lineHeight: 1.3 }}>
+                            {paymentError.title}
+                          </strong>
+                          <p style={{ margin: '3px 0 0', fontSize: '11.5px', color: '#7F1D1D', lineHeight: 1.45 }}>
+                            {paymentError.message}
+                          </p>
+                          {paymentError.actionableAdvice && (
+                            <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#5F1717', fontWeight: 500 }}>
+                              💡 {paymentError.actionableAdvice}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Clear Action Recovery Buttons */}
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', paddingTop: '4px', borderTop: '1px solid #FECACA' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPaymentError(null);
+                            setPaymentState('idle');
+                          }}
+                          style={{
+                            padding: '6px 12px',
+                            borderRadius: '6px',
+                            backgroundColor: '#DC2626',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Try Payment Again
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPaymentError(null);
+                            setPaymentState('idle');
+                            handleChange('paymentMethod', '');
+                          }}
+                          style={{
+                            padding: '6px 12px',
+                            borderRadius: '6px',
+                            backgroundColor: '#FFFFFF',
+                            color: '#7F1D1D',
+                            border: '1px solid #FCA5A5',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Choose Another Payment Method
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setCheckoutStep(1)}
+                          style={{
+                            padding: '6px 12px',
+                            borderRadius: '6px',
+                            backgroundColor: 'transparent',
+                            color: '#7F1D1D',
+                            border: 'none',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            textDecoration: 'underline',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Review Delivery Details
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Active Delivery Summary Banner */}
                   <div style={{
                     padding: '12px 16px',
@@ -3856,13 +4420,13 @@ export default function CheckoutModal({
                     boxSizing: 'border-box'
                   }}>
                     <div style={{ minWidth: 0, overflow: 'hidden' }}>
-                      <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        Delivering To {currentDestination ? `${currentDestination.flag} ${currentDestination.name}` : ''} ({currentAddressTag})
+                      <span style={cardEyebrowStyle}>
+                        Delivering To {currentDestination ? `${currentDestination.flag} ${currentDestination.name}` : ''}
                       </span>
-                      <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <strong style={{ display: 'block', fontSize: '13px', color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: 'var(--font-sans)', marginTop: '2px' }}>
                         {formData.fullName} • {formData.address}, {formData.city}{formData.state ? `, ${formData.state}` : ''} {formData.postalCode}
                       </strong>
-                      <span style={{ fontSize: '11px', color: '#2E7D32', fontWeight: 500 }}>
+                      <span style={{ fontSize: '11.5px', color: '#2E7D32', fontWeight: 500, display: 'block', marginTop: '2px', fontFamily: 'var(--font-sans)' }}>
                         {selectedShippingOption
                           ? `${selectedShippingOption.name} (${selectedShippingOption.priceGbp === 0 ? 'Free' : formatPrice(shippingCost)})`
                           : 'Free Delivery'}
@@ -3880,27 +4444,75 @@ export default function CheckoutModal({
                         fontWeight: 600,
                         cursor: 'pointer',
                         textDecoration: 'underline',
-                        flexShrink: 0
+                        flexShrink: 0,
+                        fontFamily: 'var(--font-sans)'
                       }}
                     >
                       Change
                     </button>
                   </div>
 
-                  {/* Payment Options Selection */}
-                  <div style={{ backgroundColor: '#FFFFFF', padding: '18px', borderRadius: '14px', border: '1px solid var(--color-border)', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                      <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        Payment method
-                      </h3>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#685C50' }}>
-                        <Lock size={12} color="#1E7E34" />
-                        <span>Encrypted &amp; Secure</span>
+                  {/* EXPRESS CHECKOUT CARD (WARM GOLD-ISH ATELIER LUXURY BOX) */}
+                  <div className="checkout-express-wrapper" style={{
+                    background: 'linear-gradient(135deg, #FAF4E8 0%, #F5ECDB 100%)',
+                    border: '1.5px solid rgba(197, 160, 89, 0.45)',
+                    borderRadius: '14px',
+                    padding: '12px 16px',
+                    boxSizing: 'border-box',
+                    boxShadow: '0 4px 16px rgba(197, 160, 89, 0.10)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                      <span className="checkout-express-tag">
+                        Express Checkout
+                      </span>
+                    </div>
+
+                    <div className="checkout-express-buttons-row">
+                      <button
+                        type="button"
+                        onClick={() => handleExpressPay('apple_pay')}
+                        className="checkout-express-btn apple-pay-btn"
+                        title="Apple Pay"
+                        aria-label="Express checkout with Apple Pay"
+                        id="btn-express-apple-pay"
+                      >
+                        <ApplePayLogo height={18} color="#FFFFFF" className="apple-pay-icon" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleExpressPay('google_pay')}
+                        className="checkout-express-btn google-pay-btn"
+                        title="Google Pay"
+                        aria-label="Express checkout with Google Pay"
+                        id="btn-express-google-pay"
+                      >
+                        <GooglePayLogo height={16} color="#3C4043" className="google-pay-icon" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* STANDARD PAYMENT SELECTION CARD (SEPARATE DEDICATED CARD WITH UNIFIED SPACING) */}
+                  <div style={{
+                    backgroundColor: '#FFFFFF',
+                    padding: '16px 18px',
+                    borderRadius: '14px',
+                    border: '1px solid var(--color-border)',
+                    boxSizing: 'border-box'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                      <div>
+                        <span className="checkout-card-eyebrow" style={cardEyebrowStyle}>
+                          Payment Selection
+                        </span>
+                        <h3 className="checkout-card-title" style={cardTitleStyle}>
+                          Select Payment Method
+                        </h3>
                       </div>
                     </div>
 
                     {/* Recommended / Initial Eligible Methods */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {initialMethods.map(methodId => renderPaymentOption(methodId))}
                     </div>
 
@@ -3956,8 +4568,10 @@ export default function CheckoutModal({
                       )}
                     </button>
                   </div>
+
                 </>
               )}
+
 
             </div>
 
@@ -3973,15 +4587,14 @@ export default function CheckoutModal({
                 boxShadow: '0 8px 24px rgba(36, 28, 25, 0.04)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h3 style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '17px',
-                    fontWeight: 600,
-                    margin: 0,
-                    color: 'var(--color-deep-espresso)'
-                  }}>
-                    Order Summary ({cartItems.length})
-                  </h3>
+                  <div>
+                    <span style={cardEyebrowStyle}>
+                      Order Review
+                    </span>
+                    <h3 style={cardTitleStyle}>
+                      Order Summary ({cartItems.length})
+                    </h3>
+                  </div>
                   {onOpenCart && (
                     <button
                       type="button"
@@ -4146,12 +4759,543 @@ export default function CheckoutModal({
                   )}
                 </div>
 
-
               </div>
             </div>
 
           </div>
+
         </div>
+
+        {/* MOBILE STICKY DELIVERY BAR (STICKY ON MOBILE IN STEP 1 WHILE REST SCROLLS) */}
+        {checkoutStep === 1 && (
+          <div className="checkout-mobile-sticky-delivery-bar">
+            {/* UPWARD-EXPANDING ORDER SUMMARY DROPDOWN */}
+            {isMobileSummaryExpanded && (
+              <div className="checkout-mobile-sticky-summary-dropdown">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '12px' }}>
+                  {cartItems.map((item, idx) => (
+                    <div key={item.cartId || idx} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          style={{ width: '40px', height: '48px', objectFit: 'cover', borderRadius: '6px', backgroundColor: '#FAF7F2' }}
+                        />
+                        <span style={{
+                          position: 'absolute',
+                          top: '-5px',
+                          right: '-5px',
+                          backgroundColor: 'var(--color-deep-espresso)',
+                          color: '#FFFFFF',
+                          fontSize: '9px',
+                          fontWeight: 700,
+                          width: '16px',
+                          height: '16px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          {item.quantity || 1}
+                        </span>
+                      </div>
+                      <div style={{ flex: '1 1 auto', minWidth: 0 }}>
+                        <h4 style={{ fontSize: '12px', margin: 0, fontWeight: 600, color: 'var(--color-deep-espresso)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {item.name}
+                        </h4>
+                        <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
+                          {item.selectedLength || 'Standard'} {item.selectedLace ? `• ${item.selectedLace}` : ''}
+                        </span>
+                      </div>
+                      <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', flexShrink: 0 }}>
+                        {formatPrice((item.price * (item.quantity || 1)) * rate)}
+                      </strong>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#685C50' }}>
+                    <span>Subtotal</span>
+                    <strong>{formatPrice(subtotal)}</strong>
+                  </div>
+                  {discount > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#1E7E34' }}>
+                      <span>Discount ({checkoutData.promoCode})</span>
+                      <strong>−{formatPrice(discount)}</strong>
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#685C50' }}>
+                    <span>Delivery</span>
+                    <strong>{shippingCost === 0 ? 'Free' : formatPrice(shippingCost)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-deep-espresso)', borderTop: '1px solid var(--color-border)', paddingTop: '8px', marginTop: '4px' }}>
+                    <strong>Total Due</strong>
+                    <strong style={{ fontSize: '16px', fontFamily: 'var(--font-display)' }}>{formatPrice(total)}</strong>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* STICKY ACCORDION TOGGLE BUTTON */}
+            <button
+              type="button"
+              onClick={() => setIsMobileSummaryExpanded(prev => !prev)}
+              className="checkout-mobile-sticky-summary-toggle"
+              aria-expanded={isMobileSummaryExpanded}
+              id="checkout-mobile-summary-toggle"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '6px',
+                  backgroundColor: '#FAF5EB',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--color-gold-dark)',
+                  flexShrink: 0
+                }}>
+                  <ShoppingBag size={13} />
+                </div>
+                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)', fontFamily: 'var(--font-sans)' }}>
+                  {isMobileSummaryExpanded ? 'Hide order summary' : `Show order summary (${cartItems.length})`}
+                </span>
+                {isMobileSummaryExpanded ? <ChevronDown size={14} color="#8C8074" /> : <ChevronUp size={14} color="#8C8074" />}
+              </div>
+
+              <strong style={{ fontSize: '14.5px', color: 'var(--color-deep-espresso)', fontFamily: 'var(--font-display)', fontWeight: 700 }}>
+                {formatPrice(total)}
+              </strong>
+            </button>
+
+            {/* STICKY CONTINUE TO PAYMENT BUTTON */}
+            <button
+              type="button"
+              onClick={handleProceedToPayment}
+              disabled={!canProceedToPayment}
+              className="checkout-btn-submit checkout-sticky-submit-btn"
+              id="checkout-mobile-sticky-continue-button"
+            >
+              <span>Continue to Payment</span>
+              <ArrowRight size={15} style={{ flexShrink: 0 }} />
+            </button>
+          </div>
+        )}
+
+        {/* MOBILE STICKY PAYMENT & BACK BAR (STICKY ON MOBILE WHILE REST SCROLLS) */}
+        {checkoutStep === 2 && (
+          <div className="checkout-mobile-sticky-pay-bar">
+            <button
+              type="button"
+              className="checkout-btn-submit checkout-sticky-submit-btn"
+              onClick={handlePlaceOrder}
+              disabled={isSubmitting || cartItems.length === 0}
+              id="checkout-mobile-sticky-pay-button"
+            >
+              {isSubmitting ? (
+                <span style={{ whiteSpace: 'nowrap' }}>Processing Payment...</span>
+              ) : (
+                <>
+                  <Lock size={15} style={{ flexShrink: 0 }} />
+                  <span style={{ whiteSpace: 'nowrap' }}>
+                    Authorize Payment • {formatPrice(total)}
+                  </span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCheckoutStep(1)}
+              className="checkout-btn-back checkout-sticky-back-btn"
+              id="checkout-mobile-sticky-back-button"
+            >
+              <ArrowLeft size={14} style={{ flexShrink: 0 }} />
+              <span>Back to Delivery</span>
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', marginTop: '4px', fontSize: '10.5px', color: '#8C8074' }}>
+              <span>14-day statutory returns • </span>
+              <button
+                type="button"
+                onClick={() => setShowReturnsModal(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  color: 'var(--color-gold-dark)',
+                  fontSize: '10.5px',
+                  fontWeight: 600,
+                  textDecoration: 'underline',
+                  cursor: 'pointer'
+                }}
+              >
+                Returns policy
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* AUTHENTIC EXPRESS CHECKOUT MODAL SHEET (1-CLICK DISPATCH) */}
+        {activeExpressSheet && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(15, 12, 11, 0.75)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+              zIndex: 99999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px'
+            }}
+            onClick={() => setActiveExpressSheet(null)}
+          >
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '18px',
+                maxWidth: '440px',
+                width: '100%',
+                padding: '24px',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                border: '1px solid var(--color-border)'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {activeExpressSheet === 'apple_pay' ? (
+                    <div style={{ backgroundColor: '#000000', padding: '6px 12px', borderRadius: '6px', display: 'flex', alignItems: 'center' }}>
+                      <ApplePayLogo height={18} color="#FFFFFF" />
+                    </div>
+                  ) : (
+                    <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #D5D9D9', padding: '5px 10px', borderRadius: '6px', display: 'flex', alignItems: 'center' }}>
+                      <GooglePayLogo height={16} color="#3C4043" />
+                    </div>
+                  )}
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
+                    Express Authorization
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveExpressSheet(null)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#8C8074' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div style={{ backgroundColor: '#FAF8F5', borderRadius: '12px', padding: '14px', border: '1px solid var(--color-border)', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
+                  <span>Merchant</span>
+                  <strong style={{ color: 'var(--color-deep-espresso)' }}>House of Nina London Ltd</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
+                  <span>Express Method</span>
+                  <strong style={{ color: 'var(--color-deep-espresso)' }}>
+                    {activeExpressSheet === 'apple_pay' ? 'Apple Card (•••• 8821)' : 'Google Pay (Visa •••• 4012)'}
+                  </strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
+                  <span>Delivery Destination</span>
+                  <strong style={{ color: 'var(--color-deep-espresso)' }}>
+                    {formData.city || 'London'}, {currentDestination?.name || 'United Kingdom'}
+                  </strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px dashed var(--color-border)', paddingTop: '8px', marginTop: '2px' }}>
+                  <strong style={{ fontSize: '13px', color: 'var(--color-deep-espresso)' }}>Total Due</strong>
+                  <strong style={{ fontSize: '18px', color: 'var(--color-deep-espresso)', fontFamily: 'var(--font-display)' }}>
+                    {formatPrice(total)}
+                  </strong>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveExpressSheet(null);
+                  handlePlaceOrder(null, activeExpressSheet);
+                }}
+                disabled={isSubmitting}
+                style={{
+                  width: '100%',
+                  minHeight: '48px',
+                  backgroundColor: activeExpressSheet === 'apple_pay' ? '#000000' : '#1A73E8',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.15)'
+                }}
+              >
+                <Lock size={15} />
+                <span>Pay {formatPrice(total)} with {activeExpressSheet === 'apple_pay' ? 'Apple Pay' : 'Google Pay'}</span>
+              </button>
+
+              <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                <button
+                  type="button"
+                  onClick={() => setActiveExpressSheet(null)}
+                  style={{ background: 'none', border: 'none', color: '#8C8074', fontSize: '11.5px', textDecoration: 'underline', cursor: 'pointer' }}
+                >
+                  Cancel &amp; return to checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* AUTHENTIC 3D SECURE 2.0 STRONG CUSTOMER AUTHENTICATION MODAL */}
+        {threeDSChallenge && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(20, 16, 14, 0.78)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            zIndex: 100000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px'
+          }}>
+            <div style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '16px',
+              maxWidth: '440px',
+              width: '100%',
+              padding: '24px',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.35)',
+              border: '1px solid var(--color-border)',
+              textAlign: 'center'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '14px' }}>
+                <div style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  backgroundColor: '#00395D',
+                  color: '#FFFFFF',
+                  fontWeight: 800,
+                  fontSize: '12px',
+                  letterSpacing: '0.04em'
+                }}>
+                  {threeDSChallenge.bankName} • 3D SECURE
+                </div>
+              </div>
+
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#16110F', margin: '0 0 6px' }}>
+                Confirm Transaction with Your Bank
+              </h3>
+              <p style={{ fontSize: '12px', color: '#685C50', margin: '0 0 16px', lineHeight: 1.45 }}>
+                To protect your purchase at House of Nina London, please authorize the charge of <strong>{threeDSChallenge.amount}</strong> on your card ending in <strong>•••• {threeDSChallenge.last4}</strong>.
+              </p>
+
+              <div style={{
+                backgroundColor: '#F8FAFC',
+                borderRadius: '10px',
+                padding: '12px 14px',
+                border: '1px solid #E2E8F0',
+                marginBottom: '18px',
+                fontSize: '11px',
+                textAlign: 'left'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ color: '#64748B' }}>Merchant:</span>
+                  <strong>House of Nina London Ltd</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ color: '#64748B' }}>Amount:</span>
+                  <strong>{threeDSChallenge.amount}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: '#64748B' }}>Authentication:</span>
+                  <span style={{ color: '#0369A1', fontWeight: 600 }}>SMS / Banking App Push</span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={handleComplete3DS}
+                  style={{
+                    width: '100%',
+                    height: '44px',
+                    borderRadius: '8px',
+                    backgroundColor: '#0369A1',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Approve &amp; Complete Payment
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCancel3DS}
+                  style={{
+                    width: '100%',
+                    height: '36px',
+                    borderRadius: '8px',
+                    backgroundColor: 'transparent',
+                    color: '#64748B',
+                    border: 'none',
+                    fontSize: '11.5px',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                  }}
+                >
+                  Cancel &amp; return to checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* INLINE RETURNS POLICY MODAL */}
+        {showReturnsModal && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(15, 12, 11, 0.72)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+              zIndex: 99999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px'
+            }}
+            onClick={() => setShowReturnsModal(false)}
+          >
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '18px',
+                maxWidth: '520px',
+                width: '100%',
+                padding: '26px 24px',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
+                border: '1px solid var(--color-border)',
+                position: 'relative'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div>
+                  <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-dark)', fontWeight: 700 }}>
+                    Client Assurance &amp; Hygiene Standards
+                  </span>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', margin: '3px 0 0', color: 'var(--color-deep-espresso)' }}>
+                    Returns &amp; Exchange Policy
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowReturnsModal(false)}
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    backgroundColor: '#FAF8F5',
+                    border: '1px solid var(--color-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: 'var(--color-deep-espresso)'
+                  }}
+                  aria-label="Close returns policy"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12px', color: '#685C50', lineHeight: 1.55 }}>
+                <div style={{ padding: '12px 14px', backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0' }}>
+                  <strong style={{ color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
+                    ✨ 14-Day Statutory Return Period
+                  </strong>
+                  <span>
+                    You have 14 days from physical delivery to inspect your bespoke wig unit or silk styling accessories.
+                  </span>
+                </div>
+
+                <div>
+                  <strong style={{ color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '3px' }}>
+                    Hygiene &amp; Tamper Guarantee:
+                  </strong>
+                  <span>
+                    For hygiene protection and statutory public health compliance, returns and size exchanges are accepted provided the lace is uncut, security tags remain fastened, and the hair has not been worn, washed, or altered.
+                  </span>
+                </div>
+
+                <div>
+                  <strong style={{ color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '3px' }}>
+                    Swift Reimbursement:
+                  </strong>
+                  <span>
+                    Reimbursement is credited back to your original payment method (Card, Klarna, or Bank) within 14 working days of atelier receipt.
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: '#8C8074' }}>
+                  <ShieldCheck size={14} color="#2E7D32" />
+                  <span>Direct Concierge: houseofnina2026@gmail.com</span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowReturnsModal(false)}
+                  className="btn-primary-editorial"
+                  style={{ flex: 1, height: '44px', justifyContent: 'center', fontSize: '13px' }}
+                >
+                  Return to Checkout
+                </button>
+                {onOpenLegal && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowReturnsModal(false);
+                      onOpenLegal('shipping');
+                    }}
+                    style={{
+                      padding: '0 16px',
+                      height: '44px',
+                      backgroundColor: '#FAF8F5',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '8px',
+                      color: 'var(--color-deep-espresso)',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Full Legal Document
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
