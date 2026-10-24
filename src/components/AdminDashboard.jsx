@@ -3472,7 +3472,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Store Name</label>
+                      <label className="adminSettingsHeading">Store Name</label>
                       <input 
                         type="text" 
                         value={storeSettings.storeName}
@@ -3482,7 +3482,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Headquarters Address</label>
+                      <label className="adminSettingsHeading">Headquarters Address</label>
                       <input 
                         type="text" 
                         value={storeSettings.headquarters}
@@ -3492,7 +3492,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Support Email</label>
+                      <label className="adminSettingsHeading">Support Email</label>
                       <input 
                         type="email" 
                         value={storeSettings.supportEmail}
@@ -3502,7 +3502,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>WhatsApp Concierge Hotline</label>
+                      <label className="adminSettingsHeading">WhatsApp Concierge Hotline</label>
                       <input 
                         type="text" 
                         value={storeSettings.hotline}
@@ -3542,7 +3542,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </div>
 
                   <div style={{ maxWidth: '320px', marginBottom: '18px' }}>
-                    <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Free Shipping Threshold (£ GBP)</label>
+                    <label className="adminSettingsHeading">Free Shipping Threshold (£ GBP)</label>
                     <input 
                       type="number" 
                       value={storeSettings.freeShippingThreshold}

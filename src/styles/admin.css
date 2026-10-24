@@ -95,6 +95,23 @@
   border-color: var(--color-accent);
 }
 
+.adminSettingsHeading {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 768px) {
+  .adminSettingsHeading {
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════
    TOP NAVIGATION (FIXED — NEVER MOVES ON SCROLL)
    Same floating pill shape, 9999px corner radius, and subtle shadow
