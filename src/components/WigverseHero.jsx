@@ -84,6 +84,8 @@ export default function WigverseHero({ onEnterStore }) {
             alt="House of Nina - Welcome to our House Luxury Walk-in Closet"
             className="hero-web-bg-img"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="hero-web-scrim" aria-hidden="true" />
         </div>
@@ -191,6 +193,8 @@ export default function WigverseHero({ onEnterStore }) {
                 alt="House of Nina - Welcome to our House"
                 className="hero-house-img"
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
               <div className="hero-house-ambient-glow" aria-hidden="true" />
             </div>

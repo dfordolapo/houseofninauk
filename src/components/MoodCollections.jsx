@@ -20,6 +20,7 @@ export default function MoodCollections({ onSelectMood }) {
                   alt={mood.title} 
                   className="mood-img" 
                   loading="lazy"
+                  decoding="async"
                 />
                 <span className={`mood-accent-tag ${mood.accentColor}`}>
                   {mood.title}

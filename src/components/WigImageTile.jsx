@@ -49,6 +49,7 @@ export default function WigImageTile({ tile, isRippling, rippleDelay }) {
           alt={tile.title || "House of Nina Luxury Wig"}
           className="tile-img"
           loading="eager"
+          decoding="async"
           style={{
             objectPosition: tile.objectPosition || 'center center'
           }}

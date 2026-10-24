@@ -12,22 +12,22 @@ import CustomerReviews from './components/CustomerReviews';
 import SilkPairingAtelier from './components/SilkPairingAtelier';
 import CinematicVideoBanner from './components/CinematicVideoBanner';
 import Footer from './components/Footer';
-import SearchModal from './components/SearchModal';
-import ProductQuickViewModal from './components/ProductQuickViewModal';
-import ProductDetailsModal from './components/ProductDetailsModal';
-import CareGuideModal from './components/CareGuideModal';
 import CartDrawer from './components/CartDrawer';
-import WishlistDrawer from './components/WishlistDrawer';
-import AddedToBagModal from './components/AddedToBagModal';
-import LookReviewsModal from './components/LookReviewsModal';
-import LegalModal from './components/LegalModal';
-import TrackOrderModal from './components/TrackOrderModal';
-import FaqModal from './components/FaqModal';
-import CheckoutModal from './components/CheckoutModal';
-import OrderSuccessReceipt from './components/OrderSuccessReceipt';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
-// Dynamic import for local Admin Dashboard
+// Dynamic lazy imports for on-demand modals and administrative workflows
+const SearchModal = React.lazy(() => import('./components/SearchModal'));
+const ProductQuickViewModal = React.lazy(() => import('./components/ProductQuickViewModal'));
+const ProductDetailsModal = React.lazy(() => import('./components/ProductDetailsModal'));
+const CareGuideModal = React.lazy(() => import('./components/CareGuideModal'));
+const WishlistDrawer = React.lazy(() => import('./components/WishlistDrawer'));
+const AddedToBagModal = React.lazy(() => import('./components/AddedToBagModal'));
+const LookReviewsModal = React.lazy(() => import('./components/LookReviewsModal'));
+const LegalModal = React.lazy(() => import('./components/LegalModal'));
+const TrackOrderModal = React.lazy(() => import('./components/TrackOrderModal'));
+const FaqModal = React.lazy(() => import('./components/FaqModal'));
+const CheckoutModal = React.lazy(() => import('./components/CheckoutModal'));
+const OrderSuccessReceipt = React.lazy(() => import('./components/OrderSuccessReceipt'));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
@@ -619,134 +619,159 @@ export default function App() {
         onOpenLegal={(tab) => setLegalModalTab(tab)}
       />
 
-      <WishlistDrawer
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlist={wishlist}
-        onRemoveItem={(id) => setWishlist(prev => prev.filter(item => item.id !== id))}
-        onAddToCart={handleAddToCart}
-        onMoveAllToBag={handleMoveAllToBag}
-      />
-
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
-        cartItems={cartItems}
-        checkoutData={checkoutData}
-        onClearCart={() => setCartItems([])}
-        onOpenCart={() => {
-          setIsCheckoutOpen(false);
-          setIsCartOpen(true);
-        }}
-        onOpenTrackOrder={() => {
-          setIsCheckoutOpen(false);
-          setIsTrackOrderOpen(true);
-        }}
-        onOpenLegal={(tab) => setLegalModalTab(tab)}
-      />
-
-      {/* LUXURY BESPOKE RIBBON ORDER SUCCESS MODAL */}
-      <OrderSuccessReceipt
-        isOpen={isPreviewSuccessOpen}
-        onClose={() => setIsPreviewSuccessOpen(false)}
-        onContinueShopping={() => setIsPreviewSuccessOpen(false)}
-      />
-
-      {/* PURE VIDEO QUICK VIEW MODAL (VIDEO ONLY) */}
-      <ProductQuickViewModal 
-        product={quickViewProduct}
-        isOpen={!!quickViewProduct}
-        onClose={() => setQuickViewProduct(null)}
-        onOpenDetails={(prod) => {
-          setQuickViewProduct(null);
-          setDetailsProduct(prod);
-        }}
-        onToggleWishlist={handleToggleSave}
-        wishlist={wishlist}
-        onAddToCart={handleAddToCart}
-      />
-
-      {/* FULL PRODUCT DETAILS & CUSTOMIZATION MODAL */}
-      <ProductDetailsModal
-        product={detailsProduct}
-        isOpen={!!detailsProduct}
-        onClose={() => setDetailsProduct(null)}
-        onAddToCart={handleAddToCart}
-        onOpenVideo={(prod) => {
-          setDetailsProduct(null);
-          setQuickViewProduct(prod);
-        }}
-        onToggleWishlist={handleToggleSave}
-        onOpenReviews={(prod) => {
-          setActiveReviewPost(prod);
-          setIsReviewsModalOpen(true);
-        }}
-        wishlist={wishlist}
-      />
-
-      <CareGuideModal 
-        isOpen={isCareGuideOpen}
-        onClose={() => setIsCareGuideOpen(false)}
-        onShopSilkCare={() => {
-          setIsCareGuideOpen(false);
-          setShowHero(false);
-          const target = document.getElementById('silk-pairing-studio') || document.getElementById('featured-products');
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
-        }}
-      />
-
-      <SearchModal 
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onSelectProduct={(prod) => setDetailsProduct(prod)}
-        onSelectCategory={handleSelectCategory}
-        onToggleWishlist={handleToggleSave}
-        wishlist={wishlist}
-      />
-
-      {/* ADDED TO BAG UPSELL & CROSS-SELL MODAL */}
-      <AddedToBagModal
-        isOpen={isAddedModalOpen}
-        onClose={() => setIsAddedModalOpen(false)}
-        addedProduct={addedProductForModal}
-        cartItems={cartItems}
-        onAddToCart={handleAddToCart}
-        onOpenCart={() => {
-          setIsAddedModalOpen(false);
-          setIsCartOpen(true);
-        }}
-      />
-
-      {/* INSTAGRAM-STYLE LOOK COMMENTS & REVIEWS MODAL */}
-      <LookReviewsModal
-        isOpen={isReviewsModalOpen}
-        onClose={() => setIsReviewsModalOpen(false)}
-        post={activeReviewPost}
-        onQuickView={handleInstagramQuickView}
-        onAddToCart={handleAddToCart}
-      />
-
-      {/* COMPREHENSIVE LEGAL & POLICIES MODAL (TERMS, PRIVACY NOTICE, RETURNS) */}
-      <LegalModal
-        isOpen={Boolean(legalModalTab)}
-        initialTab={legalModalTab || 'terms'}
-        onClose={() => setLegalModalTab(null)}
-      />
-
-      {/* TRACK ORDER REALTIME CONCIERGE MODAL */}
-      <TrackOrderModal
-        isOpen={isTrackOrderOpen}
-        onClose={() => setIsTrackOrderOpen(false)}
-      />
-
-      {/* CLIENT FAQS ACCORDION MODAL */}
-      <FaqModal
-        isOpen={isFaqOpen}
-        onClose={() => setIsFaqOpen(false)}
-      />
-
-      {/* HOUSE OF NINA ADMIN DASHBOARD */}
+      {/* ON-DEMAND MODALS & DRAWERS (LAZY LOADED & CODE-SPLIT) */}
       <React.Suspense fallback={null}>
+        {isWishlistOpen && (
+          <WishlistDrawer
+            isOpen={isWishlistOpen}
+            onClose={() => setIsWishlistOpen(false)}
+            wishlist={wishlist}
+            onRemoveItem={(id) => setWishlist(prev => prev.filter(item => item.id !== id))}
+            onAddToCart={handleAddToCart}
+            onMoveAllToBag={handleMoveAllToBag}
+          />
+        )}
+
+        {isCheckoutOpen && (
+          <CheckoutModal
+            isOpen={isCheckoutOpen}
+            onClose={() => setIsCheckoutOpen(false)}
+            cartItems={cartItems}
+            checkoutData={checkoutData}
+            onClearCart={() => setCartItems([])}
+            onOpenCart={() => {
+              setIsCheckoutOpen(false);
+              setIsCartOpen(true);
+            }}
+            onOpenTrackOrder={() => {
+              setIsCheckoutOpen(false);
+              setIsTrackOrderOpen(true);
+            }}
+            onOpenLegal={(tab) => setLegalModalTab(tab)}
+          />
+        )}
+
+        {/* LUXURY BESPOKE RIBBON ORDER SUCCESS MODAL */}
+        {isPreviewSuccessOpen && (
+          <OrderSuccessReceipt
+            isOpen={isPreviewSuccessOpen}
+            onClose={() => setIsPreviewSuccessOpen(false)}
+            onContinueShopping={() => setIsPreviewSuccessOpen(false)}
+          />
+        )}
+
+        {/* PURE VIDEO QUICK VIEW MODAL (VIDEO ONLY) */}
+        {Boolean(quickViewProduct) && (
+          <ProductQuickViewModal 
+            product={quickViewProduct}
+            isOpen={!!quickViewProduct}
+            onClose={() => setQuickViewProduct(null)}
+            onOpenDetails={(prod) => {
+              setQuickViewProduct(null);
+              setDetailsProduct(prod);
+            }}
+            onToggleWishlist={handleToggleSave}
+            wishlist={wishlist}
+            onAddToCart={handleAddToCart}
+          />
+        )}
+
+        {/* FULL PRODUCT DETAILS & CUSTOMIZATION MODAL */}
+        {Boolean(detailsProduct) && (
+          <ProductDetailsModal
+            product={detailsProduct}
+            isOpen={!!detailsProduct}
+            onClose={() => setDetailsProduct(null)}
+            onAddToCart={handleAddToCart}
+            onOpenVideo={(prod) => {
+              setDetailsProduct(null);
+              setQuickViewProduct(prod);
+            }}
+            onToggleWishlist={handleToggleSave}
+            onOpenReviews={(prod) => {
+              setActiveReviewPost(prod);
+              setIsReviewsModalOpen(true);
+            }}
+            wishlist={wishlist}
+          />
+        )}
+
+        {isCareGuideOpen && (
+          <CareGuideModal 
+            isOpen={isCareGuideOpen}
+            onClose={() => setIsCareGuideOpen(false)}
+            onShopSilkCare={() => {
+              setIsCareGuideOpen(false);
+              setShowHero(false);
+              const target = document.getElementById('silk-pairing-studio') || document.getElementById('featured-products');
+              if (target) target.scrollIntoView({ behavior: 'smooth' });
+            }}
+          />
+        )}
+
+        {isSearchOpen && (
+          <SearchModal 
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            onSelectProduct={(prod) => setDetailsProduct(prod)}
+            onSelectCategory={handleSelectCategory}
+            onToggleWishlist={handleToggleSave}
+            wishlist={wishlist}
+          />
+        )}
+
+        {/* ADDED TO BAG UPSELL & CROSS-SELL MODAL */}
+        {isAddedModalOpen && (
+          <AddedToBagModal
+            isOpen={isAddedModalOpen}
+            onClose={() => setIsAddedModalOpen(false)}
+            addedProduct={addedProductForModal}
+            cartItems={cartItems}
+            onAddToCart={handleAddToCart}
+            onOpenCart={() => {
+              setIsAddedModalOpen(false);
+              setIsCartOpen(true);
+            }}
+          />
+        )}
+
+        {/* INSTAGRAM-STYLE LOOK COMMENTS & REVIEWS MODAL */}
+        {isReviewsModalOpen && (
+          <LookReviewsModal
+            isOpen={isReviewsModalOpen}
+            onClose={() => setIsReviewsModalOpen(false)}
+            post={activeReviewPost}
+            onQuickView={handleInstagramQuickView}
+            onAddToCart={handleAddToCart}
+          />
+        )}
+
+        {/* COMPREHENSIVE LEGAL & POLICIES MODAL (TERMS, PRIVACY NOTICE, RETURNS) */}
+        {Boolean(legalModalTab) && (
+          <LegalModal
+            isOpen={Boolean(legalModalTab)}
+            initialTab={legalModalTab || 'terms'}
+            onClose={() => setLegalModalTab(null)}
+          />
+        )}
+
+        {/* TRACK ORDER REALTIME CONCIERGE MODAL */}
+        {isTrackOrderOpen && (
+          <TrackOrderModal
+            isOpen={isTrackOrderOpen}
+            onClose={() => setIsTrackOrderOpen(false)}
+          />
+        )}
+
+        {/* CLIENT FAQS ACCORDION MODAL */}
+        {isFaqOpen && (
+          <FaqModal
+            isOpen={isFaqOpen}
+            onClose={() => setIsFaqOpen(false)}
+          />
+        )}
+
+        {/* HOUSE OF NINA ADMIN DASHBOARD */}
         {isAdminOpen && (
           <AdminDashboard
             isOpen={isAdminOpen}

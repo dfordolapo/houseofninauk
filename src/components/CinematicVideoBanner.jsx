@@ -88,7 +88,7 @@ export default function CinematicVideoBanner() {
           loop
           playsInline
           webkit-playsinline="true"
-          preload="auto"
+          preload="metadata"
           controls={false}
           controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
           disablePictureInPicture
@@ -97,12 +97,12 @@ export default function CinematicVideoBanner() {
           aria-hidden="true"
         >
           <source 
-            src="/videos/landing-cinematic-banner.mp4" 
-            type="video/mp4" 
-          />
-          <source 
             src="/videos/landing-cinematic-banner.webm" 
             type="video/webm" 
+          />
+          <source 
+            src="/videos/landing-cinematic-banner.mp4" 
+            type="video/mp4" 
           />
         </video>
 

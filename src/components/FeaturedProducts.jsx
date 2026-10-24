@@ -82,6 +82,7 @@ export default function FeaturedProducts({
                     alt={product.name} 
                     className="product-img" 
                     loading="lazy"
+                    decoding="async"
                   />
                   
                   {/* Tag Badge */}

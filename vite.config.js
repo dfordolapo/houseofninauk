@@ -10,5 +10,15 @@ export default defineConfig({
     watch: {
       ignored: ['**/*.mp4', '**/*.webm', '**/*.mov']
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          icons: ['lucide-react']
+        }
+      }
+    }
   }
 })
