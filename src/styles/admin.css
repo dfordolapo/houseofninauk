@@ -112,10 +112,9 @@ label.adminSettingsHeading,
 
 .adminSettingsHelperText {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   color: var(--color-text-secondary);
   margin-top: 4px;
-  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
@@ -132,16 +131,18 @@ label.adminSettingsHeading,
   }
 
   .adminSettingsHelperText {
-    font-size: 0.60rem;
-    white-space: nowrap;
+    font-size: 0.82rem !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
     margin-top: 3px;
   }
 }
 
 @media (max-width: 480px) {
   .adminSettingsHelperText {
-    font-size: 0.58rem;
-    white-space: nowrap;
+    font-size: 0.82rem !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
   }
 }
 
@@ -562,6 +563,7 @@ label.adminSettingsHeading,
   transition: all 0.15s ease;
   font-family: inherit;
   min-height: 38px;
+  box-sizing: border-box;
 }
 
 .btnPrimary:hover {
@@ -572,16 +574,19 @@ label.adminSettingsHeading,
 .btnSecondary {
   background-color: #FFFFFF;
   color: var(--color-primary);
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 8px;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 600;
   border: 1px solid var(--color-border);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: all 0.15s;
+  min-height: 38px;
+  box-sizing: border-box;
 }
 
 .btnSecondary:hover {
@@ -1332,18 +1337,23 @@ label.adminSettingsHeading,
 }
 
 .modalBtnCancel {
-  padding: 10px 18px;
+  padding: 9px 18px;
   border: 1px solid var(--color-border);
   background: #FFFFFF;
   color: var(--color-text);
   border-radius: 8px;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.15s;
   flex: 1;
   font-family: inherit;
-  min-height: 42px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
 }
 
 .modalBtnCancel:hover {
@@ -1351,7 +1361,7 @@ label.adminSettingsHeading,
 }
 
 .modalBtnSubmit {
-  padding: 10px 18px;
+  padding: 9px 18px;
   border: none;
   background: var(--color-primary);
   color: #FFFFFF;
@@ -1362,7 +1372,12 @@ label.adminSettingsHeading,
   transition: all 0.15s;
   flex: 1;
   font-family: inherit;
-  min-height: 42px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
 }
 
 .modalBtnSubmit:hover {
@@ -1841,13 +1856,15 @@ label.adminSettingsHeading,
 
   .pageHeaderActions .btnPrimary,
   .pageHeaderActions .btnSecondary {
-    font-size: 0.72rem !important;
-    padding: 6px 10px !important;
-    min-height: 28px !important;
+    font-size: 0.78rem !important;
+    padding: 7px 14px !important;
+    min-height: 36px !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
   }
 
   /* Responsive tab label swapping on mobile */
@@ -1916,6 +1933,16 @@ label.adminSettingsHeading,
     box-sizing: border-box !important;
   }
 
+  /* Unified Big Buttons in Modals on Mobile */
+  .modalBtnSubmit,
+  .modalBtnCancel {
+    min-height: 38px !important;
+    padding: 8px 16px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+  }
+
   .adminMobileCardFooter {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -1956,9 +1983,15 @@ label.adminSettingsHeading,
     margin-bottom: 2px !important;
   }
 
-  .pageSubtitle {
-    font-size: 0.72rem !important;
-    margin-bottom: 0 !important;
+  .pageSubtitle,
+  .adminSectionSubtitle,
+  .modalText,
+  .emptyStateSubtitle,
+  .adminSubCopy {
+    font-size: 0.82rem !important;
+    line-height: 1.45 !important;
+    color: var(--color-text-secondary) !important;
+    margin-bottom: 2px !important;
   }
 
   .statsGrid {

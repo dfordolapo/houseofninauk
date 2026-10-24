@@ -3518,7 +3518,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
                     <div>
                       <h3 className="adminSettingsTitle" style={{ margin: '0 0 3px 0' }}>Shipping Rates Configuration</h3>
-                      <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>
+                      <p className="adminSectionSubtitle" style={{ margin: 0, fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>
                         Manage delivery services, estimated transit windows, and checkout courier rates.
                       </p>
                     </div>
@@ -3534,7 +3534,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         });
                         setIsAddShippingRateOpen(true);
                       }}
-                      style={{ fontSize: '0.82rem', padding: '6px 14px' }}
                     >
                       <Plus size={15} />
                       <span>Add Shipping Rate</span>
