@@ -1968,9 +1968,17 @@ export default function CheckoutModal({
       ? `${selectedShippingOption.name} (${selectedShippingOption.priceGbp === 0 ? 'Free' : formatPrice(shippingCost)})`
       : 'Free Delivery';
 
+    const assignedOrderNumber = `HN-${randomOrderNum}`;
+
     const newOrder = {
-      orderId: `HN${randomOrderNum}`,
+      id: assignedOrderNumber,
+      orderNumber: assignedOrderNumber,
+      orderId: assignedOrderNumber,
+      createdAt: now.toISOString(),
       date: dateStr,
+      status: 'confirmed',
+      fulfillmentStatus: 'Confirmed',
+      paymentStatus: 'Paid',
       customer: {
         fullName: formData.fullName || "Valued Client",
         email: formData.email || "client@houseofnina.co.uk",
@@ -2003,12 +2011,12 @@ export default function CheckoutModal({
     // Persist to admin orders queue, session storage, and cloud database
     try {
       const existingOrders = JSON.parse(localStorage.getItem('house_of_nina_client_orders') || '[]');
-      const updatedOrders = [newOrder, ...existingOrders.filter(o => o.orderNumber !== newOrder.orderNumber)];
+      const updatedOrders = [newOrder, ...existingOrders.filter(o => (o.orderNumber || o.id) !== newOrder.orderNumber)];
       localStorage.setItem('house_of_nina_client_orders', JSON.stringify(updatedOrders));
 
       // Synchronize with Admin Dashboard storage queue
       const existingAdmin = JSON.parse(localStorage.getItem('house_of_nina_admin_orders_v3') || '[]');
-      const updatedAdmin = [newOrder, ...existingAdmin.filter(o => (o.orderNumber || o.id) !== newOrder.orderNumber)];
+      const updatedAdmin = [newOrder, ...existingAdmin.filter(o => (o.orderNumber || o.id || o.orderId) !== newOrder.orderNumber)];
       localStorage.setItem('house_of_nina_admin_orders_v3', JSON.stringify(updatedAdmin));
 
       sessionStorage.setItem('hn_confirmed_order', JSON.stringify(newOrder));
@@ -2020,7 +2028,7 @@ export default function CheckoutModal({
         client_name: newOrder.customer?.fullName || 'Client',
         email: newOrder.customer?.email,
         phone: newOrder.customer?.phone,
-        shipping_address: newOrder.shippingAddress,
+        shipping_address: newOrder.customer,
         cart_items: newOrder.items,
         subtotal: newOrder.subtotal,
         shipping_fee: newOrder.shippingCost,

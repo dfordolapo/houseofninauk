@@ -412,7 +412,24 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   const [orders, setOrders] = useState(() => {
     try {
       const saved = localStorage.getItem(ORDERS_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map((o, idx) => {
+            const rawRef = o.orderNumber || o.orderId || o.id || `HN-${8000 + idx}`;
+            const cleanRef = rawRef.startsWith('HN') ? (rawRef.includes('-') ? rawRef : `HN-${rawRef.slice(2)}`) : `HN-${rawRef}`;
+            const rawStatus = (o.status || o.fulfillmentStatus || 'confirmed').toLowerCase();
+            return {
+              ...o,
+              id: cleanRef,
+              orderNumber: cleanRef,
+              status: rawStatus,
+              paymentStatus: o.paymentStatus || 'Paid',
+              createdAt: o.createdAt || o.date || new Date().toISOString()
+            };
+          });
+        }
+      }
     } catch {}
     return INITIAL_DEMO_ORDERS;
   });
@@ -1817,28 +1834,28 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         {filteredOrders.map((order, idx) => (
                           <tr key={order.id}>
                             <td>
-                              <strong>{order.orderNumber}</strong>
+                              <strong>{order.orderNumber || order.id || 'HN-8492'}</strong>
                               <span style={{ display: 'block', fontSize: '0.74rem', color: 'var(--color-text-secondary)' }}>
-                                {new Date(order.createdAt).toLocaleDateString('en-GB')}
+                                {new Date(order.createdAt || Date.now()).toLocaleDateString('en-GB')}
                               </span>
                             </td>
                             <td>
-                              <div style={{ fontWeight: 600 }}>{order.customer.fullName}</div>
+                              <div style={{ fontWeight: 600 }}>{order.customer?.fullName || 'Valued Client'}</div>
                               <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)' }}>
-                                {order.customer.city}, {order.customer.postalCode}
+                                {order.customer?.city || 'London'}, {order.customer?.postalCode || 'UK'}
                               </div>
                             </td>
                             <td>
                               <div style={{ fontSize: '0.82rem' }}>
-                                {order.items.map(it => `${it.quantity}x ${it.name}`).join(', ')}
+                                {(order.items || []).map(it => `${it.quantity || 1}x ${it.name || 'Luxury Unit'}`).join(', ') || 'Custom Unit'}
                               </div>
                             </td>
                             <td>
-                              <strong style={{ fontSize: '0.92rem' }}>£{Number(order.total).toFixed(2)}</strong>
+                              <strong style={{ fontSize: '0.92rem' }}>£{Number(order.total || 0).toFixed(2)}</strong>
                             </td>
                             <td>
-                              <span className={`badge ${order.status}`}>
-                                {order.status === 'delivered' ? 'Delivered' : order.status}
+                              <span className={`badge ${order.status || 'confirmed'}`}>
+                                {order.status === 'delivered' ? 'Delivered' : (order.status || 'Confirmed')}
                               </span>
                             </td>
                             <td>
@@ -2052,13 +2069,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         {/* Header: Order Number, Date, Status */}
                         <div className="adminMobileCardHeader">
                           <div>
-                            <div className="adminCardOrderNumber">{order.orderNumber}</div>
+                            <div className="adminCardOrderNumber">{order.orderNumber || order.id || 'HN-8492'}</div>
                             <div className="adminCardDate">
-                              {new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              {new Date(order.createdAt || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                             </div>
                           </div>
-                          <span className={`badge ${order.status}`}>
-                                {order.status === 'delivered' ? 'Delivered' : order.status}
+                          <span className={`badge ${order.status || 'confirmed'}`}>
+                                {order.status === 'delivered' ? 'Delivered' : (order.status || 'Confirmed')}
                               </span>
                         </div>
 
