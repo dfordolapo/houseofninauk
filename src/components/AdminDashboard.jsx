@@ -3541,15 +3541,16 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </button>
                   </div>
 
-                  <div style={{ maxWidth: '320px', marginBottom: '14px' }}>
+                  <div style={{ marginBottom: '14px' }}>
                     <label className="adminSettingsHeading">Free Shipping Threshold (£ GBP)</label>
                     <input 
                       type="number" 
                       value={storeSettings.freeShippingThreshold}
                       onChange={(e) => setStoreSettings({ ...storeSettings, freeShippingThreshold: parseFloat(e.target.value) || 0 })}
                       className="adminSettingsInput"
+                      style={{ maxWidth: '320px' }}
                     />
-                    <span style={{ fontSize: '0.74rem', color: 'var(--color-text-secondary)', display: 'block', marginTop: '2px' }}>
+                    <span className="adminSettingsHelperText">
                       Orders above this threshold qualify for complimentary shipping.
                     </span>
                   </div>
