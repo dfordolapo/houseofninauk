@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   LayoutDashboard, ShoppingBag, Package, Star, Settings, 
   LogOut, ChevronDown, Menu, X, BellRing, Search, 
   Plus, Trash2, Edit2, Truck, CheckCircle2, Printer, Download, 
   Tag, Calendar, TrendingUp, MoreVertical, Store, ArrowRight,
-  Layers, Check, Clock
+  Layers, Check, Clock, Eye
 } from 'lucide-react';
 import { FEATURED_PRODUCTS, BRAND_INFO } from '../data/wigData';
 import '../styles/admin.css';
@@ -16,6 +17,39 @@ const SUBSCRIBERS_STORAGE_KEY = 'house_of_nina_admin_subscribers_v3';
 const CATEGORIES_STORAGE_KEY = 'house_of_nina_admin_categories_v3';
 const SETTINGS_STORAGE_KEY = 'house_of_nina_admin_settings_v3';
 const REVIEWS_STORAGE_KEY = 'house_of_nina_admin_reviews_v3';
+const SHIPPING_RATES_STORAGE_KEY = 'house_of_nina_admin_shipping_rates_v3';
+
+// Initial Demo Shipping Rates
+const INITIAL_SHIPPING_RATES = [
+  {
+    id: 'ship-01',
+    name: 'Royal Mail Tracked 48',
+    price: 4.95,
+    estimatedDays: '2 - 3 business days',
+    status: 'active'
+  },
+  {
+    id: 'ship-02',
+    name: 'Royal Mail Tracked 24',
+    price: 7.50,
+    estimatedDays: 'Next business day',
+    status: 'active'
+  },
+  {
+    id: 'ship-03',
+    name: 'Royal Mail Special Delivery Guaranteed by 1pm',
+    price: 14.00,
+    estimatedDays: 'Guaranteed next working day before 1:00 PM',
+    status: 'active'
+  },
+  {
+    id: 'ship-04',
+    name: 'DHL Express Worldwide Courier',
+    price: 25.00,
+    estimatedDays: '1 - 2 business days (Insured tracking)',
+    status: 'active'
+  }
+];
 
 // Initial Demo Reviews (Awaiting Approval vs Featured)
 const INITIAL_DEMO_REVIEWS = [
@@ -405,6 +439,18 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     }
   };
 
+  // Shipping Rates State
+  const [shippingRates, setShippingRates] = useState(() => {
+    try {
+      const saved = localStorage.getItem(SHIPPING_RATES_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return INITIAL_SHIPPING_RATES;
+  });
+
   const [storeSettings, setStoreSettings] = useState(() => {
     try {
       const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
@@ -430,6 +476,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
   // Menus & Modals
   const [openKebabId, setOpenKebabId] = useState(null);
+  const [kebabCoords, setKebabCoords] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
 
   // Modals for Products
@@ -444,6 +491,18 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   // Modals for Discounts
   const [isAddDiscountOpen, setIsAddDiscountOpen] = useState(false);
   const [editingDiscount, setEditingDiscount] = useState(null);
+
+  // Modals for Reviews
+  const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState(null);
+
+  // Modals for Shipping Rates
+  const [isAddShippingRateOpen, setIsAddShippingRateOpen] = useState(false);
+  const [editingShippingRate, setEditingShippingRate] = useState(null);
+
+  // Modals for Subscribers
+  const [isAddSubscriberOpen, setIsAddSubscriberOpen] = useState(false);
+  const [editingSubscriber, setEditingSubscriber] = useState(null);
 
   // Modals for Orders
   const [isDispatchModalOpen, setIsDispatchModalOpen] = useState(false);
@@ -471,6 +530,29 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     expiresAt: '2026-12-31'
   });
 
+  const [reviewForm, setReviewForm] = useState({
+    client: '',
+    productName: 'The Victoria Glass Bob',
+    rating: 5,
+    date: new Date().toISOString().split('T')[0],
+    text: '',
+    status: 'featured'
+  });
+
+  const [shippingRateForm, setShippingRateForm] = useState({
+    name: '',
+    price: '',
+    estimatedDays: '2 - 3 business days',
+    status: 'active'
+  });
+
+  const [subscriberForm, setSubscriberForm] = useState({
+    name: '',
+    email: '',
+    type: 'VIP Restock Drop',
+    date: new Date().toISOString().split('T')[0]
+  });
+
   // LocalStorage Sync
   useEffect(() => {
     try { localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders)); } catch {}
@@ -489,15 +571,62 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   }, [discounts]);
 
   useEffect(() => {
+    try { localStorage.setItem(SUBSCRIBERS_STORAGE_KEY, JSON.stringify(subscribers)); } catch {}
+  }, [subscribers]);
+
+  useEffect(() => {
+    try { localStorage.setItem(SHIPPING_RATES_STORAGE_KEY, JSON.stringify(shippingRates)); } catch {}
+  }, [shippingRates]);
+
+  useEffect(() => {
     try { localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(storeSettings)); } catch {}
   }, [storeSettings]);
 
-  // Click outside menu closer
+  // Click outside / scroll / resize menu closer
   useEffect(() => {
-    const handleOutside = () => setOpenKebabId(null);
-    window.addEventListener('click', handleOutside);
-    return () => window.removeEventListener('click', handleOutside);
+    const handleCloseKebab = () => {
+      setOpenKebabId(null);
+      setKebabCoords(null);
+    };
+    window.addEventListener('click', handleCloseKebab);
+    window.addEventListener('scroll', handleCloseKebab, true);
+    window.addEventListener('resize', handleCloseKebab);
+    return () => {
+      window.removeEventListener('click', handleCloseKebab);
+      window.removeEventListener('scroll', handleCloseKebab, true);
+      window.removeEventListener('resize', handleCloseKebab);
+    };
   }, []);
+
+  const toggleKebab = (e, id, isNearBottom = false) => {
+    e.stopPropagation();
+    if (openKebabId === id) {
+      setOpenKebabId(null);
+      setKebabCoords(null);
+      return;
+    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    // Auto-detect direction:
+    // If explicitly near bottom of list OR space below is tight (<220px)
+    // and there is room above, flip upward so the menu is fully visible above row.
+    let openUpward = false;
+    if (isNearBottom || spaceBelow < 220) {
+      if (spaceAbove >= 160) {
+        openUpward = true;
+      }
+    }
+
+    setKebabCoords({
+      top: openUpward ? null : Math.round(rect.bottom + 6),
+      bottom: openUpward ? Math.round(window.innerHeight - rect.top + 6) : null,
+      right: Math.max(16, Math.round(window.innerWidth - rect.right)),
+      openUpward
+    });
+    setOpenKebabId(id);
+  };
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
@@ -703,6 +832,133 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     if (confirm('Delete this discount code?')) {
       setDiscounts(prev => prev.filter(d => d.id !== id));
       triggerToast('Discount code deleted');
+    }
+  };
+
+  // ══════════════════════════════════════════════════════════
+  // REVIEWS CRUD
+  // ══════════════════════════════════════════════════════════
+  const handleCreateReview = (e) => {
+    e.preventDefault();
+    if (!reviewForm.client.trim() || !reviewForm.text.trim()) {
+      triggerToast('Please provide a client name and feedback');
+      return;
+    }
+    const created = {
+      id: `rev-${Date.now()}`,
+      client: reviewForm.client.trim(),
+      productName: reviewForm.productName.trim() || 'Signature Unit',
+      rating: Number(reviewForm.rating) || 5,
+      date: reviewForm.date || todayDate,
+      text: reviewForm.text.trim(),
+      status: reviewForm.status || 'featured'
+    };
+    setReviews([created, ...reviews]);
+    setIsAddReviewOpen(false);
+    setReviewForm({
+      client: '',
+      productName: products[0]?.name || 'The Victoria Glass Bob',
+      rating: 5,
+      date: todayDate,
+      text: '',
+      status: 'featured'
+    });
+    triggerToast('✓ Client review created');
+  };
+
+  const handleUpdateReview = (e) => {
+    e.preventDefault();
+    if (!editingReview) return;
+    setReviews(reviews.map(r => r.id === editingReview.id ? editingReview : r));
+    setEditingReview(null);
+    triggerToast('✓ Review updated');
+  };
+
+  // ══════════════════════════════════════════════════════════
+  // SHIPPING RATES CRUD
+  // ══════════════════════════════════════════════════════════
+  const handleCreateShippingRate = (e) => {
+    e.preventDefault();
+    if (!shippingRateForm.name.trim()) {
+      triggerToast('Please provide a courier service name');
+      return;
+    }
+    const created = {
+      id: `ship-${Date.now()}`,
+      name: shippingRateForm.name.trim(),
+      price: parseFloat(shippingRateForm.price) || 0,
+      estimatedDays: shippingRateForm.estimatedDays.trim() || '2 - 3 business days',
+      status: shippingRateForm.status || 'active'
+    };
+    setShippingRates([...shippingRates, created]);
+    setIsAddShippingRateOpen(false);
+    setShippingRateForm({
+      name: '',
+      price: '',
+      estimatedDays: '2 - 3 business days',
+      status: 'active'
+    });
+    triggerToast(`✓ Shipping rate "${created.name}" created`);
+  };
+
+  const handleUpdateShippingRate = (e) => {
+    e.preventDefault();
+    if (!editingShippingRate) return;
+    setShippingRates(shippingRates.map(s => s.id === editingShippingRate.id ? editingShippingRate : s));
+    setEditingShippingRate(null);
+    triggerToast(`✓ Shipping rate "${editingShippingRate.name}" updated`);
+  };
+
+  const handleDeleteShippingRate = (id) => {
+    if (confirm('Delete this shipping rate option?')) {
+      setShippingRates(shippingRates.filter(s => s.id !== id));
+      triggerToast('Shipping rate deleted');
+    }
+  };
+
+  const handleToggleShippingRateStatus = (id) => {
+    setShippingRates(prev => prev.map(s => s.id === id ? { ...s, status: s.status === 'active' ? 'paused' : 'active' } : s));
+  };
+
+  // ══════════════════════════════════════════════════════════
+  // RESTOCK SUBSCRIBERS CRUD
+  // ══════════════════════════════════════════════════════════
+  const handleCreateSubscriber = (e) => {
+    e.preventDefault();
+    if (!subscriberForm.name.trim() || !subscriberForm.email.trim()) {
+      triggerToast('Subscriber name and email are required');
+      return;
+    }
+    const created = {
+      id: `sub-${Date.now()}`,
+      name: subscriberForm.name.trim(),
+      email: subscriberForm.email.trim(),
+      type: subscriberForm.type || 'VIP Restock Drop',
+      date: subscriberForm.date || todayDate
+    };
+    setSubscribers([created, ...subscribers]);
+    setIsAddSubscriberOpen(false);
+    setSubscriberForm({
+      name: '',
+      email: '',
+      type: 'VIP Restock Drop',
+      date: todayDate
+    });
+    triggerToast(`✓ Subscriber "${created.name}" added to waitlist`);
+  };
+
+  const handleUpdateSubscriber = (e) => {
+    e.preventDefault();
+    if (!editingSubscriber) return;
+    setSubscribers(subscribers.map(s => s.id === editingSubscriber.id ? editingSubscriber : s));
+    setEditingSubscriber(null);
+    triggerToast(`✓ Subscriber "${editingSubscriber.name}" updated`);
+  };
+
+  const handleDeleteSubscriber = (id) => {
+    if (confirm('Remove this subscriber from waitlist?')) {
+      setSubscribers(subscribers.filter(s => s.id !== id));
+      triggerToast('Subscriber removed from waitlist');
     }
   };
 
@@ -1176,7 +1432,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredOrders.map(order => (
+                      {filteredOrders.map((order, idx) => (
                         <tr key={order.id}>
                           <td>
                             <strong>{order.orderNumber}</strong>
@@ -1255,26 +1511,36 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               <button
                                 type="button"
                                 className="kebabTriggerBtn"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setOpenKebabId(openKebabId === order.id ? null : order.id);
-                                }}
+                                title="Order Actions"
+                                onClick={(e) => toggleKebab(e, order.id, idx >= Math.max(0, filteredOrders.length - 2))}
                               >
                                 <MoreVertical size={16} />
                               </button>
                             </div>
 
-                            {openKebabId === order.id && (
-                              <div className="kebabMenu">
+                            {openKebabId === order.id && kebabCoords && createPortal(
+                              <div
+                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                style={{
+                                  position: 'fixed',
+                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                  right: `${kebabCoords.right}px`,
+                                  zIndex: 999999
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <button
                                   type="button"
                                   className="kebabItem"
                                   onClick={() => {
                                     setViewOrderDetails(order);
                                     setOpenKebabId(null);
+                                    setKebabCoords(null);
                                   }}
                                 >
-                                  Lifeline &amp; Slip
+                                  <Eye size={14} />
+                                  <span>Lifeline &amp; Slip</span>
                                 </button>
                                 <button
                                   type="button"
@@ -1282,18 +1548,70 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                   onClick={() => {
                                     setEditingOrder({ ...order, customer: { ...order.customer } });
                                     setOpenKebabId(null);
+                                    setKebabCoords(null);
                                   }}
                                 >
-                                  Edit Order Details
+                                  <Edit2 size={14} />
+                                  <span>Edit Order Details</span>
                                 </button>
+                                {order.status === 'confirmed' && (
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      handleAdvanceLifeline(order.id, 'processing');
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Clock size={14} />
+                                    <span>Advance to Processing</span>
+                                  </button>
+                                )}
+                                {order.status === 'processing' && (
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      setDispatchOrderTarget(order);
+                                      setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
+                                      setIsDispatchModalOpen(true);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Truck size={14} />
+                                    <span>Ship Order (Tracking)</span>
+                                  </button>
+                                )}
+                                {order.status === 'shipped' && (
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      handleAdvanceLifeline(order.id, 'delivered');
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <CheckCircle2 size={14} />
+                                    <span>Mark as Delivered</span>
+                                  </button>
+                                )}
                                 <button
                                   type="button"
                                   className="kebabItem kebabDelete"
-                                  onClick={() => handleDeleteOrder(order.id)}
+                                  onClick={() => {
+                                    handleDeleteOrder(order.id);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
                                 >
-                                  Delete Order
+                                  <Trash2 size={14} />
+                                  <span>Delete Order</span>
                                 </button>
-                              </div>
+                              </div>,
+                              document.body
                             )}
                           </td>
                         </tr>
@@ -1388,7 +1706,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredProducts.map(prod => (
+                      {filteredProducts.map((prod, idx) => (
                         <tr key={prod.id}>
                           <td>
                             <div className="productCell">
@@ -1409,7 +1727,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                               <button 
                                 type="button" 
-                                className="actionBtn"
+                                className="actionBtn" 
                                 onClick={() => handleStockChange(prod.id, -1)}
                                 style={{ width: '26px', height: '26px' }}
                               >
@@ -1420,7 +1738,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               </span>
                               <button 
                                 type="button" 
-                                className="actionBtn"
+                                className="actionBtn" 
                                 onClick={() => handleStockChange(prod.id, 1)}
                                 style={{ width: '26px', height: '26px' }}
                               >
@@ -1438,25 +1756,69 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               {prod.inStock && prod.stockCount > 0 ? 'In Stock' : 'Out of Stock'}
                             </span>
                           </td>
-                          <td style={{ textAlign: 'right' }}>
+                          <td style={{ textAlign: 'right', position: 'relative' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
                               <button
                                 type="button"
-                                className="actionBtn"
-                                onClick={() => setEditingProduct({ ...prod })}
-                                title="Edit product"
+                                className="kebabTriggerBtn"
+                                title="Product Actions"
+                                onClick={(e) => toggleKebab(e, `prod-${prod.id}`, idx >= Math.max(0, filteredProducts.length - 2))}
                               >
-                                <Edit2 size={14} />
-                              </button>
-                              <button
-                                type="button"
-                                className="actionBtn"
-                                onClick={() => handleDeleteProduct(prod.id)}
-                                title="Delete product"
-                              >
-                                <Trash2 size={14} color="#EF4444" />
+                                <MoreVertical size={16} />
                               </button>
                             </div>
+
+                            {openKebabId === `prod-${prod.id}` && kebabCoords && createPortal(
+                              <div
+                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                style={{
+                                  position: 'fixed',
+                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                  right: `${kebabCoords.right}px`,
+                                  zIndex: 999999
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <button
+                                  type="button"
+                                  className="kebabItem"
+                                  onClick={() => {
+                                    setEditingProduct({ ...prod });
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Edit2 size={14} />
+                                  <span>Edit Product</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="kebabItem"
+                                  onClick={() => {
+                                    handleToggleStockStatus(prod.id);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Package size={14} />
+                                  <span>{prod.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="kebabItem kebabDelete"
+                                  onClick={() => {
+                                    handleDeleteProduct(prod.id);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                  <span>Delete Product</span>
+                                </button>
+                              </div>,
+                              document.body
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -1512,28 +1874,58 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               {count} {count === 1 ? 'Product' : 'Products'}
                             </span>
                           </td>
-                          <td style={{ textAlign: 'right' }}>
+                          <td style={{ textAlign: 'right', position: 'relative' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
                               <button
                                 type="button"
-                                className="actionBtn"
-                                onClick={() => {
-                                  setEditingCategory(cat);
-                                  setCategoryInputName(cat);
-                                }}
-                                title="Edit category name"
+                                className="kebabTriggerBtn"
+                                title="Category Actions"
+                                onClick={(e) => toggleKebab(e, `cat-${idx}`, idx >= Math.max(0, categories.length - 2))}
                               >
-                                <Edit2 size={14} />
-                              </button>
-                              <button
-                                type="button"
-                                className="actionBtn"
-                                onClick={() => handleDeleteCategory(cat)}
-                                title="Delete category"
-                              >
-                                <Trash2 size={14} color="#EF4444" />
+                                <MoreVertical size={16} />
                               </button>
                             </div>
+
+                            {openKebabId === `cat-${idx}` && kebabCoords && createPortal(
+                              <div
+                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                style={{
+                                  position: 'fixed',
+                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                  right: `${kebabCoords.right}px`,
+                                  zIndex: 999999
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <button
+                                  type="button"
+                                  className="kebabItem"
+                                  onClick={() => {
+                                    setEditingCategory(cat);
+                                    setCategoryInputName(cat);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Edit2 size={14} />
+                                  <span>Edit Category</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="kebabItem kebabDelete"
+                                  onClick={() => {
+                                    handleDeleteCategory(cat);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                  <span>Delete Category</span>
+                                </button>
+                              </div>,
+                              document.body
+                            )}
                           </td>
                         </tr>
                       );
@@ -1626,25 +2018,69 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               {disc.status === 'active' ? 'Active' : 'Paused'}
                             </span>
                           </td>
-                          <td style={{ textAlign: 'right' }}>
+                          <td style={{ textAlign: 'right', position: 'relative' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
                               <button
                                 type="button"
-                                className="actionBtn"
-                                onClick={() => setEditingDiscount({ ...disc })}
-                                title="Edit discount"
+                                className="kebabTriggerBtn"
+                                title="Discount Actions"
+                                onClick={(e) => toggleKebab(e, `disc-${disc.id}`, idx >= Math.max(0, discounts.length - 2))}
                               >
-                                <Edit2 size={14} />
-                              </button>
-                              <button
-                                type="button"
-                                className="actionBtn"
-                                onClick={() => handleDeleteDiscount(disc.id)}
-                                title="Delete code"
-                              >
-                                <Trash2 size={14} color="#EF4444" />
+                                <MoreVertical size={16} />
                               </button>
                             </div>
+
+                            {openKebabId === `disc-${disc.id}` && kebabCoords && createPortal(
+                              <div
+                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                style={{
+                                  position: 'fixed',
+                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                  right: `${kebabCoords.right}px`,
+                                  zIndex: 999999
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <button
+                                  type="button"
+                                  className="kebabItem"
+                                  onClick={() => {
+                                    setEditingDiscount({ ...disc });
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Edit2 size={14} />
+                                  <span>Edit Discount</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="kebabItem"
+                                  onClick={() => {
+                                    handleToggleDiscountStatus(disc.id);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Tag size={14} />
+                                  <span>{disc.status === 'active' ? 'Pause Discount' : 'Activate Discount'}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="kebabItem kebabDelete"
+                                  onClick={() => {
+                                    handleDeleteDiscount(disc.id);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                  <span>Delete Code</span>
+                                </button>
+                              </div>,
+                              document.body
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -1662,6 +2098,26 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 <div className="pageHeaderLeft">
                   <h1 className="pageTitle">Reviews</h1>
                   <p className="pageSubtitle">Moderate client ratings, approve submissions, and manage featured site testimonials.</p>
+                </div>
+                <div className="pageHeaderActions">
+                  <button
+                    type="button"
+                    className="btnPrimary"
+                    onClick={() => {
+                      setReviewForm({
+                        client: '',
+                        productName: products[0]?.name || 'The Victoria Glass Bob',
+                        rating: 5,
+                        date: todayDate,
+                        text: '',
+                        status: 'featured'
+                      });
+                      setIsAddReviewOpen(true);
+                    }}
+                  >
+                    <Plus size={16} />
+                    <span>Add Review</span>
+                  </button>
                 </div>
               </div>
 
@@ -1706,7 +2162,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredReviews.map(rev => {
+                    {filteredReviews.map((rev, idx) => {
                       const isFeatured = rev.status === 'featured';
                       return (
                         <tr key={rev.id}>
@@ -1738,40 +2194,84 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               </span>
                             )}
                           </td>
-                          <td style={{ textAlign: 'right' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
-                              {isFeatured ? (
-                                <button
-                                  type="button"
-                                  className="actionBtn"
-                                  onClick={() => handleRemoveReviewFromSite(rev.id)}
-                                  title="Remove from Site"
-                                  style={{ color: '#DC2626', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #FCA5A5', background: '#FEF2F2' }}
-                                >
-                                  <X size={12} />
-                                  <span>Remove from Site</span>
-                                </button>
-                              ) : (
-                                <button
-                                  type="button"
-                                  className="actionBtn"
-                                  onClick={() => handleFeatureReview(rev.id)}
-                                  title="Feature on Site"
-                                  style={{ color: '#15803D', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #86EFAC', background: '#F0FDF4' }}
-                                >
-                                  <Check size={12} />
-                                  <span>Feature on Site</span>
-                                </button>
-                              )}
+                          <td style={{ textAlign: 'right', position: 'relative' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
                               <button
                                 type="button"
-                                className="actionBtn"
-                                onClick={() => handleDeleteReview(rev.id)}
-                                title="Delete Review"
+                                className="kebabTriggerBtn"
+                                title="Review Actions"
+                                onClick={(e) => toggleKebab(e, `rev-${rev.id}`, idx >= Math.max(0, filteredReviews.length - 2))}
                               >
-                                <Trash2 size={13} color="#EF4444" />
+                                <MoreVertical size={16} />
                               </button>
                             </div>
+
+                            {openKebabId === `rev-${rev.id}` && kebabCoords && createPortal(
+                              <div
+                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                style={{
+                                  position: 'fixed',
+                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                  right: `${kebabCoords.right}px`,
+                                  zIndex: 999999
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {isFeatured ? (
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      handleRemoveReviewFromSite(rev.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <X size={14} color="#DC2626" />
+                                    <span>Remove from Site</span>
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      handleFeatureReview(rev.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Check size={14} color="#15803D" />
+                                    <span>Feature on Site</span>
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  className="kebabItem"
+                                  onClick={() => {
+                                    setEditingReview({ ...rev });
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Edit2 size={14} />
+                                  <span>Edit Review</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="kebabItem kebabDelete"
+                                  onClick={() => {
+                                    handleDeleteReview(rev.id);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                  <span>Delete Review</span>
+                                </button>
+                              </div>,
+                              document.body
+                            )}
                           </td>
                         </tr>
                       );
@@ -1807,6 +2307,22 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="button"
                     className="btnPrimary"
                     onClick={() => {
+                      setSubscriberForm({
+                        name: '',
+                        email: '',
+                        type: 'VIP Restock Drop',
+                        date: todayDate
+                      });
+                      setIsAddSubscriberOpen(true);
+                    }}
+                  >
+                    <Plus size={16} />
+                    <span>Add Subscriber</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btnSecondary"
+                    onClick={() => {
                       const csvContent = "data:text/csv;charset=utf-8," + 
                         ["Name,Email,Type,Date", ...subscribers.map(s => `"${s.name}","${s.email}","${s.type}","${s.date}"`)].join("\n");
                       const encodedUri = encodeURI(csvContent);
@@ -1833,15 +2349,68 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       <th>Email Address</th>
                       <th>List Type</th>
                       <th>Date</th>
+                      <th style={{ textAlign: 'right' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {subscribers.map(sub => (
+                    {subscribers.map((sub, idx) => (
                       <tr key={sub.id}>
                         <td><strong>{sub.name}</strong></td>
                         <td>{sub.email}</td>
                         <td><span className="badge processing">{sub.type}</span></td>
                         <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{sub.date}</td>
+                        <td style={{ textAlign: 'right', position: 'relative' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                            <button
+                              type="button"
+                              className="kebabTriggerBtn"
+                              title="Subscriber Actions"
+                              onClick={(e) => toggleKebab(e, `sub-${sub.id}`, idx >= Math.max(0, subscribers.length - 2))}
+                            >
+                              <MoreVertical size={16} />
+                            </button>
+                          </div>
+
+                          {openKebabId === `sub-${sub.id}` && kebabCoords && createPortal(
+                            <div
+                              className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                              style={{
+                                position: 'fixed',
+                                top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                right: `${kebabCoords.right}px`,
+                                zIndex: 999999
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <button
+                                type="button"
+                                className="kebabItem"
+                                onClick={() => {
+                                  setEditingSubscriber({ ...sub });
+                                  setOpenKebabId(null);
+                                  setKebabCoords(null);
+                                }}
+                              >
+                                <Edit2 size={14} />
+                                <span>Edit Subscriber</span>
+                              </button>
+                              <button
+                                type="button"
+                                className="kebabItem kebabDelete"
+                                onClick={() => {
+                                  handleDeleteSubscriber(sub.id);
+                                  setOpenKebabId(null);
+                                  setKebabCoords(null);
+                                }}
+                              >
+                                <Trash2 size={14} />
+                                <span>Delete Subscriber</span>
+                              </button>
+                            </div>,
+                            document.body
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -1873,11 +2442,12 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                {/* Store Profile Card */}
                 <div style={{ background: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '22px' }}>
                   <h3 style={{ fontSize: '1.05rem', margin: '0 0 14px 0', fontFamily: 'var(--font-heading)' }}>Store Profile</h3>
                   
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Store Name</label>
                       <input 
@@ -1920,65 +2490,157 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </div>
                 </div>
 
+                {/* Shipping Rates Configuration Card with Full Dynamic CRUD */}
                 <div style={{ background: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '22px' }}>
-                  <h3 style={{ fontSize: '1.05rem', margin: '0 0 14px 0', fontFamily: 'var(--font-heading)' }}>Shipping Rates Configuration</h3>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Free Shipping Threshold (£)</label>
-                      <input 
-                        type="number" 
-                        value={storeSettings.freeShippingThreshold}
-                        onChange={(e) => setStoreSettings({ ...storeSettings, freeShippingThreshold: parseFloat(e.target.value) || 0 })}
-                        style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
-                      />
+                      <h3 style={{ fontSize: '1.05rem', margin: '0 0 4px 0', fontFamily: 'var(--font-heading)' }}>Shipping Rates Configuration</h3>
+                      <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>
+                        Manage delivery services, estimated transit windows, and checkout courier rates.
+                      </p>
                     </div>
+                    <button
+                      type="button"
+                      className="btnPrimary"
+                      onClick={() => {
+                        setShippingRateForm({
+                          name: '',
+                          price: '',
+                          estimatedDays: '2 - 3 business days',
+                          status: 'active'
+                        });
+                        setIsAddShippingRateOpen(true);
+                      }}
+                      style={{ fontSize: '0.82rem', padding: '6px 14px' }}
+                    >
+                      <Plus size={15} />
+                      <span>Add Shipping Rate</span>
+                    </button>
+                  </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Royal Mail 48 (£)</label>
-                        <input 
-                          type="number" 
-                          step="0.5"
-                          value={storeSettings.rateStandard}
-                          onChange={(e) => setStoreSettings({ ...storeSettings, rateStandard: parseFloat(e.target.value) || 0 })}
-                          style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
-                        />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Royal Mail 24 (£)</label>
-                        <input 
-                          type="number" 
-                          step="0.5"
-                          value={storeSettings.rateExpress}
-                          onChange={(e) => setStoreSettings({ ...storeSettings, rateExpress: parseFloat(e.target.value) || 0 })}
-                          style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
-                        />
-                      </div>
-                    </div>
+                  <div style={{ maxWidth: '320px', marginBottom: '18px' }}>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Free Shipping Threshold (£ GBP)</label>
+                    <input 
+                      type="number" 
+                      value={storeSettings.freeShippingThreshold}
+                      onChange={(e) => setStoreSettings({ ...storeSettings, freeShippingThreshold: parseFloat(e.target.value) || 0 })}
+                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
+                    />
+                    <span style={{ fontSize: '0.74rem', color: 'var(--color-text-secondary)', display: 'block', marginTop: '2px' }}>
+                      Orders above this threshold qualify for complimentary shipping.
+                    </span>
+                  </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Special Delivery (£)</label>
-                        <input 
-                          type="number" 
-                          step="0.5"
-                          value={storeSettings.rateSpecial}
-                          onChange={(e) => setStoreSettings({ ...storeSettings, rateSpecial: parseFloat(e.target.value) || 0 })}
-                          style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
-                        />
+                  <div className="tableContainer">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Service / Courier</th>
+                          <th>Estimated Delivery Window</th>
+                          <th>Rate (£ GBP)</th>
+                          <th>Status</th>
+                          <th style={{ textAlign: 'right' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {shippingRates.map((rate, idx) => (
+                          <tr key={rate.id}>
+                            <td>
+                              <strong style={{ fontSize: '0.9rem' }}>{rate.name}</strong>
+                              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-secondary)' }}>ID: {rate.id}</div>
+                            </td>
+                            <td>
+                              <span style={{ fontSize: '0.84rem' }}>{rate.estimatedDays}</span>
+                            </td>
+                            <td>
+                              <strong style={{ fontSize: '0.92rem' }}>£{Number(rate.price).toFixed(2)}</strong>
+                            </td>
+                            <td>
+                              <span 
+                                className={`badge ${rate.status === 'active' ? 'inStock' : 'outOfStock'}`}
+                                onClick={() => handleToggleShippingRateStatus(rate.id)}
+                                style={{ cursor: 'pointer' }}
+                                title="Click to toggle Active / Paused"
+                              >
+                                {rate.status === 'active' ? 'Active' : 'Paused'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right', position: 'relative' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                <button
+                                  type="button"
+                                  className="kebabTriggerBtn"
+                                  title="Shipping Rate Actions"
+                                  onClick={(e) => toggleKebab(e, `ship-${rate.id}`, idx >= Math.max(0, shippingRates.length - 2))}
+                                >
+                                  <MoreVertical size={16} />
+                                </button>
+                              </div>
+
+                              {openKebabId === `ship-${rate.id}` && kebabCoords && createPortal(
+                                <div
+                                  className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                  style={{
+                                    position: 'fixed',
+                                    top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                    bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                    right: `${kebabCoords.right}px`,
+                                    zIndex: 999999
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      setEditingShippingRate({ ...rate });
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Edit2 size={14} />
+                                    <span>Edit Rate</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      handleToggleShippingRateStatus(rate.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Truck size={14} />
+                                    <span>{rate.status === 'active' ? 'Pause Service' : 'Activate Service'}</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="kebabItem kebabDelete"
+                                    onClick={() => {
+                                      handleDeleteShippingRate(rate.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Trash2 size={14} />
+                                    <span>Delete Rate</span>
+                                  </button>
+                                </div>,
+                                document.body
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {shippingRates.length === 0 && (
+                      <div className="emptyStateCard">
+                        <Truck size={32} color="var(--color-text-tertiary)" />
+                        <h3 className="emptyStateTitle">No shipping rates configured</h3>
+                        <p className="emptyStateSubtitle">Add your courier services to enable client delivery options.</p>
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>DHL Express (£)</label>
-                        <input 
-                          type="number" 
-                          step="0.5"
-                          value={storeSettings.rateDhl}
-                          onChange={(e) => setStoreSettings({ ...storeSettings, rateDhl: parseFloat(e.target.value) || 0 })}
-                          style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
-                        />
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2624,6 +3286,467 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               )}
               <button type="button" className="modalBtnCancel" onClick={() => setViewOrderDetails(null)}>Close</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════
+          MODAL: ADD CLIENT REVIEW
+          ══════════════════════════════════════════════════════════ */}
+      {isAddReviewOpen && (
+        <div className="modalOverlay" onClick={() => setIsAddReviewOpen(false)}>
+          <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modalTitle">Add Client Review</h2>
+            <p className="modalText">Record a client testimonial, rating, and website display status.</p>
+
+            <form onSubmit={handleCreateReview} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Client Name</label>
+                <input 
+                  type="text" 
+                  value={reviewForm.client}
+                  onChange={(e) => setReviewForm({ ...reviewForm, client: e.target.value })}
+                  placeholder="e.g. Amara O."
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Product Reviewed</label>
+                  <select 
+                    value={reviewForm.productName}
+                    onChange={(e) => setReviewForm({ ...reviewForm, productName: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    {products.map(p => (
+                      <option key={p.id} value={p.name}>{p.name}</option>
+                    ))}
+                    <option value="Signature Unit">Signature Unit (General)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Star Rating</label>
+                  <select 
+                    value={reviewForm.rating}
+                    onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value={5}>★★★★★ (5 Stars)</option>
+                    <option value={4}>★★★★☆ (4 Stars)</option>
+                    <option value={3}>★★★☆☆ (3 Stars)</option>
+                    <option value={2}>★★☆☆☆ (2 Stars)</option>
+                    <option value={1}>★☆☆☆☆ (1 Star)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date</label>
+                  <input 
+                    type="date" 
+                    value={reviewForm.date}
+                    onChange={(e) => setReviewForm({ ...reviewForm, date: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Display Status</label>
+                  <select 
+                    value={reviewForm.status}
+                    onChange={(e) => setReviewForm({ ...reviewForm, status: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value="featured">Featured on Site</option>
+                    <option value="pending">Awaiting Approval</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Review Feedback</label>
+                <textarea 
+                  rows={3}
+                  value={reviewForm.text}
+                  onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
+                  placeholder="Client comments and review feedback..."
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div className="modalActions" style={{ marginTop: '12px' }}>
+                <button type="submit" className="modalBtnSubmit">Create Review</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddReviewOpen(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════
+          MODAL: EDIT CLIENT REVIEW
+          ══════════════════════════════════════════════════════════ */}
+      {editingReview && (
+        <div className="modalOverlay" onClick={() => setEditingReview(null)}>
+          <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modalTitle">Edit Client Review</h2>
+            <p className="modalText">Update testimonial contents, rating, or publication status.</p>
+
+            <form onSubmit={handleUpdateReview} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Client Name</label>
+                <input 
+                  type="text" 
+                  value={editingReview.client}
+                  onChange={(e) => setEditingReview({ ...editingReview, client: e.target.value })}
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Product Reviewed</label>
+                  <select 
+                    value={editingReview.productName}
+                    onChange={(e) => setEditingReview({ ...editingReview, productName: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    {products.map(p => (
+                      <option key={p.id} value={p.name}>{p.name}</option>
+                    ))}
+                    <option value="Signature Unit">Signature Unit (General)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Star Rating</label>
+                  <select 
+                    value={editingReview.rating}
+                    onChange={(e) => setEditingReview({ ...editingReview, rating: Number(e.target.value) })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value={5}>★★★★★ (5 Stars)</option>
+                    <option value={4}>★★★★☆ (4 Stars)</option>
+                    <option value={3}>★★★☆☆ (3 Stars)</option>
+                    <option value={2}>★★☆☆☆ (2 Stars)</option>
+                    <option value={1}>★☆☆☆☆ (1 Star)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date</label>
+                  <input 
+                    type="date" 
+                    value={editingReview.date}
+                    onChange={(e) => setEditingReview({ ...editingReview, date: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Display Status</label>
+                  <select 
+                    value={editingReview.status}
+                    onChange={(e) => setEditingReview({ ...editingReview, status: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value="featured">Featured on Site</option>
+                    <option value="pending">Awaiting Approval</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Review Feedback</label>
+                <textarea 
+                  rows={3}
+                  value={editingReview.text}
+                  onChange={(e) => setEditingReview({ ...editingReview, text: e.target.value })}
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div className="modalActions" style={{ marginTop: '12px' }}>
+                <button type="submit" className="modalBtnSubmit">Save Changes</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingReview(null)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════
+          MODAL: ADD SHIPPING RATE
+          ══════════════════════════════════════════════════════════ */}
+      {isAddShippingRateOpen && (
+        <div className="modalOverlay" onClick={() => setIsAddShippingRateOpen(false)}>
+          <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modalTitle">Add Shipping Rate</h2>
+            <p className="modalText">Configure a new courier delivery service and fee.</p>
+
+            <form onSubmit={handleCreateShippingRate} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Courier / Service Name</label>
+                <input 
+                  type="text" 
+                  value={shippingRateForm.name}
+                  onChange={(e) => setShippingRateForm({ ...shippingRateForm, name: e.target.value })}
+                  placeholder="e.g. Royal Mail Tracked 24"
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Rate (£ GBP)</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    value={shippingRateForm.price}
+                    onChange={(e) => setShippingRateForm({ ...shippingRateForm, price: e.target.value })}
+                    placeholder="7.50"
+                    required
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Status</label>
+                  <select 
+                    value={shippingRateForm.status}
+                    onChange={(e) => setShippingRateForm({ ...shippingRateForm, status: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value="active">Active</option>
+                    <option value="paused">Paused</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Estimated Delivery Timeframe</label>
+                <input 
+                  type="text" 
+                  value={shippingRateForm.estimatedDays}
+                  onChange={(e) => setShippingRateForm({ ...shippingRateForm, estimatedDays: e.target.value })}
+                  placeholder="e.g. Next business day or 2-3 business days"
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div className="modalActions" style={{ marginTop: '12px' }}>
+                <button type="submit" className="modalBtnSubmit">Add Shipping Rate</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddShippingRateOpen(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════
+          MODAL: EDIT SHIPPING RATE
+          ══════════════════════════════════════════════════════════ */}
+      {editingShippingRate && (
+        <div className="modalOverlay" onClick={() => setEditingShippingRate(null)}>
+          <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modalTitle">Edit Shipping Rate</h2>
+            <p className="modalText">Update courier service title, delivery window, and fee.</p>
+
+            <form onSubmit={handleUpdateShippingRate} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Courier / Service Name</label>
+                <input 
+                  type="text" 
+                  value={editingShippingRate.name}
+                  onChange={(e) => setEditingShippingRate({ ...editingShippingRate, name: e.target.value })}
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Rate (£ GBP)</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    value={editingShippingRate.price}
+                    onChange={(e) => setEditingShippingRate({ ...editingShippingRate, price: parseFloat(e.target.value) || 0 })}
+                    required
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Status</label>
+                  <select 
+                    value={editingShippingRate.status}
+                    onChange={(e) => setEditingShippingRate({ ...editingShippingRate, status: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value="active">Active</option>
+                    <option value="paused">Paused</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Estimated Delivery Timeframe</label>
+                <input 
+                  type="text" 
+                  value={editingShippingRate.estimatedDays}
+                  onChange={(e) => setEditingShippingRate({ ...editingShippingRate, estimatedDays: e.target.value })}
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div className="modalActions" style={{ marginTop: '12px' }}>
+                <button type="submit" className="modalBtnSubmit">Save Changes</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingShippingRate(null)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════
+          MODAL: ADD SUBSCRIBER
+          ══════════════════════════════════════════════════════════ */}
+      {isAddSubscriberOpen && (
+        <div className="modalOverlay" onClick={() => setIsAddSubscriberOpen(false)}>
+          <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modalTitle">Add VIP Subscriber</h2>
+            <p className="modalText">Manually enroll a client into restock alerts or notification drops.</p>
+
+            <form onSubmit={handleCreateSubscriber} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Full Name</label>
+                <input 
+                  type="text" 
+                  value={subscriberForm.name}
+                  onChange={(e) => setSubscriberForm({ ...subscriberForm, name: e.target.value })}
+                  placeholder="e.g. Zainab Al-Mansoor"
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Email Address</label>
+                <input 
+                  type="email" 
+                  value={subscriberForm.email}
+                  onChange={(e) => setSubscriberForm({ ...subscriberForm, email: e.target.value })}
+                  placeholder="e.g. client@example.co.uk"
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>List / Drop Type</label>
+                  <select 
+                    value={subscriberForm.type}
+                    onChange={(e) => setSubscriberForm({ ...subscriberForm, type: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value="VIP Restock Drop">VIP Restock Drop</option>
+                    <option value="The Silk Bone Straight 26&quot; Waitlist">The Silk Bone Straight 26" Waitlist</option>
+                    <option value="The Victoria Glass Bob Waitlist">The Victoria Glass Bob Waitlist</option>
+                    <option value="Private Salon Client">Private Salon Client</option>
+                    <option value="General VIP Newsletter">General VIP Newsletter</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date Enrolled</label>
+                  <input 
+                    type="date" 
+                    value={subscriberForm.date}
+                    onChange={(e) => setSubscriberForm({ ...subscriberForm, date: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  />
+                </div>
+              </div>
+
+              <div className="modalActions" style={{ marginTop: '12px' }}>
+                <button type="submit" className="modalBtnSubmit">Enroll Subscriber</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setIsAddSubscriberOpen(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════
+          MODAL: EDIT SUBSCRIBER
+          ══════════════════════════════════════════════════════════ */}
+      {editingSubscriber && (
+        <div className="modalOverlay" onClick={() => setEditingSubscriber(null)}>
+          <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modalTitle">Edit Subscriber Details</h2>
+            <p className="modalText">Update contact information or assigned waitlist drop.</p>
+
+            <form onSubmit={handleUpdateSubscriber} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Full Name</label>
+                <input 
+                  type="text" 
+                  value={editingSubscriber.name}
+                  onChange={(e) => setEditingSubscriber({ ...editingSubscriber, name: e.target.value })}
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Email Address</label>
+                <input 
+                  type="email" 
+                  value={editingSubscriber.email}
+                  onChange={(e) => setEditingSubscriber({ ...editingSubscriber, email: e.target.value })}
+                  required
+                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>List / Drop Type</label>
+                  <select 
+                    value={editingSubscriber.type}
+                    onChange={(e) => setEditingSubscriber({ ...editingSubscriber, type: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  >
+                    <option value="VIP Restock Drop">VIP Restock Drop</option>
+                    <option value="The Silk Bone Straight 26&quot; Waitlist">The Silk Bone Straight 26" Waitlist</option>
+                    <option value="The Victoria Glass Bob Waitlist">The Victoria Glass Bob Waitlist</option>
+                    <option value="Private Salon Client">Private Salon Client</option>
+                    <option value="General VIP Newsletter">General VIP Newsletter</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date Enrolled</label>
+                  <input 
+                    type="date" 
+                    value={editingSubscriber.date}
+                    onChange={(e) => setEditingSubscriber({ ...editingSubscriber, date: e.target.value })}
+                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  />
+                </div>
+              </div>
+
+              <div className="modalActions" style={{ marginTop: '12px' }}>
+                <button type="submit" className="modalBtnSubmit">Save Changes</button>
+                <button type="button" className="modalBtnCancel" onClick={() => setEditingSubscriber(null)}>Cancel</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
