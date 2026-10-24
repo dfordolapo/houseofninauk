@@ -898,6 +898,25 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
           tracking_number: tracking || o.trackingNumber || null
         }).catch(err => console.warn('Supabase status sync error:', err));
 
+        // Trigger customer email notification when order is dispatched
+        if (nextStatus === 'shipped' && o.customer?.email) {
+          fetch('/api/send-shipping-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderNumber: o.orderNumber || o.id,
+              clientName: o.customer.fullName || 'Valued Client',
+              email: o.customer.email,
+              trackingNumber: tracking || o.trackingNumber,
+              courier: dispatchCourier || o.courier || 'Royal Mail Special Delivery',
+              items: o.items || []
+            })
+          })
+            .then(res => res.json())
+            .then(data => console.log('[House of Nina] Dispatch email status:', data))
+            .catch(err => console.warn('[House of Nina] Dispatch email error:', err));
+        }
+
         return {
           ...o,
           status: nextStatus,
@@ -909,7 +928,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     }));
     setOpenKebabId(null);
     setIsDispatchModalOpen(false);
-    triggerToast(`Order updated to: ${targetStatus || 'advanced'}`);
+    triggerToast(targetStatus === 'shipped' ? `Order marked as shipped & tracking email sent!` : `Order updated to: ${targetStatus || 'advanced'}`);
   };
 
   const handleDeleteOrder = (orderId) => {
@@ -4200,6 +4219,9 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   placeholder="e.g. RM-77219481-GB"
                   style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem', fontFamily: 'monospace' }}
                 />
+                <div style={{ fontSize: '0.62rem', color: 'var(--color-espresso-muted)', marginTop: '4px' }}>
+                  ✉️ An automated dispatch email with this tracking code will be sent to <strong>{dispatchOrderTarget.customer?.email || 'the customer'}</strong>.
+                </div>
               </div>
               </div>
             </div>
