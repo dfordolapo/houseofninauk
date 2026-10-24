@@ -1687,7 +1687,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               <div className="pageHeader">
                 <div className="pageHeaderLeft">
                   <h1 className="pageTitle">Orders</h1>
-                  <p className="pageSubtitle">Order Lifeline: Confirmed → Processing → Shipped → Delivered.</p>
+                  <p className="pageSubtitle">Lifeline: Confirmed → Processing → Shipped → Delivered.</p>
                 </div>
               </div>
 
@@ -3448,7 +3448,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               <div className="pageHeader">
                 <div className="pageHeaderLeft">
                   <h1 className="pageTitle">Settings</h1>
-                  <p className="pageSubtitle">Update store profile, contact hotlines, and shipping rates.</p>
+                  <p className="pageSubtitle">Store profile, contact &amp; shipping.</p>
                 </div>
                 <div className="pageHeaderActions">
                   <button
