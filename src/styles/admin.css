@@ -527,6 +527,226 @@
   text-decoration: underline;
 }
 
+/* Dashboard Stat Cards: Visibly coloured primary backgrounds (not white or beige) */
+.statCardTerracotta {
+  background-color: #D99A83 !important;
+  color: #16110F !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.statCardRose {
+  background-color: #E8C5C3 !important;
+  color: #16110F !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.statCardSage {
+  background-color: #C7D5B5 !important;
+  color: #16110F !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.statCardChampagne {
+  background-color: #DEC0B6 !important;
+  color: #16110F !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.statIconWrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #16110F;
+  flex-shrink: 0;
+}
+
+.statCardTerracotta .statIconWrap {
+  background-color: #C4836B;
+}
+
+.statCardRose .statIconWrap {
+  background-color: #D5AAA8;
+}
+
+.statCardSage .statIconWrap {
+  background-color: #B1C29C;
+}
+
+.statCardChampagne .statIconWrap {
+  background-color: #C8A69B;
+}
+
+.statCard .statTitle {
+  color: #16110F !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  margin-bottom: 0 !important;
+  letter-spacing: 0.02em;
+}
+
+.statCard .statValue {
+  color: #16110F !important;
+  font-weight: 800 !important;
+}
+
+.statCard .statTrend {
+  color: #16110F !important;
+  font-weight: 600 !important;
+  opacity: 0.9;
+}
+
+.statCard .statLink {
+  color: #16110F !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRODUCT PERFORMANCE CARDS (ANALYTICS SECTION)
+   Compact 3-column row on mobile without horizontal scrolling
+   ═══════════════════════════════════════════════════════════ */
+.productPerformanceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.perfCard {
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.perfCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Visibly coloured luxury palettes */
+.perfCardRose {
+  background-color: #E8C5C3;
+  color: #16110F;
+}
+
+.perfCardTerracotta {
+  background-color: #D99A83;
+  color: #16110F;
+}
+
+.perfCardSage {
+  background-color: #C7D5B5;
+  color: #16110F;
+}
+
+.perfCardTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/* Subtle circular containers using a slightly deeper shade of each card colour */
+.perfIconContainer {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #16110F;
+  flex-shrink: 0;
+}
+
+.perfCardRose .perfIconContainer {
+  background-color: #D5AAA8;
+}
+
+.perfCardTerracotta .perfIconContainer {
+  background-color: #C4836B;
+}
+
+.perfCardSage .perfIconContainer {
+  background-color: #B1C29C;
+}
+
+.perfCardBadge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #16110F;
+  line-height: 1;
+}
+
+.perfCardContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.perfThumbnail {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+.perfInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.perfProductName {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #16110F;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.perfMetric {
+  font-size: 0.82rem;
+  color: #16110F;
+  line-height: 1.2;
+}
+
+.perfMetric strong {
+  font-weight: 800;
+}
+
+.perfMetric span {
+  font-weight: 600;
+  opacity: 0.88;
+}
+
 /* ═══════════════════════════════════════════════════════════
    ORDER LIFELINE TRACKER (CONFIRMED -> PROCESSING -> SHIPPED -> DELIVERED)
    ═══════════════════════════════════════════════════════════ */
@@ -1479,6 +1699,62 @@
 
   .statValue {
     font-size: 1.45rem;
+  }
+
+  /* Compact Horizontal Row for Product Performance Analytics on Mobile (No Horizontal Scrolling) */
+  .productPerformanceGrid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 16px !important;
+    width: 100% !important;
+  }
+
+  .perfCard {
+    padding: 8px 6px !important;
+    border-radius: 10px !important;
+  }
+
+  .perfCardTop {
+    gap: 4px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .perfIconContainer {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .perfIconContainer svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .perfCardBadge {
+    font-size: 0.58rem !important;
+    letter-spacing: 0 !important;
+  }
+
+  .perfCardContent {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .perfThumbnail {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+  }
+
+  .perfProductName {
+    font-size: 0.72rem !important;
+    max-width: 100% !important;
+    line-height: 1.2 !important;
+  }
+
+  .perfMetric {
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
   }
 
   .toolbar {

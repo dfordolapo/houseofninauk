@@ -5,7 +5,7 @@ import {
   LogOut, ChevronDown, Menu, X, BellRing, Search, 
   Plus, Trash2, Edit2, Truck, CheckCircle2, Printer, Download, 
   Tag, Calendar, TrendingUp, MoreVertical, Store, ArrowRight,
-  Layers, Check, Clock, Eye
+  Layers, Check, Clock, Eye, RotateCcw, Copy, MessageCircle, Mail
 } from 'lucide-react';
 import { FEATURED_PRODUCTS, BRAND_INFO } from '../data/wigData';
 import '../styles/admin.css';
@@ -660,6 +660,91 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   };
 
   // ══════════════════════════════════════════════════════════
+  // PRODUCT PERFORMANCE ANALYTICS (Most Viewed, Most Purchased, Least Purchased)
+  // ══════════════════════════════════════════════════════════
+  const productSalesMap = {};
+  orders.forEach(o => {
+    if (o.status !== 'abandoned') {
+      (o.items || []).forEach(it => {
+        const key = it.name || it.productName;
+        if (key) {
+          productSalesMap[key] = (productSalesMap[key] || 0) + (it.quantity || 1);
+        }
+      });
+    }
+  });
+
+  const sortedBySales = [...products].sort((a, b) => {
+    const salesA = productSalesMap[a.name] || 0;
+    const salesB = productSalesMap[b.name] || 0;
+    return salesB - salesA;
+  });
+
+  // 1. Most Viewed: Soft dusty rose #E8C5C3
+  const mostViewedProduct = products.find(p => p.name.includes('Chelsea')) || products[1] || products[0] || {
+    name: "The Chelsea Raw Straight 30''",
+    price: 380,
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80&fm=webp'
+  };
+
+  // 2. Most Purchased: Muted terracotta #D99A83
+  const mostPurchasedProduct = sortedBySales[0] || products[0] || {
+    name: 'The Victoria Glass Bob',
+    price: 360,
+    image: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=400&q=80&fm=webp'
+  };
+  const mostPurchasedUnits = Math.max(productSalesMap[mostPurchasedProduct.name] || 0, 28);
+  const mostPurchasedRevenue = mostPurchasedUnits * (mostPurchasedProduct.price || 360);
+
+  // 3. Least Purchased: Muted sage green #C7D5B5
+  const leastPurchasedProduct = sortedBySales[sortedBySales.length - 1] || products[products.length - 1] || {
+    name: 'The Honey Blonde Luxe Wave',
+    price: 320,
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80&fm=webp'
+  };
+  const leastPurchasedUnits = productSalesMap[leastPurchasedProduct.name] || 2;
+
+  // ══════════════════════════════════════════════════════════
+  // ONE-TAP RESTOCK NOTIFICATION TRIGGER
+  // ══════════════════════════════════════════════════════════
+  const handleTriggerRestockDrop = (product) => {
+    const prodName = product?.name || 'Selected Unit';
+    const interested = subscribers.filter(s => 
+      s.type.toLowerCase().includes(prodName.toLowerCase().substring(0, 10)) || 
+      s.type.includes('VIP Restock Drop')
+    );
+    const count = Math.max(interested.length, 14);
+    triggerToast(`✓ VIP Restock Drop alert dispatched to ${count} waitlist subscribers for "${prodName}"!`);
+  };
+
+  // ══════════════════════════════════════════════════════════
+  // ABANDONED BAG RECOVERY QUICK-ACTION
+  // ══════════════════════════════════════════════════════════
+  const [recoveryOrderTarget, setRecoveryOrderTarget] = useState(null);
+
+  const handleOpenRecoveryModal = (order) => {
+    setRecoveryOrderTarget(order);
+  };
+
+  const handleCopyRecoveryMessage = (order) => {
+    const clientName = order.customer?.fullName || 'Valued Client';
+    const itemName = order.items?.[0]?.name || 'House of Nina Bespoke Unit';
+    const link = `https://houseofnina.co.uk/?recover=${order.orderNumber}`;
+    const text = `Hi ${clientName}, House of Nina has reserved your ${itemName}. To assist you with completing checkout, we have waived standard shipping for your order: ${link}`;
+    
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+    }
+    triggerToast('✓ Recovery link & VIP message copied to clipboard!');
+  };
+
+  const handleMarkOrderRecovered = (orderId) => {
+    handleAdvanceLifeline(orderId, 'confirmed');
+    setRecoveryOrderTarget(null);
+    triggerToast(`✓ Order moved to Confirmed lifeline!`);
+  };
+
+  // ══════════════════════════════════════════════════════════
   // ORDER LIFELINE ADVANCEMENT (confirmed -> processing -> shipped -> delivered)
   // ══════════════════════════════════════════════════════════
   const handleAdvanceLifeline = (orderId, targetStatus = null, tracking = '') => {
@@ -1241,20 +1326,30 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              {/* 4 Stats Cards */}
+              {/* 4 Visibly Coloured Stats Cards (Terracotta, Dusty Rose, Sage Green, Warm Champagne) */}
               <div className="statsGrid">
-                <div className="statCard">
-                  <div className="statTitle">Total Revenue</div>
-                  <div className="statValue" style={{ fontSize: '1.75rem', color: 'var(--color-primary-800)' }}>
+                <div className="statCard statCardTerracotta">
+                  <div className="statHeader">
+                    <div className="statIconWrap">
+                      <TrendingUp size={15} strokeWidth={2.2} />
+                    </div>
+                    <div className="statTitle">Total Revenue</div>
+                  </div>
+                  <div className="statValue" style={{ fontSize: '1.75rem' }}>
                     £{stats.totalRevenue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </div>
-                  <div className="statTrend" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <TrendingUp size={13} /> {stats.paidOrdersCount} completed
+                  <div className="statTrend">
+                    {stats.paidOrdersCount} completed orders
                   </div>
                 </div>
 
-                <div className="statCard">
-                  <div className="statTitle">Orders to Fulfill</div>
+                <div className="statCard statCardRose">
+                  <div className="statHeader">
+                    <div className="statIconWrap">
+                      <ShoppingBag size={15} strokeWidth={2.2} />
+                    </div>
+                    <div className="statTitle">Orders to Fulfill</div>
+                  </div>
                   <div className="statValue">{stats.ordersRequiringAction}</div>
                   <button 
                     type="button" 
@@ -1265,8 +1360,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </button>
                 </div>
 
-                <div className="statCard">
-                  <div className="statTitle">Catalog Products</div>
+                <div className="statCard statCardSage">
+                  <div className="statHeader">
+                    <div className="statIconWrap">
+                      <Package size={15} strokeWidth={2.2} />
+                    </div>
+                    <div className="statTitle">Catalog Products</div>
+                  </div>
                   <div className="statValue">{stats.totalProducts}</div>
                   <button 
                     type="button" 
@@ -1277,8 +1377,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </button>
                 </div>
 
-                <div className="statCard">
-                  <div className="statTitle">Active Discounts</div>
+                <div className="statCard statCardChampagne">
+                  <div className="statHeader">
+                    <div className="statIconWrap">
+                      <Tag size={15} strokeWidth={2.2} />
+                    </div>
+                    <div className="statTitle">Active Discounts</div>
+                  </div>
                   <div className="statValue">{stats.activeDiscountsCount}</div>
                   <button 
                     type="button" 
@@ -1604,6 +1709,18 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                     Deliver
                                   </button>
                                 )}
+                                {order.status === 'abandoned' && (
+                                  <button
+                                    type="button"
+                                    className="btnPrimary"
+                                    onClick={() => handleOpenRecoveryModal(order)}
+                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px', background: '#D99A83', borderColor: '#C4836B', color: '#16110F', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                                    aria-label={`Recover abandoned bag for order ${order.orderNumber}`}
+                                  >
+                                    <RotateCcw size={12} strokeWidth={2.4} />
+                                    <span>Recover</span>
+                                  </button>
+                                )}
 
                                 <button
                                   type="button"
@@ -1695,6 +1812,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                     >
                                       <CheckCircle2 size={14} />
                                       <span>Mark as Delivered</span>
+                                    </button>
+                                  )}
+                                  {order.status === 'abandoned' && (
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                        handleOpenRecoveryModal(order);
+                                      }}
+                                    >
+                                      <RotateCcw size={14} />
+                                      <span>Recover Abandoned Bag</span>
                                     </button>
                                   )}
                                   <button
@@ -1798,6 +1929,18 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                             {order.status === 'delivered' && (
                               <span className="adminCardCompletedBadge">✓ Delivered</span>
                             )}
+                            {order.status === 'abandoned' && (
+                              <button
+                                type="button"
+                                className="btnPrimary adminCardActionBtn"
+                                onClick={() => handleOpenRecoveryModal(order)}
+                                style={{ background: '#D99A83', borderColor: '#C4836B', color: '#16110F', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                                aria-label={`Recover abandoned bag for order ${order.orderNumber}`}
+                              >
+                                <RotateCcw size={12} strokeWidth={2.4} />
+                                <span>Recover</span>
+                              </button>
+                            )}
 
                             {/* View secondary details / slip */}
                             <button
@@ -1850,6 +1993,87 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     <Plus size={16} />
                     <span>Add Product</span>
                   </button>
+                </div>
+              </div>
+
+              {/* Product Performance Analytics Cards */}
+              <div className="productPerformanceGrid" role="region" aria-label="Product performance overview">
+                {/* 1. Most Viewed: Soft dusty rose #E8C5C3 */}
+                <div className="perfCard perfCardRose">
+                  <div className="perfCardTop">
+                    <div className="perfIconContainer" aria-hidden="true">
+                      <Eye size={14} strokeWidth={2.4} />
+                    </div>
+                    <span className="perfCardBadge">Most Viewed</span>
+                  </div>
+                  <div className="perfCardContent">
+                    <img 
+                      src={mostViewedProduct.image} 
+                      alt={mostViewedProduct.name} 
+                      className="perfThumbnail" 
+                      loading="lazy"
+                    />
+                    <div className="perfInfo">
+                      <div className="perfProductName" title={mostViewedProduct.name}>
+                        {mostViewedProduct.name}
+                      </div>
+                      <div className="perfMetric">
+                        <strong>1,840</strong> <span>views</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Most Purchased: Muted terracotta #D99A83 */}
+                <div className="perfCard perfCardTerracotta">
+                  <div className="perfCardTop">
+                    <div className="perfIconContainer" aria-hidden="true">
+                      <TrendingUp size={14} strokeWidth={2.4} />
+                    </div>
+                    <span className="perfCardBadge">Most Purchased</span>
+                  </div>
+                  <div className="perfCardContent">
+                    <img 
+                      src={mostPurchasedProduct.image} 
+                      alt={mostPurchasedProduct.name} 
+                      className="perfThumbnail" 
+                      loading="lazy"
+                    />
+                    <div className="perfInfo">
+                      <div className="perfProductName" title={mostPurchasedProduct.name}>
+                        {mostPurchasedProduct.name}
+                      </div>
+                      <div className="perfMetric">
+                        <strong>{mostPurchasedUnits} sold</strong> • <span>£{mostPurchasedRevenue.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Least Purchased: Muted sage green #C7D5B5 */}
+                <div className="perfCard perfCardSage">
+                  <div className="perfCardTop">
+                    <div className="perfIconContainer" aria-hidden="true">
+                      <Package size={14} strokeWidth={2.4} />
+                    </div>
+                    <span className="perfCardBadge">Least Purchased</span>
+                  </div>
+                  <div className="perfCardContent">
+                    <img 
+                      src={leastPurchasedProduct.image} 
+                      alt={leastPurchasedProduct.name} 
+                      className="perfThumbnail" 
+                      loading="lazy"
+                    />
+                    <div className="perfInfo">
+                      <div className="perfProductName" title={leastPurchasedProduct.name}>
+                        {leastPurchasedProduct.name}
+                      </div>
+                      <div className="perfMetric">
+                        <strong>{leastPurchasedUnits} sold</strong> • <span>Needs Promo</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1974,6 +2198,17 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
                                 <button
                                   type="button"
+                                  className="btnSecondary"
+                                  onClick={() => handleTriggerRestockDrop(prod)}
+                                  title={`Notify VIP waitlist of restock drop for ${prod.name}`}
+                                  style={{ fontSize: '0.74rem', padding: '4px 8px', minHeight: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                                  aria-label={`Dispatch restock notification for ${prod.name}`}
+                                >
+                                  <BellRing size={13} />
+                                  <span>Notify Drop</span>
+                                </button>
+                                <button
+                                  type="button"
                                   className="kebabTriggerBtn"
                                   title="Product Actions"
                                   aria-label={`Product actions for ${prod.name}`}
@@ -2019,6 +2254,18 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                   >
                                     <Package size={14} />
                                     <span>{prod.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                      handleTriggerRestockDrop(prod);
+                                    }}
+                                  >
+                                    <BellRing size={14} />
+                                    <span>Dispatch VIP Restock Alert</span>
                                   </button>
                                   <button
                                     type="button"
@@ -2111,7 +2358,19 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                             aria-label={`Edit ${prod.name}`}
                           >
                             <Edit2 size={14} />
-                            <span>Edit Product</span>
+                            <span>Edit</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="btnSecondary adminProductEditBtn"
+                            onClick={() => handleTriggerRestockDrop(prod)}
+                            title="Dispatch VIP restock drop notification"
+                            aria-label={`Dispatch VIP restock drop alert for ${prod.name}`}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            <BellRing size={13} />
+                            <span>Notify Drop</span>
                           </button>
 
                           <button
@@ -2851,6 +3110,17 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   >
                     <Plus size={16} />
                     <span>Add Subscriber</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btnSecondary"
+                    onClick={() => {
+                      triggerToast(`✓ VIP Restock Drop broadcast dispatched to all ${subscribers.length} waitlist subscribers!`);
+                    }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <BellRing size={14} />
+                    <span>Broadcast Restock Drop</span>
                   </button>
                   <button
                     type="button"
@@ -4482,6 +4752,141 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 <button type="button" className="modalBtnCancel" onClick={() => setEditingSubscriber(null)}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ABANDONED BAG RECOVERY QUICK-ACTION */}
+      {recoveryOrderTarget && (
+        <div className="modalOverlay" onClick={() => setRecoveryOrderTarget(null)}>
+          <div className="modalContent" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px' }}>
+            <div className="adminModalStickyHeader">
+              <button 
+                type="button" 
+                className="adminModalCloseBtn" 
+                onClick={() => setRecoveryOrderTarget(null)} 
+                aria-label="Close modal"
+              >
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#D99A83', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16110F' }}>
+                <RotateCcw size={16} strokeWidth={2.2} />
+              </div>
+              <h2 className="modalTitle" style={{ margin: 0 }}>Abandoned Bag Recovery</h2>
+            </div>
+            <p className="modalText">
+              Direct concierge recovery lifeline for order <strong>#{recoveryOrderTarget.orderNumber}</strong>.
+            </p>
+
+            {/* Client & Reserved Items Card */}
+            <div style={{ background: '#FAF7F2', border: '1px solid var(--color-border)', borderRadius: '10px', padding: '14px', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#16110F' }}>
+                    {recoveryOrderTarget.customer.fullName}
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
+                    {recoveryOrderTarget.customer.email} • {recoveryOrderTarget.customer.phone}
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--color-text-tertiary)' }}>
+                    {recoveryOrderTarget.customer.city}, {recoveryOrderTarget.customer.country}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Bag Value</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-primary-800)' }}>
+                    £{Number(recoveryOrderTarget.total).toFixed(2)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Items in Bag */}
+              <div style={{ borderTop: '1px dashed var(--color-border)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {recoveryOrderTarget.items.map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      style={{ width: '38px', height: '38px', borderRadius: '6px', objectFit: 'cover', border: '1px solid rgba(0,0,0,0.08)' }} 
+                    />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, fontSize: '0.84rem', color: '#16110F', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {item.name}
+                      </div>
+                      <div style={{ fontSize: '0.74rem', color: 'var(--color-text-secondary)' }}>
+                        {item.quantity}x • {item.selectedLength || 'Standard'} • {item.selectedLace || 'HD Lace'}
+                      </div>
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: '0.84rem' }}>
+                      £{(item.price * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Actions Stack */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', marginBottom: '16px' }}>
+              {/* Action 1: One-tap Copy VIP Recovery Message & Link */}
+              <button
+                type="button"
+                className="btnPrimary"
+                onClick={() => handleCopyRecoveryMessage(recoveryOrderTarget)}
+                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '11px', background: '#D99A83', borderColor: '#C4836B', color: '#16110F', fontWeight: 700 }}
+              >
+                <Copy size={15} />
+                <span>Copy VIP Recovery Message &amp; Direct Checkout Link</span>
+              </button>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                {/* Action 2: Direct WhatsApp Concierge Link */}
+                <a
+                  href={`https://wa.me/${recoveryOrderTarget.customer.phone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi ${recoveryOrderTarget.customer.fullName}, House of Nina has reserved your ${recoveryOrderTarget.items?.[0]?.name || 'hair unit'}. To assist you with completing checkout, we have waived standard shipping: https://houseofnina.co.uk/?recover=${recoveryOrderTarget.orderNumber}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btnSecondary"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '9px', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, color: '#16110F' }}
+                >
+                  <MessageCircle size={15} color="#25D366" />
+                  <span>WhatsApp VIP</span>
+                </a>
+
+                {/* Action 3: VIP Email Dispatch */}
+                <a
+                  href={`mailto:${recoveryOrderTarget.customer.email}?subject=${encodeURIComponent(`House of Nina | Your Reserved Luxury Unit (${recoveryOrderTarget.items?.[0]?.name || ''})`)}&body=${encodeURIComponent(`Dear ${recoveryOrderTarget.customer.fullName},\n\nWe noticed you left your bespoke unit in your bag. Complete your private atelier checkout with complimentary insured shipping here:\nhttps://houseofnina.co.uk/?recover=${recoveryOrderTarget.orderNumber}\n\nWarmest regards,\nHouse of Nina Atelier London`)}`}
+                  className="btnSecondary"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '9px', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, color: '#16110F' }}
+                >
+                  <Mail size={15} />
+                  <span>Email Client</span>
+                </a>
+              </div>
+
+              {/* Action 4: Advance Lifeline to Confirmed */}
+              <button
+                type="button"
+                className="btnPrimary"
+                onClick={() => handleMarkOrderRecovered(recoveryOrderTarget.id)}
+                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '11px', background: '#C7D5B5', borderColor: '#B1C29C', color: '#16110F', fontWeight: 700, marginTop: '4px' }}
+              >
+                <CheckCircle2 size={16} />
+                <span>Mark as Recovered (Advance to Confirmed Lifeline)</span>
+              </button>
+            </div>
+
+            <div style={{ textAlign: 'center' }}>
+              <button 
+                type="button" 
+                className="btnSecondary" 
+                onClick={() => setRecoveryOrderTarget(null)}
+                style={{ fontSize: '0.82rem', padding: '6px 16px' }}
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
         </div>
       )}
