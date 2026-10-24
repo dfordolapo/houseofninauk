@@ -879,13 +879,13 @@ h1, h2, h3,
    DESKTOP / WEB HERO (FULL-WIDTH CINEMATIC COVER FROM VERY TOP)
    ============================================= */
 @media (min-width: 769px) {
-  /* Let header float seamlessly over the hero when hero is active */
+  /* Let header float seamlessly over the hero when hero is active (fixed: NEVER moves on scroll) */
   .is-hero-active .header-sticky-wrapper {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 50;
+    z-index: 101;
     background: transparent;
   }
 
