@@ -1527,50 +1527,64 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         </td>
                         <td>{o.customer.fullName}</td>
                         <td>
-                          <span className={`badge ${o.status}`}>{o.status}</span>
+                          <span className={`badge ${o.status === 'delivered' ? 'completed' : o.status}`}>
+                            {o.status === 'delivered' ? 'Completed' : o.status}
+                          </span>
                         </td>
                         <td><strong>£{Number(o.total).toFixed(2)}</strong></td>
                         <td style={{ textAlign: 'right' }}>
-                          {o.status === 'confirmed' && (
-                            <button
-                              type="button"
-                              className="btnPrimary"
-                              onClick={() => handleAdvanceLifeline(o.id, 'processing')}
-                              style={{ fontSize: '0.68rem', padding: '5px 10px', minHeight: '30px' }}
-                              aria-label={`Advance order ${o.orderNumber} to processing`}
-                            >
-                              Process
-                            </button>
-                          )}
-                          {o.status === 'processing' && (
-                            <button
-                              type="button"
-                              className="btnPrimary"
-                              onClick={() => {
-                                setDispatchOrderTarget(o);
-                                setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
-                                setIsDispatchModalOpen(true);
-                              }}
-                              style={{ fontSize: '0.68rem', padding: '5px 10px', minHeight: '30px' }}
-                              aria-label={`Ship order ${o.orderNumber}`}
-                            >
-                              Ship...
-                            </button>
-                          )}
-                          {o.status === 'shipped' && (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                            {/* Secondary: View */}
                             <button
                               type="button"
                               className="btnSecondary"
-                              onClick={() => handleAdvanceLifeline(o.id, 'delivered')}
-                              style={{ fontSize: '0.68rem', padding: '5px 10px' }}
-                              aria-label={`Mark order ${o.orderNumber} as delivered`}
+                              onClick={() => setViewOrderDetails(o)}
+                              aria-label={`View details for order ${o.orderNumber}`}
+                              style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontWeight: 600 }}
                             >
-                              Deliver
+                              <Eye size={12} />
+                              <span>View</span>
                             </button>
-                          )}
-                          {o.status === 'delivered' && (
-                            <span style={{ fontSize: '0.8rem', color: '#10B981', fontWeight: 600 }}>✓ Completed</span>
-                          )}
+
+                            {/* Primary: Lifeline action for active orders */}
+                            {o.status === 'confirmed' && (
+                              <button
+                                type="button"
+                                className="btnPrimary"
+                                onClick={() => handleAdvanceLifeline(o.id, 'processing')}
+                                style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
+                                aria-label={`Advance order ${o.orderNumber} to processing`}
+                              >
+                                Process
+                              </button>
+                            )}
+                            {o.status === 'processing' && (
+                              <button
+                                type="button"
+                                className="btnPrimary"
+                                onClick={() => {
+                                  setDispatchOrderTarget(o);
+                                  setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
+                                  setIsDispatchModalOpen(true);
+                                }}
+                                style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
+                                aria-label={`Ship order ${o.orderNumber}`}
+                              >
+                                Ship
+                              </button>
+                            )}
+                            {o.status === 'shipped' && (
+                              <button
+                                type="button"
+                                className="btnPrimary"
+                                onClick={() => handleAdvanceLifeline(o.id, 'delivered')}
+                                style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
+                                aria-label={`Mark order ${o.orderNumber} as delivered`}
+                              >
+                                Deliver
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -1589,7 +1603,9 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                           {new Date(o.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </div>
                       </div>
-                      <span className={`badge ${o.status}`}>{o.status}</span>
+                      <span className={`badge ${o.status === 'delivered' ? 'completed' : o.status}`}>
+                        {o.status === 'delivered' ? 'Completed' : o.status}
+                      </span>
                     </div>
 
                     <div className="adminMobileCardBody">
@@ -1605,6 +1621,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       </div>
 
                       <div className="adminCardActionGroup">
+                        {/* Secondary: View */}
+                        <button
+                          type="button"
+                          className="btnSecondary adminCardActionBtn"
+                          title="View Order Details"
+                          aria-label={`View details for order ${o.orderNumber}`}
+                          onClick={() => setViewOrderDetails(o)}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                        >
+                          <Eye size={13} />
+                          <span>View</span>
+                        </button>
+
+                        {/* Primary: Lifeline action for active orders */}
                         {o.status === 'confirmed' && (
                           <button
                             type="button"
@@ -1632,30 +1662,22 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         {o.status === 'shipped' && (
                           <button
                             type="button"
-                            className="btnSecondary adminCardActionBtn"
+                            className="btnPrimary adminCardActionBtn"
                             onClick={() => handleAdvanceLifeline(o.id, 'delivered')}
                             aria-label={`Deliver order ${o.orderNumber}`}
                           >
                             Deliver
                           </button>
                         )}
-                        {o.status === 'delivered' && (
-                          <span className="adminCardCompletedBadge">✓ Completed</span>
-                        )}
-                        <button
-                          type="button"
-                          className="btnSecondary adminCardIconBtn"
-                          title="View Order Details"
-                          aria-label={`View details for order ${o.orderNumber}`}
-                          onClick={() => setViewOrderDetails(o)}
-                        >
-                          <Eye size={15} />
-                        </button>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
+            </>
+          )}
+
+          {/* ══════════════ TAB 2: ORDERS              </div>
             </>
           )}
 
@@ -1756,8 +1778,8 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               <strong style={{ fontSize: '0.92rem' }}>£{Number(order.total).toFixed(2)}</strong>
                             </td>
                             <td>
-                              <span className={`badge ${order.status}`}>
-                                {order.status}
+                              <span className={`badge ${order.status === 'delivered' ? 'completed' : order.status}`}>
+                                {order.status === 'delivered' ? 'Completed' : order.status}
                               </span>
                             </td>
                             <td>
@@ -1976,8 +1998,8 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               {new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                             </div>
                           </div>
-                          <span className={`badge ${order.status}`}>
-                            {order.status}
+                          <span className={`badge ${order.status === 'delivered' ? 'completed' : order.status}`}>
+                            {order.status === 'delivered' ? 'Completed' : order.status}
                           </span>
                         </div>
 
@@ -5022,7 +5044,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
                 {/* Action 3: VIP Email Dispatch */}
                 <a
-                  href={`mailto:${recoveryOrderTarget.customer.email}?subject=${encodeURIComponent(`House of Nina | Your Reserved Luxury Unit (${recoveryOrderTarget.items?.[0]?.name || ''})`)}&body=${encodeURIComponent(`Dear ${recoveryOrderTarget.customer.fullName},\n\nWe noticed you left your bespoke unit in your bag. Complete your private atelier checkout with complimentary insured shipping here:\nhttps://houseofnina.co.uk/?recover=${recoveryOrderTarget.orderNumber}\n\nWarmest regards,\nHouse of Nina Atelier London`)}`}
+                  href={`mailto:${recoveryOrderTarget.customer.email}?subject=${encodeURIComponent(`House of Nina | Your Reserved Luxury Unit (${recoveryOrderTarget.items?.[0]?.name || ''})`)}&body=${encodeURIComponent(`Dear ${recoveryOrderTarget.customer.fullName},\n\nWe noticed you left your bespoke unit in your bag. Complete your private checkout with complimentary insured shipping here:\nhttps://houseofnina.co.uk/?recover=${recoveryOrderTarget.orderNumber}\n\nWarmest regards,\nHouse of Nina London`)}`}
                   className="btnSecondary"
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '9px', textDecoration: 'none', fontSize: '0.82rem', fontWeight: 600, color: '#16110F' }}
                 >

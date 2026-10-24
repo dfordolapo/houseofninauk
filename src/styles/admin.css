@@ -1004,6 +1004,7 @@
 }
 
 .badge.delivered,
+.badge.completed,
 .badge.inStock,
 .badge.active {
   background-color: #ECFDF5;

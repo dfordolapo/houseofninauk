@@ -27,7 +27,7 @@ import CheckoutModal from './components/CheckoutModal';
 import OrderSuccessReceipt from './components/OrderSuccessReceipt';
 import { FEATURED_PRODUCTS } from './data/wigData';
 
-// Dynamic import for local Atelier Admin Dashboard
+// Dynamic import for local Admin Dashboard
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 
 const CART_STORAGE_KEY = 'house_of_nina_cart_v1';
@@ -457,9 +457,47 @@ export default function App() {
       <div className="adminStandaloneRoot" style={{ minHeight: '100vh', background: '#FAF7F2' }}>
         <React.Suspense
           fallback={
-            <div style={{ minHeight: '100vh', background: '#FBF9F5', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#16110F', padding: '24px' }}>
-              <h1 style={{ fontFamily: "'Italianno', cursive", fontSize: '3.5rem', margin: '0 0 8px 0', fontWeight: 400 }}>House of Nina</h1>
-              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.78rem', color: '#6E6259', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Loading Atelier Admin...</p>
+            <div style={{ minHeight: '100vh', background: 'radial-gradient(circle at 50% 40%, #FFFDF9 0%, #F8F3ED 60%, #EFE8DF 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', padding: '24px', fontFamily: "'Inter', sans-serif" }}>
+              <style>{`
+                @keyframes luxuryPulseGlow {
+                  0%, 100% { transform: scale(1); box-shadow: 0 10px 24px rgba(212, 175, 122, 0.22); }
+                  50% { transform: scale(1.05); box-shadow: 0 16px 36px rgba(212, 175, 122, 0.38); }
+                }
+                @keyframes luxuryGlideLine {
+                  0% { left: -45%; }
+                  50% { left: 40%; }
+                  100% { left: 100%; }
+                }
+                @keyframes luxuryFadeInCard {
+                  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+                  to { opacity: 1; transform: translateY(0) scale(1); }
+                }
+              `}</style>
+
+              {/* Ambient Warm Golden Glow */}
+              <div style={{ position: 'absolute', width: '380px', height: '380px', background: 'radial-gradient(circle, rgba(212, 175, 122, 0.18) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }} />
+
+              {/* Frosted Luxury Portal Card */}
+              <div style={{ background: 'rgba(255, 255, 255, 0.88)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(212, 175, 122, 0.35)', borderRadius: '24px', padding: '48px 36px', textAlign: 'center', maxWidth: '420px', width: '100%', boxShadow: '0 25px 60px rgba(22, 17, 15, 0.08), 0 4px 16px rgba(212, 175, 122, 0.12)', position: 'relative', zIndex: 1, animation: 'luxuryFadeInCard 0.4s ease-out' }}>
+                {/* Crown / Luxury Seal */}
+                <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, #FAF6F0 0%, #EFE5D8 100%)', border: '1.5px solid #D4AF7A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '18px', animation: 'luxuryPulseGlow 2.5s ease-in-out infinite' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A7B4F" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 3h12l4 6-10 12L2 9z"/>
+                    <path d="M11 3 L8 9 L12 21 L16 9 L13 3"/>
+                  </svg>
+                </div>
+
+                {/* Brand Name in Signature Italianno Cursive */}
+                <h1 style={{ fontFamily: "'Italianno', cursive", fontSize: '3.6rem', color: '#1B1917', margin: '0 0 4px 0', fontWeight: 400, lineHeight: 1 }}>House of Nina</h1>
+                <p style={{ fontSize: '0.68rem', fontWeight: 700, color: '#8C7D70', letterSpacing: '0.24em', textTransform: 'uppercase', margin: '0 0 24px 0' }}>Admin Workspace</p>
+
+                {/* Shimmering Gold Progress Track */}
+                <div style={{ width: '150px', height: '3px', background: 'rgba(212, 175, 122, 0.22)', borderRadius: '99px', margin: '0 auto 14px auto', overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ position: 'absolute', top: 0, bottom: 0, width: '45%', background: 'linear-gradient(90deg, #D4AF7A, #1B1917, #D4AF7A)', borderRadius: '99px', animation: 'luxuryGlideLine 1.6s ease-in-out infinite' }} />
+                </div>
+
+                <span style={{ fontSize: '0.74rem', color: '#9E9084', letterSpacing: '0.02em', fontStyle: 'italic' }}>Entering management console...</span>
+              </div>
             </div>
           }
         >
