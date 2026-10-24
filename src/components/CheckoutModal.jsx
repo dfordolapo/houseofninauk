@@ -234,17 +234,15 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'standard',
-        name: 'Royal Mail 48 Tracked',
-        carrier: 'Royal Mail',
-        timeframe: '2 – 4 working days',
+        name: 'Standard Delivery',
+        timeframe: '2–5 working days',
         priceGbp: 0,
         notes: 'Free luxury insured delivery • Signature required'
       },
       {
         id: 'express',
-        name: 'Royal Mail Special Delivery Guaranteed (1pm)',
-        carrier: 'Royal Mail',
-        timeframe: 'Next business day (by 1pm)',
+        name: 'Next Day Delivery',
+        timeframe: '1–2 working days',
         priceGbp: 8.50,
         notes: 'Guaranteed next business day by 1:00 PM • Priority dispatch'
       }
@@ -270,16 +268,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Tracked & Signed',
-        carrier: 'Royal Mail / USPS',
+        name: 'International Standard Delivery',
         timeframe: '7 – 10 working days',
         priceGbp: 16.00,
         notes: 'Transatlantic insured air freight • Fully tracked to your door'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Worldwide Priority Air',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 5 working days',
         priceGbp: 32.00,
         notes: 'Fast express courier • Priority customs clearance'
@@ -306,16 +302,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Signed',
-        carrier: 'Royal Mail / NIPOST',
+        name: 'International Standard Delivery',
         timeframe: '7 – 12 working days',
         priceGbp: 18.00,
         notes: 'Insured air parcel • Requires signature on arrival'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Nigeria Priority Air',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 5 working days',
         priceGbp: 34.00,
         notes: 'Direct express flight to Lagos & Abuja • Door-to-door concierge'
@@ -342,16 +336,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Tracked & Signed',
-        carrier: 'Royal Mail / Canada Post',
+        name: 'International Standard Delivery',
         timeframe: '7 – 10 working days',
         priceGbp: 16.00,
         notes: 'Insured transatlantic air delivery • Tracked & signed'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Worldwide Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 5 working days',
         priceGbp: 32.00,
         notes: 'Priority courier to Canadian provinces'
@@ -378,16 +370,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Signed',
-        carrier: 'Royal Mail / Ghana Post',
+        name: 'International Standard Delivery',
         timeframe: '7 – 12 working days',
         priceGbp: 18.00,
         notes: 'Insured international air dispatch'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Worldwide Air Cargo',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 5 working days',
         priceGbp: 34.00,
         notes: 'Express courier delivery to Accra & nationwide'
@@ -414,17 +404,15 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Tracked',
-        carrier: 'Royal Mail / Emirates Post',
+        name: 'International Standard Delivery',
         timeframe: '6 – 9 working days',
         priceGbp: 18.00,
         notes: 'Insured international parcel to UAE'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Gulf VIP Priority',
-        carrier: 'DHL Express',
-        timeframe: '2 – 4 working days',
+        name: 'International Express Delivery',
+        timeframe: '2–5 working days',
         priceGbp: 34.00,
         notes: 'Direct priority air courier to residence or hotel'
       }
@@ -450,16 +438,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / La Poste',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European parcel with tracking'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Next-flight priority courier across Europe'
@@ -486,16 +472,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / Deutsche Post',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Priority courier to German destinations'
@@ -522,16 +506,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / An Post',
+        name: 'International Standard Delivery',
         timeframe: '3 – 5 working days',
         priceGbp: 12.00,
         notes: 'Fast tracked cross-Irish Sea delivery'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '1 – 2 working days',
         priceGbp: 22.00,
         notes: 'Express 24-48h courier delivery'
@@ -558,16 +540,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Tracked',
-        carrier: 'Royal Mail / Australia Post',
+        name: 'International Standard Delivery',
         timeframe: '7 – 12 working days',
         priceGbp: 18.00,
         notes: 'Insured international air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Worldwide Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 6 working days',
         priceGbp: 36.00,
         notes: 'Express courier directly to Australia'
@@ -594,16 +574,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / PostNL',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Priority air courier'
@@ -630,16 +608,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / bpost',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Priority express courier'
@@ -666,16 +642,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / Poczta Polska',
+        name: 'International Standard Delivery',
         timeframe: '5 – 8 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Express courier delivery'
@@ -702,16 +676,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / CTT',
+        name: 'International Standard Delivery',
         timeframe: '5 – 8 working days',
         priceGbp: 14.00,
         notes: 'Insured continental delivery'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Direct courier delivery'
@@ -738,16 +710,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / Österreichische Post',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Express courier delivery'
@@ -774,16 +744,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / Poste Italiane',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Europe Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Express courier delivery'
@@ -810,16 +778,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Tracked',
-        carrier: 'Royal Mail / Korea Post',
+        name: 'International Standard Delivery',
         timeframe: '7 – 12 working days',
         priceGbp: 18.00,
         notes: 'Insured air parcel to Korea'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Worldwide Air',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 5 working days',
         priceGbp: 36.00,
         notes: 'Priority express courier'
@@ -846,16 +812,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Tracked',
-        carrier: 'Royal Mail / Japan Post',
+        name: 'International Standard Delivery',
         timeframe: '7 – 12 working days',
         priceGbp: 18.00,
         notes: 'Insured international parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Tokyo Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 5 working days',
         priceGbp: 36.00,
         notes: 'Door-to-door express courier'
@@ -882,16 +846,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Signed',
-        carrier: 'Royal Mail / SAPO',
+        name: 'International Standard Delivery',
         timeframe: '8 – 14 working days',
         priceGbp: 18.00,
         notes: 'Insured international air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express South Africa Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '3 – 6 working days',
         priceGbp: 36.00,
         notes: 'Priority courier to Johannesburg, Cape Town, etc.'
@@ -918,16 +880,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / Swiss Post',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Switzerland Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Express courier delivery'
@@ -954,16 +914,14 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'intl_standard',
-        name: 'Royal Mail International Europe Tracked',
-        carrier: 'Royal Mail / PostNord',
+        name: 'International Standard Delivery',
         timeframe: '4 – 7 working days',
         priceGbp: 14.00,
         notes: 'Insured European air parcel'
       },
       {
         id: 'intl_express',
-        name: 'DHL Express Nordics Priority',
-        carrier: 'DHL Express',
+        name: 'International Express Delivery',
         timeframe: '2 – 3 working days',
         priceGbp: 26.00,
         notes: 'Express courier delivery'
@@ -1303,8 +1261,28 @@ export default function CheckoutModal({
   const rawDiscount = checkoutData.discountAmount || 0;
   const discount = rawDiscount * rate;
 
-  // Real Shipping Rates based on selected destination
-  const availableShippingOptions = currentDestination?.shippingOptions || [];
+  // Real Shipping Rates based on selected destination & dynamic Admin synchronization
+  const availableShippingOptions = (() => {
+    if (selectedCountryCode === 'GB') {
+      try {
+        const savedRates = localStorage.getItem('house_of_nina_admin_shipping_rates_v4');
+        if (savedRates) {
+          const parsed = JSON.parse(savedRates);
+          const active = parsed.filter(r => r.status === 'active');
+          if (active.length > 0) {
+            return active.map(r => ({
+              id: r.id,
+              name: r.name,
+              timeframe: r.estimatedDays,
+              priceGbp: Number(r.price) || 0,
+              notes: 'Insured luxury delivery'
+            }));
+          }
+        }
+      } catch (err) {}
+    }
+    return currentDestination?.shippingOptions || [];
+  })();
   const selectedShippingOption = availableShippingOptions.find(o => o.id === formData.deliveryMethod) || availableShippingOptions[0] || null;
 
   const shippingCost = (selectedCountryCode && selectedShippingOption)

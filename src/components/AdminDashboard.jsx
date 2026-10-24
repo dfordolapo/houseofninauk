@@ -17,36 +17,29 @@ const SUBSCRIBERS_STORAGE_KEY = 'house_of_nina_admin_subscribers_v3';
 const CATEGORIES_STORAGE_KEY = 'house_of_nina_admin_categories_v3';
 const SETTINGS_STORAGE_KEY = 'house_of_nina_admin_settings_v3';
 const REVIEWS_STORAGE_KEY = 'house_of_nina_admin_reviews_v3';
-const SHIPPING_RATES_STORAGE_KEY = 'house_of_nina_admin_shipping_rates_v3';
+const SHIPPING_RATES_STORAGE_KEY = 'house_of_nina_admin_shipping_rates_v4';
 
-// Initial Demo Shipping Rates
+// Initial Shipping Rates (Synchronized with Official Shipping & Delivery Policy)
 const INITIAL_SHIPPING_RATES = [
   {
     id: 'ship-01',
-    name: 'Royal Mail Tracked 48',
+    name: 'UK Standard Delivery',
     price: 4.95,
-    estimatedDays: '2 - 3 business days',
+    estimatedDays: '2–5 working days',
     status: 'active'
   },
   {
     id: 'ship-02',
-    name: 'Royal Mail Tracked 24',
-    price: 7.50,
-    estimatedDays: 'Next business day',
+    name: 'UK Next Day Delivery',
+    price: 8.50,
+    estimatedDays: '1–2 working days',
     status: 'active'
   },
   {
     id: 'ship-03',
-    name: 'Royal Mail Special Delivery Guaranteed by 1pm',
-    price: 14.00,
-    estimatedDays: 'Guaranteed next working day before 1:00 PM',
-    status: 'active'
-  },
-  {
-    id: 'ship-04',
-    name: 'DHL Express Worldwide Courier',
-    price: 25.00,
-    estimatedDays: '1 - 2 business days (Insured tracking)',
+    name: 'International Delivery',
+    price: 22.00,
+    estimatedDays: '7–10 working days',
     status: 'active'
   }
 ];
@@ -3557,7 +3550,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       <table className="table">
                         <thead>
                           <tr>
-                            <th>Service / Courier</th>
+                            <th>Delivery Method</th>
                             <th>Estimated Delivery Window</th>
                             <th>Rate (£ GBP)</th>
                             <th>Status</th>
@@ -3711,7 +3704,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
                         <div className="adminMobileCardBody">
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Courier Cost:</span>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Shipping Fee:</span>
                             <strong style={{ fontSize: '1.05rem', color: 'var(--color-primary)' }}>
                               £{Number(rate.price).toFixed(2)}
                             </strong>
@@ -4660,12 +4653,12 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Courier / Service Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Delivery Method Name</label>
                 <input 
                   type="text" 
                   value={shippingRateForm.name}
                   onChange={(e) => setShippingRateForm({ ...shippingRateForm, name: e.target.value })}
-                  placeholder="e.g. Royal Mail Tracked 24"
+                  placeholder="e.g. UK Standard Delivery or UK Next Day Delivery"
                   required
                   style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
@@ -4703,7 +4696,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   type="text" 
                   value={shippingRateForm.estimatedDays}
                   onChange={(e) => setShippingRateForm({ ...shippingRateForm, estimatedDays: e.target.value })}
-                  placeholder="e.g. Next business day or 2-3 business days"
+                  placeholder="e.g. 2–5 working days or 1–2 working days"
                   required
                   style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
@@ -4734,7 +4727,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Courier / Service Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Delivery Method Name</label>
                 <input 
                   type="text" 
                   value={editingShippingRate.name}
