@@ -97,6 +97,9 @@
   border-color: var(--color-accent);
 }
 
+.adminPortalRoot label.adminSettingsHeading,
+.adminPortalRoot .adminSettingsHeading,
+label.adminSettingsHeading,
 .adminSettingsHeading {
   display: block;
   font-size: 0.82rem !important; /* Smaller on web so they don't compete with Store Profile heading */
@@ -116,11 +119,15 @@
 }
 
 @media (max-width: 768px) {
+  .adminPortalRoot label.adminSettingsHeading,
+  .adminPortalRoot .adminSettingsHeading,
+  label.adminSettingsHeading,
   .adminSettingsHeading {
-    font-size: 1.14rem !important; /* Bigger on mobile still */
-    font-weight: 700 !important;
+    font-size: 0.78rem !important; /* Refined middle ground on mobile (12.5px) — does not compete with 1.02rem title or 0.64rem inputs */
+    font-weight: 600 !important;
     margin-bottom: 3px !important;
-    color: #16110F !important;
+    color: #2D231E !important;
+    letter-spacing: -0.005em;
     line-height: 1.25;
   }
 
@@ -1872,7 +1879,7 @@
     opacity: 0.65 !important;
   }
 
-  .adminPortalRoot label {
+  .adminPortalRoot label:not(.adminSettingsHeading) {
     font-size: 0.64rem !important;
     font-weight: 600 !important;
     margin-bottom: 2px !important;
@@ -2217,6 +2224,18 @@
   .lifelineLabel {
     font-size: 9.5px;
     text-align: center;
+  }
+
+  .adminPortalRoot label.adminSettingsHeading,
+  .adminPortalRoot .adminSettingsHeading,
+  label.adminSettingsHeading,
+  .adminSettingsHeading {
+    font-size: 0.78rem !important; /* Refined middle ground on mobile (12.5px) — does not compete with 1.02rem title or 0.64rem inputs */
+    font-weight: 600 !important;
+    margin-bottom: 3px !important;
+    color: #2D231E !important;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
   }
 
   .adminPortalRoot .adminSettingsInput,
