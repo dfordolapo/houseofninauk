@@ -1440,7 +1440,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     £{stats.totalRevenue.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </div>
                   <div className="statTrend">
-                    {stats.paidOrdersCount} completed orders
+                    {stats.paidOrdersCount} delivered orders
                   </div>
                 </div>
 
@@ -1527,8 +1527,8 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         </td>
                         <td>{o.customer.fullName}</td>
                         <td>
-                          <span className={`badge ${o.status === 'delivered' ? 'completed' : o.status}`}>
-                            {o.status === 'delivered' ? 'Completed' : o.status}
+                          <span className={`badge ${o.status}`}>
+                            {o.status === 'delivered' ? 'Delivered' : o.status}
                           </span>
                         </td>
                         <td><strong>£{Number(o.total).toFixed(2)}</strong></td>
@@ -1603,9 +1603,9 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                           {new Date(o.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </div>
                       </div>
-                      <span className={`badge ${o.status === 'delivered' ? 'completed' : o.status}`}>
-                        {o.status === 'delivered' ? 'Completed' : o.status}
-                      </span>
+                      <span className={`badge ${o.status}`}>
+                            {o.status === 'delivered' ? 'Delivered' : o.status}
+                          </span>
                     </div>
 
                     <div className="adminMobileCardBody">
@@ -1778,8 +1778,8 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               <strong style={{ fontSize: '0.92rem' }}>£{Number(order.total).toFixed(2)}</strong>
                             </td>
                             <td>
-                              <span className={`badge ${order.status === 'delivered' ? 'completed' : order.status}`}>
-                                {order.status === 'delivered' ? 'Completed' : order.status}
+                              <span className={`badge ${order.status}`}>
+                                {order.status === 'delivered' ? 'Delivered' : order.status}
                               </span>
                             </td>
                             <td>
@@ -1998,9 +1998,9 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               {new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                             </div>
                           </div>
-                          <span className={`badge ${order.status === 'delivered' ? 'completed' : order.status}`}>
-                            {order.status === 'delivered' ? 'Completed' : order.status}
-                          </span>
+                          <span className={`badge ${order.status}`}>
+                                {order.status === 'delivered' ? 'Delivered' : order.status}
+                              </span>
                         </div>
 
                         {/* Customer & Items */}
@@ -3477,7 +3477,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         type="text" 
                         value={storeSettings.storeName}
                         onChange={(e) => setStoreSettings({ ...storeSettings, storeName: e.target.value })}
-                        style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
+                        className="adminSettingsInput"
                       />
                     </div>
 
@@ -3487,7 +3487,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         type="text" 
                         value={storeSettings.headquarters}
                         onChange={(e) => setStoreSettings({ ...storeSettings, headquarters: e.target.value })}
-                        style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
+                        className="adminSettingsInput"
                       />
                     </div>
 
@@ -3497,7 +3497,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         type="email" 
                         value={storeSettings.supportEmail}
                         onChange={(e) => setStoreSettings({ ...storeSettings, supportEmail: e.target.value })}
-                        style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
+                        className="adminSettingsInput"
                       />
                     </div>
 
@@ -3507,7 +3507,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         type="text" 
                         value={storeSettings.hotline}
                         onChange={(e) => setStoreSettings({ ...storeSettings, hotline: e.target.value })}
-                        style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
+                        className="adminSettingsInput"
                       />
                     </div>
                   </div>
@@ -3547,7 +3547,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       type="number" 
                       value={storeSettings.freeShippingThreshold}
                       onChange={(e) => setStoreSettings({ ...storeSettings, freeShippingThreshold: parseFloat(e.target.value) || 0 })}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.88rem' }}
+                      className="adminSettingsInput"
                     />
                     <span style={{ fontSize: '0.74rem', color: 'var(--color-text-secondary)', display: 'block', marginTop: '2px' }}>
                       Orders above this threshold qualify for complimentary shipping.

@@ -78,6 +78,23 @@
   box-sizing: border-box;
 }
 
+.adminSettingsInput {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  font-size: 0.80rem !important;
+  background: #FFFFFF;
+  color: var(--color-text);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.adminSettingsInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
 /* ═══════════════════════════════════════════════════════════
    TOP NAVIGATION (FIXED — NEVER MOVES ON SCROLL)
    Same floating pill shape, 9999px corner radius, and subtle shadow
@@ -2109,9 +2126,19 @@
     font-size: 9.5px;
     text-align: center;
   }
+  .adminSettingsInput {
+    font-size: 0.68rem !important;
+    padding: 6px 10px !important;
+    border-radius: 7px !important;
+  }
 }
 
 @media (max-width: 480px) {
+  .adminSettingsInput {
+    font-size: 0.65rem !important;
+    padding: 5px 8px !important;
+  }
+
   .statsGrid {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
