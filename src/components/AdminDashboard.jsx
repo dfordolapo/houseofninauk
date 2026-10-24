@@ -3465,13 +3465,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div className="adminSettingsContainer">
                 {/* Store Profile Card */}
-                <div style={{ background: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '22px' }}>
-                  <h3 style={{ fontSize: '1.05rem', margin: '0 0 14px 0', fontFamily: 'var(--font-heading)' }}>Store Profile</h3>
+                <div className="adminSettingsCard">
+                  <h3 className="adminSettingsTitle">Store Profile</h3>
                   
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
-                    <div>
+                  <div className="adminSettingsGrid">
+                    <div className="adminSettingsField">
                       <label className="adminSettingsHeading">Store Name</label>
                       <input 
                         type="text" 
@@ -3481,7 +3481,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       />
                     </div>
 
-                    <div>
+                    <div className="adminSettingsField">
                       <label className="adminSettingsHeading">Headquarters Address</label>
                       <input 
                         type="text" 
@@ -3491,7 +3491,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       />
                     </div>
 
-                    <div>
+                    <div className="adminSettingsField">
                       <label className="adminSettingsHeading">Support Email</label>
                       <input 
                         type="email" 
@@ -3501,7 +3501,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       />
                     </div>
 
-                    <div>
+                    <div className="adminSettingsField">
                       <label className="adminSettingsHeading">WhatsApp Concierge Hotline</label>
                       <input 
                         type="text" 
@@ -3514,10 +3514,10 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
 
                 {/* Shipping Rates Configuration Card with Full Dynamic CRUD */}
-                <div style={{ background: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '22px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+                <div className="adminSettingsCard">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
                     <div>
-                      <h3 style={{ fontSize: '1.05rem', margin: '0 0 4px 0', fontFamily: 'var(--font-heading)' }}>Shipping Rates Configuration</h3>
+                      <h3 className="adminSettingsTitle" style={{ margin: '0 0 3px 0' }}>Shipping Rates Configuration</h3>
                       <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>
                         Manage delivery services, estimated transit windows, and checkout courier rates.
                       </p>
@@ -3541,7 +3541,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </button>
                   </div>
 
-                  <div style={{ maxWidth: '320px', marginBottom: '18px' }}>
+                  <div style={{ maxWidth: '320px', marginBottom: '14px' }}>
                     <label className="adminSettingsHeading">Free Shipping Threshold (£ GBP)</label>
                     <input 
                       type="number" 

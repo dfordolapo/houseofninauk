@@ -99,18 +99,69 @@
 
 .adminSettingsHeading {
   display: block;
-  font-size: 1rem !important;
+  font-size: 1.05rem !important;
   font-weight: 700 !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 4px !important;
   color: #16110F !important;
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 @media (max-width: 768px) {
   .adminSettingsHeading {
-    font-size: 0.95rem !important; /* Bigger on mobile to match web */
+    font-size: 1.04rem !important; /* Slightly bigger on mobile to match how it is in web */
     font-weight: 700 !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 3px !important;
+    line-height: 1.25;
+  }
+}
+
+.adminSettingsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.adminSettingsCard {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.adminSettingsTitle {
+  font-size: 1.05rem;
+  margin: 0 0 10px 0;
+  font-family: var(--font-heading);
+}
+
+.adminSettingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.adminSettingsField {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .adminSettingsContainer {
+    gap: 12px;
+  }
+  .adminSettingsCard {
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+  .adminSettingsTitle {
+    font-size: 1.02rem;
+    margin: 0 0 8px 0;
+  }
+  .adminSettingsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
   }
 }
 
