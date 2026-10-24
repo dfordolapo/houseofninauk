@@ -1509,12 +1509,13 @@ label.adminSettingsHeading,
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .adminCardTotalSection {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
 .adminCardTotalLabel {
@@ -1534,8 +1535,9 @@ label.adminSettingsHeading,
 .adminCardActionGroup {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 5px;
+  flex-wrap: nowrap !important;
+  flex-shrink: 0;
 }
 
 .adminCardActionBtn {
@@ -1543,6 +1545,8 @@ label.adminSettingsHeading,
   padding: 6px 14px !important;
   min-height: 36px !important;
   border-radius: 8px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .adminCardIconBtn {
@@ -1914,7 +1918,7 @@ label.adminSettingsHeading,
 
   .adminMobileCardFooter {
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: space-between !important;
     gap: 6px !important;
@@ -1923,11 +1927,19 @@ label.adminSettingsHeading,
 
   .adminCardActionGroup {
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important; /* ALWAYS on the same line */
     align-items: center !important;
     justify-content: flex-end !important;
     gap: 4px !important;
-    flex: 1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .adminCardActionGroup .btnPrimary,
+  .adminCardActionGroup .btnSecondary,
+  .adminCardActionGroup .adminCardActionBtn,
+  .adminCardActionGroup .adminCardKebabBtn {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
   }
 
   .adminProductCardControlsRow {
@@ -2267,17 +2279,21 @@ label.adminSettingsHeading,
   }
 
   .adminMobileCardFooter {
-    gap: 6px;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
   }
 
   .adminCardActionGroup {
-    width: 100%;
-    justify-content: flex-end;
-    margin-top: 4px;
+    width: auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end !important;
+    margin-top: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .adminCardTotalSection {
-    flex: 1;
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
   }
 }
 
