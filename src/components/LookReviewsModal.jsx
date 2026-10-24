@@ -52,8 +52,10 @@ export default function LookReviewsModal({
       author: authorName.trim() || "House of Nina Client",
       rating: rating,
       time: "Just now",
+      date: new Date().toISOString().split('T')[0],
       verified: true,
-      text: reviewText.trim()
+      text: reviewText.trim(),
+      status: 'pending' // Initial status: Awaiting approval
     };
 
     setReviews(prev => {
@@ -66,10 +68,28 @@ export default function LookReviewsModal({
       return updated;
     });
 
+    // Also sync to Admin Reviews portal for moderation
+    try {
+      const adminKey = 'house_of_nina_admin_reviews_v3';
+      const existing = JSON.parse(localStorage.getItem(adminKey) || '[]');
+      const adminEntry = {
+        id: newRev.id,
+        client: newRev.author,
+        productName: title,
+        rating: newRev.rating,
+        date: newRev.date,
+        text: newRev.text,
+        status: 'pending' // Shows as "Awaiting Approval" in admin
+      };
+      localStorage.setItem(adminKey, JSON.stringify([adminEntry, ...existing]));
+    } catch (err) {
+      console.warn('Failed to sync review to admin portal', err);
+    }
+
     setReviewText('');
     setAuthorName('');
     setSuccessMessage(true);
-    setTimeout(() => setSuccessMessage(false), 3500);
+    setTimeout(() => setSuccessMessage(false), 4000);
   };
 
   return (
@@ -130,7 +150,7 @@ export default function LookReviewsModal({
             {successMessage && (
               <div className="look-review-success-toast animate-pop">
                 <CheckCircle2 size={16} />
-                <span>Your review has been posted! ✨</span>
+                <span>Your review has been submitted and is awaiting approval! ✨</span>
               </div>
             )}
 
@@ -140,11 +160,15 @@ export default function LookReviewsModal({
                   <div className="look-comment-header">
                     <div className="look-comment-author-wrap">
                       <strong className="look-commenter-name">{rev.author}</strong>
-                      {rev.verified && (
+                      {rev.status === 'pending' ? (
+                        <span style={{ fontSize: '10px', color: '#B45309', backgroundColor: '#FEF3C7', padding: '1px 6px', borderRadius: '4px', border: '1px solid #FDE68A' }}>
+                          Awaiting Approval
+                        </span>
+                      ) : rev.verified ? (
                         <span className="look-verified-chip">
                           <Check size={10} /> Verified
                         </span>
-                      )}
+                      ) : null}
                     </div>
                     <span className="look-comment-time">{rev.time}</span>
                   </div>

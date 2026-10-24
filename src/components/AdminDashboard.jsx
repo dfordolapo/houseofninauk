@@ -4,7 +4,7 @@ import {
   LogOut, ChevronDown, Menu, X, BellRing, Search, 
   Plus, Trash2, Edit2, Truck, CheckCircle2, Printer, Download, 
   Tag, Calendar, TrendingUp, MoreVertical, Store, ArrowRight,
-  Layers, Check
+  Layers, Check, Clock
 } from 'lucide-react';
 import { FEATURED_PRODUCTS, BRAND_INFO } from '../data/wigData';
 import '../styles/admin.css';
@@ -15,6 +15,38 @@ const DISCOUNTS_STORAGE_KEY = 'house_of_nina_admin_discounts_v3';
 const SUBSCRIBERS_STORAGE_KEY = 'house_of_nina_admin_subscribers_v3';
 const CATEGORIES_STORAGE_KEY = 'house_of_nina_admin_categories_v3';
 const SETTINGS_STORAGE_KEY = 'house_of_nina_admin_settings_v3';
+const REVIEWS_STORAGE_KEY = 'house_of_nina_admin_reviews_v3';
+
+// Initial Demo Reviews (Awaiting Approval vs Featured)
+const INITIAL_DEMO_REVIEWS = [
+  {
+    id: 'rev-1',
+    client: 'Zara M.',
+    productName: 'The Victoria Glass Bob',
+    rating: 5,
+    date: '2026-10-23',
+    text: 'The Victoria Glass Bob is unmatched. Pre-plucked hairline melted seamlessly.',
+    status: 'featured'
+  },
+  {
+    id: 'rev-2',
+    client: 'Amara O.',
+    productName: 'The Silk Bone Straight 26"',
+    rating: 5,
+    date: '2026-10-21',
+    text: 'Silky smooth bone straight unit. 26 inches with true full density.',
+    status: 'featured'
+  },
+  {
+    id: 'rev-3',
+    client: 'Elena R.',
+    productName: 'The Mulberry Silk Edge Scarf',
+    rating: 5,
+    date: '2026-10-18',
+    text: 'Mulberry silk scarves preserve my lace frontal perfectly every night.',
+    status: 'pending' // Initial status: Awaiting Approval
+  }
+];
 
 // Initial Demo Categories
 const INITIAL_CATEGORIES = [
@@ -331,6 +363,47 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     } catch {}
     return INITIAL_SUBSCRIBERS;
   });
+
+  const [reviews, setReviews] = useState(() => {
+    try {
+      const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return INITIAL_DEMO_REVIEWS;
+  });
+
+  const [reviewStatusFilter, setReviewStatusFilter] = useState('all');
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
+    } catch (e) {
+      console.warn('Failed to save reviews', e);
+    }
+  }, [reviews]);
+
+  const pendingReviewsCount = reviews.filter(r => r.status === 'pending' || r.status === 'awaiting_approval').length;
+  const featuredReviewsCount = reviews.filter(r => r.status === 'featured').length;
+
+  const handleFeatureReview = (id) => {
+    setReviews(prev => prev.map(r => r.id === id ? { ...r, status: 'featured' } : r));
+    triggerToast('✓ Review marked as Featured on site');
+  };
+
+  const handleRemoveReviewFromSite = (id) => {
+    setReviews(prev => prev.map(r => r.id === id ? { ...r, status: 'pending' } : r));
+    triggerToast('Review removed from featured site display (Awaiting approval)');
+  };
+
+  const handleDeleteReview = (id) => {
+    if (window.confirm('Delete this review permanently?')) {
+      setReviews(prev => prev.filter(r => r.id !== id));
+      triggerToast('Review deleted');
+    }
+  };
 
   const [storeSettings, setStoreSettings] = useState(() => {
     try {
@@ -654,6 +727,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     return true;
   });
 
+  const filteredReviews = reviews.filter(r => {
+    if (reviewStatusFilter === 'pending' && r.status !== 'pending' && r.status !== 'awaiting_approval') return false;
+    if (reviewStatusFilter === 'featured' && r.status !== 'featured') return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return (
+        (r.client || '').toLowerCase().includes(q) ||
+        (r.text || '').toLowerCase().includes(q) ||
+        (r.productName || '').toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
+
   if (!isOpen) return null;
 
   return (
@@ -743,6 +830,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onClick={() => setActiveTab('reviews')}
                 >
                   Reviews
+                  {pendingReviewsCount > 0 && (
+                    <span className="adminNavCountBadge" style={{ backgroundColor: '#D97706' }}>
+                      {pendingReviewsCount}
+                    </span>
+                  )}
                 </button>
 
                 <button
@@ -819,7 +911,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               { id: 'products', label: 'Products', icon: Package },
               { id: 'categories', label: 'Categories', icon: Layers },
               { id: 'discounts', label: 'Discounts', icon: Tag, badge: activeDiscountsCount },
-              { id: 'reviews', label: 'Reviews', icon: Star },
+              { id: 'reviews', label: 'Reviews', icon: Star, badge: pendingReviewsCount },
               { id: 'subscribers', label: 'Restock Alerts', icon: BellRing },
               { id: 'settings', label: 'Settings', icon: Settings }
             ].map(item => {
@@ -1569,7 +1661,34 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               <div className="pageHeader">
                 <div className="pageHeaderLeft">
                   <h1 className="pageTitle">Reviews</h1>
-                  <p className="pageSubtitle">Client ratings &amp; verified testimonials.</p>
+                  <p className="pageSubtitle">Moderate client ratings, approve submissions, and manage featured site testimonials.</p>
+                </div>
+              </div>
+
+              {/* Sub-filter tabs */}
+              <div className="toolbar" style={{ marginBottom: '14px' }}>
+                <div className="tabs">
+                  <button
+                    type="button"
+                    className={`tabBtn ${reviewStatusFilter === 'all' ? 'active' : ''}`}
+                    onClick={() => setReviewStatusFilter('all')}
+                  >
+                    All ({reviews.length})
+                  </button>
+                  <button
+                    type="button"
+                    className={`tabBtn ${reviewStatusFilter === 'pending' ? 'active' : ''}`}
+                    onClick={() => setReviewStatusFilter('pending')}
+                  >
+                    Awaiting Approval ({pendingReviewsCount})
+                  </button>
+                  <button
+                    type="button"
+                    className={`tabBtn ${reviewStatusFilter === 'featured' ? 'active' : ''}`}
+                    onClick={() => setReviewStatusFilter('featured')}
+                  >
+                    Featured on Site ({featuredReviewsCount})
+                  </button>
                 </div>
               </div>
 
@@ -1579,35 +1698,98 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     <tr>
                       <th>Rating</th>
                       <th>Client</th>
+                      <th>Product</th>
                       <th>Feedback</th>
                       <th>Date</th>
                       <th>Status</th>
+                      <th style={{ textAlign: 'right' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {[
-                      { id: 'rev-1', client: 'Zara M.', rating: 5, date: '2026-10-23', text: 'The Victoria Glass Bob is unmatched. Pre-plucked hairline melted seamlessly.', verified: true },
-                      { id: 'rev-2', client: 'Amara O.', rating: 5, date: '2026-10-21', text: 'Silky smooth bone straight unit. 26 inches with true full density.', verified: true },
-                      { id: 'rev-3', client: 'Elena R.', rating: 5, date: '2026-10-18', text: 'Mulberry silk scarves preserve my lace frontal perfectly every night.', verified: true }
-                    ].map(rev => (
-                      <tr key={rev.id}>
-                        <td>
-                          <div style={{ display: 'flex', gap: '2px', color: 'var(--color-accent)' }}>
-                            {[...Array(rev.rating)].map((_, i) => (
-                              <Star key={i} size={14} fill="currentColor" />
-                            ))}
-                          </div>
-                        </td>
-                        <td><strong>{rev.client}</strong></td>
-                        <td style={{ fontSize: '0.86rem', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={rev.text}>
-                          "{rev.text.length > 55 ? rev.text.substring(0, 52) + '...' : rev.text}"
-                        </td>
-                        <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{rev.date}</td>
-                        <td><span className="badge inStock">Verified Client</span></td>
-                      </tr>
-                    ))}
+                    {filteredReviews.map(rev => {
+                      const isFeatured = rev.status === 'featured';
+                      return (
+                        <tr key={rev.id}>
+                          <td>
+                            <div style={{ display: 'flex', gap: '2px', color: 'var(--color-accent)' }}>
+                              {[...Array(rev.rating || 5)].map((_, i) => (
+                                <Star key={i} size={14} fill="currentColor" />
+                              ))}
+                            </div>
+                          </td>
+                          <td><strong>{rev.client}</strong></td>
+                          <td>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>
+                              {rev.productName || 'Signature Unit'}
+                            </span>
+                          </td>
+                          <td style={{ fontSize: '0.86rem', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={rev.text}>
+                            "{rev.text.length > 55 ? rev.text.substring(0, 52) + '...' : rev.text}"
+                          </td>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{rev.date}</td>
+                          <td>
+                            {isFeatured ? (
+                              <span className="badge inStock" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <Check size={11} /> Featured
+                              </span>
+                            ) : (
+                              <span className="badge" style={{ backgroundColor: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <Clock size={11} /> Awaiting Approval
+                              </span>
+                            )}
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                              {isFeatured ? (
+                                <button
+                                  type="button"
+                                  className="actionBtn"
+                                  onClick={() => handleRemoveReviewFromSite(rev.id)}
+                                  title="Remove from Site"
+                                  style={{ color: '#DC2626', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #FCA5A5', background: '#FEF2F2' }}
+                                >
+                                  <X size={12} />
+                                  <span>Remove from Site</span>
+                                </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  className="actionBtn"
+                                  onClick={() => handleFeatureReview(rev.id)}
+                                  title="Feature on Site"
+                                  style={{ color: '#15803D', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #86EFAC', background: '#F0FDF4' }}
+                                >
+                                  <Check size={12} />
+                                  <span>Feature on Site</span>
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                className="actionBtn"
+                                onClick={() => handleDeleteReview(rev.id)}
+                                title="Delete Review"
+                              >
+                                <Trash2 size={13} color="#EF4444" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
+
+                {filteredReviews.length === 0 && (
+                  <div className="emptyStateCard">
+                    <Star size={32} color="var(--color-accent)" strokeWidth={1.5} />
+                    <h3 className="emptyStateTitle">No reviews in this view</h3>
+                    <p className="emptyStateSubtitle">
+                      {reviewStatusFilter === 'pending'
+                        ? 'All submitted client reviews have been approved.'
+                        : 'No client reviews found.'}
+                    </p>
+                  </div>
+                )}
               </div>
             </>
           )}
