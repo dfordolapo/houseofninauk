@@ -1772,14 +1772,26 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               )}
                             </td>
                             <td style={{ textAlign: 'right', position: 'relative' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                                {/* 1-Click Lifeline Advance Button */}
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                                {/* Secondary: View Order Details & Slip */}
+                                <button
+                                  type="button"
+                                  className="btnSecondary"
+                                  onClick={() => setViewOrderDetails(order)}
+                                  aria-label={`View details and slip for order ${order.orderNumber}`}
+                                  style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontWeight: 600 }}
+                                >
+                                  <Eye size={12} />
+                                  <span>View</span>
+                                </button>
+
+                                {/* Primary: 1-Click Lifeline Advance Action */}
                                 {order.status === 'confirmed' && (
                                   <button
                                     type="button"
                                     className="btnPrimary"
                                     onClick={() => handleAdvanceLifeline(order.id, 'processing')}
-                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
+                                    style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
                                     aria-label={`Advance order ${order.orderNumber} to processing`}
                                   >
                                     Process
@@ -1794,7 +1806,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                       setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
                                       setIsDispatchModalOpen(true);
                                     }}
-                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
+                                    style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
                                     aria-label={`Ship order ${order.orderNumber}`}
                                   >
                                     Ship
@@ -1803,9 +1815,9 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                 {order.status === 'shipped' && (
                                   <button
                                     type="button"
-                                    className="btnSecondary"
+                                    className="btnPrimary"
                                     onClick={() => handleAdvanceLifeline(order.id, 'delivered')}
-                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
+                                    style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
                                     aria-label={`Mark order ${order.orderNumber} as delivered`}
                                   >
                                     Deliver
@@ -1816,7 +1828,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                     type="button"
                                     className="btnPrimary"
                                     onClick={() => handleOpenRecoveryModal(order)}
-                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px', background: '#D99A83', borderColor: '#C4836B', color: '#16110F', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                                    style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', background: '#D99A83', borderColor: '#C4836B', color: '#16110F', display: 'inline-flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontWeight: 600 }}
                                     aria-label={`Recover abandoned bag for order ${order.orderNumber}`}
                                   >
                                     <RotateCcw size={12} strokeWidth={2.4} />
@@ -1994,6 +2006,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                           </div>
 
                           <div className="adminCardActionGroup">
+                            {/* Secondary: View details and slip */}
+                            <button
+                              type="button"
+                              className="btnSecondary adminCardActionBtn"
+                              title="Lifeline & Slip"
+                              aria-label={`View details and slip for order ${order.orderNumber}`}
+                              onClick={() => setViewOrderDetails(order)}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                            >
+                              <Eye size={13} />
+                              <span>View</span>
+                            </button>
+
+                            {/* Primary: Next lifeline step (when applicable) */}
                             {order.status === 'confirmed' && (
                               <button
                                 type="button"
@@ -2021,15 +2047,12 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                             {order.status === 'shipped' && (
                               <button
                                 type="button"
-                                className="btnSecondary adminCardActionBtn"
+                                className="btnPrimary adminCardActionBtn"
                                 onClick={() => handleAdvanceLifeline(order.id, 'delivered')}
                                 aria-label={`Mark order ${order.orderNumber} as delivered`}
                               >
                                 Deliver
                               </button>
-                            )}
-                            {order.status === 'delivered' && (
-                              <span className="adminCardCompletedBadge">✓ Delivered</span>
                             )}
                             {order.status === 'abandoned' && (
                               <button
@@ -2043,17 +2066,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                 <span>Recover</span>
                               </button>
                             )}
-
-                            {/* View secondary details / slip */}
-                            <button
-                              type="button"
-                              className="btnSecondary adminCardIconBtn"
-                              title="Lifeline & Slip"
-                              aria-label={`View details and slip for order ${order.orderNumber}`}
-                              onClick={() => setViewOrderDetails(order)}
-                            >
-                              <Eye size={15} />
-                            </button>
 
                             {/* More Actions Menu */}
                             <button
@@ -2297,16 +2309,28 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               </span>
                             </td>
                             <td style={{ textAlign: 'right', position: 'relative' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                                {/* Secondary: Edit Product */}
                                 <button
                                   type="button"
                                   className="btnSecondary"
+                                  onClick={() => setEditingProduct({ ...prod })}
+                                  aria-label={`Edit ${prod.name}`}
+                                  style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontWeight: 600 }}
+                                >
+                                  <Edit2 size={12} />
+                                  <span>Edit</span>
+                                </button>
+                                {/* Primary: Notify Drop */}
+                                <button
+                                  type="button"
+                                  className="btnPrimary"
                                   onClick={() => handleTriggerRestockDrop(prod)}
                                   title={`Notify VIP waitlist of restock drop for ${prod.name}`}
-                                  style={{ fontSize: '0.74rem', padding: '4px 8px', minHeight: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                                  style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontWeight: 600 }}
                                   aria-label={`Dispatch restock notification for ${prod.name}`}
                                 >
-                                  <BellRing size={13} />
+                                  <BellRing size={12} />
                                   <span>Notify Drop</span>
                                 </button>
                                 <button
@@ -2452,24 +2476,23 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         </div>
 
                         {/* Bottom: Edit action (Prioritised) & More Menu */}
-                        <div className="adminMobileCardFooter">
+                        <div className="adminMobileCardFooter adminDiscountCardFooter">
                           <button
                             type="button"
-                            className="btnSecondary adminProductEditBtn"
+                            className="btnSecondary adminDiscountBtn"
                             onClick={() => setEditingProduct({ ...prod })}
                             aria-label={`Edit ${prod.name}`}
                           >
-                            <Edit2 size={14} />
+                            <Edit2 size={13} />
                             <span>Edit</span>
                           </button>
 
                           <button
                             type="button"
-                            className="btnSecondary adminProductEditBtn"
+                            className="btnPrimary adminDiscountBtn"
                             onClick={() => handleTriggerRestockDrop(prod)}
                             title="Dispatch VIP restock drop notification"
                             aria-label={`Dispatch VIP restock drop alert for ${prod.name}`}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                           >
                             <BellRing size={13} />
                             <span>Notify Drop</span>
@@ -3158,37 +3181,39 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         </p>
                       </div>
 
-                      <div className="adminMobileCardFooter" style={{ paddingTop: '8px' }}>
+                      <div className="adminMobileCardFooter adminDiscountCardFooter" style={{ paddingTop: '8px' }}>
+                        <button
+                          type="button"
+                          className="btnSecondary adminDiscountBtn"
+                          onClick={() => setEditingReview({ ...rev })}
+                          aria-label={`Edit review from ${rev.client}`}
+                        >
+                          <Edit2 size={13} />
+                          <span>Edit</span>
+                        </button>
+
                         {isFeatured ? (
                           <button
                             type="button"
-                            className="btnSecondary adminProductEditBtn"
+                            className="btnPrimary adminDiscountBtn"
                             onClick={() => handleRemoveReviewFromSite(rev.id)}
                             aria-label={`Remove review by ${rev.client} from site`}
+                            style={{ background: '#7F1D1D', borderColor: '#7F1D1D' }}
                           >
-                            <X size={14} color="#DC2626" />
-                            <span>Remove from Site</span>
+                            <X size={13} color="#FFFFFF" />
+                            <span>Remove</span>
                           </button>
                         ) : (
                           <button
                             type="button"
-                            className="btnPrimary adminProductEditBtn"
+                            className="btnPrimary adminDiscountBtn"
                             onClick={() => handleFeatureReview(rev.id)}
                             aria-label={`Feature review by ${rev.client} on site`}
                           >
-                            <Check size={14} />
-                            <span>Feature on Site</span>
+                            <Check size={13} />
+                            <span>Feature</span>
                           </button>
                         )}
-                        <button
-                          type="button"
-                          className="btnSecondary adminProductEditBtn"
-                          onClick={() => setEditingReview({ ...rev })}
-                          aria-label={`Edit review from ${rev.client}`}
-                        >
-                          <Edit2 size={14} />
-                          <span>Edit Review</span>
-                        </button>
                       </div>
                     </div>
                   );
@@ -3544,11 +3569,31 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                 </span>
                               </td>
                               <td style={{ textAlign: 'right', position: 'relative' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                                  <button
+                                    type="button"
+                                    className="btnSecondary"
+                                    onClick={() => setEditingShippingRate({ ...rate })}
+                                    aria-label={`Edit shipping rate ${rate.name}`}
+                                    style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontWeight: 600 }}
+                                  >
+                                    <Edit2 size={12} />
+                                    <span>Edit</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btnPrimary"
+                                    onClick={() => handleToggleShippingRateStatus(rate.id)}
+                                    aria-label={`${rate.status === 'active' ? 'Pause' : 'Activate'} ${rate.name}`}
+                                    style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
+                                  >
+                                    <span>{rate.status === 'active' ? 'Pause' : 'Activate'}</span>
+                                  </button>
                                   <button
                                     type="button"
                                     className="kebabTriggerBtn"
                                     title="Shipping Rate Actions"
+                                    aria-label={`Shipping rate actions for ${rate.name}`}
                                     onClick={(e) => toggleKebab(e, `ship-${rate.id}`, idx >= Math.max(0, shippingRates.length - 2))}
                                   >
                                     <MoreVertical size={16} />
@@ -3654,27 +3699,25 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                           </div>
                         </div>
 
-                        <div className="adminMobileCardFooter">
-                          <div className="adminCardActionGroup" style={{ flexWrap: 'wrap', gap: '8px' }}>
-                            <button
-                              type="button"
-                              className="btnSecondary adminProductEditBtn"
-                              onClick={() => setEditingShippingRate({ ...rate })}
-                              aria-label={`Edit shipping rate ${rate.name}`}
-                            >
-                              <Edit2 size={14} />
-                              <span>Edit</span>
-                            </button>
-                            <button
-                              type="button"
-                              className="btnSecondary adminCardActionBtn"
-                              onClick={() => handleToggleShippingRateStatus(rate.id)}
-                              aria-label={`${rate.status === 'active' ? 'Pause' : 'Activate'} ${rate.name}`}
-                            >
-                              <Truck size={14} />
-                              <span>{rate.status === 'active' ? 'Pause' : 'Activate'}</span>
-                            </button>
-                          </div>
+                        <div className="adminMobileCardFooter adminDiscountCardFooter">
+                          <button
+                            type="button"
+                            className="btnSecondary adminDiscountBtn"
+                            onClick={() => setEditingShippingRate({ ...rate })}
+                            aria-label={`Edit shipping rate ${rate.name}`}
+                          >
+                            <Edit2 size={13} />
+                            <span>Edit</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="btnPrimary adminDiscountBtn"
+                            onClick={() => handleToggleShippingRateStatus(rate.id)}
+                            aria-label={`${rate.status === 'active' ? 'Pause' : 'Activate'} ${rate.name}`}
+                          >
+                            <span>{rate.status === 'active' ? 'Pause' : 'Activate'}</span>
+                          </button>
 
                           <button
                             type="button"
