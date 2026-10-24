@@ -69,6 +69,15 @@
   outline-offset: 2px;
 }
 
+/* Compact, smaller font sizes for all admin inputs, selects, and textareas */
+.adminPortalRoot input,
+.adminPortalRoot select,
+.adminPortalRoot textarea {
+  font-size: 0.80rem !important;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
 /* ═══════════════════════════════════════════════════════════
    TOP NAVIGATION (FIXED — NEVER MOVES ON SCROLL)
    Same floating pill shape, 9999px corner radius, and subtle shadow
@@ -1706,9 +1715,105 @@
     border-radius: 9999px;
   }
 
+  /* Header layout on mobile: Stack left & actions so buttons never get cut off */
   .pageHeader {
-    margin-bottom: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+
+  .pageHeaderLeft {
+    width: 100% !important;
+  }
+
+  .pageHeaderActions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
     gap: 6px !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+    flex-shrink: 1 !important;
+  }
+
+  .pageHeaderActions .btnPrimary,
+  .pageHeaderActions .btnSecondary {
+    font-size: 0.72rem !important;
+    padding: 6px 10px !important;
+    min-height: 28px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* All mobile input fields: much smaller font sizes and tight padding */
+  .adminPortalRoot input,
+  .adminPortalRoot select,
+  .adminPortalRoot textarea {
+    font-size: 0.74rem !important;
+    padding: 6px 9px !important;
+    border-radius: 6px !important;
+    min-height: 30px !important;
+    box-sizing: border-box !important;
+  }
+
+  .adminPortalRoot label {
+    font-size: 0.68rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .searchBar {
+    width: 100% !important;
+    height: 32px !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+  }
+
+  .searchInput {
+    font-size: 0.72rem !important;
+  }
+
+  /* Ensure buttons across all mobile cards and footers never cut off */
+  .btnPrimary,
+  .btnSecondary,
+  .actionBtn,
+  .adminCardActionBtn,
+  .adminProductEditBtn,
+  .modalBtnSubmit,
+  .modalBtnCancel {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .adminMobileCardFooter {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .adminCardActionGroup {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 4px !important;
+    flex: 1 !important;
+  }
+
+  .adminProductCardControlsRow {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    width: 100% !important;
   }
 
   .pageTitle {

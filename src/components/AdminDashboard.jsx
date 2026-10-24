@@ -3633,24 +3633,24 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleCreateProduct} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Product Title</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Product Title</label>
                 <input 
                   type="text" 
                   value={productForm.name}
                   onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                   placeholder="e.g. The Chelsea Raw Straight 30''"
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div className="adminFormRowGrid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Category</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Category</label>
                   <select 
                     value={productForm.categoryName}
                     onChange={(e) => setProductForm({ ...productForm, categoryName: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     {categories.map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -3658,36 +3658,36 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Price (£ GBP)</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Price (£ GBP)</label>
                   <input 
                     type="number" 
                     value={productForm.price}
                     onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
                     placeholder="280"
                     required
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
 
               <div className="adminFormRowGrid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Stock Quantity</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Stock Quantity</label>
                   <input 
                     type="number" 
                     value={productForm.stockCount}
                     onChange={(e) => setProductForm({ ...productForm, stockCount: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Image URL</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Image URL</label>
                   <input 
                     type="url" 
                     value={productForm.image}
                     onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
                     placeholder="https://..."
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
@@ -3715,23 +3715,23 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleUpdateProduct} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Product Title</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Product Title</label>
                 <input 
                   type="text" 
                   value={editingProduct.name}
                   onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div className="adminFormRowGrid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Category</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Category</label>
                   <select 
                     value={editingProduct.categoryName}
                     onChange={(e) => setEditingProduct({ ...editingProduct, categoryName: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     {categories.map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -3739,34 +3739,34 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Price (£ GBP)</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Price (£ GBP)</label>
                   <input 
                     type="number" 
                     value={editingProduct.price}
                     onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
                     required
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
 
               <div className="adminFormRowGrid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Stock Quantity</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Stock Quantity</label>
                   <input 
                     type="number" 
                     value={editingProduct.stockCount}
                     onChange={(e) => setEditingProduct({ ...editingProduct, stockCount: parseInt(e.target.value) || 0 })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Image URL</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Image URL</label>
                   <input 
                     type="url" 
                     value={editingProduct.image}
                     onChange={(e) => setEditingProduct({ ...editingProduct, image: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
@@ -3794,7 +3794,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={editingCategory ? handleUpdateCategory : handleCreateCategory} style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Category Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Category Name</label>
                 <input 
                   type="text" 
                   value={categoryInputName}
@@ -3802,7 +3802,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   placeholder="e.g. Silk Styling Care"
                   required
                   autoFocus
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
@@ -3829,7 +3829,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleCreateDiscount} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Discount Code</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Discount Code</label>
                 <input 
                   type="text" 
                   value={discountForm.code}
@@ -3842,48 +3842,48 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Type</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Type</label>
                   <select 
                     value={discountForm.type}
                     onChange={(e) => setDiscountForm({ ...discountForm, type: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="percentage">% Percentage Off</option>
                     <option value="fixed">£ Fixed Amount Off</option>
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Value ({discountForm.type === 'percentage' ? '%' : '£'})</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Value ({discountForm.type === 'percentage' ? '%' : '£'})</label>
                   <input 
                     type="number" 
                     value={discountForm.value}
                     onChange={(e) => setDiscountForm({ ...discountForm, value: e.target.value })}
                     placeholder="15"
                     required
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Min Spend (£)</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Min Spend (£)</label>
                   <input 
                     type="number" 
                     value={discountForm.minSpend}
                     onChange={(e) => setDiscountForm({ ...discountForm, minSpend: e.target.value })}
                     placeholder="100"
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Max Uses</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Max Uses</label>
                   <input 
                     type="number" 
                     value={discountForm.maxUses}
                     onChange={(e) => setDiscountForm({ ...discountForm, maxUses: e.target.value })}
                     placeholder="100"
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
@@ -3911,7 +3911,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleUpdateDiscount} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Code</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Code</label>
                 <input 
                   type="text" 
                   value={editingDiscount.code}
@@ -3923,42 +3923,42 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Value ({editingDiscount.type === 'percentage' ? '%' : '£'})</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Value ({editingDiscount.type === 'percentage' ? '%' : '£'})</label>
                   <input 
                     type="number" 
                     value={editingDiscount.value}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, value: parseFloat(e.target.value) || 0 })}
                     required
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Min Spend (£)</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Min Spend (£)</label>
                   <input 
                     type="number" 
                     value={editingDiscount.minSpend}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, minSpend: parseFloat(e.target.value) || 0 })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Max Uses</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Max Uses</label>
                   <input 
                     type="number" 
                     value={editingDiscount.maxUses}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, maxUses: parseInt(e.target.value) || 100 })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Status</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Status</label>
                   <select 
                     value={editingDiscount.status}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, status: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="active">Active (Visible in Cart)</option>
                     <option value="paused">Paused</option>
@@ -3989,11 +3989,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left', marginBottom: '18px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Courier Partner</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Courier Partner</label>
                 <select 
                   value={dispatchCourier}
                   onChange={(e) => setDispatchCourier(e.target.value)}
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 >
                   <option value="Royal Mail Special Delivery">Royal Mail Special Delivery Guaranteed</option>
                   <option value="Royal Mail 24 Tracked">Royal Mail 24 Tracked</option>
@@ -4003,13 +4003,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Tracking Number</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Tracking Number</label>
                 <input 
                   type="text" 
                   value={dispatchTrackingNum}
                   onChange={(e) => setDispatchTrackingNum(e.target.value)}
                   placeholder="e.g. RM-77219481-GB"
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem', fontFamily: 'monospace' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem', fontFamily: 'monospace' }}
                 />
               </div>
             </div>
@@ -4049,7 +4049,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
             <form onSubmit={handleSaveOrderEdit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div className="adminFormRowGrid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Recipient Name</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Recipient Name</label>
                   <input 
                     type="text" 
                     value={editingOrder.customer.fullName}
@@ -4059,7 +4059,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Phone Number</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Phone Number</label>
                   <input 
                     type="text" 
                     value={editingOrder.customer.phone}
@@ -4070,7 +4070,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Email Address</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Email Address</label>
                 <input 
                   type="email" 
                   value={editingOrder.customer.email}
@@ -4081,7 +4081,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Street Address</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Street Address</label>
                 <input 
                   type="text" 
                   value={editingOrder.customer.address}
@@ -4092,7 +4092,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="adminFormRowGrid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>City</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>City</label>
                   <input 
                     type="text" 
                     value={editingOrder.customer.city}
@@ -4101,7 +4101,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Postal Code</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Postal Code</label>
                   <input 
                     type="text" 
                     value={editingOrder.customer.postalCode}
@@ -4113,7 +4113,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div className="adminFormRowGrid">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Lifeline Status</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Lifeline Status</label>
                   <select 
                     value={editingOrder.status}
                     onChange={(e) => setEditingOrder({ ...editingOrder, status: e.target.value })}
@@ -4127,7 +4127,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Tracking Number</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Tracking Number</label>
                   <input 
                     type="text" 
                     value={editingOrder.trackingNumber || ''}
@@ -4314,24 +4314,24 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleCreateReview} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Client Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Client Name</label>
                 <input 
                   type="text" 
                   value={reviewForm.client}
                   onChange={(e) => setReviewForm({ ...reviewForm, client: e.target.value })}
                   placeholder="e.g. Amara O."
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Product Reviewed</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Product Reviewed</label>
                   <select 
                     value={reviewForm.productName}
                     onChange={(e) => setReviewForm({ ...reviewForm, productName: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     {products.map(p => (
                       <option key={p.id} value={p.name}>{p.name}</option>
@@ -4340,11 +4340,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Star Rating</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Star Rating</label>
                   <select 
                     value={reviewForm.rating}
                     onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value={5}>★★★★★ (5 Stars)</option>
                     <option value={4}>★★★★☆ (4 Stars)</option>
@@ -4357,20 +4357,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Date</label>
                   <input 
                     type="date" 
                     value={reviewForm.date}
                     onChange={(e) => setReviewForm({ ...reviewForm, date: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Display Status</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Display Status</label>
                   <select 
                     value={reviewForm.status}
                     onChange={(e) => setReviewForm({ ...reviewForm, status: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="featured">Featured on Site</option>
                     <option value="pending">Awaiting Approval</option>
@@ -4379,14 +4379,14 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Review Feedback</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Review Feedback</label>
                 <textarea 
                   rows={3}
                   value={reviewForm.text}
                   onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
                   placeholder="Client comments and review feedback..."
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
@@ -4415,23 +4415,23 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleUpdateReview} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Client Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Client Name</label>
                 <input 
                   type="text" 
                   value={editingReview.client}
                   onChange={(e) => setEditingReview({ ...editingReview, client: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Product Reviewed</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Product Reviewed</label>
                   <select 
                     value={editingReview.productName}
                     onChange={(e) => setEditingReview({ ...editingReview, productName: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     {products.map(p => (
                       <option key={p.id} value={p.name}>{p.name}</option>
@@ -4440,11 +4440,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Star Rating</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Star Rating</label>
                   <select 
                     value={editingReview.rating}
                     onChange={(e) => setEditingReview({ ...editingReview, rating: Number(e.target.value) })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value={5}>★★★★★ (5 Stars)</option>
                     <option value={4}>★★★★☆ (4 Stars)</option>
@@ -4457,20 +4457,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Date</label>
                   <input 
                     type="date" 
                     value={editingReview.date}
                     onChange={(e) => setEditingReview({ ...editingReview, date: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Display Status</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Display Status</label>
                   <select 
                     value={editingReview.status}
                     onChange={(e) => setEditingReview({ ...editingReview, status: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="featured">Featured on Site</option>
                     <option value="pending">Awaiting Approval</option>
@@ -4479,13 +4479,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Review Feedback</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Review Feedback</label>
                 <textarea 
                   rows={3}
                   value={editingReview.text}
                   onChange={(e) => setEditingReview({ ...editingReview, text: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
@@ -4514,20 +4514,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleCreateShippingRate} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Courier / Service Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Courier / Service Name</label>
                 <input 
                   type="text" 
                   value={shippingRateForm.name}
                   onChange={(e) => setShippingRateForm({ ...shippingRateForm, name: e.target.value })}
                   placeholder="e.g. Royal Mail Tracked 24"
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Rate (£ GBP)</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Rate (£ GBP)</label>
                   <input 
                     type="number" 
                     step="0.01"
@@ -4535,15 +4535,15 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     onChange={(e) => setShippingRateForm({ ...shippingRateForm, price: e.target.value })}
                     placeholder="7.50"
                     required
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Status</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Status</label>
                   <select 
                     value={shippingRateForm.status}
                     onChange={(e) => setShippingRateForm({ ...shippingRateForm, status: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="active">Active</option>
                     <option value="paused">Paused</option>
@@ -4552,14 +4552,14 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Estimated Delivery Timeframe</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Estimated Delivery Timeframe</label>
                 <input 
                   type="text" 
                   value={shippingRateForm.estimatedDays}
                   onChange={(e) => setShippingRateForm({ ...shippingRateForm, estimatedDays: e.target.value })}
                   placeholder="e.g. Next business day or 2-3 business days"
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
@@ -4588,34 +4588,34 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleUpdateShippingRate} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Courier / Service Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Courier / Service Name</label>
                 <input 
                   type="text" 
                   value={editingShippingRate.name}
                   onChange={(e) => setEditingShippingRate({ ...editingShippingRate, name: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Rate (£ GBP)</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Rate (£ GBP)</label>
                   <input 
                     type="number" 
                     step="0.01"
                     value={editingShippingRate.price}
                     onChange={(e) => setEditingShippingRate({ ...editingShippingRate, price: parseFloat(e.target.value) || 0 })}
                     required
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Status</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Status</label>
                   <select 
                     value={editingShippingRate.status}
                     onChange={(e) => setEditingShippingRate({ ...editingShippingRate, status: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="active">Active</option>
                     <option value="paused">Paused</option>
@@ -4624,13 +4624,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Estimated Delivery Timeframe</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Estimated Delivery Timeframe</label>
                 <input 
                   type="text" 
                   value={editingShippingRate.estimatedDays}
                   onChange={(e) => setEditingShippingRate({ ...editingShippingRate, estimatedDays: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
@@ -4659,36 +4659,36 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleCreateSubscriber} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Full Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Full Name</label>
                 <input 
                   type="text" 
                   value={subscriberForm.name}
                   onChange={(e) => setSubscriberForm({ ...subscriberForm, name: e.target.value })}
                   placeholder="e.g. Zainab Al-Mansoor"
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Email Address</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Email Address</label>
                 <input 
                   type="email" 
                   value={subscriberForm.email}
                   onChange={(e) => setSubscriberForm({ ...subscriberForm, email: e.target.value })}
                   placeholder="e.g. client@example.co.uk"
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>List / Drop Type</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>List / Drop Type</label>
                   <select 
                     value={subscriberForm.type}
                     onChange={(e) => setSubscriberForm({ ...subscriberForm, type: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="VIP Restock Drop">VIP Restock Drop</option>
                     <option value="The Silk Bone Straight 26&quot; Waitlist">The Silk Bone Straight 26" Waitlist</option>
@@ -4698,12 +4698,12 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date Enrolled</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Date Enrolled</label>
                   <input 
                     type="date" 
                     value={subscriberForm.date}
                     onChange={(e) => setSubscriberForm({ ...subscriberForm, date: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
@@ -4733,34 +4733,34 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
             <form onSubmit={handleUpdateSubscriber} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Full Name</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Full Name</label>
                 <input 
                   type="text" 
                   value={editingSubscriber.name}
                   onChange={(e) => setEditingSubscriber({ ...editingSubscriber, name: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Email Address</label>
+                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Email Address</label>
                 <input 
                   type="email" 
                   value={editingSubscriber.email}
                   onChange={(e) => setEditingSubscriber({ ...editingSubscriber, email: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>List / Drop Type</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>List / Drop Type</label>
                   <select 
                     value={editingSubscriber.type}
                     onChange={(e) => setEditingSubscriber({ ...editingSubscriber, type: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   >
                     <option value="VIP Restock Drop">VIP Restock Drop</option>
                     <option value="The Silk Bone Straight 26&quot; Waitlist">The Silk Bone Straight 26" Waitlist</option>
@@ -4770,12 +4770,12 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Date Enrolled</label>
+                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Date Enrolled</label>
                   <input 
                     type="date" 
                     value={editingSubscriber.date}
                     onChange={(e) => setEditingSubscriber({ ...editingSubscriber, date: e.target.value })}
-                    style={{ width: '100%', padding: '9px 12px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '0.88rem' }}
+                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
                   />
                 </div>
               </div>
