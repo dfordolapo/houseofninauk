@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { 
   LayoutDashboard, ShoppingBag, Package, Star, Settings, 
-  LogOut, ChevronDown, Menu, X, BellRing, Search, 
+  LogOut, ChevronDown, ChevronLeft, ChevronRight, Menu, X, BellRing, Search, 
   Plus, Trash2, Edit2, Truck, CheckCircle2, Printer, Download, 
   Tag, Calendar, TrendingUp, MoreVertical, Store, ArrowRight,
   Layers, Check, Clock, Eye, RotateCcw, Copy, MessageCircle, Mail
@@ -338,6 +338,74 @@ const INITIAL_SUBSCRIBERS = [
   { id: 'sub-4', email: 'zainab.mansoor@al-dubai.ae', name: 'Zainab Al-Mansoor', type: 'Restock Alert', date: '2026-10-20' },
   { id: 'sub-5', email: 'elena.rostova@geneva.ch', name: 'Elena Rostova', type: 'Newsletter', date: '2026-10-19' }
 ];
+
+// ═════════════════════════════════════════════════════════════
+// SCROLLABLE TABS COMPONENT WITH DYNAMIC CHEVRONS & FADE
+// ═════════════════════════════════════════════════════════════
+function ScrollableTabs({ children, className = '' }) {
+  const scrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const hasOverflow = el.scrollWidth > el.clientWidth + 2;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(hasOverflow && el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const timer = setTimeout(checkScroll, 100);
+    window.addEventListener('resize', checkScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, [children]);
+
+  const handleScrollBy = (distance) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: distance, behavior: 'smooth' });
+      setTimeout(checkScroll, 250);
+    }
+  };
+
+  return (
+    <div className={`tabsScrollWrapper ${canScrollLeft ? 'hasLeftOverflow' : ''} ${canScrollRight ? 'hasRightOverflow' : ''}`}>
+      {canScrollLeft && (
+        <button
+          type="button"
+          className="tabChevronBtn tabChevronLeft"
+          onClick={() => handleScrollBy(-130)}
+          aria-label="Scroll tabs left"
+        >
+          <ChevronLeft size={13} strokeWidth={2.4} />
+        </button>
+      )}
+
+      <div
+        ref={scrollRef}
+        className={`tabs ${className}`}
+        onScroll={checkScroll}
+      >
+        {children}
+      </div>
+
+      {canScrollRight && (
+        <button
+          type="button"
+          className="tabChevronBtn tabChevronRight"
+          onClick={() => handleScrollBy(130)}
+          aria-label="Scroll tabs right"
+        >
+          <ChevronRight size={13} strokeWidth={2.4} />
+        </button>
+      )}
+    </div>
+  );
+}
 
 export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }) {
   // Navigation Tabs: dashboard | orders | products | categories | discounts | reviews | subscribers | settings
@@ -1468,7 +1536,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               type="button"
                               className="btnPrimary"
                               onClick={() => handleAdvanceLifeline(o.id, 'processing')}
-                              style={{ fontSize: '0.78rem', padding: '5px 10px', minHeight: '30px' }}
+                              style={{ fontSize: '0.68rem', padding: '5px 10px', minHeight: '30px' }}
                               aria-label={`Advance order ${o.orderNumber} to processing`}
                             >
                               Process
@@ -1483,7 +1551,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                 setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
                                 setIsDispatchModalOpen(true);
                               }}
-                              style={{ fontSize: '0.78rem', padding: '5px 10px', minHeight: '30px' }}
+                              style={{ fontSize: '0.68rem', padding: '5px 10px', minHeight: '30px' }}
                               aria-label={`Ship order ${o.orderNumber}`}
                             >
                               Ship...
@@ -1494,7 +1562,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               type="button"
                               className="btnSecondary"
                               onClick={() => handleAdvanceLifeline(o.id, 'delivered')}
-                              style={{ fontSize: '0.78rem', padding: '5px 10px' }}
+                              style={{ fontSize: '0.68rem', padding: '5px 10px' }}
                               aria-label={`Mark order ${o.orderNumber} as delivered`}
                             >
                               Deliver
@@ -1603,14 +1671,14 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               {/* Order Lifeline Tabs */}
               <div className="toolbar">
-                <div className="tabs">
+                <ScrollableTabs>
                   {[
-                    { id: 'all', label: 'All Orders' },
-                    { id: 'confirmed', label: 'Confirmed' },
-                    { id: 'processing', label: 'Processing' },
-                    { id: 'shipped', label: 'Shipped' },
-                    { id: 'delivered', label: 'Delivered' },
-                    { id: 'abandoned', label: `Abandoned (${orders.filter(o => o.status === 'abandoned').length})` }
+                    { id: 'all', label: 'All Orders', mobileLabel: `All (${orders.length})` },
+                    { id: 'confirmed', label: 'Confirmed', mobileLabel: 'Confirmed' },
+                    { id: 'processing', label: 'Processing', mobileLabel: 'Processing' },
+                    { id: 'shipped', label: 'Shipped', mobileLabel: 'Shipped' },
+                    { id: 'delivered', label: 'Delivered', mobileLabel: 'Delivered' },
+                    { id: 'abandoned', label: `Abandoned (${orders.filter(o => o.status === 'abandoned').length})`, mobileLabel: `Abandoned (${orders.filter(o => o.status === 'abandoned').length})` }
                   ].map(tab => (
                     <button
                       key={tab.id}
@@ -1618,10 +1686,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       className={`tabBtn ${ordersStatusFilter === tab.id ? 'active' : ''}`}
                       onClick={() => setOrdersStatusFilter(tab.id)}
                     >
-                      {tab.label}
+                      <span className="desktopTabLabel">{tab.label}</span>
+                      <span className="mobileTabLabel">{tab.mobileLabel}</span>
                     </button>
                   ))}
-                </div>
+                </ScrollableTabs>
 
                 <div className="searchBar">
                   <Search size={15} color="var(--color-text-secondary)" />
@@ -1693,7 +1762,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                             </td>
                             <td>
                               {order.trackingNumber ? (
-                                <span style={{ fontSize: '0.78rem', fontFamily: 'monospace', fontWeight: 600 }}>
+                                <span style={{ fontSize: '0.68rem', fontFamily: 'monospace', fontWeight: 600 }}>
                                   {order.trackingNumber}
                                 </span>
                               ) : (
@@ -2849,7 +2918,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
               {/* Sub-filter tabs */}
               <div className="toolbar" style={{ marginBottom: '14px' }}>
-                <div className="tabs">
+                <ScrollableTabs>
                   <button
                     type="button"
                     className={`tabBtn ${reviewStatusFilter === 'all' ? 'active' : ''}`}
@@ -2862,16 +2931,18 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     className={`tabBtn ${reviewStatusFilter === 'pending' ? 'active' : ''}`}
                     onClick={() => setReviewStatusFilter('pending')}
                   >
-                    Awaiting Approval ({pendingReviewsCount})
+                    <span className="desktopTabLabel">Awaiting Approval ({pendingReviewsCount})</span>
+                    <span className="mobileTabLabel">Pending ({pendingReviewsCount})</span>
                   </button>
                   <button
                     type="button"
                     className={`tabBtn ${reviewStatusFilter === 'featured' ? 'active' : ''}`}
                     onClick={() => setReviewStatusFilter('featured')}
                   >
-                    Featured on Site ({featuredReviewsCount})
+                    <span className="desktopTabLabel">Featured on Site ({featuredReviewsCount})</span>
+                    <span className="mobileTabLabel">Featured ({featuredReviewsCount})</span>
                   </button>
-                </div>
+                </ScrollableTabs>
               </div>
 
               {/* Desktop Wide Table View */}
@@ -3335,7 +3406,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Store Name</label>
+                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Store Name</label>
                       <input 
                         type="text" 
                         value={storeSettings.storeName}
@@ -3345,7 +3416,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Headquarters Address</label>
+                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Headquarters Address</label>
                       <input 
                         type="text" 
                         value={storeSettings.headquarters}
@@ -3355,7 +3426,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Support Email</label>
+                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Support Email</label>
                       <input 
                         type="email" 
                         value={storeSettings.supportEmail}
@@ -3365,7 +3436,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>WhatsApp Concierge Hotline</label>
+                      <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>WhatsApp Concierge Hotline</label>
                       <input 
                         type="text" 
                         value={storeSettings.hotline}
@@ -3405,7 +3476,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </div>
 
                   <div style={{ maxWidth: '320px', marginBottom: '18px' }}>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '4px' }}>Free Shipping Threshold (£ GBP)</label>
+                    <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 600, marginBottom: '4px' }}>Free Shipping Threshold (£ GBP)</label>
                     <input 
                       type="number" 
                       value={storeSettings.freeShippingThreshold}
@@ -3640,7 +3711,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                   placeholder="e.g. The Chelsea Raw Straight 30''"
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -3650,7 +3721,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={productForm.categoryName}
                     onChange={(e) => setProductForm({ ...productForm, categoryName: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     {categories.map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -3665,7 +3736,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
                     placeholder="280"
                     required
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -3677,7 +3748,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="number" 
                     value={productForm.stockCount}
                     onChange={(e) => setProductForm({ ...productForm, stockCount: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -3687,7 +3758,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     value={productForm.image}
                     onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
                     placeholder="https://..."
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -3721,7 +3792,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={editingProduct.name}
                   onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -3731,7 +3802,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={editingProduct.categoryName}
                     onChange={(e) => setEditingProduct({ ...editingProduct, categoryName: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     {categories.map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -3745,7 +3816,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     value={editingProduct.price}
                     onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
                     required
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -3757,7 +3828,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="number" 
                     value={editingProduct.stockCount}
                     onChange={(e) => setEditingProduct({ ...editingProduct, stockCount: parseInt(e.target.value) || 0 })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -3766,7 +3837,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="url" 
                     value={editingProduct.image}
                     onChange={(e) => setEditingProduct({ ...editingProduct, image: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -3802,7 +3873,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   placeholder="e.g. Silk Styling Care"
                   required
                   autoFocus
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -3846,7 +3917,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={discountForm.type}
                     onChange={(e) => setDiscountForm({ ...discountForm, type: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="percentage">% Percentage Off</option>
                     <option value="fixed">£ Fixed Amount Off</option>
@@ -3860,7 +3931,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     onChange={(e) => setDiscountForm({ ...discountForm, value: e.target.value })}
                     placeholder="15"
                     required
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -3873,7 +3944,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     value={discountForm.minSpend}
                     onChange={(e) => setDiscountForm({ ...discountForm, minSpend: e.target.value })}
                     placeholder="100"
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -3883,7 +3954,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     value={discountForm.maxUses}
                     onChange={(e) => setDiscountForm({ ...discountForm, maxUses: e.target.value })}
                     placeholder="100"
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -3929,7 +4000,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     value={editingDiscount.value}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, value: parseFloat(e.target.value) || 0 })}
                     required
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -3938,7 +4009,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="number" 
                     value={editingDiscount.minSpend}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, minSpend: parseFloat(e.target.value) || 0 })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -3950,7 +4021,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="number" 
                     value={editingDiscount.maxUses}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, maxUses: parseInt(e.target.value) || 100 })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -3958,7 +4029,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={editingDiscount.status}
                     onChange={(e) => setEditingDiscount({ ...editingDiscount, status: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="active">Active (Visible in Cart)</option>
                     <option value="paused">Paused</option>
@@ -3993,7 +4064,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 <select 
                   value={dispatchCourier}
                   onChange={(e) => setDispatchCourier(e.target.value)}
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 >
                   <option value="Royal Mail Special Delivery">Royal Mail Special Delivery Guaranteed</option>
                   <option value="Royal Mail 24 Tracked">Royal Mail 24 Tracked</option>
@@ -4009,7 +4080,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={dispatchTrackingNum}
                   onChange={(e) => setDispatchTrackingNum(e.target.value)}
                   placeholder="e.g. RM-77219481-GB"
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem', fontFamily: 'monospace' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem', fontFamily: 'monospace' }}
                 />
               </div>
             </div>
@@ -4158,7 +4229,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <div>
                 <h2 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.3rem' }}>{viewOrderDetails.orderNumber}</h2>
-                <span style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)' }}>
+                <span style={{ fontSize: '0.68rem', color: 'var(--color-text-secondary)' }}>
                   Placed on {new Date(viewOrderDetails.createdAt).toLocaleString('en-GB')}
                 </span>
               </div>
@@ -4166,7 +4237,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 type="button"
                 className="btnPrimary"
                 onClick={() => window.print()}
-                style={{ fontSize: '0.78rem', padding: '6px 12px', minHeight: '34px' }}
+                style={{ fontSize: '0.68rem', padding: '6px 12px', minHeight: '34px' }}
                 aria-label={`Print packing slip for order ${viewOrderDetails.orderNumber}`}
               >
                 <Printer size={13} />
@@ -4321,7 +4392,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onChange={(e) => setReviewForm({ ...reviewForm, client: e.target.value })}
                   placeholder="e.g. Amara O."
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4331,7 +4402,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={reviewForm.productName}
                     onChange={(e) => setReviewForm({ ...reviewForm, productName: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     {products.map(p => (
                       <option key={p.id} value={p.name}>{p.name}</option>
@@ -4344,7 +4415,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={reviewForm.rating}
                     onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value={5}>★★★★★ (5 Stars)</option>
                     <option value={4}>★★★★☆ (4 Stars)</option>
@@ -4362,7 +4433,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="date" 
                     value={reviewForm.date}
                     onChange={(e) => setReviewForm({ ...reviewForm, date: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -4370,7 +4441,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={reviewForm.status}
                     onChange={(e) => setReviewForm({ ...reviewForm, status: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="featured">Featured on Site</option>
                     <option value="pending">Awaiting Approval</option>
@@ -4386,7 +4457,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
                   placeholder="Client comments and review feedback..."
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4421,7 +4492,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={editingReview.client}
                   onChange={(e) => setEditingReview({ ...editingReview, client: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4431,7 +4502,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={editingReview.productName}
                     onChange={(e) => setEditingReview({ ...editingReview, productName: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     {products.map(p => (
                       <option key={p.id} value={p.name}>{p.name}</option>
@@ -4444,7 +4515,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={editingReview.rating}
                     onChange={(e) => setEditingReview({ ...editingReview, rating: Number(e.target.value) })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value={5}>★★★★★ (5 Stars)</option>
                     <option value={4}>★★★★☆ (4 Stars)</option>
@@ -4462,7 +4533,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="date" 
                     value={editingReview.date}
                     onChange={(e) => setEditingReview({ ...editingReview, date: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -4470,7 +4541,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={editingReview.status}
                     onChange={(e) => setEditingReview({ ...editingReview, status: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="featured">Featured on Site</option>
                     <option value="pending">Awaiting Approval</option>
@@ -4485,7 +4556,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={editingReview.text}
                   onChange={(e) => setEditingReview({ ...editingReview, text: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4521,7 +4592,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onChange={(e) => setShippingRateForm({ ...shippingRateForm, name: e.target.value })}
                   placeholder="e.g. Royal Mail Tracked 24"
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4535,7 +4606,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     onChange={(e) => setShippingRateForm({ ...shippingRateForm, price: e.target.value })}
                     placeholder="7.50"
                     required
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -4543,7 +4614,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={shippingRateForm.status}
                     onChange={(e) => setShippingRateForm({ ...shippingRateForm, status: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="active">Active</option>
                     <option value="paused">Paused</option>
@@ -4559,7 +4630,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onChange={(e) => setShippingRateForm({ ...shippingRateForm, estimatedDays: e.target.value })}
                   placeholder="e.g. Next business day or 2-3 business days"
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4594,7 +4665,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={editingShippingRate.name}
                   onChange={(e) => setEditingShippingRate({ ...editingShippingRate, name: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4607,7 +4678,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     value={editingShippingRate.price}
                     onChange={(e) => setEditingShippingRate({ ...editingShippingRate, price: parseFloat(e.target.value) || 0 })}
                     required
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
                 <div>
@@ -4615,7 +4686,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={editingShippingRate.status}
                     onChange={(e) => setEditingShippingRate({ ...editingShippingRate, status: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="active">Active</option>
                     <option value="paused">Paused</option>
@@ -4630,7 +4701,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={editingShippingRate.estimatedDays}
                   onChange={(e) => setEditingShippingRate({ ...editingShippingRate, estimatedDays: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4666,7 +4737,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onChange={(e) => setSubscriberForm({ ...subscriberForm, name: e.target.value })}
                   placeholder="e.g. Zainab Al-Mansoor"
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4678,7 +4749,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   onChange={(e) => setSubscriberForm({ ...subscriberForm, email: e.target.value })}
                   placeholder="e.g. client@example.co.uk"
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4688,7 +4759,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={subscriberForm.type}
                     onChange={(e) => setSubscriberForm({ ...subscriberForm, type: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="VIP Restock Drop">VIP Restock Drop</option>
                     <option value="The Silk Bone Straight 26&quot; Waitlist">The Silk Bone Straight 26" Waitlist</option>
@@ -4703,7 +4774,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="date" 
                     value={subscriberForm.date}
                     onChange={(e) => setSubscriberForm({ ...subscriberForm, date: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -4739,7 +4810,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={editingSubscriber.name}
                   onChange={(e) => setEditingSubscriber({ ...editingSubscriber, name: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4750,7 +4821,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   value={editingSubscriber.email}
                   onChange={(e) => setEditingSubscriber({ ...editingSubscriber, email: e.target.value })}
                   required
-                  style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                 />
               </div>
 
@@ -4760,7 +4831,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <select 
                     value={editingSubscriber.type}
                     onChange={(e) => setEditingSubscriber({ ...editingSubscriber, type: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   >
                     <option value="VIP Restock Drop">VIP Restock Drop</option>
                     <option value="The Silk Bone Straight 26&quot; Waitlist">The Silk Bone Straight 26" Waitlist</option>
@@ -4775,7 +4846,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="date" 
                     value={editingSubscriber.date}
                     onChange={(e) => setEditingSubscriber({ ...editingSubscriber, date: e.target.value })}
-                    style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.78rem' }}
+                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
                   />
                 </div>
               </div>
@@ -4824,7 +4895,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
                     {recoveryOrderTarget.customer.email} • {recoveryOrderTarget.customer.phone}
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--color-text-tertiary)' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--color-text-tertiary)' }}>
                     {recoveryOrderTarget.customer.city}, {recoveryOrderTarget.customer.country}
                   </div>
                 </div>

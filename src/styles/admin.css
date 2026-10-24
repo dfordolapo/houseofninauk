@@ -1750,31 +1750,58 @@
     white-space: nowrap !important;
   }
 
-  /* All mobile input fields: much smaller font sizes and tight padding */
+  /* Responsive tab label swapping on mobile */
+  .desktopTabLabel {
+    display: none !important;
+  }
+
+  .mobileTabLabel {
+    display: inline !important;
+  }
+
+  .tabBtn {
+    font-size: 0.68rem !important;
+    padding: 5px 8px !important;
+    white-space: nowrap !important;
+  }
+
+  /* All mobile input fields: MUCH smaller font sizes and tight luxury padding */
   .adminPortalRoot input,
   .adminPortalRoot select,
   .adminPortalRoot textarea {
-    font-size: 0.74rem !important;
-    padding: 6px 9px !important;
+    font-size: 0.65rem !important; /* ~10.4px - truly much smaller, sleek, ultra-clean */
+    padding: 4px 8px !important;
     border-radius: 6px !important;
-    min-height: 30px !important;
+    min-height: 26px !important;
     box-sizing: border-box !important;
+    line-height: 1.2 !important;
+  }
+
+  .adminPortalRoot input::placeholder,
+  .adminPortalRoot textarea::placeholder {
+    font-size: 0.65rem !important;
+    opacity: 0.65 !important;
   }
 
   .adminPortalRoot label {
-    font-size: 0.68rem !important;
+    font-size: 0.64rem !important;
+    font-weight: 600 !important;
     margin-bottom: 2px !important;
   }
 
   .searchBar {
     width: 100% !important;
-    height: 32px !important;
-    padding: 4px 10px !important;
+    height: 28px !important;
+    padding: 2px 8px !important;
     border-radius: 6px !important;
   }
 
   .searchInput {
-    font-size: 0.72rem !important;
+    font-size: 0.65rem !important;
+  }
+
+  .searchInput::placeholder {
+    font-size: 0.65rem !important;
   }
 
   /* Ensure buttons across all mobile cards and footers never cut off */
@@ -2116,4 +2143,102 @@
   .adminCardTotalSection {
     flex: 1;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCROLLABLE TABS CONTAINER WITH CHEVRON AFFORDANCES
+   ═══════════════════════════════════════════════════════════ */
+.tabsScrollWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  flex: 1;
+}
+
+.tabsScrollWrapper .tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 2px;
+  width: 100%;
+}
+
+.tabsScrollWrapper .tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* Floating Chevron Navigation Buttons */
+.tabChevronBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.tabChevronBtn:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.tabChevronLeft {
+  left: -2px;
+}
+
+.tabChevronRight {
+  right: -2px;
+}
+
+/* Subtle gradient fades when overflow exists */
+.tabsScrollWrapper.hasLeftOverflow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(to right, rgba(250, 247, 242, 0.95), transparent);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.tabsScrollWrapper.hasRightOverflow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(to left, rgba(250, 247, 242, 0.95), transparent);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Responsive tab labels */
+.desktopTabLabel {
+  display: inline;
+}
+
+.mobileTabLabel {
+  display: none;
 }
