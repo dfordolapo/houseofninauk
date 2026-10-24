@@ -3549,9 +3549,6 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                       className="adminSettingsInput"
                       style={{ maxWidth: '320px' }}
                     />
-                    <span className="adminSettingsHelperText">
-                      Orders above this threshold qualify for complimentary shipping.
-                    </span>
                   </div>
 
                   {/* Desktop Wide Table View */}
