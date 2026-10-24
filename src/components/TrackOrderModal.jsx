@@ -1,20 +1,75 @@
 import React, { useState } from 'react';
 import { X, Search, CheckCircle2, Clock, Truck, MapPin, ExternalLink } from 'lucide-react';
+import { lookupOrderByReference } from '../lib/supabase';
 
 export default function TrackOrderModal({ isOpen, onClose }) {
   const [orderQuery, setOrderQuery] = useState('HN-8492');
   const [hasSearched, setHasSearched] = useState(true);
   const [isFound, setIsFound] = useState(true);
+  const [activeOrder, setActiveOrder] = useState({
+    orderNumber: 'HN-8492',
+    status: 'shipped',
+    itemTitle: 'The Victoria Glass Bob • 12" Swiss HD Lace',
+    trackingNumber: 'RM-UK-8492100'
+  });
 
   if (!isOpen) return null;
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const q = orderQuery.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const handleSearch = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const raw = orderQuery.trim();
+    if (!raw) return;
+
     setHasSearched(true);
-    
-    // Valid sample order is HN-8492 / 8492, or any standard HN order reference
+
+    // 1. Check Supabase cloud database
+    try {
+      const { data, error } = await lookupOrderByReference(raw);
+      if (data && !error) {
+        const firstItem = Array.isArray(data.cart_items) && data.cart_items[0];
+        const itemTitle = firstItem ? `${firstItem.name || 'Custom Wig'}${firstItem.selectedLength ? ` • ${firstItem.selectedLength}` : ''}` : 'Bespoke Order';
+        setActiveOrder({
+          orderNumber: data.reference,
+          status: (data.fulfillment_status || 'confirmed').toLowerCase(),
+          itemTitle,
+          trackingNumber: data.tracking_number || ''
+        });
+        setIsFound(true);
+        return;
+      }
+    } catch (err) {
+      console.warn('Supabase lookup notice:', err);
+    }
+
+    // 2. Check local client storage
+    try {
+      const local = JSON.parse(localStorage.getItem('house_of_nina_client_orders') || '[]');
+      const match = local.find(o => 
+        (o.orderNumber && o.orderNumber.toUpperCase() === raw.toUpperCase()) ||
+        (o.id && o.id.toUpperCase() === raw.toUpperCase())
+      );
+      if (match) {
+        const firstItem = Array.isArray(match.items) && match.items[0];
+        setActiveOrder({
+          orderNumber: match.orderNumber || match.id,
+          status: (match.status || 'confirmed').toLowerCase(),
+          itemTitle: firstItem ? `${firstItem.name || 'Custom Wig'}${firstItem.selectedLength ? ` • ${firstItem.selectedLength}` : ''}` : 'Bespoke Order',
+          trackingNumber: match.trackingNumber || ''
+        });
+        setIsFound(true);
+        return;
+      }
+    } catch {}
+
+    // 3. Fallback demo order check (HN-8492)
+    const q = raw.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (q === 'HN8492' || q === '8492' || (q.startsWith('HN') && q.length >= 6)) {
+      setActiveOrder({
+        orderNumber: raw.toUpperCase(),
+        status: 'shipped',
+        itemTitle: 'The Victoria Glass Bob • 12" Swiss HD Lace',
+        trackingNumber: 'RM-UK-8492100'
+      });
       setIsFound(true);
     } else {
       setIsFound(false);
@@ -131,18 +186,18 @@ export default function TrackOrderModal({ isOpen, onClose }) {
                       Active Order
                     </span>
                     <h3 className="track-order-card-id">
-                      #{orderQuery.toUpperCase() || 'HN-8492'}
+                      #{activeOrder.orderNumber || orderQuery.toUpperCase() || 'HN-8492'}
                     </h3>
                   </div>
 
                   <span className="track-order-status-badge">
                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#28A745' }} />
-                    In Transit
+                    {activeOrder.status === 'delivered' ? 'Delivered' : activeOrder.status === 'shipped' ? 'Dispatched' : activeOrder.status === 'processing' ? 'Handcrafting' : 'Confirmed'}
                   </span>
                 </div>
 
                 <div className="track-order-card-desc">
-                  The Victoria Glass Bob • 12" Swiss HD Lace
+                  {activeOrder.itemTitle || 'House of Nina Bespoke Unit'}
                 </div>
 
                 <div className="track-order-card-est">

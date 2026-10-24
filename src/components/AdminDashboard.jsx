@@ -8,6 +8,7 @@ import {
   Layers, Check, Clock, Eye, RotateCcw, Copy, MessageCircle, Mail
 } from 'lucide-react';
 import { FEATURED_PRODUCTS, BRAND_INFO } from '../data/wigData';
+import { fetchOrdersFromDb, updateOrderInDb } from '../lib/supabase';
 import '../styles/admin.css';
 
 const INVENTORY_STORAGE_KEY = 'house_of_nina_admin_inventory_v3';
@@ -634,6 +635,44 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     try { localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders)); } catch {}
   }, [orders]);
 
+  // Fetch live orders from Supabase PostgreSQL cloud table on mount
+  useEffect(() => {
+    fetchOrdersFromDb().then(({ data, error }) => {
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const cloudOrders = data.map(o => ({
+          id: o.reference || o.id,
+          orderNumber: o.reference,
+          createdAt: o.created_at,
+          customer: {
+            fullName: o.client_name,
+            email: o.email,
+            phone: o.phone || '',
+            address: o.shipping_address?.line1 || o.shipping_address?.address || '',
+            city: o.shipping_address?.city || '',
+            state: o.shipping_address?.state || '',
+            postalCode: o.shipping_address?.postalCode || '',
+            country: o.shipping_address?.country || 'United Kingdom'
+          },
+          items: Array.isArray(o.cart_items) ? o.cart_items : [],
+          subtotal: Number(o.subtotal || 0),
+          shippingCost: Number(o.shipping_fee || 0),
+          total: Number(o.total_amount || 0),
+          status: (o.fulfillment_status || 'confirmed').toLowerCase(),
+          paymentStatus: o.payment_status === 'paid' ? 'Paid' : 'Pending',
+          paymentMethod: o.payment_method || 'Card',
+          trackingNumber: o.tracking_number || '',
+          notes: o.notes || ''
+        }));
+
+        setOrders(prev => {
+          const cloudIds = new Set(cloudOrders.map(c => c.orderNumber));
+          const localNonDuplicates = prev.filter(p => !cloudIds.has(p.orderNumber || p.id));
+          return [...cloudOrders, ...localNonDuplicates];
+        });
+      }
+    }).catch(err => console.info('[House of Nina] Supabase orders check:', err));
+  }, []);
+
   useEffect(() => {
     try { localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(products)); } catch {}
   }, [products]);
@@ -851,6 +890,14 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
           else if (o.status === 'shipped') nextStatus = 'delivered';
           else nextStatus = o.status;
         }
+
+        // Sync lifeline advancement to Supabase cloud table
+        const capitalizedStatus = nextStatus.charAt(0).toUpperCase() + nextStatus.slice(1).toLowerCase();
+        updateOrderInDb(o.orderNumber || o.id, {
+          fulfillment_status: capitalizedStatus,
+          tracking_number: tracking || o.trackingNumber || null
+        }).catch(err => console.warn('Supabase status sync error:', err));
+
         return {
           ...o,
           status: nextStatus,

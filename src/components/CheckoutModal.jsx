@@ -5,6 +5,7 @@ import {
   ShieldCheck, Sparkles, CheckCircle2, Zap, Search, ShoppingBag
 } from 'lucide-react';
 import OrderSuccessReceipt from './OrderSuccessReceipt';
+import { createOrderInDb } from '../lib/supabase';
 
 /** Authentic Official Apple Pay Mark (100% Vector Math - Official Apple Guidelines) */
 function ApplePayLogo({ height = 22, color = "#FFFFFF", className = "" }) {
@@ -1997,13 +1998,36 @@ export default function CheckoutModal({
 
     setConfirmedOrder(newOrder);
 
-    // Persist to admin orders queue and session storage for authoritative reconciliation
+    // Persist to admin orders queue, session storage, and cloud database
     try {
       const existingOrders = JSON.parse(localStorage.getItem('house_of_nina_client_orders') || '[]');
       const updatedOrders = [newOrder, ...existingOrders.filter(o => o.orderNumber !== newOrder.orderNumber)];
       localStorage.setItem('house_of_nina_client_orders', JSON.stringify(updatedOrders));
+
+      // Synchronize with Admin Dashboard storage queue
+      const existingAdmin = JSON.parse(localStorage.getItem('house_of_nina_admin_orders_v3') || '[]');
+      const updatedAdmin = [newOrder, ...existingAdmin.filter(o => (o.orderNumber || o.id) !== newOrder.orderNumber)];
+      localStorage.setItem('house_of_nina_admin_orders_v3', JSON.stringify(updatedAdmin));
+
       sessionStorage.setItem('hn_confirmed_order', JSON.stringify(newOrder));
       localStorage.setItem('hn_last_confirmed_order', JSON.stringify(newOrder));
+
+      // Sync order to Supabase cloud PostgreSQL table
+      createOrderInDb({
+        reference: newOrder.orderNumber,
+        client_name: newOrder.customer?.fullName || 'Client',
+        email: newOrder.customer?.email,
+        phone: newOrder.customer?.phone,
+        shipping_address: newOrder.shippingAddress,
+        cart_items: newOrder.items,
+        subtotal: newOrder.subtotal,
+        shipping_fee: newOrder.shippingCost,
+        total_amount: newOrder.total,
+        currency: 'GBP',
+        payment_method: paymentLabel,
+        payment_status: 'paid',
+        fulfillment_status: 'Confirmed'
+      }).catch(err => console.warn('Supabase sync notice:', err));
     } catch (err) {
       console.warn('Could not sync order to storage, maintaining in-memory confirmed order', err);
       // Payment succeeded! Even if client storage fails, we safely proceed to receipt without asking customer to pay again.
