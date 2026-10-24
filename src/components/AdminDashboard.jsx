@@ -1599,7 +1599,9 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                           </div>
                         </td>
                         <td><strong>{rev.client}</strong></td>
-                        <td style={{ fontSize: '0.86rem', maxWidth: '340px' }}>"{rev.text}"</td>
+                        <td style={{ fontSize: '0.86rem', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={rev.text}>
+                          "{rev.text.length > 55 ? rev.text.substring(0, 52) + '...' : rev.text}"
+                        </td>
                         <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{rev.date}</td>
                         <td><span className="badge inStock">Verified Client</span></td>
                       </tr>

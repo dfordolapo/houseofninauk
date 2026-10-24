@@ -497,6 +497,7 @@ export const CUSTOMER_REVIEWS = [
     rating: 5,
     hairPurchased: "The Victoria Glass Bob • 12\" HD",
     quote: "The lace is literally transparent. I installed it without glue for an event in Mayfair and received compliments all night. The hair moves like silk.",
+    mobileQuote: "The lace is literally transparent. Installed without glue for Mayfair, compliments all night...",
     date: "Verified UK Buyer"
   },
   {
@@ -506,6 +507,7 @@ export const CUSTOMER_REVIEWS = [
     rating: 5,
     hairPurchased: "The Lekki Silk Bone Straight • 28\"",
     quote: "Usually bone straight hair tangles after a week in UK weather, but House of Nina’s raw hair is on another level. Comb slips right through!",
+    mobileQuote: "Usually bone straight tangles in UK weather, but House of Nina’s raw hair is on another level...",
     date: "Verified UK Buyer"
   },
   {
@@ -515,6 +517,7 @@ export const CUSTOMER_REVIEWS = [
     rating: 5,
     hairPurchased: "The Mayfair Honey Balayage • 26\"",
     quote: "The colour blend is unbelievable. It doesn't look brassy or dry at all, it feels hydrated, thick from weft to tip, and smells gorgeous.",
+    mobileQuote: "The colour blend is unbelievable. It feels hydrated, thick from weft to tip, and smells gorgeous...",
     date: "Verified UK Buyer"
   }
 ];
