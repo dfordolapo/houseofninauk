@@ -1518,9 +1518,11 @@ export default function CheckoutModal({
     }
   };
 
-  // Master candidate methods for standard selection (Apple Pay & Google Pay moved exclusively to Express Checkout element)
+  // Master candidate methods for selection
   const ALL_CANDIDATE_METHODS = [
     'card',
+    'apple_pay',
+    'google_pay',
     'klarna',
     'ideal',
     'bancontact',
@@ -2057,7 +2059,8 @@ export default function CheckoutModal({
       return;
     }
 
-    if (!allEligibleMethods.includes(chosenPayment)) {
+    const isGlobalPaymentMethod = ['card', 'apple_pay', 'google_pay'].includes(chosenPayment);
+    if (!isGlobalPaymentMethod && allEligibleMethods.length > 0 && !allEligibleMethods.includes(chosenPayment)) {
       const destName = currentDestination?.name || 'your destination';
       setPaymentError({
         code: 'payment_method_unavailable',
