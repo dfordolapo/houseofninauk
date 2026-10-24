@@ -82,12 +82,11 @@ const INITIAL_DEMO_REVIEWS = [
   }
 ];
 
-// Initial Demo Categories
+// Initial Demo Categories (Wigs, Scarves, Accessories)
 const INITIAL_CATEGORIES = [
-  'Ready-to-Wear Wigs',
-  'Silk Styling Care',
-  'HD Swiss Lace Frontals',
-  'Lace Closures'
+  'Wigs',
+  'Scarves',
+  'Accessories'
 ];
 
 // Initial Demo Orders (Order Lifeline: confirmed -> processing -> shipped -> delivered)
@@ -359,7 +358,12 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   const [categories, setCategories] = useState(() => {
     try {
       const saved = localStorage.getItem(CATEGORIES_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && !parsed.includes('Ready-to-Wear Wigs') && !parsed.includes('Silk Styling Care') && !parsed.includes('HD Swiss Lace Frontals')) {
+          return parsed;
+        }
+      }
     } catch {}
     return INITIAL_CATEGORIES;
   });
@@ -367,12 +371,23 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   const [products, setProducts] = useState(() => {
     try {
       const saved = localStorage.getItem(INVENTORY_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map(p => {
+            let cat = p.categoryName || 'Wigs';
+            if (cat === 'Ready-to-Wear Wigs') cat = 'Wigs';
+            if (cat === 'Silk Styling Care') cat = 'Scarves';
+            if (cat === 'HD Swiss Lace Frontals' || cat === 'Lace Closures') cat = 'Accessories';
+            return { ...p, categoryName: cat };
+          });
+        }
+      }
     } catch {}
     return FEATURED_PRODUCTS.map(p => ({
       id: p.id,
       name: p.name,
-      categoryName: p.category === 'Scarves' ? 'Silk Styling Care' : 'Ready-to-Wear Wigs',
+      categoryName: p.category === 'Scarves' ? 'Scarves' : (p.category === 'Accessories' ? 'Accessories' : 'Wigs'),
       price: typeof p.price === 'number' ? p.price : 250,
       stockCount: p.id === 'hn-01' ? 8 : p.id === 'hn-02' ? 5 : p.id === 'hn-03' ? 3 : 24,
       inStock: true,
@@ -515,7 +530,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   // Forms
   const [productForm, setProductForm] = useState({
     name: '',
-    categoryName: categories[0] || 'Ready-to-Wear Wigs',
+    categoryName: categories[0] || 'Wigs',
     price: '',
     stockCount: 10,
     image: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=400&q=80&fm=webp'
@@ -744,6 +759,24 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     triggerToast(`✓ Order moved to Confirmed lifeline!`);
   };
 
+  // Prevent background scrolling when ANY modal or drawer is open
+  const isAnyModalOpen = Boolean(
+    isAddProductOpen || editingProduct || isDispatchModalOpen || viewOrderDetails ||
+    editingOrder || isAddDiscountOpen || editingDiscount || isAddCategoryOpen ||
+    editingCategory || isAddSubscriberOpen || editingSubscriber || isAddReviewOpen ||
+    isAddShippingRateOpen || recoveryOrderTarget || isMobileMenuOpen
+  );
+
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [isAnyModalOpen]);
+
   // ══════════════════════════════════════════════════════════
   // ORDER LIFELINE ADVANCEMENT (confirmed -> processing -> shipped -> delivered)
   // ══════════════════════════════════════════════════════════
@@ -835,7 +868,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     const created = {
       id: `hn-${Date.now()}`,
       name: productForm.name,
-      categoryName: productForm.categoryName || categories[0] || 'Ready-to-Wear Wigs',
+      categoryName: productForm.categoryName || categories[0] || 'Wigs',
       price: parseFloat(productForm.price) || 200,
       stockCount: parseInt(productForm.stockCount) || 10,
       inStock: true,
@@ -845,7 +878,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     };
     setProducts([created, ...products]);
     setIsAddProductOpen(false);
-    setProductForm({ name: '', categoryName: categories[0] || 'Ready-to-Wear Wigs', price: '', stockCount: 10, image: '' });
+    setProductForm({ name: '', categoryName: categories[0] || 'Wigs', price: '', stockCount: 10, image: '' });
     triggerToast(`✓ "${created.name}" created`);
   };
 
@@ -1377,7 +1410,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </button>
                 </div>
 
-                <div className="statCard statCardChampagne">
+                <div className="statCard statCardBlue">
                   <div className="statHeader">
                     <div className="statIconWrap">
                       <Tag size={15} strokeWidth={2.2} />
@@ -1986,7 +2019,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     type="button"
                     className="btnPrimary"
                     onClick={() => {
-                      setProductForm({ name: '', categoryName: categories[0] || 'Ready-to-Wear Wigs', price: '', stockCount: 10, image: '' });
+                      setProductForm({ name: '', categoryName: categories[0] || 'Wigs', price: '', stockCount: 10, image: '' });
                       setIsAddProductOpen(true);
                     }}
                   >
@@ -2078,13 +2111,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
 
               <div className="toolbar">
-                <div className="tabs">
+                <div className="tabs productCategoryTabs">
                   <button
                     type="button"
                     className={`tabBtn ${productsCategoryFilter === 'all' ? 'active' : ''}`}
                     onClick={() => setProductsCategoryFilter('all')}
                   >
-                    All Categories
+                    All
                   </button>
                   {categories.map(cat => (
                     <button

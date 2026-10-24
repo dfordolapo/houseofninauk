@@ -527,27 +527,34 @@
   text-decoration: underline;
 }
 
-/* Dashboard Stat Cards: Visibly coloured primary backgrounds (not white or beige) */
+/* Dashboard Stat Cards: Lightened, distinct, elegant luxury pastel backgrounds */
 .statCardTerracotta {
-  background-color: #D99A83 !important;
+  background-color: #F2CEBF !important;
   color: #16110F !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .statCardRose {
-  background-color: #E8C5C3 !important;
+  background-color: #F4DFDC !important;
   color: #16110F !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .statCardSage {
-  background-color: #C7D5B5 !important;
+  background-color: #DDE7D0 !important;
+  color: #16110F !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Distinct 4th card color: Soft French Mist Blue (No two cards look the same!) */
+.statCardBlue {
+  background-color: #D9E5ED !important;
   color: #16110F !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .statCardChampagne {
-  background-color: #DEC0B6 !important;
+  background-color: #F2E4D6 !important;
   color: #16110F !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
@@ -556,12 +563,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .statIconWrap {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -571,19 +578,23 @@
 }
 
 .statCardTerracotta .statIconWrap {
-  background-color: #C4836B;
+  background-color: #DEB09D;
 }
 
 .statCardRose .statIconWrap {
-  background-color: #D5AAA8;
+  background-color: #E2C5C1;
 }
 
 .statCardSage .statIconWrap {
-  background-color: #B1C29C;
+  background-color: #C4D2B2;
+}
+
+.statCardBlue .statIconWrap {
+  background-color: #BFD2DF;
 }
 
 .statCardChampagne .statIconWrap {
-  background-color: #C8A69B;
+  background-color: #DECEBD;
 }
 
 .statCard .statTitle {
@@ -642,19 +653,19 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-/* Visibly coloured luxury palettes */
+/* Visibly coloured luxury palettes (Lightened, gentle, high contrast) */
 .perfCardRose {
-  background-color: #E8C5C3;
+  background-color: #F4DFDC;
   color: #16110F;
 }
 
 .perfCardTerracotta {
-  background-color: #D99A83;
+  background-color: #F2CEBF;
   color: #16110F;
 }
 
 .perfCardSage {
-  background-color: #C7D5B5;
+  background-color: #DDE7D0;
   color: #16110F;
 }
 
@@ -662,13 +673,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 /* Subtle circular containers using a slightly deeper shade of each card colour */
 .perfIconContainer {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -678,15 +689,15 @@
 }
 
 .perfCardRose .perfIconContainer {
-  background-color: #D5AAA8;
+  background-color: #E2C5C1;
 }
 
 .perfCardTerracotta .perfIconContainer {
-  background-color: #C4836B;
+  background-color: #DEB09D;
 }
 
 .perfCardSage .perfIconContainer {
-  background-color: #B1C29C;
+  background-color: #C4D2B2;
 }
 
 .perfCardBadge {
@@ -1110,6 +1121,14 @@
   z-index: 10000;
   backdrop-filter: blur(4px);
   padding: 16px;
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+
+.modalContent,
+.editModalContent {
+  overscroll-behavior: contain;
+  touch-action: auto;
 }
 
 .modalContent {
@@ -1663,104 +1682,241 @@
   }
 
   .adminContentCard {
-    padding: 18px 14px;
-    border-radius: 12px;
+    padding: 12px 10px !important;
+    border-radius: 10px !important;
     max-width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
   }
 
   .adminMainCanvas {
-    padding: 0 12px;
-    margin: 72px auto 40px auto;
+    padding: 0 8px !important;
+    margin: 64px auto 28px auto !important;
     max-width: 100vw;
     box-sizing: border-box;
     overflow-x: hidden;
   }
 
   .adminBrandWordmark {
-    font-size: 1.8rem;
+    font-size: 1.6rem !important;
   }
 
   .adminNavPillWrapper {
-    padding: 6px 14px;
+    padding: 4px 10px !important;
     border-radius: 9999px;
   }
 
+  .pageHeader {
+    margin-bottom: 10px !important;
+    gap: 6px !important;
+  }
+
+  .pageTitle {
+    font-size: 1.22rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .pageSubtitle {
+    font-size: 0.72rem !important;
+    margin-bottom: 0 !important;
+  }
+
   .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 12px !important;
   }
 
   .statCard {
-    padding: 12px 14px;
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+  }
+
+  .statHeader {
+    gap: 5px !important;
+    margin-bottom: 3px !important;
+  }
+
+  .statIconWrap {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .statIconWrap svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .statCard .statTitle {
+    font-size: 0.68rem !important;
   }
 
   .statValue {
-    font-size: 1.45rem;
+    font-size: 1.15rem !important;
+  }
+
+  .statCard .statTrend,
+  .statCard .statLink {
+    font-size: 0.64rem !important;
   }
 
   /* Compact Horizontal Row for Product Performance Analytics on Mobile (No Horizontal Scrolling) */
   .productPerformanceGrid {
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 6px !important;
-    margin-bottom: 16px !important;
+    gap: 5px !important;
+    margin-bottom: 12px !important;
     width: 100% !important;
   }
 
   .perfCard {
-    padding: 8px 6px !important;
-    border-radius: 10px !important;
+    padding: 6px 5px !important;
+    border-radius: 8px !important;
   }
 
   .perfCardTop {
-    gap: 4px !important;
-    margin-bottom: 6px !important;
+    gap: 3px !important;
+    margin-bottom: 4px !important;
   }
 
   .perfIconContainer {
-    width: 20px !important;
-    height: 20px !important;
+    width: 18px !important;
+    height: 18px !important;
   }
 
   .perfIconContainer svg {
-    width: 11px !important;
-    height: 11px !important;
+    width: 10px !important;
+    height: 10px !important;
   }
 
   .perfCardBadge {
-    font-size: 0.58rem !important;
+    font-size: 0.50rem !important;
     letter-spacing: 0 !important;
   }
 
   .perfCardContent {
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 4px !important;
+    gap: 3px !important;
   }
 
   .perfThumbnail {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 6px !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 4px !important;
   }
 
+  /* Ensure product name on mobile does NOT cut off awkwardly: 2-line clamp with clean ellipsis */
   .perfProductName {
-    font-size: 0.72rem !important;
-    max-width: 100% !important;
-    line-height: 1.2 !important;
+    font-size: 0.66rem !important;
+    line-height: 1.15 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    max-height: 2.3em !important;
+    color: #16110F !important;
+    font-weight: 700 !important;
   }
 
   .perfMetric {
+    font-size: 0.60rem !important;
+    line-height: 1.1 !important;
+  }
+
+  /* Single-line category tabs on mobile */
+  .productCategoryTabs {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 4px !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .productCategoryTabs .tabBtn {
+    padding: 5px 2px !important;
+    font-size: 0.70rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    letter-spacing: 0 !important;
+  }
+
+  .adminMobileCard {
+    padding: 10px 10px !important;
+    margin-bottom: 8px !important;
+    border-radius: 10px !important;
+    gap: 5px !important;
+  }
+
+  .adminCardOrderNumber,
+  .adminProductCardName {
+    font-size: 0.80rem !important;
+  }
+
+  .adminCardDate,
+  .adminProductCardMeta {
     font-size: 0.68rem !important;
-    line-height: 1.2 !important;
+  }
+
+  .adminProductCardPrice {
+    font-size: 0.82rem !important;
+  }
+
+  .adminProductCardImg {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 6px !important;
+  }
+
+  .adminStockStepper .actionBtn {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.74rem !important;
+  }
+
+  .adminStockNumber {
+    font-size: 0.76rem !important;
+    min-width: 18px !important;
+  }
+
+  .adminCardTotalLabel {
+    font-size: 0.62rem !important;
+  }
+
+  .adminCardTotalValue {
+    font-size: 0.84rem !important;
+  }
+
+  .adminCardActionBtn {
+    font-size: 0.70rem !important;
+    padding: 4px 8px !important;
+    min-height: 28px !important;
+  }
+
+  .adminCardIconBtn,
+  .adminCardKebabBtn {
+    width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+  }
+
+  .badge {
+    font-size: 0.64rem !important;
+    padding: 2px 6px !important;
   }
 
   .toolbar {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
   }
 
   .tabs {

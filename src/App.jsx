@@ -451,6 +451,34 @@ export default function App() {
     }
   };
 
+  // Standalone Admin Workspace: Never render or flash the live storefront when Admin is open or loading!
+  if (isAdminOpen) {
+    return (
+      <div className="adminStandaloneRoot" style={{ minHeight: '100vh', background: '#FAF7F2' }}>
+        <React.Suspense
+          fallback={
+            <div style={{ minHeight: '100vh', background: '#FBF9F5', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#16110F', padding: '24px' }}>
+              <h1 style={{ fontFamily: "'Italianno', cursive", fontSize: '3.5rem', margin: '0 0 8px 0', fontWeight: 400 }}>House of Nina</h1>
+              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.78rem', color: '#6E6259', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Loading Atelier Admin...</p>
+            </div>
+          }
+        >
+          <AdminDashboard
+            isOpen={true}
+            onClose={() => {
+              setIsAdminOpen(false);
+              try { window.history.pushState(null, '', '/'); } catch (e) {}
+            }}
+            onSwitchToStorefront={() => {
+              setIsAdminOpen(false);
+              try { window.history.pushState(null, '', '/'); } catch (e) {}
+            }}
+          />
+        </React.Suspense>
+      </div>
+    );
+  }
+
   return (
     <div className={`wigverse-app ${showHero ? 'is-hero-active' : ''}`}>
       {/* SECTION 1: NAVIGATION */}
