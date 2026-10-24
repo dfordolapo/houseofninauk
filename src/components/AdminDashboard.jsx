@@ -2734,7 +2734,26 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               </span>
                             </td>
                             <td style={{ textAlign: 'right', position: 'relative' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                                <button
+                                  type="button"
+                                  className="btnSecondary"
+                                  onClick={() => setEditingDiscount({ ...disc })}
+                                  aria-label={`Edit discount code ${disc.code}`}
+                                  style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontWeight: 600 }}
+                                >
+                                  <Edit2 size={12} />
+                                  <span>Edit Code</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btnPrimary"
+                                  onClick={() => handleToggleDiscountStatus(disc.id)}
+                                  aria-label={`${disc.status === 'active' ? 'Pause' : 'Activate'} discount code ${disc.code}`}
+                                  style={{ fontSize: '0.74rem', padding: '4px 10px', minHeight: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', fontWeight: 600 }}
+                                >
+                                  <span>{disc.status === 'active' ? 'Pause' : 'Activate'}</span>
+                                </button>
                                 <button
                                   type="button"
                                   className="kebabTriggerBtn"
@@ -2848,24 +2867,24 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                           </div>
                         </div>
 
-                        <div className="adminMobileCardFooter">
+                        <div className="adminMobileCardFooter adminDiscountCardFooter">
                           <button
                             type="button"
-                            className="btnSecondary adminProductEditBtn"
+                            className="btnSecondary adminDiscountBtn"
                             onClick={() => setEditingDiscount({ ...disc })}
-                            aria-label={`Edit discount ${disc.code}`}
+                            aria-label={`Edit discount code ${disc.code}`}
                           >
-                            <Edit2 size={14} />
+                            <Edit2 size={13} />
                             <span>Edit Code</span>
                           </button>
 
                           <button
                             type="button"
-                            className="btnSecondary adminCardActionBtn"
+                            className="btnPrimary adminDiscountBtn"
                             onClick={() => handleToggleDiscountStatus(disc.id)}
-                            aria-label={`${disc.status === 'active' ? 'Pause' : 'Activate'} discount ${disc.code}`}
+                            aria-label={`${disc.status === 'active' ? 'Pause' : 'Activate'} discount code ${disc.code}`}
                           >
-                            {disc.status === 'active' ? 'Pause' : 'Activate'}
+                            <span>{disc.status === 'active' ? 'Pause' : 'Activate'}</span>
                           </button>
 
                           <button
