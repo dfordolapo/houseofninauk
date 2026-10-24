@@ -609,9 +609,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
 
-    // Auto-detect direction:
-    // If explicitly near bottom of list OR space below is tight (<220px)
-    // and there is room above, flip upward so the menu is fully visible above row.
+    // Auto-detect vertical direction:
     let openUpward = false;
     if (isNearBottom || spaceBelow < 220) {
       if (spaceAbove >= 160) {
@@ -619,10 +617,22 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       }
     }
 
+    // Auto-detect horizontal position to avoid clipping off-screen:
+    const isLeftSide = rect.left < window.innerWidth / 2;
+    let rightVal = null;
+    let leftVal = null;
+
+    if (isLeftSide) {
+      leftVal = Math.max(12, Math.min(Math.round(rect.left), window.innerWidth - 200));
+    } else {
+      rightVal = Math.max(12, Math.min(Math.round(window.innerWidth - rect.right), window.innerWidth - 200));
+    }
+
     setKebabCoords({
       top: openUpward ? null : Math.round(rect.bottom + 6),
       bottom: openUpward ? Math.round(window.innerHeight - rect.top + 6) : null,
-      right: Math.max(16, Math.round(window.innerWidth - rect.right)),
+      right: rightVal,
+      left: leftVal,
       openUpward
     });
     setOpenKebabId(id);
@@ -1017,10 +1027,10 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
         <header className="adminNavbar">
           <div className="adminNavOuterContainer">
             <div className="adminNavPillWrapper">
-              {/* Brand Wordmark (Authentic Pinyon Script font matching live site header) */}
+              {/* Brand Wordmark (Authentic Alex Brush font matching live site header) */}
               <a
                 href="#"
-                className="adminBrandWordmark"
+                className="adminBrandWordmark brand-wordmark"
                 onClick={(e) => {
                   e.preventDefault();
                   if (onSwitchToStorefront) onSwitchToStorefront();
@@ -1028,6 +1038,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 }}
                 title="House of Nina"
                 aria-label="House of Nina"
+                style={{ fontFamily: "'Alex Brush', 'Great Vibes', cursive" }}
               >
                 House of Nina
               </a>
@@ -1147,7 +1158,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       >
         <div>
           <div className="adminMobileDrawerHeader">
-            <span style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: 'var(--color-primary)' }}>
+            <span style={{ fontFamily: "'Alex Brush', 'Great Vibes', cursive", fontSize: '26px', color: 'var(--color-primary)' }}>
               House of Nina
             </span>
             <button 
@@ -1291,7 +1302,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </button>
               </div>
 
-              <div className="tableContainer">
+              <div className="tableContainer adminDesktopTableView">
                 <table className="table">
                   <thead>
                     <tr>
@@ -1320,6 +1331,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               className="btnPrimary"
                               onClick={() => handleAdvanceLifeline(o.id, 'processing')}
                               style={{ fontSize: '0.78rem', padding: '5px 10px', minHeight: '30px' }}
+                              aria-label={`Advance order ${o.orderNumber} to processing`}
                             >
                               Process
                             </button>
@@ -1334,6 +1346,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                 setIsDispatchModalOpen(true);
                               }}
                               style={{ fontSize: '0.78rem', padding: '5px 10px', minHeight: '30px' }}
+                              aria-label={`Ship order ${o.orderNumber}`}
                             >
                               Ship...
                             </button>
@@ -1344,6 +1357,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                               className="btnSecondary"
                               onClick={() => handleAdvanceLifeline(o.id, 'delivered')}
                               style={{ fontSize: '0.78rem', padding: '5px 10px' }}
+                              aria-label={`Mark order ${o.orderNumber} as delivered`}
                             >
                               Deliver
                             </button>
@@ -1356,6 +1370,85 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Recent Orders Stacked Cards */}
+              <div className="adminMobileCardView" role="region" aria-label="Recent orders">
+                {orders.slice(0, 4).map(o => (
+                  <div key={`recent-m-${o.id}`} className="adminMobileCard">
+                    <div className="adminMobileCardHeader">
+                      <div>
+                        <div className="adminCardOrderNumber">{o.orderNumber}</div>
+                        <div className="adminCardDate">
+                          {new Date(o.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </div>
+                      </div>
+                      <span className={`badge ${o.status}`}>{o.status}</span>
+                    </div>
+
+                    <div className="adminMobileCardBody">
+                      <div className="adminCardCustomerRow">
+                        <span className="adminCardCustomerName">{o.customer.fullName}</span>
+                      </div>
+                    </div>
+
+                    <div className="adminMobileCardFooter">
+                      <div className="adminCardTotalSection">
+                        <span className="adminCardTotalLabel">Total</span>
+                        <span className="adminCardTotalValue">£{Number(o.total).toFixed(2)}</span>
+                      </div>
+
+                      <div className="adminCardActionGroup">
+                        {o.status === 'confirmed' && (
+                          <button
+                            type="button"
+                            className="btnPrimary adminCardActionBtn"
+                            onClick={() => handleAdvanceLifeline(o.id, 'processing')}
+                            aria-label={`Process order ${o.orderNumber}`}
+                          >
+                            Process
+                          </button>
+                        )}
+                        {o.status === 'processing' && (
+                          <button
+                            type="button"
+                            className="btnPrimary adminCardActionBtn"
+                            onClick={() => {
+                              setDispatchOrderTarget(o);
+                              setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
+                              setIsDispatchModalOpen(true);
+                            }}
+                            aria-label={`Ship order ${o.orderNumber}`}
+                          >
+                            Ship
+                          </button>
+                        )}
+                        {o.status === 'shipped' && (
+                          <button
+                            type="button"
+                            className="btnSecondary adminCardActionBtn"
+                            onClick={() => handleAdvanceLifeline(o.id, 'delivered')}
+                            aria-label={`Deliver order ${o.orderNumber}`}
+                          >
+                            Deliver
+                          </button>
+                        )}
+                        {o.status === 'delivered' && (
+                          <span className="adminCardCompletedBadge">✓ Completed</span>
+                        )}
+                        <button
+                          type="button"
+                          className="btnSecondary adminCardIconBtn"
+                          title="View Order Details"
+                          aria-label={`View details for order ${o.orderNumber}`}
+                          onClick={() => setViewOrderDetails(o)}
+                        >
+                          <Eye size={15} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </>
           )}
@@ -1418,207 +1511,321 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </button>
                 </div>
               ) : (
-                <div className="tableContainer">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Order</th>
-                        <th>Customer</th>
-                        <th>Items</th>
-                        <th>Total</th>
-                        <th>Lifeline Status</th>
-                        <th>Tracking</th>
-                        <th style={{ textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredOrders.map((order, idx) => (
-                        <tr key={order.id}>
-                          <td>
-                            <strong>{order.orderNumber}</strong>
-                            <span style={{ display: 'block', fontSize: '0.74rem', color: 'var(--color-text-secondary)' }}>
-                              {new Date(order.createdAt).toLocaleDateString('en-GB')}
-                            </span>
-                          </td>
-                          <td>
-                            <div style={{ fontWeight: 600 }}>{order.customer.fullName}</div>
-                            <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)' }}>
-                              {order.customer.city}, {order.customer.postalCode}
-                            </div>
-                          </td>
-                          <td>
-                            <div style={{ fontSize: '0.82rem' }}>
-                              {order.items.map(it => `${it.quantity}x ${it.name}`).join(', ')}
-                            </div>
-                          </td>
-                          <td>
-                            <strong style={{ fontSize: '0.92rem' }}>£{Number(order.total).toFixed(2)}</strong>
-                          </td>
-                          <td>
-                            <span className={`badge ${order.status}`}>
-                              {order.status}
-                            </span>
-                          </td>
-                          <td>
-                            {order.trackingNumber ? (
-                              <span style={{ fontSize: '0.78rem', fontFamily: 'monospace', fontWeight: 600 }}>
-                                {order.trackingNumber}
+                <>
+                  <div className="tableContainer adminDesktopTableView">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Order</th>
+                          <th>Customer</th>
+                          <th>Items</th>
+                          <th>Total</th>
+                          <th>Lifeline Status</th>
+                          <th>Tracking</th>
+                          <th style={{ textAlign: 'right' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredOrders.map((order, idx) => (
+                          <tr key={order.id}>
+                            <td>
+                              <strong>{order.orderNumber}</strong>
+                              <span style={{ display: 'block', fontSize: '0.74rem', color: 'var(--color-text-secondary)' }}>
+                                {new Date(order.createdAt).toLocaleDateString('en-GB')}
                               </span>
-                            ) : (
-                              <span style={{ fontSize: '0.76rem', color: 'var(--color-text-tertiary)' }}>
-                                —
+                            </td>
+                            <td>
+                              <div style={{ fontWeight: 600 }}>{order.customer.fullName}</div>
+                              <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)' }}>
+                                {order.customer.city}, {order.customer.postalCode}
+                              </div>
+                            </td>
+                            <td>
+                              <div style={{ fontSize: '0.82rem' }}>
+                                {order.items.map(it => `${it.quantity}x ${it.name}`).join(', ')}
+                              </div>
+                            </td>
+                            <td>
+                              <strong style={{ fontSize: '0.92rem' }}>£{Number(order.total).toFixed(2)}</strong>
+                            </td>
+                            <td>
+                              <span className={`badge ${order.status}`}>
+                                {order.status}
                               </span>
-                            )}
-                          </td>
-                          <td style={{ textAlign: 'right', position: 'relative' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                              {/* 1-Click Lifeline Advance Button */}
-                              {order.status === 'confirmed' && (
-                                <button
-                                  type="button"
-                                  className="btnPrimary"
-                                  onClick={() => handleAdvanceLifeline(order.id, 'processing')}
-                                  style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
-                                >
-                                  Process
-                                </button>
+                            </td>
+                            <td>
+                              {order.trackingNumber ? (
+                                <span style={{ fontSize: '0.78rem', fontFamily: 'monospace', fontWeight: 600 }}>
+                                  {order.trackingNumber}
+                                </span>
+                              ) : (
+                                <span style={{ fontSize: '0.76rem', color: 'var(--color-text-tertiary)' }}>
+                                  —
+                                </span>
                               )}
-                              {order.status === 'processing' && (
-                                <button
-                                  type="button"
-                                  className="btnPrimary"
-                                  onClick={() => {
-                                    setDispatchOrderTarget(order);
-                                    setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
-                                    setIsDispatchModalOpen(true);
-                                  }}
-                                  style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
-                                >
-                                  Ship
-                                </button>
-                              )}
-                              {order.status === 'shipped' && (
-                                <button
-                                  type="button"
-                                  className="btnSecondary"
-                                  onClick={() => handleAdvanceLifeline(order.id, 'delivered')}
-                                  style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
-                                >
-                                  Deliver
-                                </button>
-                              )}
-
-                              <button
-                                type="button"
-                                className="kebabTriggerBtn"
-                                title="Order Actions"
-                                onClick={(e) => toggleKebab(e, order.id, idx >= Math.max(0, filteredOrders.length - 2))}
-                              >
-                                <MoreVertical size={16} />
-                              </button>
-                            </div>
-
-                            {openKebabId === order.id && kebabCoords && createPortal(
-                              <div
-                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
-                                style={{
-                                  position: 'fixed',
-                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
-                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
-                                  right: `${kebabCoords.right}px`,
-                                  zIndex: 999999
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <button
-                                  type="button"
-                                  className="kebabItem"
-                                  onClick={() => {
-                                    setViewOrderDetails(order);
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Eye size={14} />
-                                  <span>Lifeline &amp; Slip</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="kebabItem"
-                                  onClick={() => {
-                                    setEditingOrder({ ...order, customer: { ...order.customer } });
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Edit2 size={14} />
-                                  <span>Edit Order Details</span>
-                                </button>
+                            </td>
+                            <td style={{ textAlign: 'right', position: 'relative' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                {/* 1-Click Lifeline Advance Button */}
                                 {order.status === 'confirmed' && (
                                   <button
                                     type="button"
-                                    className="kebabItem"
-                                    onClick={() => {
-                                      handleAdvanceLifeline(order.id, 'processing');
-                                      setOpenKebabId(null);
-                                      setKebabCoords(null);
-                                    }}
+                                    className="btnPrimary"
+                                    onClick={() => handleAdvanceLifeline(order.id, 'processing')}
+                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
+                                    aria-label={`Advance order ${order.orderNumber} to processing`}
                                   >
-                                    <Clock size={14} />
-                                    <span>Advance to Processing</span>
+                                    Process
                                   </button>
                                 )}
                                 {order.status === 'processing' && (
                                   <button
                                     type="button"
-                                    className="kebabItem"
+                                    className="btnPrimary"
                                     onClick={() => {
                                       setDispatchOrderTarget(order);
                                       setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
                                       setIsDispatchModalOpen(true);
-                                      setOpenKebabId(null);
-                                      setKebabCoords(null);
                                     }}
+                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
+                                    aria-label={`Ship order ${order.orderNumber}`}
                                   >
-                                    <Truck size={14} />
-                                    <span>Ship Order (Tracking)</span>
+                                    Ship
                                   </button>
                                 )}
                                 {order.status === 'shipped' && (
                                   <button
                                     type="button"
+                                    className="btnSecondary"
+                                    onClick={() => handleAdvanceLifeline(order.id, 'delivered')}
+                                    style={{ fontSize: '0.75rem', padding: '4px 8px', minHeight: '28px' }}
+                                    aria-label={`Mark order ${order.orderNumber} as delivered`}
+                                  >
+                                    Deliver
+                                  </button>
+                                )}
+
+                                <button
+                                  type="button"
+                                  className="kebabTriggerBtn"
+                                  title="Order Actions"
+                                  aria-label={`Order actions for ${order.orderNumber}`}
+                                  onClick={(e) => toggleKebab(e, order.id, idx >= Math.max(0, filteredOrders.length - 2))}
+                                >
+                                  <MoreVertical size={16} />
+                                </button>
+                              </div>
+
+                              {openKebabId === order.id && kebabCoords && createPortal(
+                                <div
+                                  className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                  style={{
+                                    position: 'fixed',
+                                    top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                    bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                    right: kebabCoords.right !== null ? `${kebabCoords.right}px` : 'auto',
+                                    left: kebabCoords.left !== null ? `${kebabCoords.left}px` : 'auto',
+                                    zIndex: 999999
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <button
+                                    type="button"
                                     className="kebabItem"
                                     onClick={() => {
-                                      handleAdvanceLifeline(order.id, 'delivered');
+                                      setViewOrderDetails(order);
                                       setOpenKebabId(null);
                                       setKebabCoords(null);
                                     }}
                                   >
-                                    <CheckCircle2 size={14} />
-                                    <span>Mark as Delivered</span>
+                                    <Eye size={14} />
+                                    <span>Lifeline &amp; Slip</span>
                                   </button>
-                                )}
-                                <button
-                                  type="button"
-                                  className="kebabItem kebabDelete"
-                                  onClick={() => {
-                                    handleDeleteOrder(order.id);
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Trash2 size={14} />
-                                  <span>Delete Order</span>
-                                </button>
-                              </div>,
-                              document.body
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      setEditingOrder({ ...order, customer: { ...order.customer } });
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Edit2 size={14} />
+                                    <span>Edit Order Details</span>
+                                  </button>
+                                  {order.status === 'confirmed' && (
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        handleAdvanceLifeline(order.id, 'processing');
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <Clock size={14} />
+                                      <span>Advance to Processing</span>
+                                    </button>
+                                  )}
+                                  {order.status === 'processing' && (
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        setDispatchOrderTarget(order);
+                                        setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
+                                        setIsDispatchModalOpen(true);
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <Truck size={14} />
+                                      <span>Ship Order (Tracking)</span>
+                                    </button>
+                                  )}
+                                  {order.status === 'shipped' && (
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        handleAdvanceLifeline(order.id, 'delivered');
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <CheckCircle2 size={14} />
+                                      <span>Mark as Delivered</span>
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    className="kebabItem kebabDelete"
+                                    onClick={() => {
+                                      handleDeleteOrder(order.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Trash2 size={14} />
+                                    <span>Delete Order</span>
+                                  </button>
+                                </div>,
+                                document.body
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Stacked Card View (<= 768px) */}
+                  <div className="adminMobileCardView" role="region" aria-label="Orders list">
+                    {filteredOrders.map((order, idx) => (
+                      <div key={`m-${order.id}`} className="adminMobileCard">
+                        {/* Header: Order Number, Date, Status */}
+                        <div className="adminMobileCardHeader">
+                          <div>
+                            <div className="adminCardOrderNumber">{order.orderNumber}</div>
+                            <div className="adminCardDate">
+                              {new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </div>
+                          </div>
+                          <span className={`badge ${order.status}`}>
+                            {order.status}
+                          </span>
+                        </div>
+
+                        {/* Customer & Items */}
+                        <div className="adminMobileCardBody">
+                          <div className="adminCardCustomerRow">
+                            <span className="adminCardCustomerName">{order.customer.fullName}</span>
+                            <span className="adminCardCustomerLocation">{order.customer.city}, {order.customer.postalCode}</span>
+                          </div>
+                          <div className="adminCardItems">
+                            {order.items.map(it => `${it.quantity}x ${it.name}`).join(', ')}
+                          </div>
+                          {order.trackingNumber && (
+                            <div className="adminCardTracking">
+                              <span>Tracking:</span>
+                              <code>{order.trackingNumber}</code>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Footer: Total & Prioritised Next Action */}
+                        <div className="adminMobileCardFooter">
+                          <div className="adminCardTotalSection">
+                            <span className="adminCardTotalLabel">Total</span>
+                            <span className="adminCardTotalValue">£{Number(order.total).toFixed(2)}</span>
+                          </div>
+
+                          <div className="adminCardActionGroup">
+                            {order.status === 'confirmed' && (
+                              <button
+                                type="button"
+                                className="btnPrimary adminCardActionBtn"
+                                onClick={() => handleAdvanceLifeline(order.id, 'processing')}
+                                aria-label={`Advance order ${order.orderNumber} to processing`}
+                              >
+                                Process
+                              </button>
                             )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                            {order.status === 'processing' && (
+                              <button
+                                type="button"
+                                className="btnPrimary adminCardActionBtn"
+                                onClick={() => {
+                                  setDispatchOrderTarget(order);
+                                  setDispatchTrackingNum(`RM-${Math.floor(10000000 + Math.random() * 90000000)}-GB`);
+                                  setIsDispatchModalOpen(true);
+                                }}
+                                aria-label={`Ship order ${order.orderNumber}`}
+                              >
+                                Ship
+                              </button>
+                            )}
+                            {order.status === 'shipped' && (
+                              <button
+                                type="button"
+                                className="btnSecondary adminCardActionBtn"
+                                onClick={() => handleAdvanceLifeline(order.id, 'delivered')}
+                                aria-label={`Mark order ${order.orderNumber} as delivered`}
+                              >
+                                Deliver
+                              </button>
+                            )}
+                            {order.status === 'delivered' && (
+                              <span className="adminCardCompletedBadge">✓ Delivered</span>
+                            )}
+
+                            {/* View secondary details / slip */}
+                            <button
+                              type="button"
+                              className="btnSecondary adminCardIconBtn"
+                              title="Lifeline & Slip"
+                              aria-label={`View details and slip for order ${order.orderNumber}`}
+                              onClick={() => setViewOrderDetails(order)}
+                            >
+                              <Eye size={15} />
+                            </button>
+
+                            {/* More Actions Menu */}
+                            <button
+                              type="button"
+                              className="kebabTriggerBtn adminCardKebabBtn"
+                              title="More Actions"
+                              aria-label={`More actions for order ${order.orderNumber}`}
+                              onClick={(e) => toggleKebab(e, order.id, idx >= Math.max(0, filteredOrders.length - 2))}
+                            >
+                              <MoreVertical size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </>
           )}
@@ -1693,138 +1900,234 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </button>
                 </div>
               ) : (
-                <div className="tableContainer">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Product</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Status</th>
-                        <th style={{ textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredProducts.map((prod, idx) => (
-                        <tr key={prod.id}>
-                          <td>
-                            <div className="productCell">
-                              <img src={prod.image} alt={prod.name} className="productImg" />
-                              <div>
-                                <div className="productName">{prod.name}</div>
-                                <div style={{ fontSize: '0.74rem', color: 'var(--color-text-secondary)' }}>ID: {prod.id}</div>
+                <>
+                  <div className="tableContainer adminDesktopTableView">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Category</th>
+                          <th>Price</th>
+                          <th>Stock</th>
+                          <th>Status</th>
+                          <th style={{ textAlign: 'right' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredProducts.map((prod, idx) => (
+                          <tr key={prod.id}>
+                            <td>
+                              <div className="productCell">
+                                <img src={prod.image} alt={prod.name} className="productImg" />
+                                <div>
+                                  <div className="productName">{prod.name}</div>
+                                  <div style={{ fontSize: '0.74rem', color: 'var(--color-text-secondary)' }}>ID: {prod.id}</div>
+                                </div>
                               </div>
+                            </td>
+                            <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.82rem' }}>
+                              {prod.categoryName}
+                            </td>
+                            <td>
+                              <strong style={{ fontSize: '0.92rem' }}>£{Number(prod.price).toFixed(2)}</strong>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <button 
+                                  type="button" 
+                                  className="actionBtn" 
+                                  onClick={() => handleStockChange(prod.id, -1)}
+                                  style={{ width: '26px', height: '26px' }}
+                                  aria-label={`Decrease stock for ${prod.name}`}
+                                >
+                                  -
+                                </button>
+                                <span style={{ fontWeight: 700, minWidth: '22px', textAlign: 'center' }}>
+                                  {prod.stockCount}
+                                </span>
+                                <button 
+                                  type="button" 
+                                  className="actionBtn" 
+                                  onClick={() => handleStockChange(prod.id, 1)}
+                                  style={{ width: '26px', height: '26px' }}
+                                  aria-label={`Increase stock for ${prod.name}`}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </td>
+                            <td>
+                              <span 
+                                className={`badge ${prod.inStock && prod.stockCount > 0 ? 'inStock' : 'outOfStock'}`}
+                                onClick={() => handleToggleStockStatus(prod.id)}
+                                style={{ cursor: 'pointer' }}
+                                title="Click to toggle status"
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggleStockStatus(prod.id); } }}
+                                aria-label={`Product is ${prod.inStock && prod.stockCount > 0 ? 'in stock' : 'out of stock'}. Click to toggle.`}
+                              >
+                                {prod.inStock && prod.stockCount > 0 ? 'In Stock' : 'Out of Stock'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right', position: 'relative' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                <button
+                                  type="button"
+                                  className="kebabTriggerBtn"
+                                  title="Product Actions"
+                                  aria-label={`Product actions for ${prod.name}`}
+                                  onClick={(e) => toggleKebab(e, `prod-${prod.id}`, idx >= Math.max(0, filteredProducts.length - 2))}
+                                >
+                                  <MoreVertical size={16} />
+                                </button>
+                              </div>
+
+                              {openKebabId === `prod-${prod.id}` && kebabCoords && createPortal(
+                                <div
+                                  className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                  style={{
+                                    position: 'fixed',
+                                    top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                    bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                    right: kebabCoords.right !== null ? `${kebabCoords.right}px` : 'auto',
+                                    left: kebabCoords.left !== null ? `${kebabCoords.left}px` : 'auto',
+                                    zIndex: 999999
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      setEditingProduct({ ...prod });
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Edit2 size={14} />
+                                    <span>Edit Product</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      handleToggleStockStatus(prod.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Package size={14} />
+                                    <span>{prod.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="kebabItem kebabDelete"
+                                    onClick={() => {
+                                      handleDeleteProduct(prod.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Trash2 size={14} />
+                                    <span>Delete Product</span>
+                                  </button>
+                                </div>,
+                                document.body
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Stacked Card View (<= 768px) */}
+                  <div className="adminMobileCardView" role="region" aria-label="Products list">
+                    {filteredProducts.map((prod, idx) => (
+                      <div key={`m-prod-${prod.id}`} className="adminMobileCard">
+                        {/* Top: Image, Name, SKU/ID, Category, Price */}
+                        <div className="adminProductCardTop">
+                          <img src={prod.image} alt={prod.name} className="adminProductCardImg" />
+                          <div className="adminProductCardMainInfo">
+                            <div className="adminProductCardName">{prod.name}</div>
+                            <div className="adminProductCardMeta">
+                              <span className="adminProductCardId">ID: {prod.id}</span>
+                              <span className="adminProductCardCategory">• {prod.categoryName}</span>
                             </div>
-                          </td>
-                          <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.82rem' }}>
-                            {prod.categoryName}
-                          </td>
-                          <td>
-                            <strong style={{ fontSize: '0.92rem' }}>£{Number(prod.price).toFixed(2)}</strong>
-                          </td>
-                          <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <button 
-                                type="button" 
-                                className="actionBtn" 
+                            <div className="adminProductCardPrice">
+                              £{Number(prod.price).toFixed(2)}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Middle: Stock Controls & Availability */}
+                        <div className="adminProductCardControlsRow">
+                          <div className="adminStockControlGroup">
+                            <span className="adminStockLabel">Stock:</span>
+                            <div className="adminStockStepper">
+                              <button
+                                type="button"
+                                className="actionBtn adminStockStepBtn"
                                 onClick={() => handleStockChange(prod.id, -1)}
-                                style={{ width: '26px', height: '26px' }}
+                                aria-label={`Decrease stock for ${prod.name}`}
                               >
                                 -
                               </button>
-                              <span style={{ fontWeight: 700, minWidth: '22px', textAlign: 'center' }}>
+                              <span className="adminStockNumber" aria-live="polite">
                                 {prod.stockCount}
                               </span>
-                              <button 
-                                type="button" 
-                                className="actionBtn" 
+                              <button
+                                type="button"
+                                className="actionBtn adminStockStepBtn"
                                 onClick={() => handleStockChange(prod.id, 1)}
-                                style={{ width: '26px', height: '26px' }}
+                                aria-label={`Increase stock for ${prod.name}`}
                               >
                                 +
                               </button>
                             </div>
-                          </td>
-                          <td>
-                            <span 
-                              className={`badge ${prod.inStock && prod.stockCount > 0 ? 'inStock' : 'outOfStock'}`}
-                              onClick={() => handleToggleStockStatus(prod.id)}
-                              style={{ cursor: 'pointer' }}
-                              title="Click to toggle status"
-                            >
-                              {prod.inStock && prod.stockCount > 0 ? 'In Stock' : 'Out of Stock'}
-                            </span>
-                          </td>
-                          <td style={{ textAlign: 'right', position: 'relative' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                              <button
-                                type="button"
-                                className="kebabTriggerBtn"
-                                title="Product Actions"
-                                onClick={(e) => toggleKebab(e, `prod-${prod.id}`, idx >= Math.max(0, filteredProducts.length - 2))}
-                              >
-                                <MoreVertical size={16} />
-                              </button>
-                            </div>
+                          </div>
 
-                            {openKebabId === `prod-${prod.id}` && kebabCoords && createPortal(
-                              <div
-                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
-                                style={{
-                                  position: 'fixed',
-                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
-                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
-                                  right: `${kebabCoords.right}px`,
-                                  zIndex: 999999
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <button
-                                  type="button"
-                                  className="kebabItem"
-                                  onClick={() => {
-                                    setEditingProduct({ ...prod });
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Edit2 size={14} />
-                                  <span>Edit Product</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="kebabItem"
-                                  onClick={() => {
-                                    handleToggleStockStatus(prod.id);
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Package size={14} />
-                                  <span>{prod.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="kebabItem kebabDelete"
-                                  onClick={() => {
-                                    handleDeleteProduct(prod.id);
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Trash2 size={14} />
-                                  <span>Delete Product</span>
-                                </button>
-                              </div>,
-                              document.body
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          <span 
+                            className={`badge ${prod.inStock && prod.stockCount > 0 ? 'inStock' : 'outOfStock'}`}
+                            onClick={() => handleToggleStockStatus(prod.id)}
+                            style={{ cursor: 'pointer' }}
+                            title="Click to toggle status"
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggleStockStatus(prod.id); } }}
+                            aria-label={`Product is ${prod.inStock && prod.stockCount > 0 ? 'in stock' : 'out of stock'}. Click to toggle.`}
+                          >
+                            {prod.inStock && prod.stockCount > 0 ? 'In Stock' : 'Out of Stock'}
+                          </span>
+                        </div>
+
+                        {/* Bottom: Edit action (Prioritised) & More Menu */}
+                        <div className="adminMobileCardFooter">
+                          <button
+                            type="button"
+                            className="btnSecondary adminProductEditBtn"
+                            onClick={() => setEditingProduct({ ...prod })}
+                            aria-label={`Edit ${prod.name}`}
+                          >
+                            <Edit2 size={14} />
+                            <span>Edit Product</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="kebabTriggerBtn adminCardKebabBtn"
+                            title="More Actions"
+                            aria-label={`More actions for ${prod.name}`}
+                            onClick={(e) => toggleKebab(e, `prod-${prod.id}`, idx >= Math.max(0, filteredProducts.length - 2))}
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </>
           )}
@@ -1852,7 +2155,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div className="tableContainer">
+              <div className="tableContainer adminDesktopTableView">
                 <table className="table">
                   <thead>
                     <tr>
@@ -1880,6 +2183,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                 type="button"
                                 className="kebabTriggerBtn"
                                 title="Category Actions"
+                                aria-label={`Category actions for ${cat}`}
                                 onClick={(e) => toggleKebab(e, `cat-${idx}`, idx >= Math.max(0, categories.length - 2))}
                               >
                                 <MoreVertical size={16} />
@@ -1893,7 +2197,8 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                                   position: 'fixed',
                                   top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
                                   bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
-                                  right: `${kebabCoords.right}px`,
+                                  right: kebabCoords.right !== null ? `${kebabCoords.right}px` : 'auto',
+                                  left: kebabCoords.left !== null ? `${kebabCoords.left}px` : 'auto',
                                   zIndex: 999999
                                 }}
                                 onClick={(e) => e.stopPropagation()}
@@ -1932,6 +2237,50 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     })}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Categories Stacked Cards View */}
+              <div className="adminMobileCardView" role="region" aria-label="Categories list">
+                {categories.map((cat, idx) => {
+                  const count = products.filter(p => p.categoryName === cat).length;
+                  return (
+                    <div key={`m-cat-${idx}`} className="adminMobileCard">
+                      <div className="adminMobileCardHeader">
+                        <div>
+                          <div className="adminCardOrderNumber">{cat}</div>
+                          <div className="adminCardDate">
+                            {count} {count === 1 ? 'Product linked' : 'Products linked'}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="adminMobileCardFooter" style={{ paddingTop: '8px' }}>
+                        <button
+                          type="button"
+                          className="btnSecondary adminProductEditBtn"
+                          onClick={() => {
+                            setEditingCategory(cat);
+                            setCategoryInputName(cat);
+                          }}
+                          aria-label={`Edit category ${cat}`}
+                        >
+                          <Edit2 size={14} />
+                          <span>Edit Category</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          className="kebabTriggerBtn adminCardKebabBtn"
+                          title="Category Actions"
+                          aria-label={`More actions for category ${cat}`}
+                          onClick={(e) => toggleKebab(e, `cat-${idx}`, idx >= Math.max(0, categories.length - 2))}
+                        >
+                          <MoreVertical size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </>
           )}
@@ -1977,116 +2326,201 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                   </button>
                 </div>
               ) : (
-                <div className="tableContainer">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Code</th>
-                        <th>Type &amp; Value</th>
-                        <th>Min Spend</th>
-                        <th>Usage</th>
-                        <th>Expires</th>
-                        <th>Status</th>
-                        <th style={{ textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {discounts.map(disc => (
-                        <tr key={disc.id}>
-                          <td>
-                            <strong style={{ fontFamily: 'monospace', fontSize: '0.95rem', color: 'var(--color-primary)' }}>
-                              {disc.code}
-                            </strong>
-                          </td>
-                          <td>
-                            <span style={{ fontWeight: 600 }}>
-                              {disc.type === 'percentage' ? `${disc.value}% OFF` : `£${disc.value} OFF`}
-                            </span>
-                          </td>
-                          <td>£{disc.minSpend.toFixed(2)}</td>
-                          <td>
-                            <span style={{ fontSize: '0.82rem' }}>{disc.usageCount} / {disc.maxUses}</span>
-                          </td>
-                          <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{disc.expiresAt}</td>
-                          <td>
-                            <span 
-                              className={`badge ${disc.status}`}
-                              onClick={() => handleToggleDiscountStatus(disc.id)}
-                              style={{ cursor: 'pointer' }}
-                              title="Click to toggle Active/Paused"
-                            >
-                              {disc.status === 'active' ? 'Active' : 'Paused'}
-                            </span>
-                          </td>
-                          <td style={{ textAlign: 'right', position: 'relative' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                              <button
-                                type="button"
-                                className="kebabTriggerBtn"
-                                title="Discount Actions"
-                                onClick={(e) => toggleKebab(e, `disc-${disc.id}`, idx >= Math.max(0, discounts.length - 2))}
-                              >
-                                <MoreVertical size={16} />
-                              </button>
-                            </div>
-
-                            {openKebabId === `disc-${disc.id}` && kebabCoords && createPortal(
-                              <div
-                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
-                                style={{
-                                  position: 'fixed',
-                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
-                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
-                                  right: `${kebabCoords.right}px`,
-                                  zIndex: 999999
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <button
-                                  type="button"
-                                  className="kebabItem"
-                                  onClick={() => {
-                                    setEditingDiscount({ ...disc });
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Edit2 size={14} />
-                                  <span>Edit Discount</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="kebabItem"
-                                  onClick={() => {
-                                    handleToggleDiscountStatus(disc.id);
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Tag size={14} />
-                                  <span>{disc.status === 'active' ? 'Pause Discount' : 'Activate Discount'}</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="kebabItem kebabDelete"
-                                  onClick={() => {
-                                    handleDeleteDiscount(disc.id);
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Trash2 size={14} />
-                                  <span>Delete Code</span>
-                                </button>
-                              </div>,
-                              document.body
-                            )}
-                          </td>
+                <>
+                  <div className="tableContainer adminDesktopTableView">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Code</th>
+                          <th>Type &amp; Value</th>
+                          <th>Min Spend</th>
+                          <th>Usage</th>
+                          <th>Expires</th>
+                          <th>Status</th>
+                          <th style={{ textAlign: 'right' }}>Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {discounts.map((disc, idx) => (
+                          <tr key={disc.id}>
+                            <td>
+                              <strong style={{ fontFamily: 'monospace', fontSize: '0.95rem', color: 'var(--color-primary)' }}>
+                                {disc.code}
+                              </strong>
+                            </td>
+                            <td>
+                              <span style={{ fontWeight: 600 }}>
+                                {disc.type === 'percentage' ? `${disc.value}% OFF` : `£${disc.value} OFF`}
+                              </span>
+                            </td>
+                            <td>£{disc.minSpend.toFixed(2)}</td>
+                            <td>
+                              <span style={{ fontSize: '0.82rem' }}>{disc.usageCount} / {disc.maxUses}</span>
+                            </td>
+                            <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{disc.expiresAt}</td>
+                            <td>
+                              <span 
+                                className={`badge ${disc.status}`}
+                                onClick={() => handleToggleDiscountStatus(disc.id)}
+                                style={{ cursor: 'pointer' }}
+                                title="Click to toggle Active/Paused"
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggleDiscountStatus(disc.id); } }}
+                                aria-label={`Status is ${disc.status}. Click to toggle.`}
+                              >
+                                {disc.status === 'active' ? 'Active' : 'Paused'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right', position: 'relative' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                <button
+                                  type="button"
+                                  className="kebabTriggerBtn"
+                                  title="Discount Actions"
+                                  aria-label={`Discount actions for ${disc.code}`}
+                                  onClick={(e) => toggleKebab(e, `disc-${disc.id}`, idx >= Math.max(0, discounts.length - 2))}
+                                >
+                                  <MoreVertical size={16} />
+                                </button>
+                              </div>
+
+                              {openKebabId === `disc-${disc.id}` && kebabCoords && createPortal(
+                                <div
+                                  className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                  style={{
+                                    position: 'fixed',
+                                    top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                    bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                    right: kebabCoords.right !== null ? `${kebabCoords.right}px` : 'auto',
+                                    left: kebabCoords.left !== null ? `${kebabCoords.left}px` : 'auto',
+                                    zIndex: 999999
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      setEditingDiscount({ ...disc });
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Edit2 size={14} />
+                                    <span>Edit Discount</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="kebabItem"
+                                    onClick={() => {
+                                      handleToggleDiscountStatus(disc.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Tag size={14} />
+                                    <span>{disc.status === 'active' ? 'Pause Discount' : 'Activate Discount'}</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="kebabItem kebabDelete"
+                                    onClick={() => {
+                                      handleDeleteDiscount(disc.id);
+                                      setOpenKebabId(null);
+                                      setKebabCoords(null);
+                                    }}
+                                  >
+                                    <Trash2 size={14} />
+                                    <span>Delete Code</span>
+                                  </button>
+                                </div>,
+                                document.body
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Discounts Stacked Cards View */}
+                  <div className="adminMobileCardView" role="region" aria-label="Discounts list">
+                    {discounts.map((disc, idx) => (
+                      <div key={`m-disc-${disc.id}`} className="adminMobileCard">
+                        <div className="adminMobileCardHeader">
+                          <div>
+                            <div className="adminCardOrderNumber" style={{ fontFamily: 'monospace', color: 'var(--color-primary)' }}>
+                              {disc.code}
+                            </div>
+                            <div className="adminCardDate">
+                              Expires: {disc.expiresAt}
+                            </div>
+                          </div>
+                          <span 
+                            className={`badge ${disc.status}`}
+                            onClick={() => handleToggleDiscountStatus(disc.id)}
+                            style={{ cursor: 'pointer' }}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggleDiscountStatus(disc.id); } }}
+                            aria-label={`Status is ${disc.status}. Click to toggle.`}
+                          >
+                            {disc.status === 'active' ? 'Active' : 'Paused'}
+                          </span>
+                        </div>
+
+                        <div className="adminMobileCardBody">
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Discount Value:</span>
+                            <strong style={{ fontSize: '0.92rem', color: 'var(--color-primary)' }}>
+                              {disc.type === 'percentage' ? `${disc.value}% OFF` : `£${disc.value} OFF`}
+                            </strong>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Minimum Spend:</span>
+                            <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>£{disc.minSpend.toFixed(2)}</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Redemptions:</span>
+                            <span style={{ fontSize: '0.85rem' }}>{disc.usageCount} / {disc.maxUses} uses</span>
+                          </div>
+                        </div>
+
+                        <div className="adminMobileCardFooter">
+                          <button
+                            type="button"
+                            className="btnSecondary adminProductEditBtn"
+                            onClick={() => setEditingDiscount({ ...disc })}
+                            aria-label={`Edit discount ${disc.code}`}
+                          >
+                            <Edit2 size={14} />
+                            <span>Edit Code</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className="btnSecondary adminCardActionBtn"
+                            onClick={() => handleToggleDiscountStatus(disc.id)}
+                            aria-label={`${disc.status === 'active' ? 'Pause' : 'Activate'} discount ${disc.code}`}
+                          >
+                            {disc.status === 'active' ? 'Pause' : 'Activate'}
+                          </button>
+
+                          <button
+                            type="button"
+                            className="kebabTriggerBtn adminCardKebabBtn"
+                            title="Discount Actions"
+                            aria-label={`More actions for discount ${disc.code}`}
+                            onClick={(e) => toggleKebab(e, `disc-${disc.id}`, idx >= Math.max(0, discounts.length - 2))}
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </>
           )}
@@ -2148,136 +2582,235 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div className="tableContainer">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Rating</th>
-                      <th>Client</th>
-                      <th>Product</th>
-                      <th>Feedback</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th style={{ textAlign: 'right' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredReviews.map((rev, idx) => {
-                      const isFeatured = rev.status === 'featured';
-                      return (
-                        <tr key={rev.id}>
-                          <td>
-                            <div style={{ display: 'flex', gap: '2px', color: 'var(--color-accent)' }}>
-                              {[...Array(rev.rating || 5)].map((_, i) => (
-                                <Star key={i} size={14} fill="currentColor" />
-                              ))}
-                            </div>
-                          </td>
-                          <td><strong>{rev.client}</strong></td>
-                          <td>
-                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>
-                              {rev.productName || 'Signature Unit'}
-                            </span>
-                          </td>
-                          <td style={{ fontSize: '0.86rem', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={rev.text}>
-                            "{rev.text.length > 55 ? rev.text.substring(0, 52) + '...' : rev.text}"
-                          </td>
-                          <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{rev.date}</td>
-                          <td>
-                            {isFeatured ? (
-                              <span className="badge inStock" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <Check size={11} /> Featured
+              {/* Desktop Wide Table View */}
+              <div className="adminDesktopTableView">
+                <div className="tableContainer">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Rating</th>
+                        <th>Client</th>
+                        <th>Product</th>
+                        <th>Feedback</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th style={{ textAlign: 'right' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredReviews.map((rev, idx) => {
+                        const isFeatured = rev.status === 'featured';
+                        return (
+                          <tr key={rev.id}>
+                            <td>
+                              <div style={{ display: 'flex', gap: '2px', color: 'var(--color-accent)' }}>
+                                {[...Array(rev.rating || 5)].map((_, i) => (
+                                  <Star key={i} size={14} fill="currentColor" />
+                                ))}
+                              </div>
+                            </td>
+                            <td><strong>{rev.client}</strong></td>
+                            <td>
+                              <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>
+                                {rev.productName || 'Signature Unit'}
                               </span>
-                            ) : (
-                              <span className="badge" style={{ backgroundColor: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <Clock size={11} /> Awaiting Approval
-                              </span>
-                            )}
-                          </td>
-                          <td style={{ textAlign: 'right', position: 'relative' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                              <button
-                                type="button"
-                                className="kebabTriggerBtn"
-                                title="Review Actions"
-                                onClick={(e) => toggleKebab(e, `rev-${rev.id}`, idx >= Math.max(0, filteredReviews.length - 2))}
-                              >
-                                <MoreVertical size={16} />
-                              </button>
-                            </div>
+                            </td>
+                            <td style={{ fontSize: '0.86rem', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={rev.text}>
+                              "{rev.text.length > 55 ? rev.text.substring(0, 52) + '...' : rev.text}"
+                            </td>
+                            <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{rev.date}</td>
+                            <td>
+                              {isFeatured ? (
+                                <span className="badge inStock" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                  <Check size={11} /> Featured
+                                </span>
+                              ) : (
+                                <span className="badge" style={{ backgroundColor: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                  <Clock size={11} /> Awaiting Approval
+                                </span>
+                              )}
+                            </td>
+                            <td style={{ textAlign: 'right', position: 'relative' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                <button
+                                  type="button"
+                                  className="kebabTriggerBtn"
+                                  title="Review Actions"
+                                  onClick={(e) => toggleKebab(e, `rev-${rev.id}`, idx >= Math.max(0, filteredReviews.length - 2))}
+                                >
+                                  <MoreVertical size={16} />
+                                </button>
+                              </div>
 
-                            {openKebabId === `rev-${rev.id}` && kebabCoords && createPortal(
-                              <div
-                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
-                                style={{
-                                  position: 'fixed',
-                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
-                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
-                                  right: `${kebabCoords.right}px`,
-                                  zIndex: 999999
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {isFeatured ? (
+                              {openKebabId === `rev-${rev.id}` && kebabCoords && createPortal(
+                                <div
+                                  className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                  style={{
+                                    position: 'fixed',
+                                    top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                    bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                    right: kebabCoords.right !== null ? `${kebabCoords.right}px` : 'auto',
+                                    left: kebabCoords.left !== null ? `${kebabCoords.left}px` : 'auto',
+                                    zIndex: 999999
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {isFeatured ? (
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        handleRemoveReviewFromSite(rev.id);
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <X size={14} color="#DC2626" />
+                                      <span>Remove from Site</span>
+                                    </button>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        handleFeatureReview(rev.id);
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <Check size={14} color="#15803D" />
+                                      <span>Feature on Site</span>
+                                    </button>
+                                  )}
                                   <button
                                     type="button"
                                     className="kebabItem"
                                     onClick={() => {
-                                      handleRemoveReviewFromSite(rev.id);
+                                      setEditingReview({ ...rev });
                                       setOpenKebabId(null);
                                       setKebabCoords(null);
                                     }}
                                   >
-                                    <X size={14} color="#DC2626" />
-                                    <span>Remove from Site</span>
+                                    <Edit2 size={14} />
+                                    <span>Edit Review</span>
                                   </button>
-                                ) : (
                                   <button
                                     type="button"
-                                    className="kebabItem"
+                                    className="kebabItem kebabDelete"
                                     onClick={() => {
-                                      handleFeatureReview(rev.id);
+                                      handleDeleteReview(rev.id);
                                       setOpenKebabId(null);
                                       setKebabCoords(null);
                                     }}
                                   >
-                                    <Check size={14} color="#15803D" />
-                                    <span>Feature on Site</span>
+                                    <Trash2 size={14} />
+                                    <span>Delete Review</span>
                                   </button>
-                                )}
-                                <button
-                                  type="button"
-                                  className="kebabItem"
-                                  onClick={() => {
-                                    setEditingReview({ ...rev });
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Edit2 size={14} />
-                                  <span>Edit Review</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="kebabItem kebabDelete"
-                                  onClick={() => {
-                                    handleDeleteReview(rev.id);
-                                    setOpenKebabId(null);
-                                    setKebabCoords(null);
-                                  }}
-                                >
-                                  <Trash2 size={14} />
-                                  <span>Delete Review</span>
-                                </button>
-                              </div>,
-                              document.body
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                                </div>,
+                                document.body
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+
+                  {filteredReviews.length === 0 && (
+                    <div className="emptyStateCard">
+                      <Star size={32} color="var(--color-accent)" strokeWidth={1.5} />
+                      <h3 className="emptyStateTitle">No reviews in this view</h3>
+                      <p className="emptyStateSubtitle">
+                        {reviewStatusFilter === 'pending'
+                          ? 'All submitted client reviews have been approved.'
+                          : 'No client reviews found.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Mobile Reviews Stacked Cards View */}
+              <div className="adminMobileCardView" role="region" aria-label="Customer reviews list">
+                {filteredReviews.map((rev, idx) => {
+                  const isFeatured = rev.status === 'featured';
+                  return (
+                    <div key={`m-rev-${rev.id}`} className="adminMobileCard">
+                      <div className="adminMobileCardHeader">
+                        <div>
+                          <div style={{ display: 'flex', gap: '3px', color: 'var(--color-accent)', marginBottom: '4px' }}>
+                            {[...Array(rev.rating || 5)].map((_, i) => (
+                              <Star key={i} size={15} fill="currentColor" />
+                            ))}
+                          </div>
+                          <div className="adminCardOrderNumber">{rev.client}</div>
+                          <div className="adminCardDate">
+                            {rev.productName || 'Signature Unit'} • {rev.date}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                          {isFeatured ? (
+                            <span className="badge inStock" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <Check size={11} /> Featured
+                            </span>
+                          ) : (
+                            <span className="badge" style={{ backgroundColor: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <Clock size={11} /> Pending
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            className="kebabTriggerBtn adminCardKebabBtn"
+                            title="Review Actions"
+                            aria-label={`More actions for review by ${rev.client}`}
+                            onClick={(e) => toggleKebab(e, `rev-${rev.id}`, idx >= Math.max(0, filteredReviews.length - 2))}
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="adminMobileCardBody">
+                        <p style={{ margin: 0, fontSize: '0.86rem', fontStyle: 'italic', color: 'var(--color-text)', lineHeight: 1.5 }}>
+                          "{rev.text}"
+                        </p>
+                      </div>
+
+                      <div className="adminMobileCardFooter" style={{ paddingTop: '8px' }}>
+                        {isFeatured ? (
+                          <button
+                            type="button"
+                            className="btnSecondary adminProductEditBtn"
+                            onClick={() => handleRemoveReviewFromSite(rev.id)}
+                            aria-label={`Remove review by ${rev.client} from site`}
+                          >
+                            <X size={14} color="#DC2626" />
+                            <span>Remove from Site</span>
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btnPrimary adminProductEditBtn"
+                            onClick={() => handleFeatureReview(rev.id)}
+                            aria-label={`Feature review by ${rev.client} on site`}
+                          >
+                            <Check size={14} />
+                            <span>Feature on Site</span>
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="btnSecondary adminProductEditBtn"
+                          onClick={() => setEditingReview({ ...rev })}
+                          aria-label={`Edit review from ${rev.client}`}
+                        >
+                          <Edit2 size={14} />
+                          <span>Edit Review</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
 
                 {filteredReviews.length === 0 && (
                   <div className="emptyStateCard">
@@ -2341,80 +2874,130 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div className="tableContainer">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Subscriber</th>
-                      <th>Email Address</th>
-                      <th>List Type</th>
-                      <th>Date</th>
-                      <th style={{ textAlign: 'right' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {subscribers.map((sub, idx) => (
-                      <tr key={sub.id}>
-                        <td><strong>{sub.name}</strong></td>
-                        <td>{sub.email}</td>
-                        <td><span className="badge processing">{sub.type}</span></td>
-                        <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{sub.date}</td>
-                        <td style={{ textAlign: 'right', position: 'relative' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                            <button
-                              type="button"
-                              className="kebabTriggerBtn"
-                              title="Subscriber Actions"
-                              onClick={(e) => toggleKebab(e, `sub-${sub.id}`, idx >= Math.max(0, subscribers.length - 2))}
-                            >
-                              <MoreVertical size={16} />
-                            </button>
-                          </div>
-
-                          {openKebabId === `sub-${sub.id}` && kebabCoords && createPortal(
-                            <div
-                              className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
-                              style={{
-                                position: 'fixed',
-                                top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
-                                bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
-                                right: `${kebabCoords.right}px`,
-                                zIndex: 999999
-                              }}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <button
-                                type="button"
-                                className="kebabItem"
-                                onClick={() => {
-                                  setEditingSubscriber({ ...sub });
-                                  setOpenKebabId(null);
-                                  setKebabCoords(null);
-                                }}
-                              >
-                                <Edit2 size={14} />
-                                <span>Edit Subscriber</span>
-                              </button>
-                              <button
-                                type="button"
-                                className="kebabItem kebabDelete"
-                                onClick={() => {
-                                  handleDeleteSubscriber(sub.id);
-                                  setOpenKebabId(null);
-                                  setKebabCoords(null);
-                                }}
-                              >
-                                <Trash2 size={14} />
-                                <span>Delete Subscriber</span>
-                              </button>
-                            </div>,
-                            document.body
-                          )}
-                        </td>
+              {/* Desktop Wide Table View */}
+              <div className="adminDesktopTableView">
+                <div className="tableContainer">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Subscriber</th>
+                        <th>Email Address</th>
+                        <th>List Type</th>
+                        <th>Date</th>
+                        <th style={{ textAlign: 'right' }}>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {subscribers.map((sub, idx) => (
+                        <tr key={sub.id}>
+                          <td><strong>{sub.name}</strong></td>
+                          <td>{sub.email}</td>
+                          <td><span className="badge processing">{sub.type}</span></td>
+                          <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{sub.date}</td>
+                          <td style={{ textAlign: 'right', position: 'relative' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                              <button
+                                type="button"
+                                className="kebabTriggerBtn"
+                                title="Subscriber Actions"
+                                onClick={(e) => toggleKebab(e, `sub-${sub.id}`, idx >= Math.max(0, subscribers.length - 2))}
+                              >
+                                <MoreVertical size={16} />
+                              </button>
+                            </div>
+
+                            {openKebabId === `sub-${sub.id}` && kebabCoords && createPortal(
+                              <div
+                                className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                style={{
+                                  position: 'fixed',
+                                  top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                  bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                  right: kebabCoords.right !== null ? `${kebabCoords.right}px` : 'auto',
+                                  left: kebabCoords.left !== null ? `${kebabCoords.left}px` : 'auto',
+                                  zIndex: 999999
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <button
+                                  type="button"
+                                  className="kebabItem"
+                                  onClick={() => {
+                                    setEditingSubscriber({ ...sub });
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Edit2 size={14} />
+                                  <span>Edit Subscriber</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="kebabItem kebabDelete"
+                                  onClick={() => {
+                                    handleDeleteSubscriber(sub.id);
+                                    setOpenKebabId(null);
+                                    setKebabCoords(null);
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                  <span>Delete Subscriber</span>
+                                </button>
+                              </div>,
+                              document.body
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Mobile Subscribers Stacked Cards View */}
+              <div className="adminMobileCardView" role="region" aria-label="VIP subscribers list">
+                {subscribers.map((sub, idx) => (
+                  <div key={`m-sub-${sub.id}`} className="adminMobileCard">
+                    <div className="adminMobileCardHeader">
+                      <div>
+                        <div className="adminCardOrderNumber">{sub.name}</div>
+                        <div className="adminCardDate">Joined: {sub.date}</div>
+                      </div>
+                      <span className="badge processing">{sub.type}</span>
+                    </div>
+
+                    <div className="adminMobileCardBody">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Email:</span>
+                        <a href={`mailto:${sub.email}`} style={{ fontSize: '0.88rem', color: 'var(--color-primary)', fontWeight: 600, wordBreak: 'break-all', textDecoration: 'none' }}>
+                          {sub.email}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="adminMobileCardFooter">
+                      <button
+                        type="button"
+                        className="btnSecondary adminProductEditBtn"
+                        onClick={() => setEditingSubscriber({ ...sub })}
+                        aria-label={`Edit subscriber ${sub.name}`}
+                      >
+                        <Edit2 size={14} />
+                        <span>Edit Subscriber</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        className="kebabTriggerBtn adminCardKebabBtn"
+                        title="Subscriber Actions"
+                        aria-label={`More actions for subscriber ${sub.name}`}
+                        onClick={(e) => toggleKebab(e, `sub-${sub.id}`, idx >= Math.max(0, subscribers.length - 2))}
+                      >
+                        <MoreVertical size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </>
           )}
@@ -2531,108 +3114,187 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                     </span>
                   </div>
 
-                  <div className="tableContainer">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Service / Courier</th>
-                          <th>Estimated Delivery Window</th>
-                          <th>Rate (£ GBP)</th>
-                          <th>Status</th>
-                          <th style={{ textAlign: 'right' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {shippingRates.map((rate, idx) => (
-                          <tr key={rate.id}>
-                            <td>
-                              <strong style={{ fontSize: '0.9rem' }}>{rate.name}</strong>
-                              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-secondary)' }}>ID: {rate.id}</div>
-                            </td>
-                            <td>
-                              <span style={{ fontSize: '0.84rem' }}>{rate.estimatedDays}</span>
-                            </td>
-                            <td>
-                              <strong style={{ fontSize: '0.92rem' }}>£{Number(rate.price).toFixed(2)}</strong>
-                            </td>
-                            <td>
-                              <span 
-                                className={`badge ${rate.status === 'active' ? 'inStock' : 'outOfStock'}`}
-                                onClick={() => handleToggleShippingRateStatus(rate.id)}
-                                style={{ cursor: 'pointer' }}
-                                title="Click to toggle Active / Paused"
-                              >
-                                {rate.status === 'active' ? 'Active' : 'Paused'}
-                              </span>
-                            </td>
-                            <td style={{ textAlign: 'right', position: 'relative' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                                <button
-                                  type="button"
-                                  className="kebabTriggerBtn"
-                                  title="Shipping Rate Actions"
-                                  onClick={(e) => toggleKebab(e, `ship-${rate.id}`, idx >= Math.max(0, shippingRates.length - 2))}
-                                >
-                                  <MoreVertical size={16} />
-                                </button>
-                              </div>
-
-                              {openKebabId === `ship-${rate.id}` && kebabCoords && createPortal(
-                                <div
-                                  className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
-                                  style={{
-                                    position: 'fixed',
-                                    top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
-                                    bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
-                                    right: `${kebabCoords.right}px`,
-                                    zIndex: 999999
-                                  }}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <button
-                                    type="button"
-                                    className="kebabItem"
-                                    onClick={() => {
-                                      setEditingShippingRate({ ...rate });
-                                      setOpenKebabId(null);
-                                      setKebabCoords(null);
-                                    }}
-                                  >
-                                    <Edit2 size={14} />
-                                    <span>Edit Rate</span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="kebabItem"
-                                    onClick={() => {
-                                      handleToggleShippingRateStatus(rate.id);
-                                      setOpenKebabId(null);
-                                      setKebabCoords(null);
-                                    }}
-                                  >
-                                    <Truck size={14} />
-                                    <span>{rate.status === 'active' ? 'Pause Service' : 'Activate Service'}</span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="kebabItem kebabDelete"
-                                    onClick={() => {
-                                      handleDeleteShippingRate(rate.id);
-                                      setOpenKebabId(null);
-                                      setKebabCoords(null);
-                                    }}
-                                  >
-                                    <Trash2 size={14} />
-                                    <span>Delete Rate</span>
-                                  </button>
-                                </div>,
-                                document.body
-                              )}
-                            </td>
+                  {/* Desktop Wide Table View */}
+                  <div className="adminDesktopTableView">
+                    <div className="tableContainer">
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>Service / Courier</th>
+                            <th>Estimated Delivery Window</th>
+                            <th>Rate (£ GBP)</th>
+                            <th>Status</th>
+                            <th style={{ textAlign: 'right' }}>Actions</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {shippingRates.map((rate, idx) => (
+                            <tr key={rate.id}>
+                              <td>
+                                <strong style={{ fontSize: '0.9rem' }}>{rate.name}</strong>
+                                <div style={{ fontSize: '0.72rem', color: 'var(--color-text-secondary)' }}>ID: {rate.id}</div>
+                              </td>
+                              <td>
+                                <span style={{ fontSize: '0.84rem' }}>{rate.estimatedDays}</span>
+                              </td>
+                              <td>
+                                <strong style={{ fontSize: '0.92rem' }}>£{Number(rate.price).toFixed(2)}</strong>
+                              </td>
+                              <td>
+                                <span 
+                                  className={`badge ${rate.status === 'active' ? 'inStock' : 'outOfStock'}`}
+                                  onClick={() => handleToggleShippingRateStatus(rate.id)}
+                                  style={{ cursor: 'pointer' }}
+                                  title="Click to toggle Active / Paused"
+                                >
+                                  {rate.status === 'active' ? 'Active' : 'Paused'}
+                                </span>
+                              </td>
+                              <td style={{ textAlign: 'right', position: 'relative' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                  <button
+                                    type="button"
+                                    className="kebabTriggerBtn"
+                                    title="Shipping Rate Actions"
+                                    onClick={(e) => toggleKebab(e, `ship-${rate.id}`, idx >= Math.max(0, shippingRates.length - 2))}
+                                  >
+                                    <MoreVertical size={16} />
+                                  </button>
+                                </div>
+
+                                {openKebabId === `ship-${rate.id}` && kebabCoords && createPortal(
+                                  <div
+                                    className={`kebabMenu ${kebabCoords.openUpward ? 'openUpward' : ''}`}
+                                    style={{
+                                      position: 'fixed',
+                                      top: kebabCoords.top !== null ? `${kebabCoords.top}px` : 'auto',
+                                      bottom: kebabCoords.bottom !== null ? `${kebabCoords.bottom}px` : 'auto',
+                                      right: kebabCoords.right !== null ? `${kebabCoords.right}px` : 'auto',
+                                      left: kebabCoords.left !== null ? `${kebabCoords.left}px` : 'auto',
+                                      zIndex: 999999
+                                    }}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        setEditingShippingRate({ ...rate });
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <Edit2 size={14} />
+                                      <span>Edit Rate</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="kebabItem"
+                                      onClick={() => {
+                                        handleToggleShippingRateStatus(rate.id);
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <Truck size={14} />
+                                      <span>{rate.status === 'active' ? 'Pause Service' : 'Activate Service'}</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="kebabItem kebabDelete"
+                                      onClick={() => {
+                                        handleDeleteShippingRate(rate.id);
+                                        setOpenKebabId(null);
+                                        setKebabCoords(null);
+                                      }}
+                                    >
+                                      <Trash2 size={14} />
+                                      <span>Delete Rate</span>
+                                    </button>
+                                  </div>,
+                                  document.body
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+
+                      {shippingRates.length === 0 && (
+                        <div className="emptyStateCard">
+                          <Truck size={32} color="var(--color-text-tertiary)" />
+                          <h3 className="emptyStateTitle">No shipping rates configured</h3>
+                          <p className="emptyStateSubtitle">Add your courier services to enable client delivery options.</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Mobile Shipping Rates Stacked Cards View */}
+                  <div className="adminMobileCardView" role="region" aria-label="Shipping rates list">
+                    {shippingRates.map((rate, idx) => (
+                      <div key={`m-ship-${rate.id}`} className="adminMobileCard">
+                        <div className="adminMobileCardHeader">
+                          <div>
+                            <div className="adminCardOrderNumber">{rate.name}</div>
+                            <div className="adminCardDate">Transit: {rate.estimatedDays}</div>
+                          </div>
+                          <span 
+                            className={`badge ${rate.status === 'active' ? 'inStock' : 'outOfStock'}`}
+                            onClick={() => handleToggleShippingRateStatus(rate.id)}
+                            style={{ cursor: 'pointer' }}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggleShippingRateStatus(rate.id); } }}
+                            aria-label={`Status is ${rate.status}. Click to toggle.`}
+                          >
+                            {rate.status === 'active' ? 'Active' : 'Paused'}
+                          </span>
+                        </div>
+
+                        <div className="adminMobileCardBody">
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Courier Cost:</span>
+                            <strong style={{ fontSize: '1.05rem', color: 'var(--color-primary)' }}>
+                              £{Number(rate.price).toFixed(2)}
+                            </strong>
+                          </div>
+                        </div>
+
+                        <div className="adminMobileCardFooter">
+                          <div className="adminCardActionGroup" style={{ flexWrap: 'wrap', gap: '8px' }}>
+                            <button
+                              type="button"
+                              className="btnSecondary adminProductEditBtn"
+                              onClick={() => setEditingShippingRate({ ...rate })}
+                              aria-label={`Edit shipping rate ${rate.name}`}
+                            >
+                              <Edit2 size={14} />
+                              <span>Edit</span>
+                            </button>
+                            <button
+                              type="button"
+                              className="btnSecondary adminCardActionBtn"
+                              onClick={() => handleToggleShippingRateStatus(rate.id)}
+                              aria-label={`${rate.status === 'active' ? 'Pause' : 'Activate'} ${rate.name}`}
+                            >
+                              <Truck size={14} />
+                              <span>{rate.status === 'active' ? 'Pause' : 'Activate'}</span>
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            className="kebabTriggerBtn adminCardKebabBtn"
+                            title="Shipping Rate Actions"
+                            aria-label={`More actions for ${rate.name}`}
+                            onClick={(e) => toggleKebab(e, `ship-${rate.id}`, idx >= Math.max(0, shippingRates.length - 2))}
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
 
                     {shippingRates.length === 0 && (
                       <div className="emptyStateCard">
@@ -2658,6 +3320,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddProductOpen && (
         <div className="modalOverlay" onClick={() => setIsAddProductOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddProductOpen(false)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Add Product</h2>
             <p className="modalText">Create a new hair unit or silk styling care product.</p>
 
@@ -2674,7 +3341,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="adminFormRowGrid">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Category</label>
                   <select 
@@ -2700,7 +3367,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '10px' }}>
+              <div className="adminFormRowGrid">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Stock Quantity</label>
                   <input 
@@ -2735,6 +3402,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingProduct && (
         <div className="modalOverlay" onClick={() => setEditingProduct(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingProduct(null)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Edit Product</h2>
             <p className="modalText">Update title, category, price, and stock count.</p>
 
@@ -2750,7 +3422,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="adminFormRowGrid">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Category</label>
                   <select 
@@ -2775,7 +3447,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '10px' }}>
+              <div className="adminFormRowGrid">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Stock Quantity</label>
                   <input 
@@ -2809,6 +3481,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {(isAddCategoryOpen || editingCategory) && (
         <div className="modalOverlay" onClick={() => { setIsAddCategoryOpen(false); setEditingCategory(null); }}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => { setIsAddCategoryOpen(false); setEditingCategory(null); }} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">{editingCategory ? 'Rename Category' : 'New Category'}</h2>
             <p className="modalText">{editingCategory ? `Update name for "${editingCategory}".` : 'Add a new product category.'}</p>
 
@@ -2839,6 +3516,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddDiscountOpen && (
         <div className="modalOverlay" onClick={() => setIsAddDiscountOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddDiscountOpen(false)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">New Discount Code</h2>
             <p className="modalText">Active discount codes will automatically show the privilege code box in the client cart.</p>
 
@@ -2916,6 +3598,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingDiscount && (
         <div className="modalOverlay" onClick={() => setEditingDiscount(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingDiscount(null)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Edit Discount Code</h2>
             <p className="modalText">Update code terms, value, or usage limits.</p>
 
@@ -2989,6 +3676,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isDispatchModalOpen && dispatchOrderTarget && (
         <div className="modalOverlay" onClick={() => setIsDispatchModalOpen(false)}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setIsDispatchModalOpen(false)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Ship Order {dispatchOrderTarget.orderNumber}</h2>
             <p className="modalText">Assign courier partner and tracking code to advance lifeline to Shipped.</p>
 
@@ -3043,11 +3735,16 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingOrder && (
         <div className="modalOverlay" onClick={() => setEditingOrder(null)}>
           <div className="editModalContent" style={{ maxWidth: '580px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingOrder(null)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Edit Order {editingOrder.orderNumber}</h2>
             <p className="modalText">Update recipient information, status, or fulfillment notes.</p>
 
             <form onSubmit={handleSaveOrderEdit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="adminFormRowGrid">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Recipient Name</label>
                   <input 
@@ -3090,7 +3787,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="adminFormRowGrid">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>City</label>
                   <input 
@@ -3111,7 +3808,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="adminFormRowGrid">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Lifeline Status</label>
                   <select 
@@ -3150,7 +3847,12 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {viewOrderDetails && (
         <div className="modalOverlay" onClick={() => setViewOrderDetails(null)}>
           <div className="editModalContent" style={{ maxWidth: '620px' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', marginBottom: '14px' }}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setViewOrderDetails(null)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <div>
                 <h2 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.3rem' }}>{viewOrderDetails.orderNumber}</h2>
                 <span style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)' }}>
@@ -3162,6 +3864,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 className="btnPrimary"
                 onClick={() => window.print()}
                 style={{ fontSize: '0.78rem', padding: '6px 12px', minHeight: '34px' }}
+                aria-label={`Print packing slip for order ${viewOrderDetails.orderNumber}`}
               >
                 <Printer size={13} />
                 <span>Print Slip</span>
@@ -3172,10 +3875,10 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
             <div className="lifelineContainer">
               <div className="lifelineBar" />
               {[
-                { key: 'confirmed', label: '1. Confirmed', stepNum: 1 },
-                { key: 'processing', label: '2. Processing', stepNum: 2 },
-                { key: 'shipped', label: '3. Shipped', stepNum: 3 },
-                { key: 'delivered', label: '4. Delivered', stepNum: 4 }
+                { key: 'confirmed', label: 'Confirmed', stepNum: 1 },
+                { key: 'processing', label: 'Processing', stepNum: 2 },
+                { key: 'shipped', label: 'Shipped', stepNum: 3 },
+                { key: 'delivered', label: 'Delivered', stepNum: 4 }
               ].map((step, idx) => {
                 const stepOrder = ['confirmed', 'processing', 'shipped', 'delivered'];
                 const currentIdx = stepOrder.indexOf(viewOrderDetails.status);
@@ -3193,7 +3896,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               })}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px', marginBottom: '16px', fontSize: '0.85rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '16px', fontSize: '0.85rem' }}>
               <div>
                 <strong style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: '0.72rem', textTransform: 'uppercase' }}>Recipient Shipping</strong>
                 <div>{viewOrderDetails.customer.fullName}</div>
@@ -3214,29 +3917,31 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
             </div>
 
-            <table className="table" style={{ marginBottom: '14px' }}>
-              <thead>
-                <tr>
-                  <th>Item Description</th>
-                  <th>Qty</th>
-                  <th style={{ textAlign: 'right' }}>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {viewOrderDetails.items.map((it, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <strong>{it.name}</strong>
-                      <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)' }}>
-                        {it.selectedLength} • {it.selectedLace}
-                      </div>
-                    </td>
-                    <td>{it.quantity}</td>
-                    <td style={{ textAlign: 'right', fontWeight: 600 }}>£{(it.price * it.quantity).toFixed(2)}</td>
+            <div className="tableContainer" style={{ marginBottom: '14px' }}>
+              <table className="table" style={{ whiteSpace: 'normal' }}>
+                <thead>
+                  <tr>
+                    <th>Item Description</th>
+                    <th style={{ width: '48px', textAlign: 'center' }}>Qty</th>
+                    <th style={{ textAlign: 'right', width: '70px' }}>Total</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {viewOrderDetails.items.map((it, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <strong>{it.name}</strong>
+                        <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)' }}>
+                          {it.selectedLength} • {it.selectedLace}
+                        </div>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>{it.quantity}</td>
+                      <td style={{ textAlign: 'right', fontWeight: 600 }}>£{(it.price * it.quantity).toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--color-border-light)', paddingTop: '10px' }}>
               <div style={{ textAlign: 'right' }}>
@@ -3296,6 +4001,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddReviewOpen && (
         <div className="modalOverlay" onClick={() => setIsAddReviewOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddReviewOpen(false)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Add Client Review</h2>
             <p className="modalText">Record a client testimonial, rating, and website display status.</p>
 
@@ -3392,6 +4102,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingReview && (
         <div className="modalOverlay" onClick={() => setEditingReview(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingReview(null)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Edit Client Review</h2>
             <p className="modalText">Update testimonial contents, rating, or publication status.</p>
 
@@ -3486,6 +4201,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddShippingRateOpen && (
         <div className="modalOverlay" onClick={() => setIsAddShippingRateOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddShippingRateOpen(false)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Add Shipping Rate</h2>
             <p className="modalText">Configure a new courier delivery service and fee.</p>
 
@@ -3555,6 +4275,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingShippingRate && (
         <div className="modalOverlay" onClick={() => setEditingShippingRate(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingShippingRate(null)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Edit Shipping Rate</h2>
             <p className="modalText">Update courier service title, delivery window, and fee.</p>
 
@@ -3621,6 +4346,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {isAddSubscriberOpen && (
         <div className="modalOverlay" onClick={() => setIsAddSubscriberOpen(false)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setIsAddSubscriberOpen(false)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Add VIP Subscriber</h2>
             <p className="modalText">Manually enroll a client into restock alerts or notification drops.</p>
 
@@ -3690,6 +4420,11 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       {editingSubscriber && (
         <div className="modalOverlay" onClick={() => setEditingSubscriber(null)}>
           <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="adminModalStickyHeader">
+              <button type="button" className="adminModalCloseBtn" onClick={() => setEditingSubscriber(null)} aria-label="Close modal">
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
             <h2 className="modalTitle">Edit Subscriber Details</h2>
             <p className="modalText">Update contact information or assigned waitlist drop.</p>
 
