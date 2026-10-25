@@ -43,11 +43,11 @@ export default function SilkPairingAtelier({
       <div className="container">
         
         {/* Header */}
-        <header className="section-header text-center" style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <header className="section-header text-center">
           <h2 className="section-heading">
             Pair Your Unit with 100% Pure <GoldStroke>Mulberry Silk</GoldStroke>
           </h2>
-          <p className="section-subheading" style={{ maxWidth: '580px', margin: '8px auto 0 auto' }}>
+          <p className="section-subheading" style={{ maxWidth: '580px', margin: '0 auto' }}>
             Preserve your HD lace melt, lock in overnight moisture, and prevent friction frizz. Save 10% when styled together.
           </p>
         </header>

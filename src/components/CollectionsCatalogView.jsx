@@ -354,7 +354,7 @@ export default function CollectionsCatalogView({
       >
         <div className="hero-banner-inner">
           <img 
-            src="/images/collections-hero-banner.jpg" 
+            src="/images/collections-hero-banner.webp" 
             alt="House of Nina signature hair crowns, lustrous Mulberry silks, and sculptural gold styling accessories"
             className="hero-banner-img"
             loading="eager"

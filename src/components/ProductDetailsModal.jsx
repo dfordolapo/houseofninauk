@@ -136,11 +136,11 @@ export default function ProductDetailsModal({
             {/* Physical Embossed Wax Seal directly on image/video */}
             <div className="media-wax-seal-stamp" aria-hidden="true">
               <img 
-                src="/images/wax_seal.png" 
+                src="/images/wax_seal.webp" 
                 onError={(e) => {
                   if (!e.currentTarget.dataset.retried) {
                     e.currentTarget.dataset.retried = 'true';
-                    e.currentTarget.src = '/images/wax-seal.png';
+                    e.currentTarget.src = '/images/wax_seal.png';
                   }
                 }}
                 alt="" 

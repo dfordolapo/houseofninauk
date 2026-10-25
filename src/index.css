@@ -163,6 +163,11 @@ h1, h2, h3,
   -webkit-text-wrap: balance;
 }
 
+.section-header {
+  margin-bottom: clamp(26px, 3.5vw, 36px);
+  text-align: center;
+}
+
 .section-heading,
 .care-heading,
 .story-main-heading {
@@ -173,7 +178,7 @@ h1, h2, h3,
   color: var(--color-deep-espresso) !important;
   letter-spacing: -0.015em;
   margin-top: 0;
-  margin-bottom: clamp(12px, 1.8vw, 18px);
+  margin-bottom: 12px;
   text-wrap: balance;
 }
 
@@ -184,6 +189,7 @@ h1, h2, h3,
   color: var(--color-espresso-muted);
   line-height: 1.6;
   margin-top: 0;
+  margin-bottom: 0;
   text-wrap: balance;
 }
 
@@ -1716,7 +1722,7 @@ h1, h2, h3,
 .collection-showcase-header-centered {
   text-align: center;
   max-width: 980px;
-  margin: 0 auto 24px auto;
+  margin: 0 auto clamp(26px, 3.5vw, 36px) auto;
 }
 
 .collection-showcase-header-centered .section-heading {
@@ -1724,7 +1730,7 @@ h1, h2, h3,
   font-size: clamp(1.9rem, 3.4vw, 2.7rem);
   line-height: 1.18;
   color: var(--color-deep-espresso);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   letter-spacing: -0.01em;
 }
 
@@ -2708,21 +2714,21 @@ h1, h2, h3,
     display: block;
   }
 
-  /* Bottom Content & Action Target */
+  /* Bottom Content & Action Target - Always stacked vertically under subtext */
   .showroom-m-body {
     margin-top: 18px;
     padding: 0 4px;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 14px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .showroom-m-text {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    width: 100%;
   }
 
   .showroom-m-title {
@@ -2937,7 +2943,7 @@ h1, h2, h3,
   color: var(--color-deep-espresso, #1A1412);
   line-height: 1.08;
   letter-spacing: -0.02em;
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
 }
 
 .hero-banner-sub {
@@ -5985,7 +5991,7 @@ video::-moz-media-controls {
     letter-spacing: -0.015em !important;
     color: var(--color-deep-espresso, #1A1412) !important;
     margin-top: 0 !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 9px !important;
     text-wrap: balance !important;
     white-space: normal !important;
   }
@@ -6003,7 +6009,7 @@ video::-moz-media-controls {
     letter-spacing: 0.01em !important;
     color: var(--color-espresso-muted, #7D6B5E) !important;
     margin-top: 0 !important;
-    margin-bottom: clamp(16px, 4vw, 22px) !important;
+    margin-bottom: clamp(20px, 4.5vw, 25px) !important;
     text-wrap: balance !important;
     white-space: normal !important;
   }

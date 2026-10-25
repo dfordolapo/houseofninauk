@@ -182,10 +182,10 @@ export const FLOATING_SHOWROOM_DATA = [
     categoryFilter: "Wigs",
     subtitle: "LUXURY TEXTURES. TIMELESS STYLES.",
     actionLabel: "Explore Wigs",
-    image: "/images/showroom/showroom-wigs.jpg",
+    image: "/images/showroom/showroom-wigs.webp",
     alt: "Handcrafted virgin wig on minimalist mannequin with glass bob in background",
     inset: {
-      image: "/images/showroom/inset-wig-scalp.jpg",
+      image: "/images/showroom/inset-wig-scalp.webp",
       alt: "Close-up undetectable Swiss HD lace hairline and scalp parting"
     }
   },
@@ -195,10 +195,10 @@ export const FLOATING_SHOWROOM_DATA = [
     categoryFilter: "Scarves",
     subtitle: "BOLD PRINTS. SILKY FINISHES.",
     actionLabel: "Explore Scarves",
-    image: "/images/showroom/showroom-scarves.jpg",
+    image: "/images/showroom/showroom-scarves.webp",
     alt: "Pure Mulberry silk scarf in flowing sculptural drape on stone pedestal",
     inset: {
-      image: "/images/showroom/inset-scarf-detail.jpg",
+      image: "/images/showroom/inset-scarf-detail.webp",
       alt: "Close-up pure silk twill weave and liquid fabric sheen"
     }
   },
@@ -208,7 +208,7 @@ export const FLOATING_SHOWROOM_DATA = [
     categoryFilter: "Accessories",
     subtitle: "THE FINISHING TOUCH.",
     actionLabel: "Explore Accessories",
-    image: "/images/showroom/showroom-accessories.jpg",
+    image: "/images/showroom/showroom-accessories.webp",
     alt: "Curated styling accessories including silk scrunchie, tortoiseshell clip and gold jewelry",
     inset: null
   }
