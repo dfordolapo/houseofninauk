@@ -88,7 +88,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                   src={scarvesData.image} 
                   alt={scarvesData.alt} 
                   className="showroom-arch-img"
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
                 />
 
@@ -99,7 +99,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                       src={scarvesData.inset.image} 
                       alt={scarvesData.inset.alt} 
                       className="showroom-inset-tile"
-                      loading="lazy"
+                      loading="eager"
                       decoding="async"
                     />
                   </div>
@@ -144,6 +144,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                   className="showroom-arch-img showroom-hero-center-img"
                   loading="eager"
                   decoding="async"
+                  fetchPriority="high"
                 />
                 
                 {/* Floating Macro Lace Texture Inset */}
@@ -153,7 +154,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                       src={wigsData.inset.image} 
                       alt={wigsData.inset.alt} 
                       className="showroom-inset-tile"
-                      loading="lazy"
+                      loading="eager"
                       decoding="async"
                     />
                   </div>
@@ -196,7 +197,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                   src={accessoriesData.image} 
                   alt={accessoriesData.alt} 
                   className="showroom-arch-img"
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
                 />
               </div>
@@ -249,7 +250,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                       src={item.image} 
                       alt={item.alt} 
                       className="showroom-m-img"
-                      loading={idx === 0 ? "eager" : "lazy"}
+                      loading="eager"
                       decoding="async"
                     />
                   </div>
@@ -261,7 +262,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                         src={item.inset.image} 
                         alt={item.inset.alt} 
                         className="showroom-m-inset-img"
-                        loading="lazy"
+                        loading="eager"
                         decoding="async"
                       />
                     </div>

@@ -13,10 +13,10 @@ import SilkPairingAtelier from './components/SilkPairingAtelier';
 import CinematicVideoBanner from './components/CinematicVideoBanner';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
-import CollectionsCatalogView from './components/CollectionsCatalogView';
 import { FEATURED_PRODUCTS, NAV_LINKS, HOUSE_COLLECTIONS_CONFIG } from './data/wigData';
 
-// Dynamic lazy imports for on-demand modals and administrative workflows
+// Dynamic lazy imports for on-demand views, modals, and administrative workflows
+const CollectionsCatalogView = React.lazy(() => import('./components/CollectionsCatalogView'));
 const SearchModal = React.lazy(() => import('./components/SearchModal'));
 const ProductQuickViewModal = React.lazy(() => import('./components/ProductQuickViewModal'));
 const ProductDetailsModal = React.lazy(() => import('./components/ProductDetailsModal'));
@@ -692,22 +692,30 @@ export default function App() {
 
       <main id="main-content">
         {isCollectionsPageOpen ? (
-          <CollectionsCatalogView 
-            initialCategory={collectionsActiveCategory}
-            onBackToHome={handleBackFromCollectionsPage}
-            onOpenDetails={(prod) => setDetailsProduct(prod)}
-            onQuickView={(prod) => setQuickViewProduct(prod)}
-            onAddToCart={handleAddToCart}
-            onToggleWishlist={handleToggleSave}
-            wishlist={wishlist}
-            onOpenReviews={(prod) => {
-              setActiveReviewPost(prod);
-              setIsReviewsModalOpen(true);
-            }}
-            onOpenCart={() => setIsCartOpen(true)}
-            cartCount={cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)}
-            onOpenSearch={() => setIsSearchOpen(true)}
-          />
+          <React.Suspense fallback={
+            <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#F8F5F0', color: '#1C1614', gap: '16px' }}>
+              <div style={{ width: '38px', height: '38px', border: '2px solid rgba(197,160,89,0.2)', borderTopColor: '#C5A059', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              <span style={{ fontSize: '0.75rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#8A827A' }}>Loading House Collections...</span>
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+          }>
+            <CollectionsCatalogView 
+              initialCategory={collectionsActiveCategory}
+              onBackToHome={handleBackFromCollectionsPage}
+              onOpenDetails={(prod) => setDetailsProduct(prod)}
+              onQuickView={(prod) => setQuickViewProduct(prod)}
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleSave}
+              wishlist={wishlist}
+              onOpenReviews={(prod) => {
+                setActiveReviewPost(prod);
+                setIsReviewsModalOpen(true);
+              }}
+              onOpenCart={() => setIsCartOpen(true)}
+              cartCount={cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)}
+              onOpenSearch={() => setIsSearchOpen(true)}
+            />
+          </React.Suspense>
         ) : showHero ? (
           <div className={`hero-transition-wrap ${isHeroFadingOut ? 'fade-out' : ''}`}>
             <WigverseHero onEnterStore={handleEnterStore} />
