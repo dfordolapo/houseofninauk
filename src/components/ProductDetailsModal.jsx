@@ -133,6 +133,21 @@ export default function ProductDetailsModal({
         <div className="quickview-layout">
           {/* ── Left Column: Media Showcase ── */}
           <div className="quickview-media-wrap" style={{ position: 'relative' }}>
+            {/* Physical Embossed Wax Seal directly on image/video */}
+            <div className="media-wax-seal-stamp" aria-hidden="true">
+              <img 
+                src="/images/wax_seal.png" 
+                onError={(e) => {
+                  if (!e.currentTarget.dataset.retried) {
+                    e.currentTarget.dataset.retried = 'true';
+                    e.currentTarget.src = '/images/wax-seal.png';
+                  }
+                }}
+                alt="" 
+                className="media-wax-seal-img" 
+              />
+            </div>
+
             {/* Floating Lookbook / Wishlist Button */}
             <button 
               type="button" 
@@ -426,7 +441,7 @@ export default function ProductDetailsModal({
               )}
             </div>
 
-            {/* Quality badge */}
+            {/* Quality specs */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', color: 'var(--color-espresso-muted)', fontSize: '12px' }}>
               <ShieldCheck size={16} className="text-gold" />
               <span>100% Virgin Hair · Pre-Plucked Hairline &amp; Bleached Knots</span>

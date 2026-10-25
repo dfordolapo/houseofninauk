@@ -13,7 +13,8 @@ import SilkPairingAtelier from './components/SilkPairingAtelier';
 import CinematicVideoBanner from './components/CinematicVideoBanner';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
-import { FEATURED_PRODUCTS } from './data/wigData';
+import CollectionsCatalogView from './components/CollectionsCatalogView';
+import { FEATURED_PRODUCTS, NAV_LINKS, HOUSE_COLLECTIONS_CONFIG } from './data/wigData';
 
 // Dynamic lazy imports for on-demand modals and administrative workflows
 const SearchModal = React.lazy(() => import('./components/SearchModal'));
@@ -37,6 +38,20 @@ const SEEN_HERO_STORAGE_KEY = 'house_of_nina_seen_welcome_v1';
 export default function App() {
   // Mobile drawer state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Dedicated Collection Page State (#collections or ?page=collections)
+  const checkIsCollectionsPath = () => {
+    try {
+      const hash = window.location.hash.toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      return hash === '#collections' || hash === '#all-collections' || params.get('page') === 'collections';
+    } catch {
+      return false;
+    }
+  };
+
+  const [isCollectionsPageOpen, setIsCollectionsPageOpen] = useState(checkIsCollectionsPath);
+  const [collectionsActiveCategory, setCollectionsActiveCategory] = useState('All');
   
   // Cart & Wishlist states - loaded from localStorage per browser
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -83,6 +98,7 @@ export default function App() {
 
     const handleUrlChange = () => {
       setIsAdminOpen(checkIsAdminPath());
+      setIsCollectionsPageOpen(checkIsCollectionsPath());
     };
     window.addEventListener('popstate', handleUrlChange);
     window.addEventListener('hashchange', handleUrlChange);
@@ -431,17 +447,55 @@ export default function App() {
     });
   };
 
+  const handleOpenCollectionsPage = (category = 'All') => {
+    setCollectionsActiveCategory(category);
+    setIsCollectionsPageOpen(true);
+    try {
+      window.history.pushState({ page: 'collections' }, '', '#collections');
+    } catch (e) {}
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const handleBackFromCollectionsPage = () => {
+    setIsCollectionsPageOpen(false);
+    try {
+      window.history.pushState(null, '', window.location.pathname);
+    } catch (e) {}
+    const elem = document.getElementById('featured-products');
+    if (elem) {
+      setTimeout(() => elem.scrollIntoView({ behavior: 'smooth' }), 50);
+    }
+  };
+
   const handleSelectNavLink = (hash) => {
     let targetId = (hash || '').replace('#', '');
     if (targetId === 'contact' && window.innerWidth <= 768) {
       targetId = 'contact-mobile';
     }
+    
+    // If user clicks Collections link from nav
+    if (targetId === 'featured-products' || targetId === 'collections') {
+      if (isCollectionsPageOpen) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+    }
+
     const scrollToTarget = () => {
       const elem = document.getElementById(targetId) || document.getElementById('contact');
       if (elem) {
         elem.scrollIntoView({ behavior: 'smooth' });
       }
     };
+
+    if (isCollectionsPageOpen) {
+      setIsCollectionsPageOpen(false);
+      try {
+        window.history.pushState(null, '', window.location.pathname);
+      } catch (e) {}
+      setTimeout(scrollToTarget, 100);
+      return;
+    }
 
     if (showHero) {
       setShowHero(false);
@@ -457,46 +511,149 @@ export default function App() {
       <div className="adminStandaloneRoot" style={{ minHeight: '100vh', background: '#FAF7F2' }}>
         <React.Suspense
           fallback={
-            <div style={{ minHeight: '100vh', background: 'radial-gradient(circle at 50% 40%, #FFFDF9 0%, #F8F3ED 60%, #EFE8DF 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', padding: '24px', fontFamily: "'Inter', sans-serif" }}>
+            <div className="admin-loading-root">
               <style>{`
-                @keyframes luxuryPulseGlow {
-                  0%, 100% { transform: scale(1); box-shadow: 0 10px 24px rgba(212, 175, 122, 0.22); }
-                  50% { transform: scale(1.05); box-shadow: 0 16px 36px rgba(212, 175, 122, 0.38); }
+                .admin-loading-root {
+                  min-height: 100vh;
+                  background: radial-gradient(circle at 50% 40%, #FFFDF9 0%, #F8F3ED 60%, #EFE8DF 100%);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                  overflow: hidden;
+                  padding: 24px;
+                  font-family: 'Manrope', -apple-system, sans-serif;
                 }
-                @keyframes luxuryGlideLine {
-                  0% { left: -45%; }
-                  50% { left: 40%; }
-                  100% { left: 100%; }
+                .admin-loading-aura {
+                  position: absolute;
+                  width: 440px;
+                  height: 440px;
+                  background: radial-gradient(circle, rgba(212, 175, 122, 0.22) 0%, transparent 70%);
+                  filter: blur(60px);
+                  pointer-events: none;
+                  animation: adminGlowPulse 4s ease-in-out infinite;
                 }
-                @keyframes luxuryFadeInCard {
+                .admin-loading-card {
+                  background: rgba(255, 255, 255, 0.94);
+                  backdrop-filter: blur(28px);
+                  -webkit-backdrop-filter: blur(28px);
+                  border: 1px solid rgba(212, 175, 122, 0.35);
+                  border-radius: 28px;
+                  padding: 44px 34px 40px 34px;
+                  text-align: center;
+                  max-width: 420px;
+                  width: 92%;
+                  box-shadow: 0 25px 60px rgba(26, 20, 18, 0.08), 0 6px 20px rgba(212, 175, 122, 0.12);
+                  position: relative;
+                  z-index: 1;
+                  animation: adminFadeIn 0.4s ease-out;
+                }
+                .admin-loading-logo {
+                  max-height: 86px;
+                  width: auto;
+                  max-width: 210px;
+                  object-fit: contain;
+                  display: block;
+                  margin: 0 auto 24px auto;
+                  animation: adminLogoFloat 3.2s ease-in-out infinite;
+                }
+                .admin-loading-track {
+                  width: 130px;
+                  height: 3px;
+                  background: rgba(212, 175, 122, 0.24);
+                  border-radius: 99px;
+                  margin: 0 auto 16px auto;
+                  overflow: hidden;
+                  position: relative;
+                }
+                .admin-loading-bar {
+                  position: absolute;
+                  top: 0;
+                  bottom: 0;
+                  width: 45%;
+                  background: linear-gradient(90deg, #D4AF7A, #C5A059, #1A1412, #C5A059, #D4AF7A);
+                  border-radius: 99px;
+                  animation: adminProgressBar 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                }
+                .admin-loading-status {
+                  font-size: 0.7rem;
+                  color: #8C7D70;
+                  letter-spacing: 0.16em;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  display: block;
+                }
+                @keyframes adminLogoFloat {
+                  0%, 100% { transform: translateY(0); filter: drop-shadow(0 8px 18px rgba(197, 160, 89, 0.2)); }
+                  50% { transform: translateY(-4px); filter: drop-shadow(0 14px 26px rgba(197, 160, 89, 0.32)); }
+                }
+                @keyframes adminGlowPulse {
+                  0%, 100% { transform: scale(1); opacity: 0.28; }
+                  50% { transform: scale(1.1); opacity: 0.45; }
+                }
+                @keyframes adminProgressBar {
+                  0% { transform: translateX(-100%); }
+                  50% { transform: translateX(25%); }
+                  100% { transform: translateX(200%); }
+                }
+                @keyframes adminFadeIn {
                   from { opacity: 0; transform: translateY(12px) scale(0.98); }
                   to { opacity: 1; transform: translateY(0) scale(1); }
                 }
+
+                /* EXPANSIVE LUXURY PRESENTATION ON DESKTOP (WEB) */
+                @media (min-width: 769px) {
+                  .admin-loading-card {
+                    max-width: 620px;
+                    width: 90%;
+                    border-radius: 36px;
+                    padding: 76px 68px 68px 68px;
+                    box-shadow: 0 35px 80px rgba(26, 20, 18, 0.09), 0 10px 30px rgba(212, 175, 122, 0.16);
+                  }
+                  .admin-loading-logo {
+                    max-height: 145px;
+                    max-width: 350px;
+                    margin-bottom: 38px;
+                  }
+                  .admin-loading-track {
+                    width: 210px;
+                    height: 3.5px;
+                    margin-bottom: 22px;
+                  }
+                  .admin-loading-status {
+                    font-size: 0.82rem;
+                    letter-spacing: 0.22em;
+                  }
+                  .admin-loading-aura {
+                    width: 720px;
+                    height: 720px;
+                    filter: blur(90px);
+                  }
+                }
               `}</style>
 
-              {/* Ambient Warm Golden Glow */}
-              <div style={{ position: 'absolute', width: '380px', height: '380px', background: 'radial-gradient(circle, rgba(212, 175, 122, 0.18) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }} />
+              {/* Ambient Warm Golden Aura */}
+              <div className="admin-loading-aura" />
 
-              {/* Frosted Luxury Portal Card */}
-              <div style={{ background: 'rgba(255, 255, 255, 0.88)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(212, 175, 122, 0.35)', borderRadius: '24px', padding: '48px 36px', textAlign: 'center', maxWidth: '420px', width: '100%', boxShadow: '0 25px 60px rgba(22, 17, 15, 0.08), 0 4px 16px rgba(212, 175, 122, 0.12)', position: 'relative', zIndex: 1, animation: 'luxuryFadeInCard 0.4s ease-out' }}>
-                {/* Crown / Luxury Seal */}
-                <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, #FAF6F0 0%, #EFE5D8 100%)', border: '1.5px solid #D4AF7A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '18px', animation: 'luxuryPulseGlow 2.5s ease-in-out infinite' }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A7B4F" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 3h12l4 6-10 12L2 9z"/>
-                    <path d="M11 3 L8 9 L12 21 L16 9 L13 3"/>
-                  </svg>
+              {/* Frosted Executive Portal Card */}
+              <div className="admin-loading-card">
+                {/* Actual House of Nina Crest Logo (Transparent Background Format) */}
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <img 
+                    src="/images/logo.png" 
+                    alt="House of Nina" 
+                    className="admin-loading-logo"
+                  />
                 </div>
-
-                {/* Brand Name in Signature Italianno Cursive */}
-                <h1 style={{ fontFamily: "'Italianno', cursive", fontSize: '3.6rem', color: '#1B1917', margin: '0 0 4px 0', fontWeight: 400, lineHeight: 1 }}>House of Nina</h1>
-                <p style={{ fontSize: '0.68rem', fontWeight: 700, color: '#8C7D70', letterSpacing: '0.24em', textTransform: 'uppercase', margin: '0 0 24px 0' }}>Admin Workspace</p>
 
                 {/* Shimmering Gold Progress Track */}
-                <div style={{ width: '150px', height: '3px', background: 'rgba(212, 175, 122, 0.22)', borderRadius: '99px', margin: '0 auto 14px auto', overflow: 'hidden', position: 'relative' }}>
-                  <div style={{ position: 'absolute', top: 0, bottom: 0, width: '45%', background: 'linear-gradient(90deg, #D4AF7A, #1B1917, #D4AF7A)', borderRadius: '99px', animation: 'luxuryGlideLine 1.6s ease-in-out infinite' }} />
+                <div className="admin-loading-track">
+                  <div className="admin-loading-bar" />
                 </div>
 
-                <span style={{ fontSize: '0.74rem', color: '#9E9084', letterSpacing: '0.02em', fontStyle: 'italic' }}>Entering management console...</span>
+                <span className="admin-loading-status">
+                  Loading...
+                </span>
               </div>
             </div>
           }
@@ -518,7 +675,7 @@ export default function App() {
   }
 
   return (
-    <div className={`wigverse-app ${showHero ? 'is-hero-active' : ''}`}>
+    <div className={`wigverse-app ${showHero ? 'is-hero-active' : ''} ${isCollectionsPageOpen ? 'is-collections-active' : ''}`}>
       {/* SECTION 1: NAVIGATION */}
       <Header 
         onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
@@ -529,10 +686,29 @@ export default function App() {
         onReturnToHero={handleReturnToHero}
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onSelectNavLink={handleSelectNavLink}
+        navLinks={NAV_LINKS}
+        isCollectionsActive={isCollectionsPageOpen}
       />
 
       <main id="main-content">
-        {showHero ? (
+        {isCollectionsPageOpen ? (
+          <CollectionsCatalogView 
+            initialCategory={collectionsActiveCategory}
+            onBackToHome={handleBackFromCollectionsPage}
+            onOpenDetails={(prod) => setDetailsProduct(prod)}
+            onQuickView={(prod) => setQuickViewProduct(prod)}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleSave}
+            wishlist={wishlist}
+            onOpenReviews={(prod) => {
+              setActiveReviewPost(prod);
+              setIsReviewsModalOpen(true);
+            }}
+            onOpenCart={() => setIsCartOpen(true)}
+            cartCount={cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)}
+            onOpenSearch={() => setIsSearchOpen(true)}
+          />
+        ) : showHero ? (
           <div className={`hero-transition-wrap ${isHeroFadingOut ? 'fade-out' : ''}`}>
             <WigverseHero onEnterStore={handleEnterStore} />
           </div>
@@ -553,19 +729,9 @@ export default function App() {
             {/* CINEMATIC AUTOPLAY VIDEO BANNER (Movement Without Weight) */}
             <CinematicVideoBanner />
 
-            {/* SECTION 5: FEATURED PRODUCTS (Signature Rose Section) */}
+            {/* SECTION 5: THE HOUSE COLLECTIONS SLIDESHOW SHOWCASE */}
             <FeaturedProducts 
-              onQuickView={(prod) => setQuickViewProduct(prod)}
-              onOpenDetails={(prod) => setDetailsProduct(prod)}
-              onAddToCart={handleAddToCart}
-              activeFilter={activeFilter}
-              onClearFilter={() => setActiveFilter('All')}
-              onToggleWishlist={handleToggleSave}
-              wishlist={wishlist}
-              onOpenReviews={(prod) => {
-                setActiveReviewPost(prod);
-                setIsReviewsModalOpen(true);
-              }}
+              onOpenCollection={handleOpenCollectionsPage}
             />
 
             {/* SECTION 6: THE SILK & LACE PAIRING STUDIO */}
@@ -588,8 +754,11 @@ export default function App() {
               onOpenLegal={(tab) => setLegalModalTab(tab)}
               onOpenTrackOrder={() => setIsTrackOrderOpen(true)}
               onOpenFaq={() => setIsFaqOpen(true)}
+              onOpenSearch={() => setIsSearchOpen(true)}
+              onOpenCart={() => setIsCartOpen(true)}
+              onOpenWishlist={() => setIsWishlistOpen(true)}
               onFilterCategory={(cat) => {
-                setActiveFilter(cat);
+                handleOpenCollectionsPage(cat);
               }}
             />
           </div>
@@ -605,6 +774,7 @@ export default function App() {
         onOpenSearch={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }}
         onSelectNavLink={handleSelectNavLink}
         onOpenLegal={(tab) => setLegalModalTab(tab)}
+        navLinks={NAV_LINKS}
       />
 
       <CartDrawer 

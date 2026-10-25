@@ -36,21 +36,21 @@ export async function createOrderInDb(orderPayload) {
       .from('orders')
       .insert([
         {
-          reference: orderPayload.reference || orderPayload.id,
-          client_name: orderPayload.client_name || orderPayload.customer?.name || 'Client',
-          email: orderPayload.email || orderPayload.customer?.email,
+          reference: orderPayload.reference || orderPayload.orderNumber || orderPayload.orderId || orderPayload.id || `HN-${Math.floor(1000 + Math.random() * 9000)}`,
+          client_name: orderPayload.client_name || orderPayload.customer?.fullName || orderPayload.customer?.name || 'Valued Client',
+          email: orderPayload.email || orderPayload.customer?.email || 'client@houseofnina.co.uk',
           phone: orderPayload.phone || orderPayload.customer?.phone || null,
-          shipping_address: orderPayload.shipping_address || orderPayload.shipping || {},
+          shipping_address: orderPayload.shipping_address || orderPayload.customer || orderPayload.shipping || {},
           cart_items: orderPayload.cart_items || orderPayload.items || [],
           subtotal: Number(orderPayload.subtotal || orderPayload.pricing?.subtotal || 0),
-          shipping_fee: Number(orderPayload.shipping_fee || orderPayload.pricing?.shipping || 0),
-          total_amount: Number(orderPayload.total_amount || orderPayload.pricing?.total || 0),
+          shipping_fee: Number(orderPayload.shipping_fee || orderPayload.shippingCost || orderPayload.pricing?.shipping || 0),
+          total_amount: Number(orderPayload.total_amount || orderPayload.total || orderPayload.pricing?.total || 0),
           currency: orderPayload.currency || 'GBP',
-          payment_method: orderPayload.payment_method || 'card',
+          payment_method: orderPayload.payment_method || orderPayload.paymentMethod || 'card',
           payment_status: orderPayload.payment_status || 'paid',
           stripe_payment_intent_id: orderPayload.stripe_payment_intent_id || null,
           fulfillment_status: orderPayload.fulfillment_status || 'Confirmed',
-          tracking_number: orderPayload.tracking_number || null,
+          tracking_number: orderPayload.tracking_number || orderPayload.trackingNumber || null,
           notes: orderPayload.notes || null
         }
       ])

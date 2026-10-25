@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, ShoppingBag, Menu, Heart } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 
@@ -10,9 +10,12 @@ export default function Header({
   onReturnToHero, 
   onOpenWishlist, 
   wishlistCount = 0,
-  onSelectNavLink
+  onSelectNavLink,
+  navLinks = NAV_LINKS,
+  isCollectionsActive = false
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const headerWrapperRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +29,19 @@ export default function Header({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Dynamically synchronize the actual header height to CSS variable for pixel-perfect edge-to-edge alignment
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (headerWrapperRef.current) {
+        const height = headerWrapperRef.current.offsetHeight;
+        document.documentElement.style.setProperty('--site-header-height', `${height}px`);
+      }
+    };
+    updateHeaderHeight();
+    window.addEventListener('resize', updateHeaderHeight);
+    return () => window.removeEventListener('resize', updateHeaderHeight);
+  }, [isCollectionsActive]);
+
   const handleLogoClick = (e) => {
     if (onReturnToHero) {
       e.preventDefault();
@@ -34,11 +50,13 @@ export default function Header({
   };
 
   return (
-    <div className="header-sticky-wrapper">
-      {/* Top Banner */}
-      <div className="top-bar">
-        <span>{BRAND_INFO.announcement}</span>
-      </div>
+    <div className="header-sticky-wrapper" ref={headerWrapperRef}>
+      {/* Top Banner - hidden on collections page to let top nav bar sit flush at very top */}
+      {!isCollectionsActive && (
+        <div className="top-bar">
+          <span>{BRAND_INFO.announcement}</span>
+        </div>
+      )}
 
       <header className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container nav-outer-container">
@@ -55,21 +73,25 @@ export default function Header({
 
             {/* Desktop Center Links */}
             <nav className="nav-links desktop-only" aria-label="Primary Navigation">
-              {NAV_LINKS.map((link) => (
-                <a 
-                  key={link.id} 
-                  href={link.href} 
-                  className="nav-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (onSelectNavLink) {
-                      onSelectNavLink(link.href);
-                    }
-                  }}
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isItemActive = isCollectionsActive && (link.id === 'wigs-scarves' || link.label === 'Collections');
+
+                return (
+                  <a 
+                    key={link.id} 
+                    href={link.href} 
+                    className={`nav-link ${isItemActive ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (onSelectNavLink) {
+                        onSelectNavLink(link.href);
+                      }
+                    }}
+                  >
+                    {link.label}
+                  </a>
+                );
+              })}
             </nav>
 
             {/* Actions: Search, User, Bag, Mobile Menu */}

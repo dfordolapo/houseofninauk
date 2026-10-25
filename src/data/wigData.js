@@ -13,11 +13,208 @@ export const BRAND_INFO = {
 
 export const NAV_LINKS = [
   { id: "shop", label: "Shop", href: "#find-your-next-look" },
-  { id: "wigs-scarves", label: "Wigs & Scarves", href: "#featured-products" },
+  { id: "wigs-scarves", label: "Collections", href: "#featured-products" },
   { id: "our-story", label: "Our Story", href: "#our-story" },
   { id: "wig-care", label: "Care Guide", href: "#wig-care-guide" },
   { id: "contact", label: "Contact", href: "#contact" }
 ];
+
+// THE HOUSE COLLECTIONS: Curated Showcase Data
+export const HOUSE_COLLECTIONS_CONFIG = {
+  titlePrefix: "The House ",
+  titleGold: "Collections",
+  subtitle: "Explore our signature crown units and lustrous protective silks, made to elevate everyday elegance.",
+  navLabel: "Collections",
+  pageTabs: [
+    { id: "all", label: "All Pieces", filterValue: "All" },
+    { id: "wigs", label: "Wigs & Units", filterValue: "Wigs" },
+    { id: "scarves", label: "Silk Scarves", filterValue: "Scarves" },
+    { id: "accessories", label: "Accessories", filterValue: "Accessories" }
+  ]
+};
+
+export const HOUSE_COLLECTION_CARDS = [
+  {
+    id: "col-wigs",
+    title: "Wigs & Units",
+    categoryFilter: "Wigs",
+    badge: "100% Virgin Hair",
+    tagline: "Handcrafted Luxury Units",
+    description: "Handcrafted virgin units with pre-plucked hairlines and undetectable Swiss HD lace frontals.",
+    highlights: ["13x4 / 13x6 HD Swiss Lace", "Pre-plucked natural hairlines", "180% – 200% fullness"],
+    itemCount: "3 Signature Styles",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=900&q=80",
+    buttonLabel: "Explore Wigs & Units"
+  },
+  {
+    id: "col-scarves",
+    title: "Silk Scarves",
+    categoryFilter: "Scarves",
+    badge: "Pure Mulberry Silk",
+    tagline: "Protective Styling & Edge Care",
+    description: "Pure Mulberry silk edge-melting bands and twill wraps to preserve lace and seal in hydration.",
+    highlights: ["100% Pure Mulberry Silk", "Frizz prevention & edge melting", "Day-to-night versatile styling"],
+    itemCount: "Silk Care Editions",
+    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=900&q=80",
+    buttonLabel: "Explore Silk Scarves"
+  },
+  {
+    id: "col-accessories",
+    title: "Accessories",
+    categoryFilter: "Accessories",
+    badge: "Install & Maintenance",
+    tagline: "Essential Installation Tools",
+    description: "Velvet-lined elastic lace melt bands, precision edge brushes, and double-layered sleeping bonnets.",
+    highlights: ["Seamless 10-min lace melt", "Zero tension elastic comfort", "Double-lined friction defence"],
+    itemCount: "Care & Melt Essentials",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=80",
+    buttonLabel: "Explore Accessories"
+  }
+];
+
+// THREE VERTICAL EDITORIAL REELS: Wigs (Up), Scarves (Down), Accessories (Up)
+export const COLLECTION_REELS_DATA = [
+  {
+    id: "wigs",
+    title: "Wigs",
+    categoryFilter: "Wigs",
+    tagline: "Virgin Hair & HD Lace",
+    countLabel: "3 Signature Units",
+    direction: "up", // Left reel moves continuously upward
+    speedClass: "speed-wigs",
+    images: [
+      {
+        id: "w-1",
+        src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
+        alt: "The Victoria Glass Bob - Precision blunt cut with Swiss HD lace"
+      },
+      {
+        id: "w-2",
+        src: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
+        alt: "The Silk Bone Straight - Single donor raw virgin hair"
+      },
+      {
+        id: "w-3",
+        src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80",
+        alt: "The Soft Body Wave Unit - Undetectable hairline and natural bounce"
+      },
+      {
+        id: "w-4",
+        src: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=600&q=80",
+        alt: "Voluminous Curls - Pre-plucked natural hairline"
+      },
+      {
+        id: "w-5",
+        src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+        alt: "Signature HD Lace Frontal Unit - Seamless melted scalp finish"
+      }
+    ]
+  },
+  {
+    id: "scarves",
+    title: "Scarves",
+    categoryFilter: "Scarves",
+    tagline: "100% Mulberry Silk",
+    countLabel: "Protective Silks",
+    direction: "down", // Middle reel moves continuously downward
+    speedClass: "speed-scarves",
+    images: [
+      {
+        id: "s-1",
+        src: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=600&q=80",
+        alt: "The Mulberry Silk Edge Scarf - Lace melting and edge protection"
+      },
+      {
+        id: "s-2",
+        src: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80",
+        alt: "Signature Monogram Headscarf - 100% twill silk square wrap"
+      },
+      {
+        id: "s-3",
+        src: "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=600&q=80",
+        alt: "Pure Mulberry Silk Draping - Soft lustre and friction protection"
+      },
+      {
+        id: "s-4",
+        src: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=600&q=80",
+        alt: "Lustrous Silk Weave Fabric - Breathable hair preservation texture"
+      }
+    ]
+  },
+  {
+    id: "accessories",
+    title: "Accessories",
+    categoryFilter: "Accessories",
+    tagline: "Essential Installation Tools",
+    countLabel: "Care & Melt Essentials",
+    direction: "up", // Right reel moves continuously upward
+    speedClass: "speed-accessories",
+    images: [
+      {
+        id: "a-1",
+        src: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+        alt: "HD Lace Melt Elastic Band & Edge Brush - 10-minute seamless lay"
+      },
+      {
+        id: "a-2",
+        src: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80",
+        alt: "Pure Mulberry Silk Sleeping Bonnet - Double-layered hydration lock"
+      },
+      {
+        id: "a-3",
+        src: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=600&q=80",
+        alt: "Salon-Grade Installation & Care Tools - Professional wig upkeep"
+      },
+      {
+        id: "a-4",
+        src: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+        alt: "Velvet-lined elastic band for zero tension lace adhesion"
+      }
+    ]
+  }
+];
+
+// THE FLOATING SHOWROOM: Curated Sculptural Environment (Wigs, Scarves, Accessories)
+export const FLOATING_SHOWROOM_DATA = [
+  {
+    id: "wigs",
+    title: "Wigs",
+    categoryFilter: "Wigs",
+    subtitle: "LUXURY TEXTURES. TIMELESS STYLES.",
+    actionLabel: "Explore Wigs",
+    image: "/images/showroom/showroom-wigs.jpg",
+    alt: "Handcrafted virgin wig on minimalist mannequin with glass bob in background",
+    inset: {
+      image: "/images/showroom/inset-wig-scalp.jpg",
+      alt: "Close-up undetectable Swiss HD lace hairline and scalp parting"
+    }
+  },
+  {
+    id: "scarves",
+    title: "Scarves",
+    categoryFilter: "Scarves",
+    subtitle: "BOLD PRINTS. SILKY FINISHES.",
+    actionLabel: "Explore Scarves",
+    image: "/images/showroom/showroom-scarves.jpg",
+    alt: "Pure Mulberry silk scarf in flowing sculptural drape on stone pedestal",
+    inset: {
+      image: "/images/showroom/inset-scarf-detail.jpg",
+      alt: "Close-up pure silk twill weave and liquid fabric sheen"
+    }
+  },
+  {
+    id: "accessories",
+    title: "Accessories",
+    categoryFilter: "Accessories",
+    subtitle: "THE FINISHING TOUCH.",
+    actionLabel: "Explore Accessories",
+    image: "/images/showroom/showroom-accessories.jpg",
+    alt: "Curated styling accessories including silk scrunchie, tortoiseshell clip and gold jewelry",
+    inset: null
+  }
+];
+
+
 
 // HERO 9-CARD COMPOSITION with alternating image sets
 export const HERO_NINE_TILES = [
@@ -452,7 +649,7 @@ export const BRAND_DETAILS = [
 // WIG CARE GUIDE DATA
 export const CARE_GUIDE_DATA = {
   heading: "Love your wig. Keep the look.",
-  supportingCopy: "Explore practical tips for caring for your wig and keeping your favourite style looking its best.",
+  supportingCopy: "",
   image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=75&fm=webp",
   tips: [
     {

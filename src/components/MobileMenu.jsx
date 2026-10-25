@@ -2,7 +2,16 @@ import React, { useEffect } from 'react';
 import { X, Search, ShoppingBag } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
 
-export default function MobileMenu({ isOpen, onClose, onOpenCart, cartCount, onOpenSearch, onSelectNavLink, onOpenLegal }) {
+export default function MobileMenu({ 
+  isOpen, 
+  onClose, 
+  onOpenCart, 
+  cartCount, 
+  onOpenSearch, 
+  onSelectNavLink, 
+  onOpenLegal,
+  navLinks = NAV_LINKS 
+}) {
   const [activeLinkId, setActiveLinkId] = React.useState('shop');
 
 
@@ -46,7 +55,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenCart, cartCount, onO
 
           <nav>
             <ul className="mobile-nav-links">
-              {NAV_LINKS.map((link) => {
+              {navLinks.map((link) => {
                 const isActive = activeLinkId === link.id;
                 return (
                   <li key={link.id} className="mobile-nav-item">
