@@ -67,61 +67,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
           ======================================================== */}
       <div className="showroom-desktop-layout">
         
-        {/* COLUMN 1: WIGS PLINTH */}
-        <div className="showroom-col showroom-col-wigs">
-          {wigsData && (
-            <article 
-              className="showroom-piece-card showroom-piece-wigs"
-              onClick={() => handleCollectionClick(wigsData.categoryFilter)}
-              role="link"
-              tabIndex={0}
-              aria-label={`Explore ${wigsData.title} Collection`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleCollectionClick(wigsData.categoryFilter);
-                }
-              }}
-            >
-              <div className="showroom-arch-stage arch-wigs">
-                <img 
-                  src={wigsData.image} 
-                  alt={wigsData.alt} 
-                  className="showroom-arch-img"
-                  loading="eager"
-                  decoding="async"
-                />
-                
-                {/* Floating Macro Lace Texture Inset */}
-                {wigsData.inset && (
-                  <div className="showroom-float-inset inset-wigs" aria-hidden="true">
-                    <img 
-                      src={wigsData.inset.image} 
-                      alt={wigsData.inset.alt} 
-                      className="showroom-inset-tile"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Caption & Action */}
-              <div className="showroom-meta-block">
-                <h3 className="showroom-item-title">{wigsData.title}</h3>
-                <span className="showroom-item-sub">{wigsData.subtitle}</span>
-                <div className="showroom-item-cta">
-                  <span className="showroom-circle-arrow">
-                    <ArrowRight size={14} />
-                  </span>
-                  <span className="showroom-cta-label">{wigsData.actionLabel}</span>
-                </div>
-              </div>
-            </article>
-          )}
-        </div>
-
-        {/* COLUMN 2: SCARVES (ELEVATED SCULPTURAL CENTERPIECE) */}
+        {/* COLUMN 1: SCARVES */}
         <div className="showroom-col showroom-col-scarves">
           {scarvesData && (
             <article 
@@ -142,7 +88,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                   src={scarvesData.image} 
                   alt={scarvesData.alt} 
                   className="showroom-arch-img"
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
                 />
 
@@ -175,6 +121,60 @@ export default function FloatingShowroom({ onOpenCollection }) {
           )}
         </div>
 
+        {/* COLUMN 2: WIGS (HERO CENTERPIECE - BIGGER & PROMINENT) */}
+        <div className="showroom-col showroom-col-wigs">
+          {wigsData && (
+            <article 
+              className="showroom-piece-card showroom-piece-wigs"
+              onClick={() => handleCollectionClick(wigsData.categoryFilter)}
+              role="link"
+              tabIndex={0}
+              aria-label={`Explore ${wigsData.title} Collection`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCollectionClick(wigsData.categoryFilter);
+                }
+              }}
+            >
+              <div className="showroom-arch-stage arch-wigs">
+                <img 
+                  src={wigsData.image} 
+                  alt={wigsData.alt} 
+                  className="showroom-arch-img showroom-hero-center-img"
+                  loading="eager"
+                  decoding="async"
+                />
+                
+                {/* Floating Macro Lace Texture Inset */}
+                {wigsData.inset && (
+                  <div className="showroom-float-inset inset-wigs" aria-hidden="true">
+                    <img 
+                      src={wigsData.inset.image} 
+                      alt={wigsData.inset.alt} 
+                      className="showroom-inset-tile"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Caption & Action */}
+              <div className="showroom-meta-block showroom-center-meta">
+                <h3 className="showroom-item-title showroom-center-title">{wigsData.title}</h3>
+                <span className="showroom-item-sub showroom-center-sub">{wigsData.subtitle}</span>
+                <div className="showroom-item-cta">
+                  <span className="showroom-circle-arrow">
+                    <ArrowRight size={14} />
+                  </span>
+                  <span className="showroom-cta-label">{wigsData.actionLabel}</span>
+                </div>
+              </div>
+            </article>
+          )}
+        </div>
+
         {/* COLUMN 3: ACCESSORIES (CURATED STILL LIFE) */}
         <div className="showroom-col showroom-col-accessories">
           {accessoriesData && (
@@ -196,7 +196,7 @@ export default function FloatingShowroom({ onOpenCollection }) {
                   src={accessoriesData.image} 
                   alt={accessoriesData.alt} 
                   className="showroom-arch-img"
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
                 />
               </div>
