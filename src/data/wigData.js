@@ -183,7 +183,7 @@ export const FLOATING_SHOWROOM_DATA = [
     subtitle: "LUXURY TEXTURES. TIMELESS STYLES.",
     actionLabel: "Explore Wigs",
     image: "/images/showroom/showroom-wigs.webp",
-    alt: "Handcrafted virgin wig on minimalist mannequin with glass bob in background",
+    alt: "Luxurious deep wavy human-hair wig on faceless mannequin head supported by slim champagne-gold metal stand",
     inset: {
       image: "/images/showroom/inset-wig-scalp.webp",
       alt: "Close-up undetectable Swiss HD lace hairline and scalp parting"
@@ -196,7 +196,7 @@ export const FLOATING_SHOWROOM_DATA = [
     subtitle: "BOLD PRINTS. SILKY FINISHES.",
     actionLabel: "Explore Scarves",
     image: "/images/showroom/showroom-scarves.webp",
-    alt: "Pure Mulberry silk scarf in flowing sculptural drape on stone pedestal",
+    alt: "Pure Mulberry silk scarf in flowing drape suspended on slender champagne-gold metal stand",
     inset: {
       image: "/images/showroom/inset-scarf-detail.webp",
       alt: "Close-up pure silk twill weave and liquid fabric sheen"
@@ -209,7 +209,7 @@ export const FLOATING_SHOWROOM_DATA = [
     subtitle: "THE FINISHING TOUCH.",
     actionLabel: "Explore Accessories",
     image: "/images/showroom/showroom-accessories.webp",
-    alt: "Curated styling accessories including silk scrunchie, tortoiseshell clip and gold jewelry",
+    alt: "Curated styling accessories including silk scrunchies, tortoiseshell clip and gold jewelry on champagne-gold display tree",
     inset: null
   }
 ];
