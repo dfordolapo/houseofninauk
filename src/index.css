@@ -3759,6 +3759,32 @@ h1, h2, h3,
   backdrop-filter: blur(8px);
 }
 
+/* Luxury House of Nina Wax Seal Stamp Overlay */
+.product-wax-seal-stamp {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  z-index: 4;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 8px rgba(26, 22, 21, 0.28));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+.creative-product-card:hover .product-wax-seal-stamp {
+  transform: scale(1.1) rotate(6deg);
+  filter: drop-shadow(0 5px 12px rgba(212, 175, 122, 0.45));
+}
+
+.wax-seal-stamp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .creative-quick-btn {
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(10px);
