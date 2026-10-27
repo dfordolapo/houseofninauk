@@ -335,7 +335,7 @@ export const INSTA_POSTS = [
     productName: "The Victoria Glass Bob",
     category: "Wigs",
     price: "£245",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-victoria-bob.webp",
     likes: "2,118",
     comments: "84",
     caption: "Sharp blunt perimeter, pure mirror glass reflection. Customised unit ready to wear. 🖤 #HouseOfNina #UKWigs",
@@ -351,8 +351,8 @@ export const INSTA_POSTS = [
     id: "ig-2",
     productName: "The Silk Bone Straight 26\"",
     category: "Wigs",
-    price: "£360",
-    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=75&fm=webp",
+    price: "£1",
+    image: "/images/products/product-bone-straight.webp",
     likes: "3,490",
     comments: "142",
     caption: "Ultra-silky straight hair that moves effortlessly. Hand-finished lace closure. 👑",
@@ -368,8 +368,8 @@ export const INSTA_POSTS = [
     id: "ig-3",
     productName: "The Mulberry Silk Edge Scarf",
     category: "Scarves",
-    price: "£28",
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=600&q=75&fm=webp",
+    price: "£1",
+    image: "/images/products/product-silk-edge-scarf.webp",
     likes: "1,890",
     comments: "63",
     caption: "Melt your lace seamlessly and protect your edges overnight with 100% pure Mulberry silk. 🤍",
@@ -384,8 +384,8 @@ export const INSTA_POSTS = [
     id: "ig-4",
     productName: "The Soft Body Wave Unit",
     category: "Wigs",
-    price: "£320",
-    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=75&fm=webp",
+    price: "£1",
+    image: "/images/products/product-body-wave.webp",
     likes: "2,240",
     comments: "95",
     caption: "Soft bounce and effortless body wave. Handcrafted with love in the UK. 💫",
@@ -404,10 +404,10 @@ export const FEATURED_PRODUCTS = [
     id: "hn-01",
     name: "The Victoria Glass Bob",
     category: "Wigs",
-    price: 245,
+    price: 1.00,
     rating: 5.0,
     reviewsCount: 14,
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-victoria-bob.webp",
     options: {
       lengths: ["10\"", "12\"", "14\""],
       laceTypes: ["13x4 HD Lace Frontal", "5x5 HD Closure"],
@@ -425,10 +425,10 @@ export const FEATURED_PRODUCTS = [
     id: "hn-02",
     name: "The Silk Bone Straight 26\"",
     category: "Wigs",
-    price: 360,
+    price: 1.00,
     rating: 5.0,
     reviewsCount: 19,
-    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-bone-straight.webp",
     options: {
       lengths: ["24\"", "26\"", "28\""],
       laceTypes: ["13x6 HD Swiss Lace", "5x5 HD Closure"],
@@ -445,10 +445,10 @@ export const FEATURED_PRODUCTS = [
     id: "hn-03",
     name: "The Soft Body Wave Unit",
     category: "Wigs",
-    price: 320,
+    price: 1.00,
     rating: 4.9,
     reviewsCount: 11,
-    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-body-wave.webp",
     options: {
       lengths: ["20\"", "24\""],
       laceTypes: ["13x4 HD Lace Frontal", "5x5 HD Closure"],
@@ -465,10 +465,10 @@ export const FEATURED_PRODUCTS = [
     id: "hn-04",
     name: "The Mulberry Silk Edge Scarf",
     category: "Scarves",
-    price: 28,
+    price: 1.00,
     rating: 5.0,
     reviewsCount: 26,
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-silk-edge-scarf.webp",
     options: {
       lengths: ["Standard (6cm x 150cm)"],
       laceTypes: ["100% Mulberry Silk"],
@@ -485,10 +485,10 @@ export const FEATURED_PRODUCTS = [
     id: "hn-05",
     name: "The Signature Monogram Headscarf",
     category: "Scarves",
-    price: 35,
+    price: 1.00,
     rating: 5.0,
     reviewsCount: 16,
-    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-monogram-headscarf.webp",
     options: {
       lengths: ["Square (70cm x 70cm)"],
       laceTypes: ["100% Twill Silk"],
@@ -504,10 +504,10 @@ export const FEATURED_PRODUCTS = [
     id: "hn-06",
     name: "HD Lace Melt Elastic Band & Edge Brush",
     category: "Accessories",
-    price: 16,
+    price: 1.00,
     rating: 5.0,
     reviewsCount: 38,
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-lace-melt-band.webp",
     options: {
       lengths: ["Adjustable Velcro"],
       laceTypes: ["Soft Stretch Band"],
@@ -523,10 +523,10 @@ export const FEATURED_PRODUCTS = [
     id: "hn-07",
     name: "Pure Mulberry Silk Sleeping Bonnet",
     category: "Accessories",
-    price: 26,
+    price: 1.00,
     rating: 5.0,
     reviewsCount: 42,
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=75&fm=webp",
+    image: "/images/products/product-silk-bonnet.webp",
     options: {
       lengths: ["XL Fit (All Wig Lengths)"],
       laceTypes: ["22 Momme Silk"],
@@ -548,7 +548,7 @@ export const BAG_SUGGESTIONS = [
     category: "Scarves",
     price: 28,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=600&q=80&fm=webp",
+    image: "/images/products/product-silk-edge-scarf.webp",
     badge: "Must-Have Pairing",
     reason: "Melts lace edges seamlessly & protects styles overnight."
   },
@@ -558,7 +558,7 @@ export const BAG_SUGGESTIONS = [
     category: "Accessories",
     price: 16,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80&fm=webp",
+    image: "/images/products/product-lace-melt-band.webp",
     badge: "Best Seller",
     reason: "Locks your lace down in 10 minutes with zero residue."
   },
@@ -568,7 +568,7 @@ export const BAG_SUGGESTIONS = [
     category: "Accessories",
     price: 26,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80&fm=webp",
+    image: "/images/products/product-silk-bonnet.webp",
     badge: "Hair Preserver",
     reason: "Prevents tangles and keeps hair silky smooth while sleeping."
   },
@@ -578,7 +578,7 @@ export const BAG_SUGGESTIONS = [
     category: "Wigs",
     price: 245,
     rating: 5.0,
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80&fm=webp",
+    image: "/images/products/product-victoria-bob.webp",
     badge: "Signature Look",
     reason: "The iconic precision blunt cut that turns heads everywhere."
   }
@@ -648,25 +648,41 @@ export const BRAND_DETAILS = [
 
 // WIG CARE GUIDE DATA
 export const CARE_GUIDE_DATA = {
-  heading: "Love your wig. Keep the look.",
-  supportingCopy: "",
-  image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=75&fm=webp",
+  heading: "Love your wig to keep the look",
+  supportingCopy: "Essential rituals to preserve hair luster, cuticle integrity, and HD lace longevity.",
+  image: "/images/feature-wig-care.webp",
   tips: [
     {
+      step: "01",
+      category: "CLEANSING RITUAL",
       title: "Washing & Conditioning",
-      text: "Wash every 10–15 wears in lukewarm water using sulphate-free shampoo. Always stroke downwards from root to ends without bunching."
+      text: "Wash every 10–15 wears in lukewarm water using sulphate-free shampoo. Always stroke downwards from root to ends without bunching.",
+      tip: "Never rub hair strands vigorously; press gently with microfiber.",
+      image: "/images/feature-wig-care.webp"
     },
     {
+      step: "02",
+      category: "LACE PRECISION",
       title: "Lace Preservation",
-      text: "Clean adhesive residue gently using 90%+ isopropyl alcohol or lace release spray. Never scrub the delicate lace grid directly."
+      text: "Clean adhesive residue gently using 90%+ isopropyl alcohol or lace release spray. Never scrub the delicate lace grid directly.",
+      tip: "Use a clean spoolie or cotton pad swept in single directional strokes.",
+      image: "/images/showroom/inset-wig-scalp.webp"
     },
     {
+      step: "03",
+      category: "HEAT STYLING",
       title: "Heat & Styling Safety",
-      text: "Always apply a lightweight thermal heat protectant before heat styling. Keep flat irons and curling wands under 200°C for raw hair."
+      text: "Always apply a lightweight thermal heat protectant before heat styling. Keep flat irons and curling wands under 200°C for raw hair.",
+      tip: "Ceramic tourmaline plates glide smoothly without snagging the cuticles.",
+      image: "/images/feature-hair-styling.webp"
     },
     {
+      step: "04",
+      category: "NIGHT PROTECTION",
       title: "Night Storage & Silk Care",
-      text: "Store your unit on a satin mannequin head or in a breathable silk pouch. For sewn-down units, sleep in a 100% mulberry silk scarf."
+      text: "Store your unit on a satin mannequin head or in a breathable silk pouch. For sewn-down units, sleep in a 100% mulberry silk scarf.",
+      tip: "Pure silk prevents friction and retains moisture essential for soft cuticles.",
+      image: "/images/products/product-silk-bonnet.webp"
     }
   ]
 };

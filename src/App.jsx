@@ -138,7 +138,7 @@ export default function App() {
         id: "hn-01",
         cartId: "hn-01-12-13x4-180",
         name: "The Victoria Glass Bob",
-        price: 245,
+        price: 1.00,
         selectedLength: "12\"",
         selectedLace: "13x4 HD Lace Frontal",
         selectedDensity: "180%",
@@ -373,8 +373,15 @@ export default function App() {
   };
 
   const handleReturnToHero = () => {
-    setShowHero(true);
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    // When the brand name in topnav is clicked, navigate smoothly to the site landing page (never the door screen)
+    setShowHero(false);
+    if (isCollectionsPageOpen) {
+      setIsCollectionsPageOpen(false);
+      try {
+        window.history.pushState(null, '', window.location.pathname);
+      } catch (e) {}
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleAddToCart = (product, { isSilent = false } = {}) => {
@@ -473,12 +480,11 @@ export default function App() {
       targetId = 'contact-mobile';
     }
     
-    // If user clicks Collections link from nav
-    if (targetId === 'featured-products' || targetId === 'collections') {
-      if (isCollectionsPageOpen) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
+    // If user clicks Collections link from top nav or mobile menu, navigate to full collections catalog page
+    if (targetId === 'featured-products' || targetId === 'collections' || targetId === 'wigs-scarves') {
+      setIsMobileMenuOpen(false);
+      handleOpenCollectionsPage('All');
+      return;
     }
 
     const scrollToTarget = () => {
@@ -878,11 +884,9 @@ export default function App() {
           <CareGuideModal 
             isOpen={isCareGuideOpen}
             onClose={() => setIsCareGuideOpen(false)}
-            onShopSilkCare={() => {
+            onShopCollections={() => {
               setIsCareGuideOpen(false);
-              setShowHero(false);
-              const target = document.getElementById('silk-pairing-studio') || document.getElementById('featured-products');
-              if (target) target.scrollIntoView({ behavior: 'smooth' });
+              handleOpenCollectionsPage('All');
             }}
           />
         )}

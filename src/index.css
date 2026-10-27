@@ -12815,117 +12815,509 @@ video::-moz-media-controls {
   white-space: nowrap;
 }
 
-/* Care Guide Modal Base */
-.care-modal-dialog {
-  max-width: 680px;
-  width: 94%;
-  max-height: 90vh;
+/* ==========================================================================
+   CARE GUIDE MODAL — CINEMATIC CAROUSEL ON IMAGE
+   ========================================================================== */
+.care-modal-cinematic {
+  max-width: 620px;
+  width: 92%;
+  height: min(740px, 88vh);
   display: flex;
   flex-direction: column;
-  padding: 0;
-  border-radius: 20px;
+  padding: 0 !important;
+  border-radius: 24px;
   overflow: hidden;
-  background-color: #FCFAF7;
+  background-color: #12100E;
+  position: relative;
+  box-shadow: 0 28px 70px rgba(18, 16, 14, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.care-modal-header {
-  padding: 18px 24px 14px;
-  border-bottom: 1px solid var(--color-border-light);
-  background-color: #FFFFFF;
+.care-cinematic-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
+  padding: 20px 22px 10px;
+  background: linear-gradient(180deg, rgba(18, 16, 14, 0.82) 0%, rgba(18, 16, 14, 0) 100%);
+  pointer-events: auto;
 }
 
-.care-modal-title {
-  font-family: var(--font-display);
-  font-size: 21px;
-  font-weight: 600;
-  color: var(--color-deep-espresso);
-  margin: 0;
-  line-height: 1.2;
-}
-
-.care-modal-body {
-  padding: 22px 24px 28px;
-  overflow-y: auto;
-  flex-grow: 1;
-  -webkit-overflow-scrolling: touch;
-}
-
-.care-intro-banner {
-  text-align: center;
-  margin-bottom: 22px;
-}
-
-.care-intro-heading {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--color-deep-espresso);
-  margin: 0 0 6px;
-  line-height: 1.25;
-}
-
-.care-intro-sub {
-  font-size: 13.5px;
-  color: var(--color-espresso-muted);
-  max-width: 480px;
-  margin: 0 auto;
-  line-height: 1.5;
-}
-
-.care-tips-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-.care-tip-card {
-  background-color: var(--color-white);
-  padding: 16px 18px;
-  border-radius: 14px;
-  border: 1px solid var(--color-border-light);
+.care-cinematic-badge {
   display: flex;
-  gap: 14px;
-  align-items: flex-start;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.care-tip-icon-box {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background-color: var(--color-sand-light);
+.care-step-tag {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #D4AF37;
+  text-transform: uppercase;
+}
+
+.care-step-divider {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 10px;
+}
+
+.care-category-tag {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+
+.care-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.care-playback-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 100px;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.care-playback-toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.care-playback-label {
+  letter-spacing: 0.04em;
+}
+
+.care-cinematic-close {
+  position: static !important;
+  margin: 0 !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #FFFFFF !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.care-cinematic-close:hover {
+  background: rgba(255, 255, 255, 0.28) !important;
+  transform: rotate(90deg) !important;
+}
+
+/* Story-style Progress Indicator Bar */
+.care-story-progress-bar {
+  position: absolute;
+  top: 8px;
+  left: 20px;
+  right: 20px;
+  z-index: 12;
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.care-progress-segment {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 99px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.2s;
+}
+
+.care-progress-segment:hover {
+  opacity: 0.85;
+}
+
+.care-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  background: #FFFFFF;
+  border-radius: 99px;
+}
+
+.care-progress-segment.completed .care-progress-fill {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.care-progress-segment.active .care-progress-fill {
+  width: 100%;
+  animation: careProgressFill linear forwards;
+}
+
+@keyframes careProgressFill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Stage Canvas */
+.care-cinematic-stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.care-stage-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.04);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.care-stage-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.care-stage-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+}
+
+.care-stage-scrim-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(18, 16, 14, 0.85) 0%, rgba(18, 16, 14, 0) 100%);
+  pointer-events: none;
+}
+
+.care-stage-scrim-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72%;
+  background: linear-gradient(0deg, rgba(18, 16, 14, 0.95) 0%, rgba(18, 16, 14, 0.72) 48%, rgba(18, 16, 14, 0) 100%);
+  pointer-events: none;
+}
+
+.care-stage-glow-radial {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Editorial Floating Content Overlay (Play DIRECTLY on Image — No Outside Drawer, No Glassmorphism) */
+.care-stage-content-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 26px 20px;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.care-stage-editorial-card {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.care-stage-icon-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #D4AF37;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.care-stage-icon-pill svg {
+  color: #D4AF37;
+}
+
+.care-stage-title {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3.2vw, 24px);
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0 0 8px;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+}
+
+.care-stage-desc {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: #D5CFC9;
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+
+/* ==========================================================================
+   PRO SECRET: DIRECTION 2 WITH DYNAMIC ADMIN DASHBOARD POP OF COLOR PER TIP
+   ========================================================================== */
+.pro-secret-variant {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.ps-stroke-dir2 {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ps-stroke-dir2 .ps-stroke-banner {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 2px;
+  transform: rotate(0.8deg);
+  transition: all 0.3s ease;
+}
+
+.ps-stroke-dir2 .ps-stroke-label {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.desktop-pro-label {
+  display: inline-block !important;
+}
+
+.mobile-pro-label {
+  display: none !important;
+}
+
+.ps-stroke-tail {
+  width: 14px;
+  height: 2px;
+  display: inline-block;
+  opacity: 0.75;
+}
+
+.ps-stroke-body {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  line-height: 1.48;
+  margin: 0;
+  color: #E2DBD3;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  max-width: 95%;
+}
+
+/* TIP 01 (Washing): Vivid Electric Cobalt */
+.ps-tip-color-0 .ps-stroke-banner {
+  background: #0052FF;
+  color: #FFFFFF;
+  box-shadow: 0 2px 0 #002B85;
+}
+.ps-tip-color-0 .ps-stroke-tail {
+  background: #0052FF;
+}
+
+/* TIP 02 (Lace): Rich Admin Terracotta Pop */
+.ps-tip-color-1 .ps-stroke-banner {
+  background: #D95328;
+  color: #FFF5F0;
+  box-shadow: 0 2px 0 #8C2C0E;
+}
+.ps-tip-color-1 .ps-stroke-tail {
+  background: #D95328;
+}
+
+/* TIP 03 (Heat Styling): Vibrant Admin Dusty Rose / Coral Pop */
+.ps-tip-color-2 .ps-stroke-banner {
+  background: #E05370;
+  color: #FFFFFF;
+  box-shadow: 0 2px 0 #942038;
+}
+.ps-tip-color-2 .ps-stroke-tail {
+  background: #E05370;
+}
+
+/* TIP 04 (Silk Care): Fresh Admin Sage Green / Mint Pop */
+.ps-tip-color-3 .ps-stroke-banner {
+  background: #2E8B57;
+  color: #F0FFF4;
+  box-shadow: 0 2px 0 #185232;
+}
+.ps-tip-color-3 .ps-stroke-tail {
+  background: #2E8B57;
+}
+
+/* Nav Arrows */
+.care-nav-arrow {
+  position: absolute;
+  top: 42%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(18, 16, 14, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  color: var(--color-dusty-rose);
+  cursor: pointer;
+  z-index: 8;
+  transition: all 0.2s ease;
 }
 
-.care-tip-title {
-  font-family: var(--font-display);
-  font-size: 15.5px;
-  font-weight: 600;
-  color: var(--color-deep-espresso);
-  margin: 0 0 4px;
+.care-nav-arrow:hover {
+  background: rgba(18, 16, 14, 0.85);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-50%) scale(1.08);
 }
 
-.care-tip-desc {
-  font-size: 13px;
-  color: var(--color-espresso-muted);
-  line-height: 1.5;
-  margin: 0;
+.care-nav-prev {
+  left: 14px;
 }
 
-.care-modal-footer {
-  padding: 14px 24px;
-  border-top: 1px solid var(--color-border-light);
-  background-color: #FFFFFF;
+.care-nav-next {
+  right: 14px;
+}
+
+/* Footer / Shop CTA */
+.care-cinematic-footer {
+  padding: 12px 24px 16px;
+  background: #181513;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  z-index: 10;
   flex-shrink: 0;
+}
+
+.care-option-picker {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.care-picker-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: #A39686;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 2px;
+}
+
+.care-picker-btn {
+  width: 25px;
+  height: 25px;
+  border-radius: 6px;
+  background: #25201C;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ECE7E1;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.care-picker-btn:hover {
+  background: #362E28;
+  color: #D4AF37;
+  border-color: #D4AF37;
+}
+
+.care-picker-btn.active {
+  background: #D4AF37;
+  color: #12100E;
+  border-color: #D4AF37;
+}
+
+.care-footer-shop-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 9px 18px !important;
+  background: #D4AF37 !important;
+  color: #12100E !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.care-footer-shop-btn:hover {
+  background: #E5C358 !important;
+  transform: translateY(-1px) !important;
 }
 
 /* FAQ Modal Base */
@@ -13181,76 +13573,115 @@ video::-moz-media-controls {
     white-space: nowrap !important;
   }
 
-  /* Care Guide Modal Mobile */
-  .care-modal-dialog {
+  /* Care Guide Modal Mobile (Cinematic Carousel on Image) */
+  .care-modal-cinematic {
     width: 95% !important;
-    border-radius: 16px !important;
-    max-height: 88vh !important;
+    max-width: 480px !important;
+    height: 84vh !important;
+    max-height: 640px !important;
+    border-radius: 18px !important;
   }
 
-  .care-modal-header {
+  .care-cinematic-header {
+    padding: 16px 14px 8px !important;
+  }
+
+  .care-story-progress-bar {
+    left: 14px !important;
+    right: 14px !important;
+    top: 6px !important;
+  }
+
+  .care-stage-content-overlay {
+    padding: 12px 14px 12px !important;
+  }
+
+  .care-stage-editorial-card {
     padding: 14px 16px !important;
+    border-radius: 14px !important;
   }
 
-  .care-modal-title {
+  .care-stage-title {
     font-size: 18px !important;
+    margin-bottom: 6px !important;
   }
 
-  .care-modal-body {
-    padding: 14px 14px 18px !important;
-  }
-
-  .care-intro-banner {
-    margin-bottom: 14px !important;
-    text-align: left !important;
-  }
-
-  .care-intro-heading {
-    font-size: 18px !important;
-    margin-bottom: 4px !important;
-    line-height: 1.25 !important;
-  }
-
-  .care-intro-sub {
+  .care-stage-desc {
     font-size: 12px !important;
     line-height: 1.45 !important;
-    margin: 0 !important;
-    text-align: left !important;
+    margin-bottom: 8px !important;
   }
 
-  .care-tips-grid {
-    gap: 8px !important;
+  .care-cinematic-badge {
+    padding: 4px 10px !important;
+    max-width: calc(100% - 46px) !important;
   }
 
-  .care-tip-card {
-    padding: 11px 12px !important;
-    gap: 10px !important;
-    border-radius: 12px !important;
+  .care-step-tag {
+    font-size: 9px !important;
+    white-space: nowrap !important;
   }
 
-  .care-tip-icon-box {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 8px !important;
+  .care-category-tag {
+    font-size: 9px !important;
+    white-space: nowrap !important;
   }
 
-  .care-tip-icon-box svg {
-    width: 16px !important;
-    height: 16px !important;
+  .pro-secret-variant {
+    margin-top: 4px !important;
   }
 
-  .care-tip-title {
-    font-size: 13.5px !important;
-    margin-bottom: 2px !important;
+  .desktop-pro-label {
+    display: none !important;
   }
 
-  .care-tip-desc {
-    font-size: 11.5px !important;
+  .mobile-pro-label {
+    display: inline-block !important;
+  }
+
+  .ps-stroke-body {
+    font-size: 10.5px !important;
     line-height: 1.4 !important;
   }
 
-  .care-modal-footer {
-    padding: 12px 14px !important;
+  .ps-stroke-banner {
+    padding: 2.5px 8px !important;
+  }
+
+  .ps-stroke-label {
+    font-size: 8.5px !important;
+  }
+
+  .care-nav-arrow {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .care-nav-prev {
+    left: 8px !important;
+  }
+
+  .care-nav-next {
+    right: 8px !important;
+  }
+
+  .care-cinematic-footer {
+    padding: 10px 14px 12px !important;
+    gap: 10px !important;
+  }
+
+  .care-option-picker {
+    gap: 3px !important;
+  }
+
+  .care-picker-label {
+    font-size: 10px !important;
+  }
+
+  .care-picker-btn {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 10px !important;
   }
 
   .care-modal-footer .btn-primary-editorial {

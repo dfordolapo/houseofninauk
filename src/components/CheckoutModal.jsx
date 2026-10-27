@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Check, ArrowRight, CreditCard, Building2, Edit3, Lock, Truck, 
   MapPin, Plus, Home, Briefcase, Gift, ChevronRight, ChevronDown, ChevronUp, AlertCircle, ArrowLeft,
@@ -1400,14 +1400,24 @@ export default function CheckoutModal({
     };
   });
 
+  // Stripe Elements References & Status
+  const stripeKey = import.meta.env?.VITE_STRIPE_PUBLISHABLE_KEY;
+  const isStripeTestMode = Boolean(stripeKey && stripeKey.startsWith('pk_test_'));
+  const stripeInstanceRef = useRef(null);
+  const cardElementRef = useRef(null);
+  const [stripeCardReady, setStripeCardReady] = useState(false);
+  const [stripeCardError, setStripeCardError] = useState(null);
+
   // Stripe.js Dynamic Payment Method & Wallet Verification
   useEffect(() => {
     let isMounted = true;
-    const stripeKey = import.meta.env?.VITE_STRIPE_PUBLISHABLE_KEY;
 
     if (window.Stripe && stripeKey && !stripeKey.includes('your_publishable_key')) {
       try {
-        const stripe = window.Stripe(stripeKey);
+        if (!stripeInstanceRef.current) {
+          stripeInstanceRef.current = window.Stripe(stripeKey);
+        }
+        const stripe = stripeInstanceRef.current;
         const pr = stripe.paymentRequest({
           country: selectedCountryCode || 'GB',
           currency: (formData.currency || 'GBP').toLowerCase(),
@@ -1439,7 +1449,110 @@ export default function CheckoutModal({
     }
 
     return () => { isMounted = false; };
-  }, [selectedCountryCode, formData.currency, total]);
+  }, [selectedCountryCode, formData.currency, total, stripeKey]);
+
+  // Mount Stripe Elements Card Field (Auto-retries if Stripe.js is still loading)
+  useEffect(() => {
+    if (!isOpen || formData.paymentMethod !== 'card') {
+      if (cardElementRef.current) {
+        try {
+          cardElementRef.current.destroy();
+        } catch (e) {}
+        cardElementRef.current = null;
+        setStripeCardReady(false);
+      }
+      return;
+    }
+
+    let isMounted = true;
+    let retryCount = 0;
+    const maxRetries = 25; // Try up to 2.5 seconds
+
+    const mountCardField = () => {
+      if (!isMounted) return;
+
+      const container = document.getElementById('stripe-card-element-mount');
+      if (!container) {
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(mountCardField, 100);
+        }
+        return;
+      }
+
+      if (!window.Stripe) {
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(mountCardField, 100);
+        }
+        return;
+      }
+
+      if (!stripeKey || stripeKey.includes('your_publishable_key')) return;
+
+      try {
+        if (cardElementRef.current) {
+          try {
+            cardElementRef.current.destroy();
+          } catch (e) {}
+          cardElementRef.current = null;
+        }
+
+        container.innerHTML = '';
+
+        if (!stripeInstanceRef.current) {
+          stripeInstanceRef.current = window.Stripe(stripeKey);
+        }
+        const stripe = stripeInstanceRef.current;
+        const elements = stripe.elements();
+
+        const card = elements.create('card', {
+          hidePostalCode: false,
+          style: {
+            base: {
+              color: '#1C1614',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+              fontSize: '14.5px',
+              fontSmoothing: 'antialiased',
+              '::placeholder': {
+                color: '#8C8074',
+              },
+              iconColor: '#8C8074'
+            },
+            invalid: {
+              color: '#EB001B',
+              iconColor: '#EB001B'
+            }
+          }
+        });
+
+        card.mount('#stripe-card-element-mount');
+        cardElementRef.current = card;
+
+        card.on('ready', () => {
+          if (isMounted) {
+            setStripeCardReady(true);
+            setStripeCardError(null);
+          }
+        });
+
+        card.on('change', (event) => {
+          if (isMounted) {
+            setStripeCardError(event.error ? event.error.message : null);
+          }
+        });
+      } catch (err) {
+        console.warn('[House of Nina] Stripe Elements mounting notice:', err);
+      }
+    };
+
+    const timer = setTimeout(mountCardField, 50);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [isOpen, formData.paymentMethod, stripeKey]);
 
   // Comprehensive Stripe & Transaction Payment Method Eligibility Evaluator
   const isMethodEligible = (m) => {
@@ -1938,14 +2051,16 @@ export default function CheckoutModal({
     }, 700);
   };
 
-  const completeSuccessfulOrder = (chosenPayment) => {
+  const completeSuccessfulOrder = (chosenPayment, stripePaymentIntentId = null) => {
     const randomOrderNum = Math.floor(1000 + Math.random() * 9000);
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) +
       ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-    let paymentLabel = 'Stripe Verified Card (•••• 4892)';
-    if (chosenPayment === 'card' && formData.cardNumber) {
+    let paymentLabel = 'Stripe Verified Card';
+    if (chosenPayment === 'card' && stripePaymentIntentId) {
+      paymentLabel = `Stripe Card (${stripePaymentIntentId.slice(-8)})`;
+    } else if (chosenPayment === 'card' && formData.cardNumber) {
       const last4 = formData.cardNumber.replace(/\s/g, '').slice(-4);
       paymentLabel = `Stripe Card (•••• ${last4 || '4892'})`;
     } else if (chosenPayment === 'apple_pay') {
@@ -1979,6 +2094,7 @@ export default function CheckoutModal({
       status: 'confirmed',
       fulfillmentStatus: 'Confirmed',
       paymentStatus: 'Paid',
+      stripePaymentIntentId: stripePaymentIntentId || null,
       customer: {
         fullName: formData.fullName || "Valued Client",
         email: formData.email || "client@houseofnina.co.uk",
@@ -2036,7 +2152,8 @@ export default function CheckoutModal({
         currency: 'GBP',
         payment_method: paymentLabel,
         payment_status: 'paid',
-        fulfillment_status: 'Confirmed'
+        fulfillment_status: 'Confirmed',
+        stripe_payment_intent_id: stripePaymentIntentId || null
       }).catch(err => console.warn('Supabase sync notice:', err));
     } catch (err) {
       console.warn('Could not sync order to storage, maintaining in-memory confirmed order', err);
@@ -2081,6 +2198,106 @@ export default function CheckoutModal({
     }
 
     if (chosenPayment === 'card') {
+      if (!cardElementRef.current || !stripeCardReady) {
+        setStepError('The Stripe card field is connecting. Please wait a second and enter your card details.');
+        return;
+      }
+
+      if (!formData.cardName || formData.cardName.trim().length < 2) {
+        setStepError('Please enter the cardholder name.');
+        return;
+      }
+
+      setStepError('');
+      setPaymentError(null);
+      setIsSubmitting(true);
+      setPaymentState('processing');
+      setAuthStatus('Securing encrypted authorization with Stripe...');
+
+      const processStripePayment = async () => {
+        try {
+          const orderRef = `HN-${Math.floor(1000 + Math.random() * 9000)}`;
+
+          // 1. Create PaymentIntent on serverless backend
+          const piResponse = await fetch('/api/create-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              cartItems: cartItems,
+              shippingOption: selectedShippingOption || {},
+              customer: {
+                name: formData.cardName || formData.fullName || 'Valued Client',
+                email: formData.email,
+                phone: formData.phone,
+                address: {
+                  line1: formData.address,
+                  postalCode: formData.postalCode,
+                  country: selectedCountryCode || 'GB'
+                }
+              },
+              orderReference: orderRef,
+              currency: formData.currency || 'GBP'
+            })
+          });
+
+          const piData = await piResponse.json();
+          if (!piResponse.ok || piData.error) {
+            throw new Error(piData.error || 'Failed to initialize payment gateway.');
+          }
+
+          setAuthStatus('Authorizing payment with card issuer...');
+          const stripe = stripeInstanceRef.current || (window.Stripe && window.Stripe(stripeKey));
+
+          // 2. Authorize securely via Stripe.js
+          const { error: stripeErr, paymentIntent } = await stripe.confirmCardPayment(piData.clientSecret, {
+            payment_method: {
+              card: cardElementRef.current,
+              billing_details: {
+                name: formData.cardName || formData.fullName || 'Valued Client',
+                email: formData.email,
+                phone: formData.phone,
+                address: {
+                  line1: formData.address,
+                  postal_code: formData.postalCode,
+                  country: selectedCountryCode || 'GB'
+                }
+              }
+            }
+          });
+
+          if (stripeErr) {
+            setIsSubmitting(false);
+            setPaymentState('declined');
+            setPaymentError({
+              code: stripeErr.code || 'card_declined',
+              declineCode: stripeErr.decline_code,
+              title: 'Card Authorization Declined',
+              message: stripeErr.message || 'Your card authorization could not be completed.',
+              actionableAdvice: 'Please check your card details or try a different payment method.'
+            });
+            return;
+          }
+
+          if (paymentIntent && paymentIntent.status === 'succeeded') {
+            completeSuccessfulOrder('card', paymentIntent.id);
+            return;
+          }
+        } catch (err) {
+          console.warn('[Stripe Payment Error]:', err);
+          setIsSubmitting(false);
+          setPaymentState('network_error');
+          setPaymentError({
+            code: 'payment_gateway_error',
+            title: 'Payment Gateway Error',
+            message: err.message || 'A network communication error occurred with Stripe.',
+            actionableAdvice: 'Please check your internet connection or try again.'
+          });
+        }
+      };
+
+      processStripePayment();
+      return;
+    } else if (chosenPayment === 'card') {
       const cleanNum = (formData.cardNumber || '').replace(/\s/g, '');
       if (!cleanNum || cleanNum.length < 13) {
         setStepError('Please enter a valid credit or debit card number.');
@@ -2480,7 +2697,27 @@ export default function CheckoutModal({
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#FFFFFF' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={cardEyebrowStyle}>Card Information</span>
+                                <span style={{ fontSize: '11px', color: '#8C8074', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <Lock size={10} /> 256-Bit SSL
+                                </span>
                               </div>
+
+                              {isStripeTestMode && (
+                                <div style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  padding: '8px 12px',
+                                  backgroundColor: '#FFF9F0',
+                                  border: '1px solid #F5D7B5',
+                                  borderRadius: '8px',
+                                  fontSize: '11px',
+                                  color: '#8C5205'
+                                }}>
+                                  <Sparkles size={13} color="#D97706" style={{ flexShrink: 0 }} />
+                                  <span><strong>Stripe Test Mode</strong>: Use card <code style={{ backgroundColor: '#F9E4CB', padding: '1px 5px', borderRadius: '4px', fontWeight: 600 }}>4242 4242 4242 4242</code> (any future MM/YY & CVC).</span>
+                                </div>
+                              )}
 
                               <div>
                                 <label style={formLabelStyle}>Cardholder Name</label>
@@ -2493,53 +2730,63 @@ export default function CheckoutModal({
                                 />
                               </div>
 
+                              {/* Official Stripe Elements PCI-Compliant Field */}
                               <div>
-                                <label style={formLabelStyle}>Card Number</label>
-                                <input
-                                  type="text"
-                                  value={formData.cardNumber}
-                                  onChange={(e) => handleCardNumberChange(e.target.value)}
-                                  placeholder="16-digit card number (•••• •••• •••• 4892)"
-                                  maxLength={19}
-                                  style={standardInputStyle}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                  <label style={formLabelStyle}>Card Details</label>
+                                  <span style={{ fontSize: '10.5px', color: '#8C8074' }}>Number, Expiry, CVC & Postal Code</span>
+                                </div>
+                                <div
+                                  id="stripe-card-element-mount"
+                                  style={{
+                                    minHeight: '44px',
+                                    padding: '12px 14px',
+                                    backgroundColor: '#FFFFFF',
+                                    border: stripeCardError ? '1px solid #EB001B' : '1px solid var(--color-border)',
+                                    borderRadius: '8px',
+                                    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)'
+                                  }}
                                 />
-                              </div>
-
-                              <div className="checkout-row-2">
-                                <div>
-                                  <label style={formLabelStyle}>Expiry</label>
-                                  <input
-                                    type="text"
-                                    value={formData.cardExpiry}
-                                    onChange={(e) => handleCardExpiryChange(e.target.value)}
-                                    placeholder="MM/YY"
-                                    maxLength={5}
-                                    style={standardInputStyle}
-                                  />
-                                </div>
-                                <div>
-                                  <label style={formLabelStyle}>CVC / CVV</label>
-                                  <input
-                                    type="text"
-                                    value={formData.cardCvc}
-                                    onChange={(e) => handleCardCvcChange(e.target.value)}
-                                    placeholder="3 or 4 digits"
-                                    maxLength={4}
-                                    style={standardInputStyle}
-                                  />
-                                </div>
+                                {!stripeCardReady && !stripeCardError && (
+                                  <div style={{ fontSize: '11px', color: '#8C8074', marginTop: '5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#D97706' }} />
+                                    <span>Connecting to Stripe secure card vault...</span>
+                                  </div>
+                                )}
+                                {stripeCardError && (
+                                  <div style={{ fontSize: '11px', color: '#EB001B', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <AlertCircle size={12} />
+                                    <span>{stripeCardError}</span>
+                                  </div>
+                                )}
                               </div>
 
                               <button
                                 type="button"
                                 onClick={() => handlePlaceOrder(null, 'card')}
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || !stripeCardReady}
                                 className="btn-primary-editorial"
-                                style={{ height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, marginTop: '4px' }}
+                                style={{
+                                  height: '44px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '8px',
+                                  fontSize: '13px',
+                                  fontWeight: 600,
+                                  marginTop: '4px',
+                                  opacity: (!stripeCardReady || isSubmitting) ? 0.75 : 1,
+                                  cursor: (!stripeCardReady || isSubmitting) ? 'not-allowed' : 'pointer'
+                                }}
                               >
                                 <Lock size={13} />
-                                <span>Pay {formatPrice(total)} with Card</span>
+                                <span>{!stripeCardReady ? 'Connecting to Stripe...' : `Pay ${formatPrice(total)} with Card`}</span>
                               </button>
+
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '10.5px', color: '#8C8074', paddingTop: '2px' }}>
+                                <ShieldCheck size={12} color="#8C8074" />
+                                <span>Authoritative 3D Secure 2.0 • Powered by Stripe Payments</span>
+                              </div>
                             </div>
                           )}
                         </div>

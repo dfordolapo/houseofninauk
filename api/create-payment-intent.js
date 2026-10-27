@@ -1,8 +1,5 @@
 import Stripe from 'stripe';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
-
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -21,11 +18,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  if (!stripe) {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeSecretKey) {
     return res.status(500).json({ 
-      error: 'Stripe secret key not configured on server. Please set STRIPE_SECRET_KEY in Vercel environment variables.' 
+      error: 'Stripe secret key not configured on server. Please set STRIPE_SECRET_KEY in environment variables.' 
     });
   }
+
+  const stripe = new Stripe(stripeSecretKey);
 
   try {
     const { 

@@ -9,7 +9,7 @@ export default function CareFeature({ onOpenCareGuide }) {
       <div className="container-editorial">
         <div className="care-feature-card">
           <div className="care-feature-content">
-            <h2 className="care-heading">Love your wig to <GoldStroke>keep the look</GoldStroke>.</h2>
+            <h2 className="care-heading">Love your wig to keep <GoldStroke>the look</GoldStroke></h2>
             
             <button 
               type="button" 

@@ -27,7 +27,8 @@ const SPECIMEN_CARDS = [
     tag: 'COLLECTIONS',
     title: 'Hair That Fits Your Life',
     subtitle: 'Human Hair & Replica Fibre',
-    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=900&q=80&fm=webp',
+    image: '/images/feature-hair-styling.webp',
+    imagePosition: 'center 40%',
     metrics: [
       { label: 'Our Belief', value: 'No Budget Pressure' },
       { label: 'Human Hair', value: 'Raw Single-Donor' },
@@ -43,7 +44,8 @@ const SPECIMEN_CARDS = [
     tag: 'THE EXPERIENCE',
     title: 'Welcome to Our House',
     subtitle: 'Wear Your Crown. With Confidence.',
-    image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80&fm=webp',
+    image: '/images/feature-silk-accessories.webp',
+    imagePosition: 'center 45%',
     metrics: [
       { label: 'The Experience', value: 'Thoughtful & Special' },
       { label: 'Dispatch', value: 'Little Details Matter' },
