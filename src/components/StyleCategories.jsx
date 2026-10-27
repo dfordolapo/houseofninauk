@@ -132,6 +132,19 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
                   onDoubleClick={() => toggleLike(post)}
                 >
                   <img src={post.image} alt={post.productName} className="insta-post-img" loading="lazy" />
+
+                  {/* House of Nina Luxury Wax Seal Stamp */}
+                  <div className="product-wax-seal-stamp" title="House of Nina Atelier Certified">
+                    <img 
+                      src="/images/wax-seal-stamp.webp" 
+                      alt="House of Nina Atelier Seal" 
+                      className="wax-seal-stamp-img"
+                      width="36"
+                      height="36"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
                   
                   {/* Tag Toggle Button */}
                   <button 

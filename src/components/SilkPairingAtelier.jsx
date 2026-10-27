@@ -63,6 +63,18 @@ export default function SilkPairingAtelier({
                 alt={activeWig.name} 
                 className="pairing-hero-img" 
               />
+              {/* House of Nina Luxury Wax Seal Stamp */}
+              <div className="product-wax-seal-stamp" title="House of Nina Atelier Certified">
+                <img 
+                  src="/images/wax-seal-stamp.webp" 
+                  alt="House of Nina Atelier Seal" 
+                  className="wax-seal-stamp-img"
+                  width="36"
+                  height="36"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
               <button 
                 type="button" 
                 className={`product-wishlist-btn ${isWigWishlisted ? 'active' : ''}`}
@@ -123,6 +135,18 @@ export default function SilkPairingAtelier({
                 alt={activeScarf.name} 
                 className="pairing-hero-img" 
               />
+              {/* House of Nina Luxury Wax Seal Stamp */}
+              <div className="product-wax-seal-stamp" title="House of Nina Atelier Certified">
+                <img 
+                  src="/images/wax-seal-stamp.webp" 
+                  alt="House of Nina Atelier Seal" 
+                  className="wax-seal-stamp-img"
+                  width="36"
+                  height="36"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
               <button 
                 type="button" 
                 className={`product-wishlist-btn ${isScarfWishlisted ? 'active' : ''}`}
