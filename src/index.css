@@ -6707,13 +6707,13 @@ video::-moz-media-controls {
   height: clamp(52px, 11vw, 68px);
   z-index: 10;
   pointer-events: none;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.42));
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  animation: sealFloatIn 0.45s ease-out;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.38));
+  animation: sealFloatIn 0.3s ease-out both;
+  will-change: transform, opacity;
 }
 
 @keyframes sealFloatIn {
-  from { opacity: 0; transform: scale(0.85) rotate(-6deg); }
+  from { opacity: 0; transform: scale(0.88) rotate(-5deg); }
   to { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
@@ -6722,6 +6722,8 @@ video::-moz-media-controls {
   height: 100%;
   object-fit: contain;
   display: block;
+  image-rendering: -webkit-optimize-contrast;
+  will-change: auto;
 }
 
 /* When wax seal is present alongside the video badge, offset badge gracefully */
@@ -6917,9 +6919,9 @@ video::-moz-media-controls {
     position: sticky !important;
     top: 0 !important;
     z-index: 30 !important;
-    height: 185px !important;
-    min-height: 185px !important;
-    max-height: 25vh !important;
+    height: 230px !important;
+    min-height: 230px !important;
+    max-height: 32vh !important;
     width: 100% !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   }
@@ -6927,48 +6929,48 @@ video::-moz-media-controls {
   .quickview-media-wrap .media-wax-seal-stamp {
     top: 12px !important;
     left: 12px !important;
-    width: 50px !important;
-    height: 50px !important;
+    width: 48px !important;
+    height: 48px !important;
   }
 
   .quickview-body {
-    padding: 14px 14px 16px 14px !important;
+    padding: 12px 13px 14px 13px !important;
   }
 
   .quickview-body .product-title {
-    font-size: 16px !important;
+    font-size: 15px !important;
   }
 
   .quickview-body .product-price {
-    font-size: 16px !important;
+    font-size: 15px !important;
   }
 
   .quickview-body .product-desc {
-    font-size: 11.5px !important;
-    line-height: 1.45 !important;
-    margin-bottom: 10px !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    margin-bottom: 8px !important;
   }
 
   .quickview-body label {
-    font-size: 10.5px !important;
-    margin-bottom: 4px !important;
+    font-size: 10px !important;
+    margin-bottom: 3px !important;
   }
 
   .quickview-body .option-chip {
-    padding: 5px 10px !important;
-    font-size: 11px !important;
+    padding: 4px 9px !important;
+    font-size: 10.5px !important;
   }
 
   .quickview-body .btn-primary-editorial,
   .quickview-body .btn-secondary-editorial {
-    padding: 11px 14px !important;
-    font-size: 12.5px !important;
+    padding: 10px 12px !important;
+    font-size: 12px !important;
   }
 
   .quickview-sticky-reviews-cta {
-    margin: 12px -14px -14px -14px !important;
-    padding: 9px 14px !important;
-    font-size: 11px !important;
+    margin: 10px -13px -12px -13px !important;
+    padding: 8px 13px !important;
+    font-size: 10.5px !important;
   }
 }
 
@@ -6977,9 +6979,9 @@ video::-moz-media-controls {
     position: sticky !important;
     top: 0 !important;
     z-index: 30 !important;
-    height: 170px !important;
-    min-height: 170px !important;
-    max-height: 24vh !important;
+    height: 210px !important;
+    min-height: 210px !important;
+    max-height: 29vh !important;
     width: 100% !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   }
@@ -6987,17 +6989,48 @@ video::-moz-media-controls {
   .quickview-media-wrap .media-wax-seal-stamp {
     top: 10px !important;
     left: 10px !important;
-    width: 44px !important;
-    height: 44px !important;
+    width: 42px !important;
+    height: 42px !important;
   }
 
   .quickview-body {
-    padding: 12px 12px 14px 12px !important;
+    padding: 10px 11px 12px 11px !important;
+  }
+
+  .quickview-body .product-title {
+    font-size: 14px !important;
+  }
+
+  .quickview-body .product-price {
+    font-size: 14px !important;
+  }
+
+  .quickview-body .product-desc {
+    font-size: 10.5px !important;
+    line-height: 1.38 !important;
+    margin-bottom: 7px !important;
+  }
+
+  .quickview-body label {
+    font-size: 9.5px !important;
+    margin-bottom: 3px !important;
+  }
+
+  .quickview-body .option-chip {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .quickview-body .btn-primary-editorial,
+  .quickview-body .btn-secondary-editorial {
+    padding: 9px 11px !important;
+    font-size: 11.5px !important;
   }
 
   .quickview-sticky-reviews-cta {
-    margin: 10px -12px -12px -12px !important;
-    padding: 8px 12px !important;
+    margin: 8px -11px -10px -11px !important;
+    padding: 7px 11px !important;
+    font-size: 10px !important;
   }
 }
 

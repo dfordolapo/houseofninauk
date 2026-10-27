@@ -104,15 +104,18 @@ export default function ProductDetailsModal({
             {/* Physical Embossed Wax Seal directly on image */}
             <div className="media-wax-seal-stamp" aria-hidden="true">
               <img 
-                src="/images/wax_seal.webp" 
+                src="/images/wax-seal-stamp.webp" 
                 onError={(e) => {
                   if (!e.currentTarget.dataset.retried) {
                     e.currentTarget.dataset.retried = 'true';
-                    e.currentTarget.src = '/images/wax_seal.png';
+                    e.currentTarget.src = '/images/wax_seal.webp';
                   }
                 }}
                 alt="" 
-                className="media-wax-seal-img" 
+                className="media-wax-seal-img"
+                fetchPriority="high"
+                loading="eager"
+                decoding="async"
               />
             </div>
 
@@ -141,6 +144,9 @@ export default function ProductDetailsModal({
                 src={product.image} 
                 alt={product.name} 
                 className="quickview-img" 
+                fetchPriority="high"
+                loading="eager"
+                decoding="async"
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
               />
             </div>
