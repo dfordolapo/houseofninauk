@@ -472,47 +472,97 @@ export default function LegalModal({ isOpen, initialTab = 'terms', onClose }) {
                 </p>
               </div>
 
-              {/* DELIVERY TIMELINES */}
+              {/* DELIVERY OPTIONS & RATES */}
               <section style={{ marginBottom: '22px' }}>
                 <h4 className="legal-section-heading" style={{ fontFamily: 'var(--font-display)', fontSize: '16.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', marginBottom: '10px' }}>
-                  Delivery Methods &amp; Estimated Timeframes
+                  UK Delivery
                 </h4>
-                <div className="legal-delivery-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '10px' }}>
+                <div className="legal-delivery-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px', marginBottom: '16px' }}>
                   <div className="legal-delivery-card" style={{ background: '#FFFFFF', padding: '14px 16px', borderRadius: '10px', border: '1px solid var(--color-border-light)' }}>
                     <div className="legal-delivery-card-inner">
                       <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#8C8074', fontWeight: 600 }}>Standard UK</span>
                       <h5 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', margin: '2px 0 4px 0', color: 'var(--color-deep-espresso)' }}>
-                        2–5 Working Days
+                        £5.99
                       </h5>
                     </div>
                     <p style={{ fontSize: '12px', color: '#685C50', margin: 0 }}>
-                      Fully tracked. Excludes weekends and UK bank holidays.
+                      Tracked delivery. Estimated 2 to 3 working days after dispatch.
                     </p>
                   </div>
 
                   <div className="legal-delivery-card" style={{ background: '#FFFFFF', padding: '14px 16px', borderRadius: '10px', border: '1px solid var(--color-border-light)' }}>
                     <div className="legal-delivery-card-inner">
-                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#8C8074', fontWeight: 600 }}>UK Priority</span>
+                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#8C8074', fontWeight: 600 }}>Express UK</span>
                       <h5 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', margin: '2px 0 4px 0', color: 'var(--color-deep-espresso)' }}>
-                        1–2 Working Days
+                        £8.99
                       </h5>
                     </div>
                     <p style={{ fontSize: '12px', color: '#685C50', margin: 0 }}>
-                      Next day dispatch for time-sensitive orders.
+                      Priority tracked delivery. Next working day after dispatch.
+                    </p>
+                  </div>
+
+                  <div className="legal-delivery-card" style={{ background: '#FFFFFF', padding: '14px 16px', borderRadius: '10px', border: '1.5px solid var(--color-gold)' }}>
+                    <div className="legal-delivery-card-inner">
+                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-gold-dark)', fontWeight: 700 }}>Complimentary UK</span>
+                      <h5 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', margin: '2px 0 4px 0', color: 'var(--color-deep-espresso)' }}>
+                        Free on Orders £150+
+                      </h5>
+                    </div>
+                    <p style={{ fontSize: '12px', color: '#685C50', margin: 0 }}>
+                      Free tracked UK delivery automatically applied at checkout.
+                    </p>
+                  </div>
+                </div>
+
+                <h4 className="legal-section-heading" style={{ fontFamily: 'var(--font-display)', fontSize: '16.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', marginBottom: '10px', marginTop: '18px' }}>
+                  International Delivery
+                </h4>
+                <div className="legal-delivery-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px', marginBottom: '14px' }}>
+                  <div className="legal-delivery-card" style={{ background: '#FFFFFF', padding: '14px 16px', borderRadius: '10px', border: '1px solid var(--color-border-light)' }}>
+                    <div className="legal-delivery-card-inner">
+                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#8C8074', fontWeight: 600 }}>Europe</span>
+                      <h5 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', margin: '2px 0 4px 0', color: 'var(--color-deep-espresso)' }}>
+                        From £12.99
+                      </h5>
+                    </div>
+                    <p style={{ fontSize: '12px', color: '#685C50', margin: 0 }}>
+                      International tracked. Estimated 3 to 5 working days.
                     </p>
                   </div>
 
                   <div className="legal-delivery-card" style={{ background: '#FFFFFF', padding: '14px 16px', borderRadius: '10px', border: '1px solid var(--color-border-light)' }}>
                     <div className="legal-delivery-card-inner">
-                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#8C8074', fontWeight: 600 }}>Worldwide</span>
+                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#8C8074', fontWeight: 600 }}>USA</span>
                       <h5 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', margin: '2px 0 4px 0', color: 'var(--color-deep-espresso)' }}>
-                        7–10 Working Days
+                        From £24.99
                       </h5>
                     </div>
                     <p style={{ fontSize: '12px', color: '#685C50', margin: 0 }}>
-                      International air parcel. Local duties/taxes are the buyer's responsibility.
+                      International tracked. Estimated 5 to 7 working days.
                     </p>
                   </div>
+
+                  <div className="legal-delivery-card" style={{ background: '#FFFFFF', padding: '14px 16px', borderRadius: '10px', border: '1px solid var(--color-border-light)' }}>
+                    <div className="legal-delivery-card-inner">
+                      <span style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#8C8074', fontWeight: 600 }}>Canada</span>
+                      <h5 style={{ fontFamily: 'var(--font-display)', fontSize: '17px', margin: '2px 0 4px 0', color: 'var(--color-deep-espresso)' }}>
+                        From £24.99
+                      </h5>
+                    </div>
+                    <p style={{ fontSize: '12px', color: '#685C50', margin: 0 }}>
+                      International tracked. Estimated 5 to 7 working days.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ background: '#FAF6EE', padding: '12px 14px', borderRadius: '8px', fontSize: '12px', color: '#5C5146', lineHeight: 1.55 }}>
+                  <p style={{ margin: '0 0 6px 0' }}>
+                    <strong>Dispatch Note:</strong> Delivery estimates begin once your order has been dispatched and are not guaranteed. Processing and quality check times apply prior to dispatch.
+                  </p>
+                  <p style={{ margin: 0 }}>
+                    <strong>Tracking &amp; Customs:</strong> Tracking details are sent by email upon dispatch. International orders may be subject to local import duties and taxes upon arrival.
+                  </p>
                 </div>
               </section>
 

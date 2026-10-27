@@ -20,7 +20,7 @@ const CollectionsCatalogView = React.lazy(() => import('./components/Collections
 const SearchModal = React.lazy(() => import('./components/SearchModal'));
 const ProductQuickViewModal = React.lazy(() => import('./components/ProductQuickViewModal'));
 const ProductDetailsModal = React.lazy(() => import('./components/ProductDetailsModal'));
-const CareGuideModal = React.lazy(() => import('./components/CareGuideModal'));
+import CareGuideModal from './components/CareGuideModal';
 const WishlistDrawer = React.lazy(() => import('./components/WishlistDrawer'));
 const AddedToBagModal = React.lazy(() => import('./components/AddedToBagModal'));
 const LookReviewsModal = React.lazy(() => import('./components/LookReviewsModal'));
@@ -96,10 +96,25 @@ export default function App() {
       setIsAdminOpen(false);
     };
 
+    const checkProductParam = () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const prodId = params.get('product');
+        if (prodId) {
+          const match = FEATURED_PRODUCTS.find(p => p.id === prodId || (p.slug && p.slug === prodId));
+          if (match) {
+            setDetailsProduct(match);
+          }
+        }
+      } catch (e) {}
+    };
+
     const handleUrlChange = () => {
       setIsAdminOpen(checkIsAdminPath());
       setIsCollectionsPageOpen(checkIsCollectionsPath());
+      checkProductParam();
     };
+    checkProductParam();
     window.addEventListener('popstate', handleUrlChange);
     window.addEventListener('hashchange', handleUrlChange);
 
@@ -200,67 +215,29 @@ export default function App() {
   useEffect(() => {
     if (isAnyModalOpen) {
       if (!isLockedRef.current) {
-        // Record the current scroll position before locking
-        const currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
-        scrollPositionRef.current = currentScrollY;
         isLockedRef.current = true;
-
-        // Compensate for scrollbar width to prevent layout shift
         const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
         if (scrollbarWidth > 0) {
           document.body.style.paddingRight = `${scrollbarWidth}px`;
         }
-
-        // Freeze body in place at the exact scroll offset
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${currentScrollY}px`;
-        document.body.style.left = '0';
-        document.body.style.right = '0';
-        document.body.style.width = '100%';
         document.body.classList.add('modal-scroll-locked');
         document.documentElement.classList.add('modal-scroll-locked');
       }
     } else {
       if (isLockedRef.current) {
-        const savedScrollY = scrollPositionRef.current;
         isLockedRef.current = false;
-
-        // Clear fixed body styles
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.right = '';
-        document.body.style.width = '';
         document.body.style.paddingRight = '';
         document.body.classList.remove('modal-scroll-locked');
         document.documentElement.classList.remove('modal-scroll-locked');
-
-        // Instantly restore the exact previous scroll position
-        window.scrollTo({
-          top: savedScrollY,
-          left: 0,
-          behavior: 'instant'
-        });
       }
     }
 
     return () => {
       if (isLockedRef.current) {
-        const savedScrollY = scrollPositionRef.current;
         isLockedRef.current = false;
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.right = '';
-        document.body.style.width = '';
         document.body.style.paddingRight = '';
         document.body.classList.remove('modal-scroll-locked');
         document.documentElement.classList.remove('modal-scroll-locked');
-        window.scrollTo({
-          top: savedScrollY,
-          left: 0,
-          behavior: 'instant'
-        });
       }
     };
   }, [isAnyModalOpen]);
@@ -420,9 +397,27 @@ export default function App() {
     ));
   };
 
-  const handleMoveToWishlist = (item) => {
-    handleToggleSave(item);
-    handleRemoveCartItem(item.cartId || item.id);
+  const handleMoveToWishlist = (item, removeFromBag = false) => {
+    // Ensure item is saved to lookbook/wishlist
+    const targetId = item.productId || item.id;
+    setWishlist(prev => {
+      const exists = prev.some(saved => (saved.id === targetId || saved.id === item.id || saved.id === item.cartId));
+      if (exists) return prev;
+      const priceNum = typeof item.price === 'number' 
+        ? item.price 
+        : parseInt(String(item.price).replace(/[^\d]/g, ''), 10) || 245;
+      return [...prev, {
+        ...item,
+        id: targetId,
+        name: item.name || item.productName || 'House of Nina Unit',
+        price: priceNum,
+        category: item.category || 'Wigs'
+      }];
+    });
+
+    if (removeFromBag) {
+      handleRemoveCartItem(item.cartId || item.id);
+    }
   };
 
   const handleProceedToCheckout = (data = {}) => {
@@ -757,7 +752,7 @@ export default function App() {
             />
 
             {/* SECTION 7: OUR STORY — SCROLL-STACKING SPECIMEN CARDS */}
-            <StoryFeature />
+            <StoryFeature onOpenCollections={handleOpenCollectionsPage} />
 
             {/* SECTION 8: THE WIG CARE GUIDE */}
             <CareFeature onOpenCareGuide={() => setIsCareGuideOpen(true)} />

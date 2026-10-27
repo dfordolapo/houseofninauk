@@ -27,74 +27,19 @@ export default function CartDrawer({
 }) {
   const [showOrderNote, setShowOrderNote] = useState(false);
   const [orderNote, setOrderNote] = useState('');
-
-  // Active Discounts from Admin (Only shows input if active codes exist in Admin!)
-  const [activeAdminDiscounts, setActiveAdminDiscounts] = useState([]);
-  const [promoInput, setPromoInput] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState(null); // { code, amount }
-  const [promoError, setPromoError] = useState('');
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('house_of_nina_admin_discounts_v3');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          const actives = parsed.filter(d => d.status === 'active');
-          setActiveAdminDiscounts(actives);
-          if (appliedPromo && !actives.some(d => d.code === appliedPromo.code)) {
-            setAppliedPromo(null);
-          }
-          return;
-        }
-      }
-      setActiveAdminDiscounts([]);
-    } catch {
-      setActiveAdminDiscounts([]);
-    }
-  }, [isOpen]);
+  const [savePromptItem, setSavePromptItem] = useState(null); // item pending save decision
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
-  const discountAmount = appliedPromo ? appliedPromo.amount : 0;
-  const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - Math.max(0, subtotal - discountAmount));
-  const freeShippingProgress = Math.min(100, Math.round((Math.max(0, subtotal - discountAmount) / BRAND_INFO.freeShippingThreshold) * 100));
-  const finalTotal = Math.max(0, subtotal - discountAmount);
+  const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - subtotal);
+  const freeShippingProgress = Math.min(100, Math.round((subtotal / BRAND_INFO.freeShippingThreshold) * 100));
+  const finalTotal = subtotal;
 
-  const handleApplyPromo = (e) => {
-    e?.preventDefault();
-    setPromoError('');
-    const clean = promoInput.trim().toUpperCase();
-    if (!clean) return;
-
-    const match = activeAdminDiscounts.find(d => d.code.toUpperCase() === clean);
-    if (!match) {
-      setPromoError('Invalid or expired discount code.');
-      return;
+  const handleConfirmSave = (removeFromBag) => {
+    if (!savePromptItem) return;
+    if (removeFromBag && onRemoveItem) {
+      onRemoveItem(savePromptItem.cartId || savePromptItem.id);
     }
-
-    if (match.minSpend && subtotal < match.minSpend) {
-      setPromoError(`Minimum spend of £${match.minSpend} required for this code.`);
-      return;
-    }
-
-    let calculated = 0;
-    if (match.type === 'percentage') {
-      calculated = Math.round((subtotal * match.value) / 100);
-    } else {
-      calculated = Math.min(subtotal, match.value);
-    }
-
-    setAppliedPromo({
-      code: match.code,
-      amount: calculated
-    });
-    setPromoInput('');
-    setPromoError('');
-  };
-
-  const handleRemovePromo = () => {
-    setAppliedPromo(null);
-    setPromoError('');
+    setSavePromptItem(null);
   };
 
   return (
@@ -152,39 +97,23 @@ export default function CartDrawer({
           </button>
         </div>
 
-        {/* FREE UK DELIVERY TIER PROGRESS (EDITORIAL LUXURY, NO EMOJIS, NO SPARKLES) */}
+        {/* FREE UK DELIVERY TIER (COMPLIMENTARY FOR NOW) */}
         <div style={{
-          padding: '12px 14px',
-          backgroundColor: '#FFFFFF',
+          padding: '10px 14px',
+          backgroundColor: '#F7FAF7',
           borderRadius: '12px',
-          border: '1px solid var(--color-border-light)',
-          marginTop: '12px'
+          border: '1px solid #D2E7D6',
+          marginTop: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '11.5px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>
-              {remainingForFreeShipping === 0 
-                ? 'Free Shipping Unlocked' 
-                : `Add £${remainingForFreeShipping.toFixed(0)} for Free Shipping`}
-            </span>
-            <span style={{ fontSize: '11px', color: '#8C8074', fontWeight: 600 }}>
-              {freeShippingProgress}%
-            </span>
-          </div>
-
-          <div style={{
-            width: '100%',
-            height: '4px',
-            borderRadius: '4px',
-            backgroundColor: '#EAE3D9',
-            overflow: 'hidden'
-          }}>
-            <div style={{
-              height: '100%',
-              width: `${freeShippingProgress}%`,
-              backgroundColor: remainingForFreeShipping === 0 ? '#2E7D32' : 'var(--color-dusty-rose)',
-              transition: 'width 0.4s ease'
-            }} />
-          </div>
+          <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#1E7E34' }}>
+            Standard UK Delivery is currently Complimentary
+          </span>
+          <span style={{ fontSize: '11px', color: '#1E7E34', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Free
+          </span>
         </div>
 
         {/* CART ITEMS BODY */}
@@ -382,7 +311,10 @@ export default function CartDrawer({
                           {onMoveToWishlist && (
                             <button
                               type="button"
-                              onClick={() => onMoveToWishlist(item)}
+                              onClick={() => {
+                                if (onMoveToWishlist) onMoveToWishlist(item, false);
+                                setSavePromptItem(item);
+                              }}
                               style={{
                                 background: 'none',
                                 border: 'none',
@@ -395,7 +327,7 @@ export default function CartDrawer({
                                 cursor: 'pointer',
                                 fontWeight: 500
                               }}
-                              title="Move to Saved Looks"
+                              title="Save to Lookbook"
                             >
                               <Heart size={12} />
                               <span>Save</span>
@@ -458,79 +390,13 @@ export default function CartDrawer({
           )}
         </div>
 
-        {/* FOOTER WITH PRIVILEGE CODE & CHECKOUT CTA */}
+        {/* FOOTER & CHECKOUT CTA */}
         {cartItems.length > 0 && (
           <div style={{ 
             paddingTop: '14px', 
             borderTop: '1px solid var(--color-border)',
             flexShrink: 0
           }}>
-            {/* DYNAMIC PRIVILEGE DISCOUNT SECTION — ONLY APPEARS IF ADMIN HAS ACTIVE CODES */}
-            {activeAdminDiscounts.length > 0 && (
-              <div style={{
-                marginBottom: '12px',
-                padding: '9px 12px',
-                backgroundColor: 'var(--color-sand-light)',
-                borderRadius: '8px',
-                border: '1px solid var(--color-border)'
-              }}>
-                {appliedPromo ? (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#1E7E34', fontWeight: 600 }}>
-                      <Tag size={13} />
-                      <span>{appliedPromo.code} applied (-£{appliedPromo.amount})</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleRemovePromo}
-                      style={{ background: 'none', border: 'none', color: '#C53030', fontSize: '11px', cursor: 'pointer', fontWeight: 600, padding: '2px 4px' }}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleApplyPromo} style={{ display: 'flex', gap: '6px' }}>
-                    <input
-                      type="text"
-                      value={promoInput}
-                      onChange={(e) => { setPromoInput(e.target.value); setPromoError(''); }}
-                      placeholder="Enter discount code"
-                      style={{
-                        flex: 1,
-                        padding: '7px 10px',
-                        borderRadius: '6px',
-                        border: promoError ? '1px solid #C53030' : '1px solid var(--color-border)',
-                        fontSize: '11.5px',
-                        fontFamily: 'var(--font-sans)',
-                        outline: 'none',
-                        textTransform: 'uppercase'
-                      }}
-                    />
-                    <button
-                      type="submit"
-                      style={{
-                        padding: '0 12px',
-                        backgroundColor: 'var(--color-deep-espresso)',
-                        color: '#FFFFFF',
-                        border: 'none',
-                        borderRadius: '6px',
-                        fontSize: '11px',
-                        fontWeight: 600,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Apply
-                    </button>
-                  </form>
-                )}
-                {promoError && (
-                  <span style={{ display: 'block', fontSize: '11px', color: '#C53030', marginTop: '4px' }}>
-                    {promoError}
-                  </span>
-                )}
-              </div>
-            )}
-
             {/* Financial Summary */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
@@ -538,17 +404,10 @@ export default function CartDrawer({
                 <span>£{subtotal}</span>
               </div>
 
-              {appliedPromo && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#1E7E34', fontWeight: 600 }}>
-                  <span>Discount ({appliedPromo.code})</span>
-                  <span>-£{appliedPromo.amount}</span>
-                </div>
-              )}
-
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
-                <span>UK Shipping</span>
-                <span style={{ color: remainingForFreeShipping === 0 ? '#1E7E34' : 'inherit' }}>
-                  {remainingForFreeShipping === 0 ? 'Free' : 'Calculated at checkout'}
+                <span>UK Standard Delivery</span>
+                <span style={{ color: '#1E7E34', fontWeight: 600 }}>
+                  Free
                 </span>
               </div>
 
@@ -575,8 +434,8 @@ export default function CartDrawer({
               onClick={() => {
                 if (onProceedToCheckout) {
                   onProceedToCheckout({
-                    discountAmount: appliedPromo ? appliedPromo.amount : 0,
-                    promoCode: appliedPromo ? appliedPromo.code : null,
+                    discountAmount: 0,
+                    promoCode: null,
                     orderNote
                   });
                 }
@@ -724,6 +583,108 @@ export default function CartDrawer({
                 </span>
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* SAVE TO LOOKBOOK / WISHLIST CONFIRMATION PROMPT */}
+        {savePromptItem && (
+          <div 
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(26, 22, 21, 0.65)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
+              zIndex: 10000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px'
+            }}
+            onClick={() => setSavePromptItem(null)}
+          >
+            <div 
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '16px',
+                padding: '24px 20px',
+                width: '100%',
+                maxWidth: '340px',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
+                textAlign: 'center',
+                border: '1px solid var(--color-border)'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(212, 175, 122, 0.15)',
+                color: 'var(--color-gold-dark)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 12px auto'
+              }}>
+                <Heart size={20} fill="var(--color-gold-dark)" />
+              </div>
+              <h4 style={{ 
+                fontFamily: 'var(--font-display)', 
+                fontSize: '17px', 
+                fontWeight: 600, 
+                color: 'var(--color-deep-espresso)', 
+                margin: '0 0 6px 0' 
+              }}>
+                Saved to Lookbook
+              </h4>
+              <p style={{ 
+                fontSize: '13px', 
+                color: '#685C50', 
+                lineHeight: 1.45, 
+                margin: '0 0 18px 0' 
+              }}>
+                Would you like to remove it from your shopping bag as well?
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={() => handleConfirmSave(true)}
+                  style={{
+                    width: '100%',
+                    padding: '11px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    backgroundColor: 'var(--color-deep-espresso)',
+                    color: '#FFFFFF',
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Remove from Bag
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleConfirmSave(false)}
+                  style={{
+                    width: '100%',
+                    padding: '11px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-border)',
+                    backgroundColor: 'transparent',
+                    color: 'var(--color-deep-espresso)',
+                    fontSize: '12.5px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Keep in Bag
+                </button>
+              </div>
             </div>
           </div>
         )}

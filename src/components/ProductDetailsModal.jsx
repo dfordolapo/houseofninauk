@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, ShoppingBag, ShieldCheck, Play, Pause, Volume2, VolumeX, Film, Image as ImageIcon, Heart, Star, MessageCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Check, ShoppingBag, Heart, Star, MessageCircle, Share2 } from 'lucide-react';
 
 /**
  * ============================================================================
@@ -22,13 +22,33 @@ export default function ProductDetailsModal({
   const [selectedLace, setSelectedLace] = useState('');
   const [selectedDensity, setSelectedDensity] = useState('');
   const [isAdded, setIsAdded] = useState(false);
-  
-  // Media view states
-  const [mediaMode, setMediaMode] = useState('image'); // 'image' | 'video'
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
-  
-  const videoRef = useRef(null);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyProductLink = () => {
+    const productId = product?.id || 'product';
+    const shareUrl = `${window.location.origin}${window.location.pathname}?product=${encodeURIComponent(productId)}`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2400);
+      }).catch(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2400);
+      });
+    } else {
+      try {
+        const input = document.createElement('input');
+        input.value = shareUrl;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+      } catch (e) {}
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2400);
+    }
+  };
 
   // Setup options and reset on product change / modal open
   useEffect(() => {
@@ -37,59 +57,11 @@ export default function ProductDetailsModal({
       setSelectedLace(product.options?.laceTypes?.[0] || '');
       setSelectedDensity(product.options?.densities?.[0] || '');
       setIsAdded(false);
-      setMediaMode('image');
-      setIsPlaying(true);
-      setIsMuted(true);
+      setIsCopied(false);
     }
   }, [product, isOpen]);
 
-  // Handle video autoplay & playback lifecycle if user switches to video mode
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!isOpen || mediaMode !== 'video' || !vid) return;
-
-    vid.muted = isMuted;
-    vid.defaultMuted = isMuted;
-    vid.playsInline = true;
-
-    const playPromise = vid.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => setIsPlaying(true))
-        .catch(() => {
-          setIsPlaying(false);
-        });
-    }
-
-    return () => {
-      if (vid && !vid.paused) {
-        vid.pause();
-      }
-    };
-  }, [isOpen, mediaMode, product, isMuted]);
-
   if (!isOpen || !product) return null;
-
-  const togglePlay = () => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    if (vid.paused) {
-      vid.play().then(() => setIsPlaying(true)).catch(() => {});
-    } else {
-      vid.pause();
-      setIsPlaying(false);
-    }
-  };
-
-  const toggleMute = () => {
-    const vid = videoRef.current;
-    const newMuted = !isMuted;
-    setIsMuted(newMuted);
-    if (vid) {
-      vid.muted = newMuted;
-    }
-  };
 
   const handleAdd = () => {
     onAddToCart({
@@ -107,10 +79,6 @@ export default function ProductDetailsModal({
   };
 
   const isWishlisted = wishlist.some(item => item.id === product.id);
-  const hasCustomVideo = !!product.video;
-  const webmSource = hasCustomVideo ? null : '/videos/15558864.webm';
-  const mp4Source = product.video || '/videos/15558864_1080_1920_30fps.mp4';
-  const posterSource = product.image || '/videos/15558864_poster.webp';
 
   return (
     <div className={`modal-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
@@ -131,9 +99,9 @@ export default function ProductDetailsModal({
         </button>
 
         <div className="quickview-layout">
-          {/* ── Left Column: Media Showcase ── */}
-          <div className="quickview-media-wrap" style={{ position: 'relative' }}>
-            {/* Physical Embossed Wax Seal directly on image/video */}
+          {/* ── Left Column: Media Showcase (Clean Crisp Image) ── */}
+          <div className="quickview-media-wrap">
+            {/* Physical Embossed Wax Seal directly on image */}
             <div className="media-wax-seal-stamp" aria-hidden="true">
               <img 
                 src="/images/wax_seal.webp" 
@@ -166,138 +134,74 @@ export default function ProductDetailsModal({
                 strokeWidth={isWishlisted ? 2.2 : 1.8}
               />
             </button>
-            {mediaMode === 'video' ? (
-              <div 
-                className="quickview-video-container" 
-                onClick={togglePlay}
-                role="button"
-                tabIndex={0}
-                aria-label={isPlaying ? 'Pause video preview' : 'Play video preview'}
-                onKeyDown={(e) => {
-                  if (e.key === ' ' || e.key === 'Enter') {
-                    e.preventDefault();
-                    togglePlay();
-                  }
-                }}
-              >
-                <video
-                  ref={videoRef}
-                  className="quickview-video-player"
-                  autoPlay
-                  muted={isMuted}
-                  loop
-                  playsInline
-                  webkit-playsinline="true"
-                  x5-playsinline="true"
-                  preload="auto"
-                  poster={posterSource}
-                  key={`${product.id || 'dt'}-video`}
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                >
-                  {webmSource && <source src={webmSource} type="video/webm" />}
-                  <source src={mp4Source} type="video/mp4" />
-                </video>
 
-                {/* Live Hair Motion Badge */}
-                <div className="quickview-video-badge" aria-hidden="true">
-                  <span className="qv-live-dot" />
-                  <span>LIVE STRAND MOVEMENT</span>
-                </div>
-
-                {/* Big Center Play Icon when paused */}
-                {!isPlaying && (
-                  <div className="quickview-play-overlay">
-                    <div className="quickview-play-circle">
-                      <Play size={24} fill="currentColor" />
-                    </div>
-                  </div>
-                )}
-
-                {/* Floating Media Action Controls */}
-                <div className="quickview-video-actions" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    type="button"
-                    className="qv-media-ctrl-btn"
-                    onClick={togglePlay}
-                    aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                    title={isPlaying ? 'Pause' : 'Play'}
-                  >
-                    {isPlaying ? <Pause size={15} /> : <Play size={15} fill="currentColor" />}
-                  </button>
-
-                  <button
-                    type="button"
-                    className="qv-media-ctrl-btn"
-                    onClick={toggleMute}
-                    aria-label={isMuted ? 'Unmute video audio' : 'Mute video audio'}
-                    title={isMuted ? 'Unmute' : 'Mute'}
-                  >
-                    {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="quickview-img-container">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
-                  className="quickview-img" 
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-            )}
-
-            {/* Video vs Photo switcher tabs */}
-            {product.image && (
-              <div className="quickview-mode-tabs" onClick={(e) => e.stopPropagation()}>
-                <button
-                  type="button"
-                  className={`qv-tab-btn ${mediaMode === 'image' ? 'active' : ''}`}
-                  onClick={() => setMediaMode('image')}
-                  aria-label="Show still photo"
-                >
-                  <ImageIcon size={12} /> Still Photo
-                </button>
-                <button
-                  type="button"
-                  className={`qv-tab-btn ${mediaMode === 'video' ? 'active' : ''}`}
-                  onClick={() => setMediaMode('video')}
-                  aria-label="Show video preview"
-                >
-                  <Film size={12} /> Movement Video
-                </button>
-              </div>
-            )}
+            {/* Crisp Still Product Image */}
+            <div className="quickview-img-container">
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="quickview-img" 
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
+              />
+            </div>
           </div>
 
           {/* ── Right Column: Product Details & Options ── */}
           <div className="quickview-body">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
               <span className="product-cat-pill">{product.category}</span>
-              <button 
-                type="button" 
-                onClick={() => onOpenReviews && onOpenReviews(product)}
-                style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  gap: '4px', 
-                  background: 'none', 
-                  border: 'none', 
-                  cursor: 'pointer',
-                  padding: '2px 4px'
-                }}
-                title="Read client reviews & write feedback"
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: 'var(--color-gold)' }}>
-                  <Star size={13} fill="var(--color-gold)" color="var(--color-gold)" />
-                  <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
-                    {product.rating || '5.0'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button 
+                  type="button" 
+                  onClick={() => onOpenReviews && onOpenReviews(product)}
+                  style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    gap: '4px', 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer',
+                    padding: '2px 4px'
+                  }}
+                  title="Read client reviews & write feedback"
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: 'var(--color-gold)' }}>
+                    <Star size={13} fill="var(--color-gold)" color="var(--color-gold)" />
+                    <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>
+                      {product.rating || '5.0'}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#8C8074', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                    ({product.reviewsCount || 14})
                   </span>
-                </div>
-                <span style={{ fontSize: '11px', color: '#8C8074', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                  ({product.reviewsCount || 14} Reviews)
-                </span>
-              </button>
+                </button>
+
+                {/* Top Quick Share / Copy Product Link Button */}
+                <button
+                  type="button"
+                  onClick={handleCopyProductLink}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    background: isCopied ? '#F1F8F3' : 'rgba(36, 28, 25, 0.05)',
+                    border: '1px solid',
+                    borderColor: isCopied ? '#2E7D32' : 'rgba(36, 28, 25, 0.1)',
+                    borderRadius: '100px',
+                    padding: '3px 9px',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    color: isCopied ? '#2E7D32' : 'var(--color-deep-espresso)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  title={isCopied ? "Product link copied to clipboard!" : "Share product link"}
+                  aria-label="Share product link"
+                >
+                  {isCopied ? <Check size={12} color="#2E7D32" strokeWidth={2.4} /> : <Share2 size={12} />}
+                  <span>{isCopied ? 'Link Copied' : 'Share'}</span>
+                </button>
+              </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '14px', marginTop: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
               <h2 className="product-title" style={{ fontSize: '18px', margin: 0, fontWeight: 600, color: 'var(--color-deep-espresso)', letterSpacing: '-0.01em', lineHeight: 1.3 }}>
@@ -314,8 +218,8 @@ export default function ProductDetailsModal({
 
             {/* Length Selector */}
             {product.options?.lengths?.length > 0 && (
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '6px', color: '#685C50' }}>
+              <div className="quickview-selector-group" style={{ marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
                   Length: <span style={{ color: 'var(--color-deep-espresso)' }}>{selectedLength}</span>
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -336,8 +240,8 @@ export default function ProductDetailsModal({
 
             {/* Lace Selector */}
             {product.options?.laceTypes?.length > 0 && (
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '6px', color: '#685C50' }}>
+              <div className="quickview-selector-group" style={{ marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
                   Lace Type: <span style={{ color: 'var(--color-deep-espresso)' }}>{selectedLace}</span>
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -358,8 +262,8 @@ export default function ProductDetailsModal({
 
             {/* Density Selector */}
             {product.options?.densities?.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '6px', color: '#685C50' }}>
+              <div className="quickview-selector-group" style={{ marginBottom: '14px' }}>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
                   Density: <span style={{ color: 'var(--color-deep-espresso)' }}>{selectedDensity}</span>
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -409,7 +313,8 @@ export default function ProductDetailsModal({
                   justifyContent: 'center',
                   borderColor: isWishlisted ? 'var(--color-gold)' : 'var(--color-border)',
                   backgroundColor: isWishlisted ? 'rgba(215, 172, 85, 0.12)' : '#FFFFFF',
-                  color: isWishlisted ? 'var(--color-gold)' : 'var(--color-deep-espresso)'
+                  color: isWishlisted ? 'var(--color-gold)' : 'var(--color-deep-espresso)',
+                  minWidth: '46px'
                 }}
               >
                 <Heart 
@@ -419,44 +324,42 @@ export default function ProductDetailsModal({
                 />
               </button>
 
-              {onOpenVideo && (
-                <button
-                  type="button"
-                  className="btn-secondary-editorial"
-                  style={{ 
-                    padding: '13px 16px', 
-                    justifyContent: 'center',
-                    backgroundColor: '#FFFFFF',
-                    color: 'var(--color-deep-espresso)',
-                    border: '1px solid var(--color-border)'
-                  }}
-                  onClick={() => {
-                    onClose();
-                    onOpenVideo(product);
-                  }}
-                  title="Watch Hair Movement Video"
-                >
-                  <Film size={17} color="var(--color-deep-espresso)" />
-                </button>
-              )}
+              {/* Easy Share Direct Product Link Button */}
+              <button
+                type="button"
+                className="btn-secondary-editorial"
+                onClick={handleCopyProductLink}
+                aria-label={isCopied ? "Product link copied to clipboard" : "Share product link"}
+                title={isCopied ? "Link copied to clipboard!" : "Share product link"}
+                style={{ 
+                  padding: '13px 16px', 
+                  justifyContent: 'center',
+                  borderColor: isCopied ? '#2E7D32' : 'var(--color-border)',
+                  backgroundColor: isCopied ? '#F1F8F3' : '#FFFFFF',
+                  color: isCopied ? '#2E7D32' : 'var(--color-deep-espresso)',
+                  transition: 'all 0.2s ease',
+                  minWidth: '46px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {isCopied ? (
+                  <>
+                    <Check size={17} color="#2E7D32" strokeWidth={2.4} />
+                    <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#2E7D32' }}>Copied</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 size={17} />
+                    <span style={{ fontSize: '11.5px', fontWeight: 500 }}>Share</span>
+                  </>
+                )}
+              </button>
             </div>
 
-            {/* Quality specs */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', color: 'var(--color-espresso-muted)', fontSize: '12px' }}>
-              <ShieldCheck size={16} className="text-gold" />
-              <span>100% Virgin Hair · Pre-Plucked Hairline &amp; Bleached Knots</span>
-            </div>
-
-            {/* Client Reviews Banner Link */}
-            <div style={{ 
-              marginTop: '16px', 
-              paddingTop: '12px', 
-              borderTop: '1px solid var(--color-border-light)', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between',
-              fontSize: '11.5px'
-            }}>
+            {/* Client Reviews Banner Link (Sticky CTA) */}
+            <div className="quickview-sticky-reviews-cta">
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#685C50' }}>
                 <MessageCircle size={14} color="#8C8074" />
                 <span>Verified Client Reviews ({product.reviewsCount || 14})</span>

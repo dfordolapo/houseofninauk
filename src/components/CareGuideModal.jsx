@@ -193,8 +193,7 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
                 <div className={`pro-secret-variant ps-tip-color-${activeIndex}`}>
                   <div className="ps-stroke-dir2">
                     <div className="ps-stroke-banner">
-                      <span className="ps-stroke-label desktop-pro-label">PRO SECRET</span>
-                      <span className="ps-stroke-label mobile-pro-label">PRO TIP</span>
+                      <span className="ps-stroke-label">PRO TIP</span>
                       <span className="ps-stroke-tail" />
                     </div>
                     <p className="ps-stroke-body">{currentTip.tip}</p>

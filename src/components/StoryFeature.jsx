@@ -52,11 +52,11 @@ const SPECIMEN_CARDS = [
       { label: 'The Community', value: 'Every Version Celebrated' },
       { label: 'The Promise', value: 'Wear Your Crown' }
     ],
-    quote: 'We believe the experience matters just as much as the product. We are building a house where beauty, individuality, and confidence come together with genuine passion.'
+    quote: 'We believe the experience matters just as much as the product. We are building a house where beauty, individuality, and confidence come together.'
   }
 ];
 
-export default function StoryFeature() {
+export default function StoryFeature({ onOpenCollections }) {
   const cardRefs = [useRef(null), useRef(null), useRef(null)];
 
   const scrollToCard = (index) => {
@@ -85,24 +85,27 @@ export default function StoryFeature() {
                 At House of Nina, our story began with a genuine love for beautiful hair. Long before becoming a brand, sourcing hair was something we loved doing for ourselves, discovering styles and finding pieces that made us feel confident.
               </p>
               <p className="story-p">
-                Whether exploring our virgin human hair or our signature Raw Hair Replica Fibre Collection, every piece is designed to help you express your individuality with effortless confidence, without breaking the bank.
+                Whether exploring our virgin human hair or our signature Raw Hair Replica Fibre Collection, every piece is designed to help you express your individuality, without breaking the bank.
               </p>
             </div>
 
             {/* Call to Action Buttons */}
             <div className="story-cta-row">
-              <a 
-                href="#featured-products" 
+              <button 
+                type="button" 
                 className="story-primary-btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const target = document.getElementById('featured-products');
-                  if (target) target.scrollIntoView({ behavior: 'smooth' });
+                onClick={() => {
+                  if (onOpenCollections) {
+                    onOpenCollections('All');
+                  } else {
+                    const target = document.getElementById('featured-products');
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }}
               >
                 <span>Explore the Collection</span>
                 <ArrowRight size={16} />
-              </a>
+              </button>
               <a 
                 href="#silk-pairing-studio" 
                 className="story-secondary-link"

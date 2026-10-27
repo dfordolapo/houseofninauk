@@ -7,8 +7,8 @@ export const BRAND_INFO = {
   locationBadge: "United Kingdom",
   currency: "GBP",
   currencySymbol: "£",
-  freeShippingThreshold: 100,
-  announcement: "UK Orders · Free shipping over £100"
+  freeShippingThreshold: 150,
+  announcement: "UK Orders · Free shipping over £150"
 };
 
 export const NAV_LINKS = [
@@ -394,6 +394,38 @@ export const INSTA_POSTS = [
     reviewsList: [
       { id: "rev-4-1", author: "Amara O.", rating: 5, time: "6h ago", verified: true, text: "The bounce stays even after washing! Super soft and minimal shedding." },
       { id: "rev-4-2", author: "Danielle P.", rating: 5, time: "2d ago", verified: true, text: "Worth every single pound. Feels like my own natural hair." }
+    ]
+  },
+  {
+    id: "ig-5",
+    productName: "The Signature Monogram Headscarf",
+    category: "Scarves",
+    price: "£1",
+    image: "/images/products/product-monogram-headscarf.webp",
+    likes: "1,745",
+    comments: "58",
+    caption: "Pure twill silk sophistication. Style as a statement headwrap or preserve your crown at dusk. ✨ #HouseOfNina #SilkLuxury",
+    timeAgo: "4 DAYS AGO",
+    isMultiple: false,
+    reviewsList: [
+      { id: "rev-5-1", author: "Folake O.", rating: 5, time: "4h ago", verified: true, text: "Very versatile. I wear it both out as a chic look and at night to protect my unit." },
+      { id: "rev-5-2", author: "Siobhan K.", rating: 5, time: "1d ago", verified: true, text: "The twill silk drape is gorgeous. High-end atelier quality." }
+    ]
+  },
+  {
+    id: "ig-6",
+    productName: "Pure Mulberry Silk Sleeping Bonnet",
+    category: "Accessories",
+    price: "£1",
+    image: "/images/products/product-silk-bonnet.webp",
+    likes: "2,890",
+    comments: "112",
+    caption: "Double-lined 22 Momme Mulberry silk for friction-free nights and prolonged wig longevity. 🌙 #AtelierEssentials",
+    timeAgo: "5 DAYS AGO",
+    isMultiple: false,
+    reviewsList: [
+      { id: "rev-6-1", author: "Sarah M.", rating: 5, time: "2h ago", verified: true, text: "The XL size actually fits all my 28-inch hair comfortably. No frizz in the morning!" },
+      { id: "rev-6-2", author: "Naomi B.", rating: 5, time: "12h ago", verified: true, text: "Elastic band is so gentle on my edges. Never wakes me up with a headache." }
     ]
   }
 ];

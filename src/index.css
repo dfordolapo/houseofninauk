@@ -1229,6 +1229,18 @@ h1, h2, h3,
   position: relative;
 }
 
+/* On desktop web alone, reduce space between top of page and first section of homepage */
+@media (min-width: 769px) {
+  .store-content-wrap > .instagram-style-section:first-child,
+  .store-content-wrap > #find-your-next-look:first-child {
+    padding-top: clamp(24px, 3.2vw, 42px);
+  }
+
+  .wigverse-exact-hero {
+    padding-top: clamp(14px, 2vw, 24px);
+  }
+}
+
 .instagram-style-section::after {
   content: '';
   position: absolute;
@@ -3773,7 +3785,37 @@ h1, h2, h3,
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
 }
 
-.creative-product-card:hover .product-wax-seal-stamp {
+/* In Find Your Next Look, position seal on the far right along the same bottom axis */
+.insta-image-container .product-wax-seal-stamp {
+  left: auto;
+  right: 14px;
+  bottom: 14px;
+  width: 36px;
+  height: 36px;
+}
+
+/* Enlarge wax seal stamp on web on the homepage while preserving mobile */
+@media (min-width: 769px) {
+  .insta-image-container .product-wax-seal-stamp {
+    width: 58px;
+    height: 58px;
+    right: 18px;
+    bottom: 18px;
+    filter: drop-shadow(0 5px 14px rgba(26, 22, 21, 0.38));
+  }
+
+  .pairing-image-box .product-wax-seal-stamp {
+    width: 60px;
+    height: 60px;
+    left: 16px;
+    bottom: 16px;
+    filter: drop-shadow(0 5px 14px rgba(26, 22, 21, 0.38));
+  }
+}
+
+.creative-product-card:hover .product-wax-seal-stamp,
+.insta-post-card:hover .product-wax-seal-stamp,
+.pairing-image-box:hover .product-wax-seal-stamp {
   transform: scale(1.1) rotate(6deg);
   filter: drop-shadow(0 5px 12px rgba(212, 175, 122, 0.45));
 }
@@ -4797,20 +4839,25 @@ button.option-chip:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 28px;
-  background-color: var(--color-ivory);
-  border: 1.5px solid var(--color-deep-espresso);
-  color: var(--color-deep-espresso);
+  padding: 13px 28px;
+  background-color: var(--color-deep-espresso, #1C1614);
+  border: 1.5px solid var(--color-deep-espresso, #1C1614);
+  color: var(--color-white, #FFFFFF);
   border-radius: var(--radius-btn, 8px);
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 600;
+  letter-spacing: 0.02em;
   transition: all var(--transition-fast);
+  box-shadow: 0 4px 14px rgba(28, 22, 20, 0.18);
 }
 
 .care-action-btn:hover {
-  background-color: var(--color-deep-espresso);
-  color: var(--color-ivory);
+  background-color: #2D2421;
+  border-color: var(--color-gold, #C5A059);
+  color: var(--color-gold-light, #F5DCA8);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(28, 22, 20, 0.28);
 }
 
 .care-feature-image-wrap {
@@ -6072,6 +6119,17 @@ video::-moz-media-controls {
 
   .care-action-btn {
     align-self: center !important;
+    padding: 9px 18px !important;
+    font-size: 12px !important;
+    letter-spacing: 0.02em !important;
+    border-radius: 6px !important;
+    gap: 6px !important;
+    box-shadow: 0 2px 8px rgba(28, 22, 20, 0.16) !important;
+  }
+
+  .care-action-btn svg {
+    width: 14px !important;
+    height: 14px !important;
   }
 
   .care-feature-image-wrap {
@@ -6137,8 +6195,13 @@ video::-moz-media-controls {
   }
 
   .footer-email-input {
-    font-size: 13px;
+    font-size: 11.5px;
     padding: 5px 0;
+  }
+
+  .footer-email-input::placeholder {
+    font-size: 11px;
+    letter-spacing: 0.02em;
   }
 
   .footer-email-submit-btn {
@@ -6440,17 +6503,46 @@ video::-moz-media-controls {
 
 .quickview-layout {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 0.95fr 1.05fr;
+  align-items: start;
 }
 
 .quickview-image-wrap,
 .quickview-media-wrap {
   position: relative;
   background-color: var(--color-deep-espresso, #161210);
-  min-height: 480px;
+  min-height: 400px;
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+@media (min-width: 769px) {
+  .quickview-media-wrap {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100%;
+    min-height: 400px;
+    max-height: 75vh;
+  }
+}
+
+.quickview-sticky-reviews-cta {
+  position: sticky;
+  bottom: 0;
+  background: rgba(253, 251, 247, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--color-border-light);
+  padding: 12px 24px;
+  margin: 16px -24px -26px -24px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  box-shadow: 0 -4px 16px rgba(36, 28, 25, 0.06);
 }
 
 .quickview-video-container,
@@ -6467,8 +6559,7 @@ video::-moz-media-controls {
   cursor: pointer;
 }
 
-.quickview-video-player,
-.quickview-img {
+.quickview-video-player {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -6478,42 +6569,17 @@ video::-moz-media-controls {
   display: block;
 }
 
-.quickview-video-badge {
+.quickview-img {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(22, 18, 16, 0.78);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: #F8F5EE;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-  pointer-events: none;
-  z-index: 5;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
 }
 
-.qv-live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #D4AF37;
-  box-shadow: 0 0 8px #D4AF37;
-  animation: qvPulse 1.8s infinite;
-}
 
-@keyframes qvPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
 
 .quickview-play-overlay {
   position: absolute;
@@ -6724,27 +6790,7 @@ video::-moz-media-controls {
   display: block;
 }
 
-.pure-video-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(18, 14, 12, 0.78);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #F8F5EE;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  z-index: 20;
-  pointer-events: none;
-}
+
 
 .pure-video-center-indicator {
   position: absolute;
@@ -6863,20 +6909,95 @@ video::-moz-media-controls {
 }
 
 @media (max-width: 768px) {
+  .quickview-layout {
+    display: block !important;
+  }
+
   .quickview-media-wrap {
-    height: 380px !important;
-    min-height: 380px !important;
-    max-height: 380px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 30 !important;
+    height: 185px !important;
+    min-height: 185px !important;
+    max-height: 25vh !important;
     width: 100% !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  }
+
+  .quickview-media-wrap .media-wax-seal-stamp {
+    top: 12px !important;
+    left: 12px !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .quickview-body {
+    padding: 14px 14px 16px 14px !important;
+  }
+
+  .quickview-body .product-title {
+    font-size: 16px !important;
+  }
+
+  .quickview-body .product-price {
+    font-size: 16px !important;
+  }
+
+  .quickview-body .product-desc {
+    font-size: 11.5px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .quickview-body label {
+    font-size: 10.5px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .quickview-body .option-chip {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+  }
+
+  .quickview-body .btn-primary-editorial,
+  .quickview-body .btn-secondary-editorial {
+    padding: 11px 14px !important;
+    font-size: 12.5px !important;
+  }
+
+  .quickview-sticky-reviews-cta {
+    margin: 12px -14px -14px -14px !important;
+    padding: 9px 14px !important;
+    font-size: 11px !important;
   }
 }
 
 @media (max-width: 480px) {
   .quickview-media-wrap {
-    height: 320px !important;
-    min-height: 320px !important;
-    max-height: 320px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 30 !important;
+    height: 170px !important;
+    min-height: 170px !important;
+    max-height: 24vh !important;
     width: 100% !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  }
+
+  .quickview-media-wrap .media-wax-seal-stamp {
+    top: 10px !important;
+    left: 10px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .quickview-body {
+    padding: 12px 12px 14px 12px !important;
+  }
+
+  .quickview-sticky-reviews-cta {
+    margin: 10px -12px -12px -12px !important;
+    padding: 8px 12px !important;
   }
 }
 
@@ -7405,6 +7526,11 @@ video::-moz-media-controls {
 
   .quickview-body {
     padding: 18px 16px !important;
+  }
+
+  .quickview-sticky-reviews-cta {
+    margin: 14px -16px -18px -16px !important;
+    padding: 10px 16px !important;
   }
 
   /* In Product Details Modal on mobile when video is open, pause & mute buttons sit directly under close X button */

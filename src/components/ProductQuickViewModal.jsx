@@ -154,12 +154,6 @@ export default function ProductQuickViewModal({
             <source src={mp4Source} type="video/mp4" />
           </video>
 
-          {/* Top Live Strand Movement Badge */}
-          <div className="pure-video-badge" aria-hidden="true">
-            <span className="qv-live-dot" />
-            <span>LIVE STRAND MOVEMENT</span>
-          </div>
-
           {/* Center Play Indicator when paused */}
           {!isPlaying && (
             <div className="pure-video-center-indicator">

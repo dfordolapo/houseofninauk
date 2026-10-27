@@ -235,17 +235,17 @@ export const SUPPORTED_DESTINATIONS = [
     shippingOptions: [
       {
         id: 'standard',
-        name: 'Standard Delivery',
-        timeframe: '2–5 working days',
+        name: 'Standard UK Delivery',
+        timeframe: '2–3 working days',
         priceGbp: 0,
-        notes: 'Free luxury insured delivery • Signature required'
+        notes: 'Tracked delivery'
       },
       {
         id: 'express',
-        name: 'Next Day Delivery',
-        timeframe: '1–2 working days',
-        priceGbp: 8.50,
-        notes: 'Guaranteed next business day by 1:00 PM • Priority dispatch'
+        name: 'Express UK Delivery',
+        timeframe: 'Next working day',
+        priceGbp: 8.99,
+        notes: 'Priority tracked delivery'
       }
     ],
     eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'amazon_pay', 'bank'],
@@ -1089,6 +1089,7 @@ export default function CheckoutModal({
   const [paymentError, setPaymentError] = useState(null); // { code, title, message, actionableAdvice }
   const [threeDSChallenge, setThreeDSChallenge] = useState(null); // 3D Secure 2.0 Challenge data
   const [isRetryingShipping, setIsRetryingShipping] = useState(false);
+  const [isPatientLoading, setIsPatientLoading] = useState(false);
 
   // Field Input DOM Refs for Accessible Autofocus
   const emailInputRef = React.useRef(null);
@@ -1265,29 +1266,30 @@ export default function CheckoutModal({
   // Real Shipping Rates based on selected destination & dynamic Admin synchronization
   const availableShippingOptions = (() => {
     if (selectedCountryCode === 'GB') {
-      try {
-        const savedRates = localStorage.getItem('house_of_nina_admin_shipping_rates_v4');
-        if (savedRates) {
-          const parsed = JSON.parse(savedRates);
-          const active = parsed.filter(r => r.status === 'active');
-          if (active.length > 0) {
-            return active.map(r => ({
-              id: r.id,
-              name: r.name,
-              timeframe: r.estimatedDays,
-              priceGbp: Number(r.price) || 0,
-              notes: 'Insured luxury delivery'
-            }));
-          }
+      const isFreeEligible = true;
+      return [
+        {
+          id: 'standard',
+          name: 'Standard UK Delivery (Free)',
+          timeframe: '2–3 working days',
+          priceGbp: 0,
+          notes: 'Complimentary UK delivery • Tracked'
+        },
+        {
+          id: 'express',
+          name: 'Express UK Delivery',
+          timeframe: 'Next working day',
+          priceGbp: 8.99,
+          notes: 'Priority tracked delivery'
         }
-      } catch (err) {}
+      ];
     }
     return currentDestination?.shippingOptions || [];
   })();
   const selectedShippingOption = availableShippingOptions.find(o => o.id === formData.deliveryMethod) || availableShippingOptions[0] || null;
 
   const shippingCost = (selectedCountryCode && selectedShippingOption)
-    ? Math.round(selectedShippingOption.priceGbp * rate)
+    ? (selectedShippingOption.priceGbp === 0 ? 0 : Math.round(selectedShippingOption.priceGbp * rate * 100) / 100)
     : 0;
 
   const total = Math.max(0, subtotal - discount + (selectedCountryCode ? shippingCost : 0));
@@ -1833,6 +1835,7 @@ export default function CheckoutModal({
         ...prev,
         phone: updatedPhone,
         countryCode: newDest.phonePrefix,
+        currency: newDest.currency || 'GBP',
         deliveryMethod: defaultDelivery,
         paymentMethod: updatedPayment,
         city: updatedCity,
@@ -2279,7 +2282,11 @@ export default function CheckoutModal({
           }
 
           if (paymentIntent && paymentIntent.status === 'succeeded') {
-            completeSuccessfulOrder('card', paymentIntent.id);
+            setIsPatientLoading(true);
+            setTimeout(() => {
+              setIsPatientLoading(false);
+              completeSuccessfulOrder('card', paymentIntent.id);
+            }, 2200);
             return;
           }
         } catch (err) {
@@ -2439,17 +2446,134 @@ export default function CheckoutModal({
       return;
     }
 
-    // Standard Success Path
+    // Standard Success Path:
+    // 1. Final button switches to processing mode (spinner active in button)
     setTimeout(() => {
-      completeSuccessfulOrder(chosenPayment);
-    }, 1200);
+      // 2. Go to the loading screen that tells them to be patient
+      setIsPatientLoading(true);
+      // 3. After securing the authorization, transition to success screen
+      setTimeout(() => {
+        setIsPatientLoading(false);
+        completeSuccessfulOrder(chosenPayment);
+      }, 2500);
+    }, 900);
   };
 
   // Get active address label helper
   const currentAddressTag = activeSaved ? activeSaved.label : (selectedAddressId === 'new' ? 'New Address' : 'Custom');
 
-    // Modal visibility guard (MUST be after all Hook calls to respect React Rules of Hooks)
+  // Modal visibility guard (MUST be after all Hook calls to respect React Rules of Hooks)
   if (!isOpen) return null;
+
+  // Patient Loading Screen after payment button is clicked
+  if (isPatientLoading) {
+    return (
+      <div 
+        className="checkout-modal-backdrop open" 
+        style={{ 
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(26, 22, 21, 0.75)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          zIndex: 1500,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px'
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Processing your transaction"
+      >
+        <div style={{
+          backgroundColor: '#FFFFFF',
+          borderRadius: '24px',
+          padding: '48px 32px',
+          maxWidth: '460px',
+          width: '100%',
+          textAlign: 'center',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.35)',
+          border: '1px solid var(--color-border)',
+          position: 'relative'
+        }}>
+          {/* Animated Gold Wax Seal / Pulse */}
+          <div style={{
+            position: 'relative',
+            width: '84px',
+            height: '84px',
+            margin: '0 auto 24px auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '50%',
+              border: '2.5px solid rgba(212, 175, 122, 0.35)',
+              borderTopColor: 'var(--color-gold)',
+              animation: 'spin 1.1s linear infinite'
+            }} />
+            <img 
+              src="/images/wax_seal.webp"
+              onError={(e) => { e.currentTarget.src = '/images/wax_seal.png'; }}
+              alt="House of Nina Atelier"
+              style={{ width: '52px', height: '52px', objectFit: 'contain' }}
+            />
+          </div>
+
+          <span style={{
+            fontSize: '11px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.14em',
+            fontWeight: 700,
+            color: 'var(--color-gold-dark)',
+            display: 'block',
+            marginBottom: '8px'
+          }}>
+            Encrypted Bank Communication
+          </span>
+
+          <h3 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '22px',
+            fontWeight: 600,
+            color: 'var(--color-deep-espresso)',
+            margin: '0 0 12px 0',
+            lineHeight: 1.3
+          }}>
+            Connecting with Your Bank...
+          </h3>
+
+          <p style={{
+            fontSize: '13.5px',
+            color: '#685C50',
+            lineHeight: 1.6,
+            maxWidth: '360px',
+            margin: '0 auto 22px auto'
+          }}>
+            Please be patient while we securely confirm and finalize your transaction. This will only take a moment.
+          </p>
+
+          <div style={{
+            padding: '10px 16px',
+            backgroundColor: '#FAF7F2',
+            borderRadius: '10px',
+            border: '1px solid #EAE3D9',
+            fontSize: '11.5px',
+            color: '#8C8074',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#2E7D32', display: 'inline-block' }} />
+            <span>Do not refresh or navigate away from this screen</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // When order is confirmed, render the luxury OrderSuccessReceipt directly without nested modal backdrops
   if (isConfirmed) {
