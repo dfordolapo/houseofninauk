@@ -153,7 +153,7 @@ export default function App() {
         id: "hn-01",
         cartId: "hn-01-12-13x4-180",
         name: "The Victoria Glass Bob",
-        price: 1.00,
+        price: 10.00,
         selectedLength: "12\"",
         selectedLace: "13x4 HD Lace Frontal",
         selectedDensity: "180%",
@@ -283,7 +283,7 @@ export default function App() {
       }
       const priceNum = typeof post.price === 'number' 
         ? post.price 
-        : parseInt(String(post.price).replace(/[^\d]/g, ''), 10) || 245;
+        : parseInt(String(post.price).replace(/[^\d]/g, ''), 10) || 10;
 
       const normalizedItem = {
         ...post,
@@ -405,7 +405,7 @@ export default function App() {
       if (exists) return prev;
       const priceNum = typeof item.price === 'number' 
         ? item.price 
-        : parseInt(String(item.price).replace(/[^\d]/g, ''), 10) || 245;
+        : parseInt(String(item.price).replace(/[^\d]/g, ''), 10) || 10;
       return [...prev, {
         ...item,
         id: targetId,

@@ -40,7 +40,7 @@ export default function LookReviewsModal({
   if (!isOpen || !post) return null;
 
   const title = post.name || post.productName || 'Signature Unit';
-  const priceFormatted = typeof post.price === 'number' ? `£${post.price}` : (post.price || '£245');
+  const priceFormatted = typeof post.price === 'number' ? `£${post.price}` : (post.price || '£10');
   const descriptionText = post.caption || post.description || "Crafted from verified single-donor raw hair with invisible Swiss HD lace.";
 
   const handleSubmitReview = (e) => {

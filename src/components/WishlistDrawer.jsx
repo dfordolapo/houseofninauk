@@ -26,7 +26,7 @@ export default function WishlistDrawer({
     if (onAddToCart) {
       const priceNum = typeof item.price === 'number' 
         ? item.price 
-        : parseInt(String(item.price).replace(/[^\d]/g, ''), 10) || 245;
+        : parseInt(String(item.price).replace(/[^\d]/g, ''), 10) || 10;
 
       const productToAdd = {
         id: item.id,
@@ -233,7 +233,7 @@ export default function WishlistDrawer({
                 const title = item.name || item.productName || 'Signature Unit';
                 const priceFormatted = typeof item.price === 'number' 
                   ? `£${item.price}` 
-                  : (item.price || '£245');
+                  : (item.price || '£10');
 
                 const subtitle = item.selectedLength 
                   ? `${item.selectedLength} • ${item.selectedLace || 'HD Lace'}`

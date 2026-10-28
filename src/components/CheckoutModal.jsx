@@ -1255,7 +1255,7 @@ export default function CheckoutModal({
   const rate = currentCurrency.rate;
 
   const rawSubtotal = cartItems.reduce((acc, item) => {
-    const itemPrice = typeof item.price === 'number' ? item.price : 200;
+    const itemPrice = typeof item.price === 'number' ? item.price : 10;
     return acc + itemPrice * (item.quantity || 1);
   }, 0);
 
@@ -2111,7 +2111,7 @@ export default function CheckoutModal({
       },
       items: cartItems.map(item => ({
         ...item,
-        price: (typeof item.price === 'number' ? item.price : 200) * rate,
+        price: (typeof item.price === 'number' ? item.price : 10) * rate,
         currencySymbol
       })),
       deliveryMethod: deliveryLabel,
