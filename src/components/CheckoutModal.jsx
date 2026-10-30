@@ -2090,7 +2090,7 @@ export default function CheckoutModal({
     } else if (chosenPayment === 'klarna') {
       paymentLabel = 'Klarna Pay in 3';
     } else if (chosenPayment === 'bank') {
-      paymentLabel = `Direct Bank Wire (${bankWireData.senderBank || 'Barclays'} - ${bankWireData.accountHolder || 'Client'})`;
+      paymentLabel = `Direct Bank Wire (Monzo Bank - ${bankWireData.accountHolder || 'Client'})`;
     } else {
       paymentLabel = chosenPayment.toUpperCase();
     }
@@ -3819,7 +3819,7 @@ export default function CheckoutModal({
                                   Direct Studio Bank Wire
                                 </strong>
                                 <span className="payment-option-subtitle">
-                                  Barclays studio transfer with reference
+                                  Monzo Bank UK &amp; International Wire
                                 </span>
                               </div>
                             </div>
@@ -3838,24 +3838,28 @@ export default function CheckoutModal({
                               gap: '12px'
                             }}>
                               <span style={{ display: 'block', fontWeight: 700, color: 'var(--color-deep-espresso)', fontSize: '12.5px' }}>
-                                House of Nina UK Studio Bank Details:
+                                House of Nina Official Bank Details:
                               </span>
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
                                 <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
                                   <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Bank</span>
-                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>Barclays UK</strong>
+                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>Monzo Bank</strong>
                                 </div>
                                 <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
                                   <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Sort Code</span>
-                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>20-04-15</strong>
+                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>04-00-05</strong>
                                 </div>
                                 <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
                                   <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Account No.</span>
-                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>83920194</strong>
+                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>71990144</strong>
                                 </div>
                                 <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
                                   <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Beneficiary</span>
-                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>House of Nina UK Ltd</strong>
+                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>HOUSEOFNINA LTD</strong>
+                                </div>
+                                <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)', gridColumn: '1 / -1' }}>
+                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>IBAN (UK / International / Wise)</span>
+                                  <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>GB23 MONZ 0400 0571 9901 44</strong>
                                 </div>
                               </div>
 
@@ -3868,7 +3872,7 @@ export default function CheckoutModal({
                                     type="text"
                                     value={bankWireData.accountHolder}
                                     onChange={(e) => setBankWireData(prev => ({ ...prev, accountHolder: e.target.value }))}
-                                    placeholder="e.g. Amara Okafor (Barclays UK)"
+                                    placeholder="e.g. Amara Okafor (Monzo / UK Bank)"
                                     style={standardInputStyle}
                                   />
                                 </div>

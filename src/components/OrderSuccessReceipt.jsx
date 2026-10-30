@@ -727,6 +727,14 @@ export default function OrderSuccessReceipt({
                   <p style={{ margin: '2px 0 0', fontSize: '12.5px', color: '#24170F', fontWeight: 600 }}>
                     {paymentMethod}
                   </p>
+                  {paymentMethod.toLowerCase().includes('bank') && (
+                    <div style={{ marginTop: '8px', padding: '10px 12px', background: '#FAF7F2', borderRadius: '8px', border: '1px solid #E8DBD0', fontSize: '11px', color: 'var(--color-deep-espresso)' }}>
+                      <strong style={{ display: 'block', marginBottom: '4px', fontSize: '11.5px' }}>House of Nina Bank Transfer Details:</strong>
+                      <div>Beneficiary: <strong>HOUSEOFNINA LTD</strong></div>
+                      <div>Bank: <strong>Monzo Bank</strong> • Sort Code: <strong>04-00-05</strong> • Account: <strong>71990144</strong></div>
+                      <div style={{ marginTop: '2px' }}>IBAN: <strong>GB23 MONZ 0400 0571 9901 44</strong></div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="order-details-summary-row">
