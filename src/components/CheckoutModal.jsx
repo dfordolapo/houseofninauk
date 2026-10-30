@@ -1627,10 +1627,8 @@ export default function CheckoutModal({
     }
   };
 
-  // Master candidate methods for selection: Apple Pay, Google Pay, Klarna at top
+  // Master candidate methods for standard selection (Apple Pay & Google Pay are prominently in Express Checkout above)
   const ALL_CANDIDATE_METHODS = [
-    'apple_pay',
-    'google_pay',
     'klarna',
     'card',
     'revolut',
@@ -1654,37 +1652,27 @@ export default function CheckoutModal({
     return ALL_CANDIDATE_METHODS.filter(m => isMethodEligible(m));
   }, [currentDestination, formData.currency, total, deviceWallets]);
 
-  // Initial recommended list: Apple Pay, Google Pay, Klarna first before Card and other payment methods
+  // Initial recommended list: Klarna is #1 at the very top, followed by Card and other methods
   const initialMethods = React.useMemo(() => {
     if (!currentDestination || allEligibleMethods.length === 0) return [];
     const list = [];
 
-    // 1. Apple Pay
-    if (allEligibleMethods.includes('apple_pay') && !list.includes('apple_pay')) {
-      list.push('apple_pay');
-    }
-
-    // 2. Google Pay
-    if (allEligibleMethods.includes('google_pay') && !list.includes('google_pay')) {
-      list.push('google_pay');
-    }
-
-    // 3. Klarna (First on the list after Apple Pay and Google Pay, before all other payment methods)
+    // 1. Klarna (#1 on the list!)
     if (allEligibleMethods.includes('klarna') && !list.includes('klarna')) {
       list.push('klarna');
     }
 
-    // 4. Credit or debit card
+    // 2. Credit or debit card
     if (allEligibleMethods.includes('card') && !list.includes('card')) {
       list.push('card');
     }
 
-    // 5. Revolut Pay
+    // 3. Revolut Pay
     if (allEligibleMethods.includes('revolut') && !list.includes('revolut')) {
       list.push('revolut');
     }
 
-    // 6. Domestic dominant standard if applicable
+    // 4. Domestic dominant standard if applicable
     const dominantLocalMap = {
       NL: 'ideal',
       BE: 'bancontact',
@@ -1699,12 +1687,12 @@ export default function CheckoutModal({
       list.push(localDominant);
     }
 
-    // 7. Studio Bank Wire
+    // 5. Studio Bank Wire
     if (allEligibleMethods.includes('bank') && !list.includes('bank')) {
       list.push('bank');
     }
 
-    return list.slice(0, 5);
+    return list.slice(0, 4);
   }, [currentDestination, allEligibleMethods, deviceWallets]);
 
   // Remaining eligible methods: strictly exclude initialMethods (zero duplicates)
@@ -1714,8 +1702,8 @@ export default function CheckoutModal({
 
   // Guard: if current selected payment method becomes ineligible on destination or currency change, adapt gracefully
   useEffect(() => {
-    if (formData.paymentMethod && allEligibleMethods.length > 0 && !allEligibleMethods.includes(formData.paymentMethod)) {
-      setFormData(prev => ({ ...prev, paymentMethod: initialMethods[0] || 'card' }));
+    if (formData.paymentMethod && allEligibleMethods.length > 0 && !allEligibleMethods.includes(formData.paymentMethod) && !['apple_pay', 'google_pay'].includes(formData.paymentMethod)) {
+      setFormData(prev => ({ ...prev, paymentMethod: initialMethods[0] || 'klarna' }));
     }
   }, [selectedCountryCode, formData.currency, allEligibleMethods, initialMethods]);
 
