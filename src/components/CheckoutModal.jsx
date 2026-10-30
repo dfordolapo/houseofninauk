@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Check, ArrowRight, CreditCard, Building2, Edit3, Lock, Truck, 
   MapPin, Plus, Home, Briefcase, Gift, ChevronRight, ChevronDown, ChevronUp, AlertCircle, ArrowLeft,
-  ShieldCheck, Sparkles, CheckCircle2, Zap, Search, ShoppingBag
+  ShieldCheck, CheckCircle2, Zap, Search, ShoppingBag
 } from 'lucide-react';
 import OrderSuccessReceipt from './OrderSuccessReceipt';
 import { createOrderInDb } from '../lib/supabase';
@@ -2851,7 +2851,7 @@ export default function CheckoutModal({
                                   fontSize: '11px',
                                   color: '#8C5205'
                                 }}>
-                                  <Sparkles size={13} color="#D97706" style={{ flexShrink: 0 }} />
+                                  <ShieldCheck size={13} color="#D97706" style={{ flexShrink: 0 }} />
                                   <span><strong>Stripe Test Mode</strong>: Use card <code style={{ backgroundColor: '#F9E4CB', padding: '1px 5px', borderRadius: '4px', fontWeight: 600 }}>4242 4242 4242 4242</code> (any future MM/YY & CVC).</span>
                                 </div>
                               )}
@@ -5647,7 +5647,7 @@ export default function CheckoutModal({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12px', color: '#685C50', lineHeight: 1.55 }}>
                 <div style={{ padding: '12px 14px', backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0' }}>
                   <strong style={{ color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
-                    ✨ 14-Day Statutory Return Period
+                    14-Day Statutory Return Period
                   </strong>
                   <span>
                     You have 14 days from physical delivery to inspect your bespoke wig unit or silk styling accessories.

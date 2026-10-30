@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Droplets, Wind, ShieldCheck, Moon, ShoppingBag, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { CARE_GUIDE_DATA } from '../data/wigData';
-import GoldStroke from './GoldStroke';
 
 const ICONS = [Droplets, ShieldCheck, Wind, Moon];
 

@@ -3522,6 +3522,7 @@ h1, h2, h3,
   margin-bottom: 48px;
 }
 
+.empty-state-icon,
 .empty-sparkle {
   color: var(--color-gold, #C5A059);
   margin-bottom: 12px;
@@ -6504,14 +6505,14 @@ video::-moz-media-controls {
 .quickview-layout {
   display: grid;
   grid-template-columns: 0.95fr 1.05fr;
-  align-items: start;
+  align-items: stretch;
 }
 
 .quickview-image-wrap,
 .quickview-media-wrap {
   position: relative;
   background-color: var(--color-deep-espresso, #161210);
-  min-height: 400px;
+  min-height: 520px;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -6521,10 +6522,10 @@ video::-moz-media-controls {
   .quickview-media-wrap {
     position: sticky;
     top: 0;
-    align-self: start;
+    align-self: stretch;
     height: 100%;
-    min-height: 400px;
-    max-height: 75vh;
+    min-height: 520px;
+    max-height: 85vh;
   }
 }
 
@@ -6919,9 +6920,9 @@ video::-moz-media-controls {
     position: sticky !important;
     top: 0 !important;
     z-index: 30 !important;
-    height: 230px !important;
-    min-height: 230px !important;
-    max-height: 32vh !important;
+    height: 280px !important;
+    min-height: 280px !important;
+    max-height: 38vh !important;
     width: 100% !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   }
@@ -6979,9 +6980,9 @@ video::-moz-media-controls {
     position: sticky !important;
     top: 0 !important;
     z-index: 30 !important;
-    height: 210px !important;
-    min-height: 210px !important;
-    max-height: 29vh !important;
+    height: 260px !important;
+    min-height: 260px !important;
+    max-height: 36vh !important;
     width: 100% !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   }
@@ -13048,7 +13049,7 @@ video::-moz-media-controls {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #D4AF37;
+  color: #C5A059;
   text-transform: uppercase;
 }
 
@@ -13233,7 +13234,7 @@ video::-moz-media-controls {
 .care-stage-glow-radial {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 40%, rgba(197, 160, 89, 0.12) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -13262,7 +13263,7 @@ video::-moz-media-controls {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: #D4AF37;
+  color: #C5A059;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -13270,7 +13271,7 @@ video::-moz-media-controls {
 }
 
 .care-stage-icon-pill svg {
-  color: #D4AF37;
+  color: #C5A059;
 }
 
 .care-stage-title {
@@ -13474,22 +13475,38 @@ video::-moz-media-controls {
 
 .care-picker-btn:hover {
   background: #362E28;
-  color: #D4AF37;
-  border-color: #D4AF37;
+  color: #C5A059;
+  border-color: #C5A059;
 }
 
 .care-picker-btn.active {
-  background: #D4AF37;
+  background: #C5A059;
   color: #12100E;
-  border-color: #D4AF37;
+  border-color: #C5A059;
+}
+
+.care-dot-pill {
+  width: 24px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.22);
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 0;
+}
+
+.care-dot-pill.active {
+  width: 40px;
+  background: #C5A059;
 }
 
 .care-footer-shop-btn {
   display: inline-flex !important;
   align-items: center !important;
   gap: 7px !important;
-  padding: 9px 18px !important;
-  background: #D4AF37 !important;
+  padding: 10px 20px !important;
+  background: linear-gradient(135deg, #C5A059 0%, #B89246 100%) !important;
   color: #12100E !important;
   font-size: 12px !important;
   font-weight: 700 !important;
@@ -13497,11 +13514,13 @@ video::-moz-media-controls {
   border-radius: 8px !important;
   border: none !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 4px 14px rgba(197, 160, 89, 0.32) !important;
 }
 
 .care-footer-shop-btn:hover {
-  background: #E5C358 !important;
+  background: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%) !important;
+  box-shadow: 0 6px 18px rgba(197, 160, 89, 0.45) !important;
   transform: translateY(-1px) !important;
 }
 

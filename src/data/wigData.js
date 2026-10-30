@@ -404,7 +404,7 @@ export const INSTA_POSTS = [
     image: "/images/products/product-monogram-headscarf.webp",
     likes: "1,745",
     comments: "58",
-    caption: "Pure twill silk sophistication. Style as a statement headwrap or preserve your crown at dusk. ✨ #HouseOfNina #SilkLuxury",
+    caption: "Pure twill silk sophistication. Style as a statement headwrap or preserve your crown at dusk. #HouseOfNina #SilkLuxury",
     timeAgo: "4 DAYS AGO",
     isMultiple: false,
     reviewsList: [

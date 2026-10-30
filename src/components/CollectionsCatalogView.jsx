@@ -14,8 +14,7 @@ import {
   Star, 
   RotateCcw,
   Truck,
-  ShieldCheck,
-  Sparkles
+  ShieldCheck
 } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
 
@@ -613,7 +612,6 @@ export default function CollectionsCatalogView({
         {/* ── PRODUCT GRID (EXACT APPROVED PRODUCT CARDS PRESERVED UNCHANGED) ── */}
         {displayProducts.length === 0 ? (
           <div className="collections-empty-state">
-            <Sparkles size={24} className="empty-sparkle" />
             <h3 className="empty-title">No matching pieces found</h3>
             <p className="empty-desc">
               We couldn't find any creations matching your selected filter preferences.

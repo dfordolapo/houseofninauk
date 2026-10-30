@@ -37,6 +37,20 @@ export default function LookReviewsModal({
     }
   }, [post]);
 
+  // Listen for admin review approvals to refresh live comments dynamically
+  useEffect(() => {
+    const handleApproved = () => {
+      if (post) {
+        try {
+          const raw = localStorage.getItem(`house_of_nina_reviews_${post.id}`);
+          if (raw) setReviews(JSON.parse(raw));
+        } catch (e) {}
+      }
+    };
+    window.addEventListener('house_of_nina_review_approved', handleApproved);
+    return () => window.removeEventListener('house_of_nina_review_approved', handleApproved);
+  }, [post]);
+
   if (!isOpen || !post) return null;
 
   const title = post.name || post.productName || 'Signature Unit';
@@ -49,39 +63,47 @@ export default function LookReviewsModal({
 
     const newRev = {
       id: `rev-${Date.now()}`,
+      productId: post.id,
       author: authorName.trim() || "House of Nina Client",
+      client: authorName.trim() || "House of Nina Client",
+      productName: title,
       rating: rating,
       time: "Just now",
       date: new Date().toISOString().split('T')[0],
       verified: true,
       text: reviewText.trim(),
-      status: 'pending' // Initial status: Awaiting approval
+      status: 'pending' // Initial status: Awaiting admin approval
     };
 
-    setReviews(prev => {
-      const updated = [newRev, ...prev];
-      try {
-        localStorage.setItem(`house_of_nina_reviews_${post.id}`, JSON.stringify(updated));
-      } catch (err) {
-        console.warn('Failed to persist review', err);
-      }
-      return updated;
-    });
+    // Save pending review in product-specific storage
+    try {
+      const existingProd = JSON.parse(localStorage.getItem(`house_of_nina_reviews_${post.id}`) || '[]');
+      const updatedProd = [newRev, ...existingProd];
+      localStorage.setItem(`house_of_nina_reviews_${post.id}`, JSON.stringify(updatedProd));
+      setReviews(updatedProd);
+    } catch (err) {
+      console.warn('Failed to persist review', err);
+    }
 
-    // Also sync to Admin Reviews portal for moderation
+    // Direct synchronization to Admin Reviews portal for moderation
     try {
       const adminKey = 'house_of_nina_admin_reviews_v3';
-      const existing = JSON.parse(localStorage.getItem(adminKey) || '[]');
+      const existingAdmin = JSON.parse(localStorage.getItem(adminKey) || '[]');
       const adminEntry = {
         id: newRev.id,
+        productId: post.id,
         client: newRev.author,
         productName: title,
         rating: newRev.rating,
         date: newRev.date,
         text: newRev.text,
-        status: 'pending' // Shows as "Awaiting Approval" in admin
+        status: 'pending' // Displays in Admin Dashboard under "Awaiting Approval"
       };
-      localStorage.setItem(adminKey, JSON.stringify([adminEntry, ...existing]));
+      const updatedAdmin = [adminEntry, ...existingAdmin.filter(r => r.id !== adminEntry.id)];
+      localStorage.setItem(adminKey, JSON.stringify(updatedAdmin));
+
+      // Dispatch event so active admin session catches it immediately
+      window.dispatchEvent(new CustomEvent('house_of_nina_new_review', { detail: adminEntry }));
     } catch (err) {
       console.warn('Failed to sync review to admin portal', err);
     }
@@ -89,7 +111,7 @@ export default function LookReviewsModal({
     setReviewText('');
     setAuthorName('');
     setSuccessMessage(true);
-    setTimeout(() => setSuccessMessage(false), 4000);
+    setTimeout(() => setSuccessMessage(false), 4500);
   };
 
   return (
@@ -144,44 +166,48 @@ export default function LookReviewsModal({
           {/* Reviews & Comments Scrollable Stream */}
           <div className="look-reviews-stream-wrap">
             <div className="look-stream-title-row">
-              <span className="look-stream-label">Customer Reviews ({reviews.length})</span>
+              <span className="look-stream-label">
+                Customer Reviews ({reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval').length})
+              </span>
             </div>
 
             {successMessage && (
               <div className="look-review-success-toast animate-pop">
                 <CheckCircle2 size={16} />
-                <span>Your review has been submitted and is awaiting approval! ✨</span>
+                <span>Your review has been submitted to the atelier team and is awaiting approval.</span>
               </div>
             )}
 
             <div className="look-comments-list">
-              {reviews.map((rev) => (
-                <div key={rev.id} className="look-single-comment-card">
-                  <div className="look-comment-header">
-                    <div className="look-comment-author-wrap">
-                      <strong className="look-commenter-name">{rev.author}</strong>
-                      {rev.status === 'pending' ? (
-                        <span style={{ fontSize: '10px', color: '#B45309', backgroundColor: '#FEF3C7', padding: '1px 6px', borderRadius: '4px', border: '1px solid #FDE68A' }}>
-                          Awaiting Approval
-                        </span>
-                      ) : rev.verified ? (
-                        <span className="look-verified-chip">
-                          <Check size={10} /> Verified
-                        </span>
-                      ) : null}
+              {reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval').length === 0 ? (
+                <p style={{ fontSize: '12px', color: '#8C8074', fontStyle: 'italic', padding: '16px 0', margin: 0 }}>
+                  Be the first to leave an approved review for this piece.
+                </p>
+              ) : (
+                reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval').map((rev) => (
+                  <div key={rev.id} className="look-single-comment-card">
+                    <div className="look-comment-header">
+                      <div className="look-comment-author-wrap">
+                        <strong className="look-commenter-name">{rev.author}</strong>
+                        {rev.verified && (
+                          <span className="look-verified-chip">
+                            <Check size={10} /> Verified
+                          </span>
+                        )}
+                      </div>
+                      <span className="look-comment-time">{rev.time}</span>
                     </div>
-                    <span className="look-comment-time">{rev.time}</span>
-                  </div>
 
-                  <div className="look-comment-stars">
-                    {[...Array(rev.rating || 5)].map((_, i) => (
-                      <Star key={i} size={13} fill="var(--color-gold)" color="var(--color-gold)" />
-                    ))}
-                  </div>
+                    <div className="look-comment-stars">
+                      {[...Array(rev.rating || 5)].map((_, i) => (
+                        <Star key={i} size={13} fill="var(--color-gold)" color="var(--color-gold)" />
+                      ))}
+                    </div>
 
-                  <p className="look-comment-text">{rev.text}</p>
-                </div>
-              ))}
+                    <p className="look-comment-text">{rev.text}</p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

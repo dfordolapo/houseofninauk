@@ -32,7 +32,6 @@ export default function WigImageTile({ tile, isRippling, rippleDelay }) {
   if (tile.isAccentTile) {
     return (
       <div className={`wall-tile accent-tile bg-${tile.bgTone || 'sand'} ${colSpanClass} ${rowSpanClass}`}>
-        <span className="accent-tile-sparkle" aria-hidden="true">✦</span>
         <span className="accent-tile-text">{tile.accentText}</span>
       </div>
     );

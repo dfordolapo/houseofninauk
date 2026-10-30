@@ -505,6 +505,46 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
   const [reviewStatusFilter, setReviewStatusFilter] = useState('all');
 
+  // Synchronize reviews when Admin Dashboard opens or when new review event fires
+  useEffect(() => {
+    const syncReviews = () => {
+      try {
+        const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setReviews(parsed);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to sync reviews from storage', e);
+      }
+    };
+
+    if (isOpen) {
+      syncReviews();
+    }
+
+    const handleNewReview = (e) => {
+      if (e?.detail) {
+        setReviews(prev => {
+          const exists = prev.some(r => r.id === e.detail.id);
+          if (exists) return prev;
+          return [e.detail, ...prev];
+        });
+      } else {
+        syncReviews();
+      }
+    };
+
+    window.addEventListener('house_of_nina_new_review', handleNewReview);
+    window.addEventListener('storage', syncReviews);
+    return () => {
+      window.removeEventListener('house_of_nina_new_review', handleNewReview);
+      window.removeEventListener('storage', syncReviews);
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     try {
       localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
@@ -517,18 +557,59 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   const featuredReviewsCount = reviews.filter(r => r.status === 'featured').length;
 
   const handleFeatureReview = (id) => {
-    setReviews(prev => prev.map(r => r.id === id ? { ...r, status: 'featured' } : r));
-    triggerToast('✓ Review marked as Featured on site');
+    setReviews(prev => {
+      const target = prev.find(r => r.id === id);
+      const updated = prev.map(r => r.id === id ? { ...r, status: 'featured' } : r);
+      try {
+        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updated));
+        if (target && target.productId) {
+          const prodKey = `house_of_nina_reviews_${target.productId}`;
+          const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
+          const updatedProd = currentProd.map(pr => pr.id === id ? { ...pr, status: 'featured', verified: true } : pr);
+          localStorage.setItem(prodKey, JSON.stringify(updatedProd));
+        }
+        window.dispatchEvent(new CustomEvent('house_of_nina_review_approved', { detail: { id, status: 'featured' } }));
+      } catch (e) {}
+      return updated;
+    });
+    triggerToast('✓ Review approved and featured on site');
   };
 
   const handleRemoveReviewFromSite = (id) => {
-    setReviews(prev => prev.map(r => r.id === id ? { ...r, status: 'pending' } : r));
+    setReviews(prev => {
+      const target = prev.find(r => r.id === id);
+      const updated = prev.map(r => r.id === id ? { ...r, status: 'pending' } : r);
+      try {
+        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updated));
+        if (target && target.productId) {
+          const prodKey = `house_of_nina_reviews_${target.productId}`;
+          const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
+          const updatedProd = currentProd.map(pr => pr.id === id ? { ...pr, status: 'pending' } : pr);
+          localStorage.setItem(prodKey, JSON.stringify(updatedProd));
+        }
+        window.dispatchEvent(new CustomEvent('house_of_nina_review_approved', { detail: { id, status: 'pending' } }));
+      } catch (e) {}
+      return updated;
+    });
     triggerToast('Review removed from featured site display (Awaiting approval)');
   };
 
   const handleDeleteReview = (id) => {
     if (window.confirm('Delete this review permanently?')) {
-      setReviews(prev => prev.filter(r => r.id !== id));
+      setReviews(prev => {
+        const target = prev.find(r => r.id === id);
+        const updated = prev.filter(r => r.id !== id);
+        try {
+          localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updated));
+          if (target && target.productId) {
+            const prodKey = `house_of_nina_reviews_${target.productId}`;
+            const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
+            const updatedProd = currentProd.filter(pr => pr.id !== id);
+            localStorage.setItem(prodKey, JSON.stringify(updatedProd));
+          }
+        } catch (e) {}
+        return updated;
+      });
       triggerToast('Review deleted');
     }
   };

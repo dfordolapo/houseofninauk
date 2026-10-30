@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, RotateCcw, ArrowRight, ShieldCheck, Check, Info } from 'lucide-react';
+import { RotateCcw, ArrowRight, ShieldCheck, Check, Info } from 'lucide-react';
 
 export default function UnboxingExperience() {
   // Step 0: Sealed with Silk Ribbon
@@ -27,7 +27,6 @@ export default function UnboxingExperience() {
         {/* Section Editorial Header */}
         <div className="unboxing-header">
           <span className="unboxing-eyebrow">
-            <Sparkles size={13} className="sparkle-gold" />
             <span>THE ARRIVAL EXPERIENCE</span>
           </span>
           <h2 className="unboxing-title">
@@ -80,17 +79,17 @@ export default function UnboxingExperience() {
           <div className="unboxing-instruction-banner">
             {step === 0 && (
               <span className="instruction-text animate-fade-in">
-                ✨ <strong>Step 1:</strong> Tap the champagne silk bow to untie the ribbon.
+                <strong>Step 1:</strong> Tap the champagne silk bow to untie the ribbon.
               </span>
             )}
             {step === 1 && (
               <span className="instruction-text animate-fade-in">
-                ✨ <strong>Step 2:</strong> Tap the gold pull-tab to slide open the studio drawer.
+                <strong>Step 2:</strong> Tap the gold pull-tab to slide open the studio drawer.
               </span>
             )}
             {step === 2 && (
               <span className="instruction-text animate-fade-in">
-                ✨ <strong>Step 3:</strong> Tap the 24k gold wax stamp to break the seal and unfold the tissue.
+                <strong>Step 3:</strong> Tap the 24k gold wax stamp to break the seal and unfold the tissue.
               </span>
             )}
             {step === 3 && (

@@ -20,7 +20,6 @@ export default function ProductDetailsModal({
 }) {
   const [selectedLength, setSelectedLength] = useState('');
   const [selectedLace, setSelectedLace] = useState('');
-  const [selectedDensity, setSelectedDensity] = useState('');
   const [isAdded, setIsAdded] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -55,7 +54,6 @@ export default function ProductDetailsModal({
     if (product) {
       setSelectedLength(product.options?.lengths?.[0] || '');
       setSelectedLace(product.options?.laceTypes?.[0] || '');
-      setSelectedDensity(product.options?.densities?.[0] || '');
       setIsAdded(false);
       setIsCopied(false);
     }
@@ -64,12 +62,13 @@ export default function ProductDetailsModal({
   if (!isOpen || !product) return null;
 
   const handleAdd = () => {
+    const defaultDensity = product.options?.densities?.[0] || '180%';
     onAddToCart({
       ...product,
       selectedLength,
       selectedLace,
-      selectedDensity,
-      cartId: `${product.id}-${selectedLength}-${selectedLace}-${selectedDensity}`
+      selectedDensity: defaultDensity,
+      cartId: `${product.id}-${selectedLength}-${selectedLace}`
     });
     setIsAdded(true);
     setTimeout(() => {
@@ -266,34 +265,12 @@ export default function ProductDetailsModal({
               </div>
             )}
 
-            {/* Density Selector */}
-            {product.options?.densities?.length > 0 && (
-              <div className="quickview-selector-group" style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
-                  Density: <span style={{ color: 'var(--color-deep-espresso)' }}>{selectedDensity}</span>
-                </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {product.options.densities.map(density => (
-                    <button
-                      key={density}
-                      type="button"
-                      className={`option-chip ${selectedDensity === density ? 'selected' : ''}`}
-                      onClick={() => setSelectedDensity(density)}
-                      aria-pressed={selectedDensity === density}
-                    >
-                      {density}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Add to Bag Button Row */}
-            <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
+            <div style={{ marginTop: 'auto', paddingTop: '10px' }}>
               <button 
                 type="button" 
                 className="btn-primary-editorial" 
-                style={{ flex: 1, padding: '13px 16px', fontSize: '13px', justifyContent: 'center' }}
+                style={{ width: '100%', padding: '14px 16px', fontSize: '13px', justifyContent: 'center' }}
                 onClick={handleAdd}
               >
                 {isAdded ? (
@@ -303,62 +280,6 @@ export default function ProductDetailsModal({
                 ) : (
                   <>
                     <ShoppingBag size={17} /> Add to Bag
-                  </>
-                )}
-              </button>
-
-              {/* Lookbook / Wishlist Save Button */}
-              <button
-                type="button"
-                className="btn-secondary-editorial"
-                onClick={() => onToggleWishlist && onToggleWishlist(product)}
-                aria-label={isWishlisted ? "Remove from lookbook" : "Save to lookbook"}
-                title={isWishlisted ? "Saved to lookbook" : "Save to lookbook"}
-                style={{ 
-                  padding: '13px 16px', 
-                  justifyContent: 'center',
-                  borderColor: isWishlisted ? 'var(--color-gold)' : 'var(--color-border)',
-                  backgroundColor: isWishlisted ? 'rgba(215, 172, 85, 0.12)' : '#FFFFFF',
-                  color: isWishlisted ? 'var(--color-gold)' : 'var(--color-deep-espresso)',
-                  minWidth: '46px'
-                }}
-              >
-                <Heart 
-                  size={17} 
-                  fill={isWishlisted ? "var(--color-gold)" : "none"} 
-                  color={isWishlisted ? "var(--color-gold)" : "var(--color-deep-espresso)"} 
-                />
-              </button>
-
-              {/* Easy Share Direct Product Link Button */}
-              <button
-                type="button"
-                className="btn-secondary-editorial"
-                onClick={handleCopyProductLink}
-                aria-label={isCopied ? "Product link copied to clipboard" : "Share product link"}
-                title={isCopied ? "Link copied to clipboard!" : "Share product link"}
-                style={{ 
-                  padding: '13px 16px', 
-                  justifyContent: 'center',
-                  borderColor: isCopied ? '#2E7D32' : 'var(--color-border)',
-                  backgroundColor: isCopied ? '#F1F8F3' : '#FFFFFF',
-                  color: isCopied ? '#2E7D32' : 'var(--color-deep-espresso)',
-                  transition: 'all 0.2s ease',
-                  minWidth: '46px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                {isCopied ? (
-                  <>
-                    <Check size={17} color="#2E7D32" strokeWidth={2.4} />
-                    <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#2E7D32' }}>Copied</span>
-                  </>
-                ) : (
-                  <>
-                    <Share2 size={17} />
-                    <span style={{ fontSize: '11.5px', fontWeight: 500 }}>Share</span>
                   </>
                 )}
               </button>
