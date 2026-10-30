@@ -1771,8 +1771,22 @@ export default function CheckoutModal({
     if (paymentState !== 'idle' && paymentState !== 'succeeded') setPaymentState('idle');
   };
 
-  const handleTogglePaymentMethod = (method) => {
-    handleChange('paymentMethod', method);
+  const handleTogglePaymentMethod = (method, e) => {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+    setFormData(prev => {
+      const isAlreadyOpen = prev.paymentMethod === method;
+      const nextMethod = isAlreadyOpen ? '' : method;
+      return {
+        ...prev,
+        paymentMethod: nextMethod
+      };
+    });
+
+    if (stepError) setStepError('');
+    if (paymentError) setPaymentError(null);
+    if (paymentState !== 'idle' && paymentState !== 'succeeded') setPaymentState('idle');
   };
 
   // Destination Selection & Invalidation Handler
@@ -2599,7 +2613,7 @@ export default function CheckoutModal({
                           transition: 'border-color 0.2s ease'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('apple_pay')}
+                            onClick={(e) => handleTogglePaymentMethod('apple_pay', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -2607,7 +2621,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'apple_pay'}
-                                onChange={() => handleTogglePaymentMethod('apple_pay')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2692,7 +2706,7 @@ export default function CheckoutModal({
                           transition: 'border-color 0.2s ease'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('google_pay')}
+                            onClick={(e) => handleTogglePaymentMethod('google_pay', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -2700,7 +2714,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'google_pay'}
-                                onChange={() => handleTogglePaymentMethod('google_pay')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2784,7 +2798,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('card')}
+                            onClick={(e) => handleTogglePaymentMethod('card', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -2792,7 +2806,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'card'}
-                                onChange={() => handleTogglePaymentMethod('card')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2920,7 +2934,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('revolut')}
+                            onClick={(e) => handleTogglePaymentMethod('revolut', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -2928,7 +2942,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'revolut'}
-                                onChange={() => handleTogglePaymentMethod('revolut')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3012,7 +3026,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('amazon_pay')}
+                            onClick={(e) => handleTogglePaymentMethod('amazon_pay', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3020,7 +3034,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'amazon_pay'}
-                                onChange={() => handleTogglePaymentMethod('amazon_pay')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3078,7 +3092,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('klarna')}
+                            onClick={(e) => handleTogglePaymentMethod('klarna', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3086,7 +3100,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'klarna'}
-                                onChange={() => handleTogglePaymentMethod('klarna')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3248,7 +3262,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('bancontact')}
+                            onClick={(e) => handleTogglePaymentMethod('bancontact', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3256,7 +3270,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bancontact'}
-                                onChange={() => handleTogglePaymentMethod('bancontact')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3304,7 +3318,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('ideal')}
+                            onClick={(e) => handleTogglePaymentMethod('ideal', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3312,7 +3326,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'ideal'}
-                                onChange={() => handleTogglePaymentMethod('ideal')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3364,7 +3378,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('blik')}
+                            onClick={(e) => handleTogglePaymentMethod('blik', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3372,7 +3386,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'blik'}
-                                onChange={() => handleTogglePaymentMethod('blik')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3425,7 +3439,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('mbway')}
+                            onClick={(e) => handleTogglePaymentMethod('mbway', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3433,7 +3447,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'mbway'}
-                                onChange={() => handleTogglePaymentMethod('mbway')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3482,7 +3496,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('eps')}
+                            onClick={(e) => handleTogglePaymentMethod('eps', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3490,7 +3504,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'eps'}
-                                onChange={() => handleTogglePaymentMethod('eps')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3540,7 +3554,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('satispay')}
+                            onClick={(e) => handleTogglePaymentMethod('satispay', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3548,7 +3562,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'satispay'}
-                                onChange={() => handleTogglePaymentMethod('satispay')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3595,7 +3609,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('kakao_pay')}
+                            onClick={(e) => handleTogglePaymentMethod('kakao_pay', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3603,7 +3617,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'kakao_pay'}
-                                onChange={() => handleTogglePaymentMethod('kakao_pay')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3643,7 +3657,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('naver_pay')}
+                            onClick={(e) => handleTogglePaymentMethod('naver_pay', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3651,7 +3665,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'naver_pay'}
-                                onChange={() => handleTogglePaymentMethod('naver_pay')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3691,7 +3705,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('samsung_pay')}
+                            onClick={(e) => handleTogglePaymentMethod('samsung_pay', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3699,7 +3713,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'samsung_pay'}
-                                onChange={() => handleTogglePaymentMethod('samsung_pay')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3738,7 +3752,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('payco')}
+                            onClick={(e) => handleTogglePaymentMethod('payco', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3746,7 +3760,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'payco'}
-                                onChange={() => handleTogglePaymentMethod('payco')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3785,7 +3799,7 @@ export default function CheckoutModal({
                           overflow: 'hidden'
                         }}>
                           <label
-                            onClick={() => handleTogglePaymentMethod('bank')}
+                            onClick={(e) => handleTogglePaymentMethod('bank', e)}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3793,7 +3807,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bank'}
-                                onChange={() => handleTogglePaymentMethod('bank')}
+                                onChange={() => {}}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
