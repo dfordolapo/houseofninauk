@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Droplets, Wind, ShieldCheck, Moon, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Droplets, Wind, ShieldCheck, Moon, ShoppingBag, ChevronLeft, ChevronRight, Pause } from 'lucide-react';
 import { CARE_GUIDE_DATA } from '../data/wigData';
 
 const ICONS = [Droplets, ShieldCheck, Wind, Moon];
@@ -7,20 +7,18 @@ const ICONS = [Droplets, ShieldCheck, Wind, Moon];
 export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isHolding, setIsHolding] = useState(false);
 
   const timerRef = useRef(null);
-  const holdTimerRef = useRef(null);
-  const pointerStartRef = useRef(null);
-  const didHoldRef = useRef(false);
+  const touchStartRef = useRef(null);
+  const lastToggleTimeRef = useRef(0);
 
   const tips = CARE_GUIDE_DATA.tips;
   const currentTip = tips[activeIndex] || tips[0];
   const CurrentIcon = ICONS[activeIndex % ICONS.length];
 
-  // Auto-play (2.2s per slide) — pauses whenever clicked or held
+  // Auto-play (2.2s per slide) — pauses when video is tapped or clicked
   useEffect(() => {
-    if (!isOpen || isPaused || isHolding) {
+    if (!isOpen || isPaused) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
@@ -32,14 +30,13 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isOpen, isPaused, isHolding, tips.length]);
+  }, [isOpen, isPaused, tips.length]);
 
   // Reset to first slide upon opening
   useEffect(() => {
     if (isOpen) {
       setActiveIndex(0);
       setIsPaused(false);
-      setIsHolding(false);
     }
   }, [isOpen]);
 
@@ -53,65 +50,58 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
     setActiveIndex((prev) => (prev + 1) % tips.length);
   };
 
-  const handlePointerDown = (e) => {
-    if (e.target.closest('button') || e.target.closest('a')) return;
-    pointerStartRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
-    didHoldRef.current = false;
-
-    // Holding down on the video pauses playback
-    holdTimerRef.current = setTimeout(() => {
-      didHoldRef.current = true;
-      setIsHolding(true);
-    }, 180);
-  };
-
-  const handlePointerMove = (e) => {
-    if (pointerStartRef.current) {
-      const dx = Math.abs(e.clientX - pointerStartRef.current.x);
-      const dy = Math.abs(e.clientY - pointerStartRef.current.y);
-      if (dx > 12 || dy > 12) {
-        if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
-      }
+  const togglePause = (e) => {
+    if (e && e.target && (e.target.closest('button') || e.target.closest('a'))) {
+      return;
     }
+    const now = Date.now();
+    // 350ms debounce threshold prevents double-firing on mobile touch devices (touchEnd followed by synthetic click)
+    if (now - lastToggleTimeRef.current < 350) {
+      return;
+    }
+    lastToggleTimeRef.current = now;
+    setIsPaused((prev) => !prev);
   };
 
-  const handlePointerUp = (e) => {
-    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+  const handleTouchStart = (e) => {
+    if (e.target.closest('button') || e.target.closest('a')) return;
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now()
+    };
+  };
 
-    if (didHoldRef.current) {
-      didHoldRef.current = false;
-      setIsHolding(false);
-      pointerStartRef.current = null;
+  const handleTouchEnd = (e) => {
+    if (!touchStartRef.current) return;
+    if (e.target.closest('button') || e.target.closest('a')) {
+      touchStartRef.current = null;
+      return;
+    }
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - touchStartRef.current.x;
+    const dy = Math.abs(touch.clientY - touchStartRef.current.y);
+    touchStartRef.current = null;
+
+    // Detect horizontal swipe (> 40px and predominantly horizontal)
+    if (Math.abs(dx) > 40 && dy < 60) {
+      if (dx < 0) {
+        handleNext();
+      } else {
+        handlePrev();
+      }
       return;
     }
 
-    if (pointerStartRef.current) {
-      const dx = e.clientX - pointerStartRef.current.x;
-      const dy = Math.abs(e.clientY - pointerStartRef.current.y);
-      const duration = Date.now() - pointerStartRef.current.time;
-
-      // Detect horizontal swipe
-      if (Math.abs(dx) > 40 && dy < 80) {
-        if (dx < 0) {
-          handleNext();
-        } else {
-          handlePrev();
-        }
-      } else if (Math.abs(dx) < 12 && dy < 12 && duration < 320) {
-        // Clicked or tapped on the video: pause/resume
-        if (!e.target.closest('button') && !e.target.closest('a')) {
-          setIsPaused((prev) => !prev);
-        }
-      }
+    // Tap detected (finger did not swipe)
+    if (Math.abs(dx) < 20 && dy < 20) {
+      togglePause(e);
     }
-    pointerStartRef.current = null;
   };
 
-  const handlePointerCancel = () => {
-    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
-    didHoldRef.current = false;
-    setIsHolding(false);
-    pointerStartRef.current = null;
+  const handleTouchCancel = () => {
+    touchStartRef.current = null;
   };
 
   const handleShopCollections = () => {
@@ -133,10 +123,6 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
         role="dialog" 
         aria-modal="true" 
         aria-label="House of Nina Wig Care Guide"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
       >
         {/* TOP BAR / CONTROLS OVERLAY */}
         <div className="care-cinematic-header">
@@ -171,11 +157,11 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
               onClick={() => setActiveIndex(idx)}
             >
               <span 
-                key={`${idx}-${activeIndex}-${isPaused || isHolding}`}
+                key={`${idx}-${activeIndex}`}
                 className="care-progress-fill" 
                 style={{ 
                   animationDuration: '2.2s',
-                  animationPlayState: (isPaused || isHolding) ? 'paused' : 'running'
+                  animationPlayState: isPaused ? 'paused' : 'running'
                 }} 
               />
             </button>
@@ -185,12 +171,11 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
         {/* CINEMATIC IMAGE / VIDEO CANVAS (UNDERLAY) */}
         <div 
           className="care-cinematic-stage"
-          onClick={(e) => {
-            if (!e.target.closest('button') && !e.target.closest('a')) {
-              setIsPaused((prev) => !prev);
-            }
-          }}
-          style={{ cursor: 'pointer' }}
+          onClick={togglePause}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchCancel}
+          style={{ cursor: 'pointer', touchAction: 'manipulation' }}
           title={isPaused ? "Tap to play" : "Tap to pause"}
         >
           {tips.map((tip, idx) => (
@@ -212,6 +197,14 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
               <div className="care-stage-glow-radial" />
             </div>
           ))}
+
+          {/* PAUSED CONFIRMATION BADGE */}
+          {isPaused && (
+            <div className="care-paused-watermark" aria-live="polite">
+              <Pause size={13} fill="currentColor" />
+              <span>Paused • Tap to resume</span>
+            </div>
+          )}
 
           {/* ARROW CONTROLS (DESKTOP / MOUSE) */}
           <button 

@@ -13540,17 +13540,20 @@ video::-moz-media-controls {
   align-items: center;
   gap: 8px;
   padding: 8px 18px;
-  background: rgba(18, 16, 14, 0.82);
+  background: rgba(18, 16, 14, 0.86);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(197, 160, 89, 0.45);
   border-radius: 100px;
   color: #FFFFFF;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   pointer-events: none;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(197, 160, 89, 0.15);
+  animation: fadeIn 0.18s ease-out;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* FAQ Modal Base */
