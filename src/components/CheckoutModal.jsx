@@ -248,8 +248,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority tracked delivery'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'amazon_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut', 'amazon_pay', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut']
   },
   {
     code: 'US',
@@ -282,8 +282,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Fast express courier • Priority customs clearance'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'amazon_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'amazon_pay', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card']
   },
   {
     code: 'NG',
@@ -316,8 +316,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Direct express flight to Lagos & Abuja • Door-to-door concierge'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank']
   },
   {
     code: 'CA',
@@ -350,8 +350,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority courier to Canadian provinces'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'amazon_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'amazon_pay', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card']
   },
   {
     code: 'GH',
@@ -384,8 +384,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery to Accra & nationwide'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank']
   },
   {
     code: 'AE',
@@ -418,8 +418,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Direct priority air courier to residence or hotel'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank']
   },
   {
     code: 'FR',
@@ -452,8 +452,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Next-flight priority courier across Europe'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut']
   },
   {
     code: 'DE',
@@ -486,8 +486,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority courier to German destinations'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut']
   },
   {
     code: 'IE',
@@ -520,8 +520,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express 24-48h courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut']
   },
   {
     code: 'AU',
@@ -554,8 +554,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier directly to Australia'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card']
   },
   {
     code: 'NL',
@@ -588,8 +588,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority air courier'
       }
     ],
-    eligiblePaymentMethods: ['ideal', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
-    primaryPaymentMethods: ['ideal', 'card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'ideal', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'ideal']
   },
   {
     code: 'BE',
@@ -622,8 +622,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority express courier'
       }
     ],
-    eligiblePaymentMethods: ['bancontact', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
-    primaryPaymentMethods: ['bancontact', 'card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bancontact', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bancontact']
   },
   {
     code: 'PL',
@@ -656,8 +656,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['blik', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
-    primaryPaymentMethods: ['blik', 'card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'blik', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'blik']
   },
   {
     code: 'PT',
@@ -690,8 +690,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Direct courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['mbway', 'card', 'apple_pay', 'google_pay', 'revolut', 'bank'],
-    primaryPaymentMethods: ['mbway', 'card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'mbway', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'mbway']
   },
   {
     code: 'AT',
@@ -724,8 +724,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['eps', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
-    primaryPaymentMethods: ['eps', 'card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'eps', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'eps']
   },
   {
     code: 'IT',
@@ -758,8 +758,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['satispay', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
-    primaryPaymentMethods: ['satispay', 'card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'satispay', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'satispay']
   },
   {
     code: 'KR',
@@ -792,8 +792,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority express courier'
       }
     ],
-    eligiblePaymentMethods: ['kakao_pay', 'naver_pay', 'samsung_pay', 'payco', 'card', 'apple_pay', 'bank'],
-    primaryPaymentMethods: ['kakao_pay', 'naver_pay', 'card', 'apple_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'kakao_pay', 'naver_pay', 'samsung_pay', 'payco', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'kakao_pay', 'naver_pay']
   },
   {
     code: 'JP',
@@ -826,8 +826,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Door-to-door express courier'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card']
   },
   {
     code: 'ZA',
@@ -860,8 +860,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority courier to Johannesburg, Cape Town, etc.'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card']
   },
   {
     code: 'CH',
@@ -894,8 +894,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'bank'],
-    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut']
   },
   {
     code: 'SE',
@@ -928,8 +928,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card', 'apple_pay', 'google_pay']
+    eligiblePaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card', 'revolut', 'bank'],
+    primaryPaymentMethods: ['apple_pay', 'google_pay', 'klarna', 'card']
   }
 ];
 
@@ -1568,22 +1568,16 @@ export default function CheckoutModal({
         return true;
 
       case 'apple_pay':
-        // Prominently enabled for UK and all Apple Pay supported destinations
-        return ['GB', 'US', 'CA', 'AU', 'FR', 'DE', 'IE', 'NL', 'IT', 'ES', 'CH', 'SE', 'DK', 'NO', 'AE'].includes(countryCode) || Boolean(deviceWallets.applePay);
+        // Prominently enabled for all destinations
+        return true;
 
       case 'google_pay':
-        // Prominently enabled for UK and all Google Pay supported destinations
-        return ['GB', 'US', 'CA', 'AU', 'FR', 'DE', 'IE', 'NL', 'IT', 'ES', 'CH', 'SE', 'DK', 'NO', 'AE'].includes(countryCode) || Boolean(deviceWallets.googlePay);
+        // Prominently enabled for all destinations
+        return true;
 
-      case 'klarna': {
-        // Stripe Klarna requirements: Supported countries, currencies, and minimum amount threshold
-        const klarnaCountries = ['GB', 'US', 'DE', 'FR', 'IE', 'NL', 'BE', 'AT', 'SE', 'IT', 'ES', 'PL', 'PT', 'AU', 'CA', 'CH', 'DK', 'NO', 'FI'];
-        const klarnaCurrencies = ['GBP', 'EUR', 'USD', 'CAD', 'AUD', 'SEK', 'PLN', 'CHF', 'DKK', 'NOK'];
-        const isCountryEligible = klarnaCountries.includes(countryCode);
-        const isCurrencyEligible = klarnaCurrencies.includes(curr);
-        const isAmountEligible = total >= 35;
-        return isCountryEligible && isCurrencyEligible && isAmountEligible && (currentDestination.eligiblePaymentMethods || []).includes('klarna');
-      }
+      case 'klarna':
+        // Prominently enabled across all destinations (House of Nina 3-installment atelier)
+        return true;
 
       case 'ideal':
         // Netherlands only, EUR only
@@ -1633,20 +1627,20 @@ export default function CheckoutModal({
     }
   };
 
-  // Master candidate methods for selection
+  // Master candidate methods for selection: Apple Pay, Google Pay, Klarna at top
   const ALL_CANDIDATE_METHODS = [
-    'card',
     'apple_pay',
     'google_pay',
     'klarna',
+    'card',
+    'revolut',
+    'amazon_pay',
     'ideal',
     'bancontact',
     'blik',
     'mbway',
     'eps',
     'satispay',
-    'revolut',
-    'amazon_pay',
     'kakao_pay',
     'naver_pay',
     'samsung_pay',
@@ -1660,17 +1654,37 @@ export default function CheckoutModal({
     return ALL_CANDIDATE_METHODS.filter(m => isMethodEligible(m));
   }, [currentDestination, formData.currency, total, deviceWallets]);
 
-  // Initial recommended list: short & relevant (3 to 4 methods maximum)
+  // Initial recommended list: Apple Pay, Google Pay, Klarna first before Card and other payment methods
   const initialMethods = React.useMemo(() => {
     if (!currentDestination || allEligibleMethods.length === 0) return [];
     const list = [];
 
-    // 1. Credit or debit card (Global primary)
-    if (allEligibleMethods.includes('card')) {
+    // 1. Apple Pay
+    if (allEligibleMethods.includes('apple_pay') && !list.includes('apple_pay')) {
+      list.push('apple_pay');
+    }
+
+    // 2. Google Pay
+    if (allEligibleMethods.includes('google_pay') && !list.includes('google_pay')) {
+      list.push('google_pay');
+    }
+
+    // 3. Klarna (First on the list after Apple Pay and Google Pay, before all other payment methods)
+    if (allEligibleMethods.includes('klarna') && !list.includes('klarna')) {
+      list.push('klarna');
+    }
+
+    // 4. Credit or debit card
+    if (allEligibleMethods.includes('card') && !list.includes('card')) {
       list.push('card');
     }
 
-    // 2. Domestic dominant standard if applicable
+    // 5. Revolut Pay
+    if (allEligibleMethods.includes('revolut') && !list.includes('revolut')) {
+      list.push('revolut');
+    }
+
+    // 6. Domestic dominant standard if applicable
     const dominantLocalMap = {
       NL: 'ideal',
       BE: 'bancontact',
@@ -1685,19 +1699,12 @@ export default function CheckoutModal({
       list.push(localDominant);
     }
 
-    // 3. Eligible BNPL methods such as Klarna
-    if (allEligibleMethods.includes('klarna') && !list.includes('klarna')) {
-      list.push('klarna');
-    }
-
-    // 4. Studio Bank Wire or Revolut
-    if (allEligibleMethods.includes('revolut') && !list.includes('revolut')) {
-      list.push('revolut');
-    } else if (allEligibleMethods.includes('bank') && !list.includes('bank')) {
+    // 7. Studio Bank Wire
+    if (allEligibleMethods.includes('bank') && !list.includes('bank')) {
       list.push('bank');
     }
 
-    return list.slice(0, 4);
+    return list.slice(0, 5);
   }, [currentDestination, allEligibleMethods, deviceWallets]);
 
   // Remaining eligible methods: strictly exclude initialMethods (zero duplicates)
