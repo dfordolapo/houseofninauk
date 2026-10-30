@@ -6,17 +6,24 @@ const ICONS = [Droplets, ShieldCheck, Wind, Moon];
 
 export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const touchStartXRef = useRef(null);
-  const touchEndXRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isHolding, setIsHolding] = useState(false);
+
   const timerRef = useRef(null);
+  const holdTimerRef = useRef(null);
+  const pointerStartRef = useRef(null);
+  const didHoldRef = useRef(false);
 
   const tips = CARE_GUIDE_DATA.tips;
   const currentTip = tips[activeIndex] || tips[0];
   const CurrentIcon = ICONS[activeIndex % ICONS.length];
 
-  // Fast & lively auto-play (2.2s per slide)
+  // Auto-play (2.2s per slide) — paused when user holds or taps to pause
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isPaused || isHolding) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
 
     timerRef.current = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % tips.length);
@@ -25,12 +32,14 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isOpen, tips.length]);
+  }, [isOpen, isPaused, isHolding, tips.length]);
 
   // Reset to first slide upon opening
   useEffect(() => {
     if (isOpen) {
       setActiveIndex(0);
+      setIsPaused(false);
+      setIsHolding(false);
     }
   }, [isOpen]);
 
@@ -44,24 +53,65 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
     setActiveIndex((prev) => (prev + 1) % tips.length);
   };
 
-  const handleTouchStart = (e) => {
-    touchStartXRef.current = e.touches[0].clientX;
+  const handlePointerDown = (e) => {
+    if (e.target.closest('button') || e.target.closest('a')) return;
+    pointerStartRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
+    didHoldRef.current = false;
+
+    // Hold threshold: 180ms pauses auto-play while finger or mouse is held down
+    holdTimerRef.current = setTimeout(() => {
+      didHoldRef.current = true;
+      setIsHolding(true);
+    }, 180);
   };
 
-  const handleTouchMove = (e) => {
-    touchEndXRef.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartXRef.current === null || touchEndXRef.current === null) return;
-    const diff = touchStartXRef.current - touchEndXRef.current;
-    if (diff > 45) {
-      handleNext();
-    } else if (diff < -45) {
-      handlePrev();
+  const handlePointerMove = (e) => {
+    if (pointerStartRef.current) {
+      const dx = Math.abs(e.clientX - pointerStartRef.current.x);
+      const dy = Math.abs(e.clientY - pointerStartRef.current.y);
+      if (dx > 12 || dy > 12) {
+        if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      }
     }
-    touchStartXRef.current = null;
-    touchEndXRef.current = null;
+  };
+
+  const handlePointerUp = (e) => {
+    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+
+    if (didHoldRef.current) {
+      didHoldRef.current = false;
+      setIsHolding(false);
+      pointerStartRef.current = null;
+      return;
+    }
+
+    if (pointerStartRef.current) {
+      const dx = e.clientX - pointerStartRef.current.x;
+      const dy = Math.abs(e.clientY - pointerStartRef.current.y);
+      const duration = Date.now() - pointerStartRef.current.time;
+
+      // Detect swipe
+      if (Math.abs(dx) > 40 && dy < 80) {
+        if (dx < 0) {
+          handleNext();
+        } else {
+          handlePrev();
+        }
+      } else if (Math.abs(dx) < 12 && dy < 12 && duration < 320) {
+        // Tap to toggle pause/resume
+        if (!e.target.closest('button') && !e.target.closest('a')) {
+          setIsPaused((prev) => !prev);
+        }
+      }
+    }
+    pointerStartRef.current = null;
+  };
+
+  const handlePointerCancel = () => {
+    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+    didHoldRef.current = false;
+    setIsHolding(false);
+    pointerStartRef.current = null;
   };
 
   const handleShopCollections = () => {
@@ -83,9 +133,10 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
         role="dialog" 
         aria-modal="true" 
         aria-label="House of Nina Wig Care Guide"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
       >
         {/* TOP BAR / CONTROLS OVERLAY */}
         <div className="care-cinematic-header">
@@ -96,6 +147,18 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
           </div>
 
           <div className="care-header-actions">
+            {/* Play/Pause Toggle Button */}
+            <button 
+              type="button" 
+              className="care-playback-toggle" 
+              onClick={() => setIsPaused((prev) => !prev)}
+              aria-label={isPaused ? "Play care ritual" : "Pause care ritual"}
+              title={isPaused ? "Play" : "Pause"}
+            >
+              {isPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} fill="currentColor" />}
+              <span className="care-playback-label">{isPaused ? "Play" : "Pause"}</span>
+            </button>
+
             <button 
               type="button" 
               className="modal-close-btn care-cinematic-close" 
@@ -120,11 +183,11 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
               onClick={() => setActiveIndex(idx)}
             >
               <span 
-                key={`${idx}-${activeIndex}`}
+                key={`${idx}-${activeIndex}-${isPaused || isHolding}`}
                 className="care-progress-fill" 
                 style={{ 
                   animationDuration: '2.2s',
-                  animationPlayState: 'running'
+                  animationPlayState: (isPaused || isHolding) ? 'paused' : 'running'
                 }} 
               />
             </button>
@@ -152,6 +215,14 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
               <div className="care-stage-glow-radial" />
             </div>
           ))}
+
+          {/* PAUSED / HOLDING WATERMARK INDICATOR */}
+          {(isPaused || isHolding) && (
+            <div className="care-paused-watermark animate-fade-in" aria-hidden="true">
+              <Pause size={13} fill="currentColor" />
+              <span>{isHolding ? "Holding to Inspect" : "Paused"}</span>
+            </div>
+          )}
 
           {/* ARROW CONTROLS (DESKTOP / MOUSE) */}
           <button 

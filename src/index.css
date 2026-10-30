@@ -13516,12 +13516,41 @@ video::-moz-media-controls {
   cursor: pointer !important;
   transition: all 0.25s ease !important;
   box-shadow: 0 4px 14px rgba(197, 160, 89, 0.32) !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.care-footer-shop-btn span {
+  white-space: nowrap !important;
 }
 
 .care-footer-shop-btn:hover {
   background: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%) !important;
   box-shadow: 0 6px 18px rgba(197, 160, 89, 0.45) !important;
   transform: translateY(-1px) !important;
+}
+
+.care-paused-watermark {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 25;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(18, 16, 14, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 100px;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 /* FAQ Modal Base */
@@ -13871,7 +13900,38 @@ video::-moz-media-controls {
 
   .care-cinematic-footer {
     padding: 10px 14px 12px !important;
-    gap: 10px !important;
+    gap: 8px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .care-footer-dots {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .care-dot-pill {
+    width: 14px !important;
+    height: 3.5px !important;
+  }
+
+  .care-dot-pill.active {
+    width: 22px !important;
+  }
+
+  .care-footer-shop-btn {
+    white-space: nowrap !important;
+    padding: 8px 13px !important;
+    font-size: 11px !important;
+    letter-spacing: 0.02em !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+  }
+
+  .care-footer-shop-btn span {
+    white-space: nowrap !important;
   }
 
   .care-option-picker {

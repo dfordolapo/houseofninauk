@@ -200,23 +200,34 @@ export default function CartDrawer({
                             {item.name}
                           </h3>
 
-                          {/* Quick Remove */}
+                          {/* Quick Remove with Generous Mobile Touch Target */}
                           <button 
                             type="button" 
-                            onClick={() => onRemoveItem(item.cartId || idx)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onRemoveItem(item.cartId || item.id, idx);
+                            }}
                             style={{ 
                               background: 'none', 
                               border: 'none', 
-                              color: '#A09488', 
-                              padding: '2px',
+                              color: '#8C8074', 
+                              padding: '8px',
+                              margin: '-6px -6px 0 0',
+                              minWidth: '40px',
+                              minHeight: '40px',
                               cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center'
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              touchAction: 'manipulation',
+                              WebkitTapHighlightColor: 'rgba(0, 0, 0, 0.05)',
+                              borderRadius: '8px',
+                              transition: 'all 0.15s ease'
                             }}
                             title={`Remove ${item.name}`}
                             aria-label={`Remove ${item.name}`}
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={16} />
                           </button>
                         </div>
 
@@ -253,23 +264,25 @@ export default function CartDrawer({
                         }}>
                           <button
                             type="button"
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               if (qty > 1) {
-                                if (onUpdateQuantity) onUpdateQuantity(item.cartId || idx, qty - 1);
+                                if (onUpdateQuantity) onUpdateQuantity(item.cartId || item.id, qty - 1, idx);
                               } else {
-                                onRemoveItem(item.cartId || idx);
+                                onRemoveItem(item.cartId || item.id, idx);
                               }
                             }}
                             style={{
-                              width: '26px',
-                              height: '26px',
+                              width: '28px',
+                              height: '28px',
                               border: 'none',
                               background: 'transparent',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               cursor: 'pointer',
-                              color: 'var(--color-deep-espresso)'
+                              color: 'var(--color-deep-espresso)',
+                              touchAction: 'manipulation'
                             }}
                             aria-label="Decrease quantity"
                           >
@@ -286,19 +299,21 @@ export default function CartDrawer({
                           </span>
                           <button
                             type="button"
-                            onClick={() => {
-                              if (onUpdateQuantity) onUpdateQuantity(item.cartId || idx, qty + 1);
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (onUpdateQuantity) onUpdateQuantity(item.cartId || item.id, qty + 1, idx);
                             }}
                             style={{
-                              width: '26px',
-                              height: '26px',
+                              width: '28px',
+                              height: '28px',
                               border: 'none',
                               background: 'transparent',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               cursor: 'pointer',
-                              color: 'var(--color-deep-espresso)'
+                              color: 'var(--color-deep-espresso)',
+                              touchAction: 'manipulation'
                             }}
                             aria-label="Increase quantity"
                           >

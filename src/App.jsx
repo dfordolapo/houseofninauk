@@ -143,7 +143,12 @@ export default function App() {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed)) {
+          return parsed.map((item, idx) => ({
+            ...item,
+            cartId: item.cartId || (item.id ? `${item.id}-${idx}` : `cart-item-${idx}-${Date.now()}`)
+          }));
+        }
       }
     } catch (e) {
       console.warn('Failed to load cart from localStorage', e);
@@ -362,39 +367,50 @@ export default function App() {
   };
 
   const handleAddToCart = (product, { isSilent = false } = {}) => {
+    const safeCartId = product.cartId || (product.id ? `${product.id}-${Date.now()}` : `cart-item-${Date.now()}`);
+    const productWithCartId = { ...product, cartId: safeCartId };
     setCartItems(prev => {
-      const existing = prev.find(item => item.cartId === product.cartId);
+      const existing = prev.find(item => item.cartId === safeCartId);
       if (existing) {
         return prev.map(item => 
-          item.cartId === product.cartId 
+          item.cartId === safeCartId 
             ? { ...item, quantity: (item.quantity || 1) + 1 } 
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...productWithCartId, quantity: 1 }];
     });
 
     if (!isSilent) {
       setQuickViewProduct(null);
-      setAddedProductForModal(product);
+      setAddedProductForModal(productWithCartId);
       setIsAddedModalOpen(true);
     }
   };
 
-  const handleRemoveCartItem = (cartId) => {
-    setCartItems(prev => prev.filter(item => item.cartId !== cartId));
+  const handleRemoveCartItem = (identifier, itemIndex) => {
+    setCartItems(prev => prev.filter((item, idx) => {
+      if (typeof itemIndex === 'number' && idx === itemIndex) return false;
+      if (typeof identifier === 'number' && idx === identifier) return false;
+      if (identifier && item.cartId === identifier) return false;
+      if (identifier && item.id === identifier) return false;
+      if (identifier && `${item.id}-${idx}` === identifier) return false;
+      return true;
+    }));
   };
 
-  const handleUpdateQuantity = (cartId, newQuantity) => {
+  const handleUpdateQuantity = (identifier, newQuantity, itemIndex) => {
     if (newQuantity <= 0) {
-      handleRemoveCartItem(cartId);
+      handleRemoveCartItem(identifier, itemIndex);
       return;
     }
-    setCartItems(prev => prev.map(item => 
-      item.cartId === cartId 
-        ? { ...item, quantity: newQuantity } 
-        : item
-    ));
+    setCartItems(prev => prev.map((item, idx) => {
+      const isTarget = (typeof itemIndex === 'number' && idx === itemIndex) ||
+                       (typeof identifier === 'number' && idx === identifier) ||
+                       (identifier && item.cartId === identifier) ||
+                       (identifier && item.id === identifier);
+      return isTarget ? { ...item, quantity: newQuantity } : item;
+    }));
   };
 
   const handleMoveToWishlist = (item, removeFromBag = false) => {
