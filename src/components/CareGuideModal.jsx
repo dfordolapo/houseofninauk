@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Droplets, Wind, ShieldCheck, Moon, ShoppingBag, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
+import { X, Droplets, Wind, ShieldCheck, Moon, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CARE_GUIDE_DATA } from '../data/wigData';
 
 const ICONS = [Droplets, ShieldCheck, Wind, Moon];
@@ -18,7 +18,7 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
   const currentTip = tips[activeIndex] || tips[0];
   const CurrentIcon = ICONS[activeIndex % ICONS.length];
 
-  // Auto-play (2.2s per slide) — paused when user holds or taps to pause
+  // Auto-play (2.2s per slide) — pauses whenever clicked or held
   useEffect(() => {
     if (!isOpen || isPaused || isHolding) {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -58,7 +58,7 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
     pointerStartRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
     didHoldRef.current = false;
 
-    // Hold threshold: 180ms pauses auto-play while finger or mouse is held down
+    // Holding down on the video pauses playback
     holdTimerRef.current = setTimeout(() => {
       didHoldRef.current = true;
       setIsHolding(true);
@@ -90,7 +90,7 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
       const dy = Math.abs(e.clientY - pointerStartRef.current.y);
       const duration = Date.now() - pointerStartRef.current.time;
 
-      // Detect swipe
+      // Detect horizontal swipe
       if (Math.abs(dx) > 40 && dy < 80) {
         if (dx < 0) {
           handleNext();
@@ -98,7 +98,7 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
           handlePrev();
         }
       } else if (Math.abs(dx) < 12 && dy < 12 && duration < 320) {
-        // Tap to toggle pause/resume
+        // Clicked or tapped on the video: pause/resume
         if (!e.target.closest('button') && !e.target.closest('a')) {
           setIsPaused((prev) => !prev);
         }
@@ -147,18 +147,6 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
           </div>
 
           <div className="care-header-actions">
-            {/* Play/Pause Toggle Button */}
-            <button 
-              type="button" 
-              className="care-playback-toggle" 
-              onClick={() => setIsPaused((prev) => !prev)}
-              aria-label={isPaused ? "Play care ritual" : "Pause care ritual"}
-              title={isPaused ? "Play" : "Pause"}
-            >
-              {isPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} fill="currentColor" />}
-              <span className="care-playback-label">{isPaused ? "Play" : "Pause"}</span>
-            </button>
-
             <button 
               type="button" 
               className="modal-close-btn care-cinematic-close" 
@@ -194,8 +182,17 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
           ))}
         </div>
 
-        {/* CINEMATIC IMAGE CANVAS (UNDERLAY) */}
-        <div className="care-cinematic-stage">
+        {/* CINEMATIC IMAGE / VIDEO CANVAS (UNDERLAY) */}
+        <div 
+          className="care-cinematic-stage"
+          onClick={(e) => {
+            if (!e.target.closest('button') && !e.target.closest('a')) {
+              setIsPaused((prev) => !prev);
+            }
+          }}
+          style={{ cursor: 'pointer' }}
+          title={isPaused ? "Tap to play" : "Tap to pause"}
+        >
           {tips.map((tip, idx) => (
             <div 
               key={idx} 
@@ -216,19 +213,14 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
             </div>
           ))}
 
-          {/* PAUSED / HOLDING WATERMARK INDICATOR */}
-          {(isPaused || isHolding) && (
-            <div className="care-paused-watermark animate-fade-in" aria-hidden="true">
-              <Pause size={13} fill="currentColor" />
-              <span>{isHolding ? "Holding to Inspect" : "Paused"}</span>
-            </div>
-          )}
-
           {/* ARROW CONTROLS (DESKTOP / MOUSE) */}
           <button 
             type="button" 
             className="care-nav-arrow care-nav-prev"
-            onClick={handlePrev}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrev();
+            }}
             aria-label="Previous care step"
           >
             <ChevronLeft size={22} strokeWidth={2} />
@@ -236,7 +228,10 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
           <button 
             type="button" 
             className="care-nav-arrow care-nav-next"
-            onClick={handleNext}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNext();
+            }}
             aria-label="Next care step"
           >
             <ChevronRight size={22} strokeWidth={2} />
