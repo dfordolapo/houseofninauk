@@ -2173,6 +2173,34 @@ export default function CheckoutModal({
         fulfillment_status: 'Confirmed',
         stripe_payment_intent_id: stripePaymentIntentId || null
       }).catch(err => console.warn('Supabase sync notice:', err));
+
+      // Trigger automatic order email via Resend to client/owner
+      fetch('/api/send-order-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderNumber: newOrder.orderNumber,
+          clientName: newOrder.customer?.fullName || formData.fullName || 'Valued Client',
+          customerEmail: newOrder.customer?.email || formData.email || '',
+          phone: newOrder.customer?.phone || formData.phone || '',
+          shippingAddress: newOrder.customer || {
+            fullName: formData.fullName,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            postalCode: formData.postalCode,
+            country: currentDestination?.name || 'United Kingdom'
+          },
+          items: newOrder.items || cartItems,
+          total: newOrder.total || total,
+          subtotal: newOrder.subtotal || subtotal,
+          shippingCost: newOrder.shippingCost || shippingCost,
+          currency: 'GBP',
+          paymentMethod: paymentLabel
+        })
+      }).then(r => r.json()).then(data => {
+        console.log('[House of Nina] Order confirmation email dispatched:', data);
+      }).catch(e => console.warn('[House of Nina] Order email notification notice:', e));
     } catch (err) {
       console.warn('Could not sync order to storage, maintaining in-memory confirmed order', err);
       // Payment succeeded! Even if client storage fails, we safely proceed to receipt without asking customer to pay again.
