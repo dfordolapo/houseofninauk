@@ -204,8 +204,8 @@ export default function CartDrawer({
                           <button 
                             type="button" 
                             onClick={(e) => {
-                              e.stopPropagation();
-                              onRemoveItem(item.cartId || item.id, idx);
+                              if (e && e.stopPropagation) e.stopPropagation();
+                              if (onRemoveItem) onRemoveItem(item.cartId || item.id, idx);
                             }}
                             style={{ 
                               background: 'none', 
@@ -265,11 +265,11 @@ export default function CartDrawer({
                           <button
                             type="button"
                             onClick={(e) => {
-                              e.stopPropagation();
+                              if (e && e.stopPropagation) e.stopPropagation();
                               if (qty > 1) {
                                 if (onUpdateQuantity) onUpdateQuantity(item.cartId || item.id, qty - 1, idx);
                               } else {
-                                onRemoveItem(item.cartId || item.id, idx);
+                                if (onRemoveItem) onRemoveItem(item.cartId || item.id, idx);
                               }
                             }}
                             style={{

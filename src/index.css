@@ -11510,7 +11510,7 @@ video::-moz-media-controls {
   height: 16px;
   margin: 0;
   flex-shrink: 0;
-  cursor: pointer;
+  pointer-events: none;
 }
 
 .payment-option-text {
@@ -14213,7 +14213,6 @@ video::-moz-media-controls {
   }
 
   .payment-badge-revolut,
-  .payment-badge-amazon,
   .payment-badge-klarna {
     font-size: 9.5px !important;
     padding: 2px 5px !important;

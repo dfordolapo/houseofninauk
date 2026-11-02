@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Check, ArrowRight, CreditCard, Building2, Edit3, Lock, Truck, 
   MapPin, Plus, Home, Briefcase, Gift, ChevronRight, ChevronDown, ChevronUp, AlertCircle, ArrowLeft,
-  ShieldCheck, CheckCircle2, Zap, Search, ShoppingBag
+  ShieldCheck, Sparkles, CheckCircle2, Zap, Search, ShoppingBag, Loader2
 } from 'lucide-react';
 import OrderSuccessReceipt from './OrderSuccessReceipt';
 import { createOrderInDb } from '../lib/supabase';
@@ -107,28 +107,6 @@ function RevolutPayBadge() {
   );
 }
 
-/** Authentic Amazon Pay Badge */
-function AmazonPayBadge() {
-  return (
-    <span style={{
-      fontSize: '11px',
-      fontWeight: 700,
-      padding: '3px 8px',
-      borderRadius: '5px',
-      background: '#FFFFFF',
-      color: '#131921',
-      border: '1px solid #D5D9D9',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '2px',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      whiteSpace: 'nowrap',
-      flexShrink: 0
-    }} className="payment-badge-amazon">
-      <span style={{ whiteSpace: 'nowrap' }}>amazon<span style={{ color: '#FF9900', fontWeight: 800 }}>pay</span></span>
-    </span>
-  );
-}
 
 /** Regional Method Badges */
 function BancontactBadge() {
@@ -248,8 +226,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority tracked delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'revolut', 'amazon_pay', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card', 'revolut']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna']
   },
   {
     code: 'US',
@@ -282,8 +260,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Fast express courier • Priority customs clearance'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'amazon_pay', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
   },
   {
     code: 'NG',
@@ -316,8 +294,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Direct express flight to Lagos & Abuja • Door-to-door concierge'
       }
     ],
-    eligiblePaymentMethods: ['card', 'bank'],
-    primaryPaymentMethods: ['card', 'bank']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
   },
   {
     code: 'CA',
@@ -350,8 +328,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority courier to Canadian provinces'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'amazon_pay', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
   },
   {
     code: 'GH',
@@ -384,8 +362,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery to Accra & nationwide'
       }
     ],
-    eligiblePaymentMethods: ['card', 'bank'],
-    primaryPaymentMethods: ['card', 'bank']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
   },
   {
     code: 'AE',
@@ -418,8 +396,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Direct priority air courier to residence or hotel'
       }
     ],
-    eligiblePaymentMethods: ['card', 'bank'],
-    primaryPaymentMethods: ['card', 'bank']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank']
   },
   {
     code: 'FR',
@@ -452,8 +430,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Next-flight priority courier across Europe'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card', 'revolut']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
   },
   {
     code: 'DE',
@@ -486,8 +464,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority courier to German destinations'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card', 'revolut']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut']
   },
   {
     code: 'IE',
@@ -520,8 +498,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express 24-48h courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card', 'revolut']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
   },
   {
     code: 'AU',
@@ -554,8 +532,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier directly to Australia'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna']
   },
   {
     code: 'NL',
@@ -588,8 +566,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority air courier'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'ideal', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'ideal', 'card']
+    eligiblePaymentMethods: ['ideal', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['ideal', 'card', 'apple_pay', 'google_pay']
   },
   {
     code: 'BE',
@@ -622,8 +600,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority express courier'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'bancontact', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'bancontact', 'card']
+    eligiblePaymentMethods: ['bancontact', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['bancontact', 'card', 'apple_pay', 'google_pay']
   },
   {
     code: 'PL',
@@ -656,8 +634,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'blik', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'blik', 'card']
+    eligiblePaymentMethods: ['blik', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['blik', 'card', 'apple_pay', 'google_pay']
   },
   {
     code: 'PT',
@@ -690,8 +668,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Direct courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'mbway', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'mbway', 'card']
+    eligiblePaymentMethods: ['mbway', 'card', 'apple_pay', 'google_pay', 'revolut', 'bank'],
+    primaryPaymentMethods: ['mbway', 'card', 'apple_pay', 'google_pay']
   },
   {
     code: 'AT',
@@ -724,8 +702,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'eps', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'eps', 'card']
+    eligiblePaymentMethods: ['eps', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['eps', 'card', 'apple_pay', 'google_pay']
   },
   {
     code: 'IT',
@@ -758,8 +736,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'satispay', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'satispay', 'card']
+    eligiblePaymentMethods: ['satispay', 'card', 'apple_pay', 'google_pay', 'revolut', 'klarna', 'bank'],
+    primaryPaymentMethods: ['satispay', 'card', 'apple_pay', 'google_pay']
   },
   {
     code: 'KR',
@@ -792,8 +770,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority express courier'
       }
     ],
-    eligiblePaymentMethods: ['kakao_pay', 'naver_pay', 'samsung_pay', 'payco', 'card', 'bank'],
-    primaryPaymentMethods: ['kakao_pay', 'naver_pay', 'card']
+    eligiblePaymentMethods: ['kakao_pay', 'naver_pay', 'samsung_pay', 'payco', 'card', 'apple_pay', 'bank'],
+    primaryPaymentMethods: ['kakao_pay', 'naver_pay', 'card', 'apple_pay']
   },
   {
     code: 'JP',
@@ -826,8 +804,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Door-to-door express courier'
       }
     ],
-    eligiblePaymentMethods: ['card', 'bank'],
-    primaryPaymentMethods: ['card', 'bank']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay']
   },
   {
     code: 'ZA',
@@ -860,8 +838,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Priority courier to Johannesburg, Cape Town, etc.'
       }
     ],
-    eligiblePaymentMethods: ['card', 'bank'],
-    primaryPaymentMethods: ['card', 'bank']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay']
   },
   {
     code: 'CH',
@@ -894,8 +872,8 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card', 'revolut']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut', 'bank'],
+    primaryPaymentMethods: ['card', 'apple_pay', 'google_pay', 'revolut']
   },
   {
     code: 'SE',
@@ -928,52 +906,12 @@ export const SUPPORTED_DESTINATIONS = [
         notes: 'Express courier delivery'
       }
     ],
-    eligiblePaymentMethods: ['klarna', 'card', 'revolut', 'bank'],
-    primaryPaymentMethods: ['klarna', 'card']
+    eligiblePaymentMethods: ['card', 'apple_pay', 'google_pay', 'klarna', 'revolut', 'bank'],
+    primaryPaymentMethods: ['klarna', 'card', 'apple_pay', 'google_pay']
   }
 ];
 
-export const DEFAULT_SAVED_ADDRESSES = [
-  {
-    id: 'home',
-    label: 'Home',
-    fullName: 'Amara Okafor',
-    address: '14 Mayfair Place, Flat 3B',
-    city: 'London',
-    state: 'Greater London',
-    postalCode: 'W1J 8AJ',
-    phone: '+44 7776 759731',
-    countryCode: 'GB',
-    country: 'United Kingdom',
-    isDefault: false
-  },
-  {
-    id: 'work',
-    label: 'Work',
-    fullName: 'Amara Okafor',
-    address: "8 St James's Square, Suite 402",
-    city: 'London',
-    state: 'Greater London',
-    postalCode: 'SW1Y 4JU',
-    phone: '+44 7776 759731',
-    countryCode: 'GB',
-    country: 'United Kingdom',
-    isDefault: false
-  },
-  {
-    id: 'gift',
-    label: 'Gift',
-    fullName: 'Zainab Okafor',
-    address: '22 Victoria Avenue, Flat 2',
-    city: 'Manchester',
-    state: 'Greater Manchester',
-    postalCode: 'M20 2EA',
-    phone: '+44 7780 123456',
-    countryCode: 'GB',
-    country: 'United Kingdom',
-    isDefault: false
-  }
-];
+export const DEFAULT_SAVED_ADDRESSES = [];
 
 export const getAbbreviatedCountryName = (dest) => {
   if (!dest) return 'UK';
@@ -1198,6 +1136,11 @@ export default function CheckoutModal({
   const [epsBank, setEpsBank] = useState('erste');
   const [satispayPhone, setSatispayPhone] = useState('');
   const [koreanWalletData, setKoreanWalletData] = useState({ phone: '', provider: 'kakao' });
+
+  // UK Postcode Lookup State
+  const [postcodeSearchQuery, setPostcodeSearchQuery] = useState('');
+  const [isPostcodeLoading, setIsPostcodeLoading] = useState(false);
+  const [postcodeLookupMessage, setPostcodeLookupMessage] = useState(null);
 
 
 
@@ -1568,19 +1511,22 @@ export default function CheckoutModal({
         return true;
 
       case 'apple_pay':
-        // Prominently enabled for all destinations
-        return true;
+        // Prominently enabled for UK and all Apple Pay supported destinations
+        return ['GB', 'US', 'CA', 'AU', 'FR', 'DE', 'IE', 'NL', 'IT', 'ES', 'CH', 'SE', 'DK', 'NO', 'AE'].includes(countryCode) || Boolean(deviceWallets.applePay);
 
       case 'google_pay':
-        // Prominently enabled for all destinations
-        return true;
+        // Prominently enabled for UK and all Google Pay supported destinations
+        return ['GB', 'US', 'CA', 'AU', 'FR', 'DE', 'IE', 'NL', 'IT', 'ES', 'CH', 'SE', 'DK', 'NO', 'AE'].includes(countryCode) || Boolean(deviceWallets.googlePay);
 
       case 'klarna': {
-        // Klarna is officially supported in UK, US, Canada, Australia, and Western/Northern Europe (not available in Nigeria, Ghana, UAE, etc.)
-        const klarnaEligibleCountries = ['GB', 'US', 'CA', 'AU', 'FR', 'DE', 'IE', 'NL', 'BE', 'AT', 'SE', 'IT', 'ES', 'PL', 'PT', 'CH', 'DK', 'NO', 'FI'];
-        const isCountryEligible = klarnaEligibleCountries.includes(countryCode);
-        const isDestinationEligible = (currentDestination.eligiblePaymentMethods || []).includes('klarna');
-        return isCountryEligible && isDestinationEligible;
+        // Stripe Klarna requirements: Supported countries, currencies, and destination settings
+        const klarnaCountries = ['GB', 'US', 'DE', 'FR', 'IE', 'NL', 'BE', 'AT', 'SE', 'IT', 'ES', 'PL', 'PT', 'AU', 'CA', 'CH', 'DK', 'NO', 'FI'];
+        const klarnaCurrencies = ['GBP', 'EUR', 'USD', 'CAD', 'AUD', 'SEK', 'PLN', 'CHF', 'DKK', 'NOK'];
+        const isCountryEligible = klarnaCountries.includes(countryCode);
+        const isCurrencyEligible = klarnaCurrencies.includes(curr);
+        // Accepting any amount for testing as requested by user
+        const isAmountEligible = total > 0;
+        return isCountryEligible && isCurrencyEligible && isAmountEligible && (currentDestination.eligiblePaymentMethods || []).includes('klarna');
       }
 
       case 'ideal':
@@ -1611,10 +1557,6 @@ export default function CheckoutModal({
         // UK & EEA destinations with GBP or EUR
         return ['GB', 'FR', 'DE', 'IE', 'IT', 'ES', 'NL', 'BE', 'AT', 'PT', 'PL', 'SE', 'CH'].includes(countryCode) && ['GBP', 'EUR'].includes(curr);
 
-      case 'amazon_pay':
-        // UK, US, Western EU with GBP, USD, EUR
-        return ['GB', 'US', 'DE', 'FR', 'IT', 'ES', 'IE', 'AT', 'BE', 'NL'].includes(countryCode) && ['GBP', 'USD', 'EUR'].includes(curr);
-
       case 'kakao_pay':
       case 'naver_pay':
       case 'samsung_pay':
@@ -1631,18 +1573,17 @@ export default function CheckoutModal({
     }
   };
 
-  // Master candidate methods for standard selection (Apple Pay & Google Pay are prominently in Express Checkout above)
+  // Master candidate methods for standard selection (Apple Pay and Google Pay reserved for Express Checkout)
   const ALL_CANDIDATE_METHODS = [
     'klarna',
     'card',
-    'revolut',
-    'amazon_pay',
     'ideal',
     'bancontact',
     'blik',
     'mbway',
     'eps',
     'satispay',
+    'revolut',
     'kakao_pay',
     'naver_pay',
     'samsung_pay',
@@ -1656,27 +1597,22 @@ export default function CheckoutModal({
     return ALL_CANDIDATE_METHODS.filter(m => isMethodEligible(m));
   }, [currentDestination, formData.currency, total, deviceWallets]);
 
-  // Initial recommended list: Klarna is #1 at the very top, followed by Card and other methods
+  // Initial recommended list: short & relevant (3 to 4 methods maximum)
   const initialMethods = React.useMemo(() => {
     if (!currentDestination || allEligibleMethods.length === 0) return [];
     const list = [];
 
-    // 1. Klarna (#1 on the list!)
-    if (allEligibleMethods.includes('klarna') && !list.includes('klarna')) {
+    // 1. Klarna comes first where applicable
+    if (allEligibleMethods.includes('klarna')) {
       list.push('klarna');
     }
 
-    // 2. Credit or debit card
+    // 2. Credit or debit card (Global primary)
     if (allEligibleMethods.includes('card') && !list.includes('card')) {
       list.push('card');
     }
 
-    // 3. Revolut Pay
-    if (allEligibleMethods.includes('revolut') && !list.includes('revolut')) {
-      list.push('revolut');
-    }
-
-    // 4. Domestic dominant standard if applicable
+    // 3. Domestic dominant standard if applicable
     const dominantLocalMap = {
       NL: 'ideal',
       BE: 'bancontact',
@@ -1691,8 +1627,10 @@ export default function CheckoutModal({
       list.push(localDominant);
     }
 
-    // 5. Studio Bank Wire
-    if (allEligibleMethods.includes('bank') && !list.includes('bank')) {
+    // 4. Studio Bank Wire or Revolut
+    if (allEligibleMethods.includes('revolut') && !list.includes('revolut')) {
+      list.push('revolut');
+    } else if (allEligibleMethods.includes('bank') && !list.includes('bank')) {
       list.push('bank');
     }
 
@@ -1706,8 +1644,8 @@ export default function CheckoutModal({
 
   // Guard: if current selected payment method becomes ineligible on destination or currency change, adapt gracefully
   useEffect(() => {
-    if (formData.paymentMethod && allEligibleMethods.length > 0 && !allEligibleMethods.includes(formData.paymentMethod) && !['apple_pay', 'google_pay'].includes(formData.paymentMethod)) {
-      setFormData(prev => ({ ...prev, paymentMethod: initialMethods[0] || 'klarna' }));
+    if (formData.paymentMethod && allEligibleMethods.length > 0 && !allEligibleMethods.includes(formData.paymentMethod)) {
+      setFormData(prev => ({ ...prev, paymentMethod: initialMethods[0] || 'card' }));
     }
   }, [selectedCountryCode, formData.currency, allEligibleMethods, initialMethods]);
 
@@ -1720,8 +1658,6 @@ export default function CheckoutModal({
         return 'Pay with Google Pay';
       case 'revolut':
         return 'Pay with Revolut Pay';
-      case 'amazon_pay':
-        return 'Pay with Amazon Pay';
       case 'klarna':
         return 'Pay with Klarna';
       case 'bancontact':
@@ -1775,22 +1711,12 @@ export default function CheckoutModal({
     if (paymentState !== 'idle' && paymentState !== 'succeeded') setPaymentState('idle');
   };
 
-  const handleTogglePaymentMethod = (method, e) => {
-    if (e && e.preventDefault) {
-      e.preventDefault();
+  const handleTogglePaymentMethod = (method) => {
+    if (formData.paymentMethod === method) {
+      handleChange('paymentMethod', '');
+    } else {
+      handleChange('paymentMethod', method);
     }
-    setFormData(prev => {
-      const isAlreadyOpen = prev.paymentMethod === method;
-      const nextMethod = isAlreadyOpen ? '' : method;
-      return {
-        ...prev,
-        paymentMethod: nextMethod
-      };
-    });
-
-    if (stepError) setStepError('');
-    if (paymentError) setPaymentError(null);
-    if (paymentState !== 'idle' && paymentState !== 'succeeded') setPaymentState('idle');
   };
 
   // Destination Selection & Invalidation Handler
@@ -1936,6 +1862,69 @@ export default function CheckoutModal({
     }
   };
 
+  // Instant UK Postcode Lookup (Free, zero API key, postcodes.io)
+  const handleUkPostcodeLookup = async (overridePostcode) => {
+    const rawPc = (overridePostcode || postcodeSearchQuery || formData.postalCode || '').trim().toUpperCase();
+    if (!rawPc) {
+      setPostcodeLookupMessage({ type: 'error', text: 'Please enter a UK postcode (e.g. SW1A 1AA).' });
+      return;
+    }
+
+    setIsPostcodeLoading(true);
+    setPostcodeLookupMessage(null);
+
+    try {
+      const sanitized = encodeURIComponent(rawPc.replace(/\s+/g, ''));
+      const response = await fetch(`https://api.postcodes.io/postcodes/${sanitized}`);
+      const data = await response.json();
+
+      if (response.ok && data.status === 200 && data.result) {
+        const res = data.result;
+        const resolvedCity = res.parish || res.admin_district || res.admin_ward || 'London';
+        const resolvedState = res.admin_county || res.region || res.country || 'England';
+        const formattedPc = res.postcode || rawPc;
+
+        setFormData(prev => ({
+          ...prev,
+          postalCode: formattedPc,
+          city: resolvedCity,
+          state: resolvedState
+        }));
+
+        // Clear errors for resolved fields
+        setFieldErrors(prev => {
+          const next = { ...prev };
+          delete next.postalCode;
+          delete next.city;
+          delete next.state;
+          return next;
+        });
+
+        setPostcodeLookupMessage({
+          type: 'success',
+          text: `Found: ${resolvedCity}, ${resolvedState}. Please enter your house / flat number.`
+        });
+
+        // Focus address field so user can enter house/flat number
+        setTimeout(() => {
+          if (addressInputRef.current) addressInputRef.current.focus();
+        }, 100);
+      } else {
+        setPostcodeLookupMessage({
+          type: 'error',
+          text: 'Postcode not found. You can enter your street address and town manually below.'
+        });
+      }
+    } catch (err) {
+      setPostcodeLookupMessage({
+        type: 'error',
+        text: 'Postcode lookup temporarily unavailable. Please enter details manually below.'
+      });
+    } finally {
+      setIsPostcodeLoading(false);
+    }
+  };
+
   const handleProceedToPayment = () => {
     setHasAttemptedStep1(true);
 
@@ -2010,39 +1999,24 @@ export default function CheckoutModal({
   };
 
   const handleExpressPay = (method) => {
-    // Select the chosen express payment method
-    handleChange('paymentMethod', method);
+    // If Step 1 required delivery fields are not yet filled, transition to Step 1 and highlight them
+    const hasRequiredDelivery = Boolean(
+      formData.fullName && formData.fullName.trim() &&
+      formData.address && formData.address.trim() &&
+      formData.postalCode && formData.postalCode.trim() &&
+      formData.email && formData.email.trim() &&
+      formData.phone && formData.phone.trim()
+    );
 
-    // Auto-select matching saved address for destination if empty, or set smart client fallback
-    const matchingAddr = savedAddresses.find(a => a.countryCode === selectedCountryCode);
-    if (matchingAddr && (!formData.fullName || !formData.address)) {
-      setFormData(prev => ({
-        ...prev,
-        fullName: prev.fullName || matchingAddr.fullName,
-        address: prev.address || matchingAddr.address,
-        city: prev.city || matchingAddr.city,
-        state: prev.state || matchingAddr.state,
-        postalCode: prev.postalCode || matchingAddr.postalCode,
-        phone: prev.phone || matchingAddr.phone,
-        email: prev.email || 'client@houseofnina.co.uk',
-        deliveryMethod: prev.deliveryMethod || availableShippingOptions[0]?.id || 'standard',
-        paymentMethod: method
-      }));
-      setSelectedAddressId(matchingAddr.id);
-    } else if (!formData.fullName || !formData.address) {
-      setFormData(prev => ({
-        ...prev,
-        fullName: prev.fullName || 'Valued Client',
-        address: prev.address || 'Mayfair Atelier Residence',
-        city: prev.city || (selectedCountryCode === 'US' ? 'New York' : 'London'),
-        postalCode: prev.postalCode || (selectedCountryCode === 'US' ? '10001' : 'W1J 8AJ'),
-        phone: prev.phone || (selectedCountryCode === 'US' ? '+1 555 234 5678' : '+44 7776 759731'),
-        email: prev.email || 'client@houseofnina.co.uk',
-        deliveryMethod: prev.deliveryMethod || availableShippingOptions[0]?.id || 'standard',
-        paymentMethod: method
-      }));
+    if (!hasRequiredDelivery) {
+      handleChange('paymentMethod', method);
+      setCheckoutStep(1);
+      setStepError('Please enter your delivery name, address, and contact details before completing ' + (method === 'apple_pay' ? 'Apple Pay' : 'Google Pay') + '.');
+      return;
     }
 
+    // Select the chosen express payment method
+    handleChange('paymentMethod', method);
     if (stepError) setStepError('');
     setActiveExpressSheet(method);
   };
@@ -2080,19 +2054,17 @@ export default function CheckoutModal({
       const last4 = formData.cardNumber.replace(/\s/g, '').slice(-4);
       paymentLabel = `Stripe Card (•••• ${last4 || '4892'})`;
     } else if (chosenPayment === 'apple_pay') {
-      paymentLabel = 'Apple Pay (•••• 8821)';
+      paymentLabel = 'Apple Pay';
     } else if (chosenPayment === 'google_pay') {
-      paymentLabel = 'Google Pay (•••• 4012)';
+      paymentLabel = 'Google Pay';
     } else if (chosenPayment === 'revolut') {
       paymentLabel = 'Revolut Pay (UK/EU Verified)';
-    } else if (chosenPayment === 'amazon_pay') {
-      paymentLabel = 'Amazon Pay (Verified)';
     } else if (chosenPayment === 'klarna') {
       paymentLabel = 'Klarna Pay in 3';
     } else if (chosenPayment === 'bank') {
-      paymentLabel = `Direct Bank Wire (Monzo Bank - ${bankWireData.accountHolder || 'Client'})`;
+      paymentLabel = `Direct Bank Wire (${bankWireData.senderBank || 'Bank Wire'} - ${bankWireData.accountHolder || formData.fullName || 'Client'})`;
     } else {
-      paymentLabel = chosenPayment.toUpperCase();
+      paymentLabel = (chosenPayment || 'PAYMENT').toUpperCase();
     }
 
     const deliveryLabel = selectedShippingOption
@@ -2112,9 +2084,9 @@ export default function CheckoutModal({
       paymentStatus: 'Paid',
       stripePaymentIntentId: stripePaymentIntentId || null,
       customer: {
-        fullName: formData.fullName || "Valued Client",
-        email: formData.email || "client@houseofnina.co.uk",
-        phone: formData.phone || "+44 7776 759731",
+        fullName: formData.fullName || "",
+        email: formData.email || "",
+        phone: formData.phone || "",
         address: formData.address,
         city: formData.city,
         state: formData.state,
@@ -2153,6 +2125,36 @@ export default function CheckoutModal({
 
       sessionStorage.setItem('hn_confirmed_order', JSON.stringify(newOrder));
       localStorage.setItem('hn_last_confirmed_order', JSON.stringify(newOrder));
+
+      // Automatically save delivery address to user's device for frictionless future checkouts
+      if (formData.address && formData.city && formData.postalCode) {
+        try {
+          const currentSaved = JSON.parse(localStorage.getItem('house_of_nina_saved_addresses') || '[]');
+          const isAlreadySaved = currentSaved.some(a => 
+            a.address?.toLowerCase().trim() === formData.address?.toLowerCase().trim() &&
+            a.postalCode?.toLowerCase().replace(/\s/g, '') === formData.postalCode?.toLowerCase().replace(/\s/g, '')
+          );
+          if (!isAlreadySaved) {
+            const autoSavedEntry = {
+              id: `addr_${Date.now()}`,
+              label: 'Saved Delivery',
+              fullName: formData.fullName || '',
+              address: formData.address,
+              city: formData.city,
+              state: formData.state || '',
+              postalCode: formData.postalCode,
+              phone: formData.phone || '',
+              countryCode: selectedCountryCode || 'GB',
+              country: currentDestination?.name || 'United Kingdom'
+            };
+            const updatedSaved = [autoSavedEntry, ...currentSaved];
+            localStorage.setItem('house_of_nina_saved_addresses', JSON.stringify(updatedSaved));
+            setSavedAddresses(updatedSaved);
+          }
+        } catch (e) {
+          console.warn('Could not auto-save address to device:', e);
+        }
+      }
 
       // Sync order to Supabase cloud PostgreSQL table
       createOrderInDb({
@@ -2242,12 +2244,12 @@ export default function CheckoutModal({
               cartItems: cartItems,
               shippingOption: selectedShippingOption || {},
               customer: {
-                name: formData.cardName || formData.fullName || 'Valued Client',
-                email: formData.email,
-                phone: formData.phone,
+                name: formData.cardName || formData.fullName || '',
+                email: formData.email || '',
+                phone: formData.phone || '',
                 address: {
-                  line1: formData.address,
-                  postalCode: formData.postalCode,
+                  line1: formData.address || '',
+                  postalCode: formData.postalCode || '',
                   country: selectedCountryCode || 'GB'
                 }
               },
@@ -2269,12 +2271,12 @@ export default function CheckoutModal({
             payment_method: {
               card: cardElementRef.current,
               billing_details: {
-                name: formData.cardName || formData.fullName || 'Valued Client',
-                email: formData.email,
-                phone: formData.phone,
+                name: formData.cardName || formData.fullName || '',
+                email: formData.email || '',
+                phone: formData.phone || '',
                 address: {
-                  line1: formData.address,
-                  postal_code: formData.postalCode,
+                  line1: formData.address || '',
+                  postal_code: formData.postalCode || '',
                   country: selectedCountryCode || 'GB'
                 }
               }
@@ -2606,192 +2608,7 @@ export default function CheckoutModal({
   // Render Individual Payment Option Item
   const renderPaymentOption = (methodId) => {
     switch (methodId) {
-      case 'apple_pay':
-        return (
-          <div key="apple_pay" style={{
-                          borderRadius: '10px',
-                          border: '1.5px solid',
-                          borderColor: formData.paymentMethod === 'apple_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                          backgroundColor: formData.paymentMethod === 'apple_pay' ? '#FAF8F5' : '#FFFFFF',
-                          overflow: 'hidden',
-                          transition: 'border-color 0.2s ease'
-                        }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('apple_pay', e)}
-                            className="payment-option-label"
-                          >
-                            <div className="payment-option-info">
-                              <input
-                                type="radio"
-                                name="paymentMethod"
-                                checked={formData.paymentMethod === 'apple_pay'}
-                                onChange={() => {}}
-                                className="payment-option-radio"
-                              />
-                              <div className="payment-option-text">
-                                <strong className="payment-option-title">
-                                  Apple Pay
-                                </strong>
-                                <span className="payment-option-subtitle">
-                                  Touch ID / Face ID
-                                </span>
-                              </div>
-                            </div>
-                            <div className="payment-badge-container apple-pay-logo-wrapper">
-                              <ApplePayLogo height={20} color="#1C1614" />
-                            </div>
-                          </label>
 
-                          {formData.paymentMethod === 'apple_pay' && (
-                            <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                              <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <span style={{ fontSize: '11.5px', color: '#8C8074' }}>Merchant</span>
-                                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina London</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
-                                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total Due</span>
-                                  <span style={{ fontSize: '14.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
-                                </div>
-                              </div>
-
-                              <button
-                                type="button"
-                                onClick={() => handlePlaceOrder(null, 'apple_pay')}
-                                disabled={isSubmitting}
-                                style={{
-                                  height: '46px',
-                                  backgroundColor: '#000000',
-                                  color: '#FFFFFF',
-                                  border: 'none',
-                                  borderRadius: '8px',
-                                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '8px',
-                                  fontSize: '13.5px',
-                                  fontWeight: 600
-                                }}
-                              >
-                                <span>Pay {formatPrice(total)} with</span>
-                                <ApplePayLogo height={20} color="#FFFFFF" />
-                              </button>
-
-                              <div style={{ textAlign: 'center' }}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleChange('paymentMethod', 'card')}
-                                  style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: '#8C8074',
-                                    fontSize: '11px',
-                                    textDecoration: 'underline',
-                                    cursor: 'pointer',
-                                    padding: '4px'
-                                  }}
-                                >
-                                  Or pay with credit / debit card
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-        );
-      case 'google_pay':
-        return (
-          <div key="google_pay" style={{
-                          borderRadius: '10px',
-                          border: '1.5px solid',
-                          borderColor: formData.paymentMethod === 'google_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                          backgroundColor: formData.paymentMethod === 'google_pay' ? '#FAF8F5' : '#FFFFFF',
-                          overflow: 'hidden',
-                          transition: 'border-color 0.2s ease'
-                        }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('google_pay', e)}
-                            className="payment-option-label"
-                          >
-                            <div className="payment-option-info">
-                              <input
-                                type="radio"
-                                name="paymentMethod"
-                                checked={formData.paymentMethod === 'google_pay'}
-                                onChange={() => {}}
-                                className="payment-option-radio"
-                              />
-                              <div className="payment-option-text">
-                                <strong className="payment-option-title">
-                                  Google Pay
-                                </strong>
-                                <span className="payment-option-subtitle">
-                                  Google Wallet &amp; saved cards
-                                </span>
-                              </div>
-                            </div>
-                            <div className="payment-badge-container google-pay-logo-wrapper">
-                              <GooglePayLogo height={18} />
-                            </div>
-                          </label>
-
-                          {formData.paymentMethod === 'google_pay' && (
-                            <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                              <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <span style={{ fontSize: '11.5px', color: '#8C8074' }}>Merchant</span>
-                                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-deep-espresso)' }}>House of Nina London</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed #E0D4C8', paddingTop: '8px' }}>
-                                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>Total Due</span>
-                                  <span style={{ fontSize: '14.5px', fontWeight: 700, color: 'var(--color-deep-espresso)' }}>{formatPrice(total)}</span>
-                                </div>
-                              </div>
-
-                              <button
-                                type="button"
-                                onClick={() => handlePlaceOrder(null, 'google_pay')}
-                                disabled={isSubmitting}
-                                style={{
-                                  height: '46px',
-                                  backgroundColor: '#1C1614',
-                                  color: '#FFFFFF',
-                                  border: 'none',
-                                  borderRadius: '8px',
-                                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '8px',
-                                  fontSize: '13.5px',
-                                  fontWeight: 600
-                                }}
-                              >
-                                <span>Pay {formatPrice(total)} with</span>
-                                <GooglePayLogo height={18} />
-                              </button>
-
-                              <div style={{ textAlign: 'center' }}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleChange('paymentMethod', 'card')}
-                                  style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: '#8C8074',
-                                    fontSize: '11px',
-                                    textDecoration: 'underline',
-                                    cursor: 'pointer',
-                                    padding: '4px'
-                                  }}
-                                >
-                                  Or pay with credit / debit card
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-        );
       case 'card':
         return (
           <div key="card" style={{
@@ -2801,8 +2618,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'card' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('card', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('card')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -2810,7 +2627,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'card'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('card')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2828,7 +2645,7 @@ export default function CheckoutModal({
                               <span className="card-chip-badge" style={{ border: '1px solid #E8DBD0', color: '#EB001B' }}>MC</span>
                               <span className="card-chip-badge" style={{ border: '1px solid #C7DFEE', color: '#006FCF' }}>AMEX</span>
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'card' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#FFFFFF' }}>
@@ -2851,7 +2668,7 @@ export default function CheckoutModal({
                                   fontSize: '11px',
                                   color: '#8C5205'
                                 }}>
-                                  <ShieldCheck size={13} color="#D97706" style={{ flexShrink: 0 }} />
+                                  <Sparkles size={13} color="#D97706" style={{ flexShrink: 0 }} />
                                   <span><strong>Stripe Test Mode</strong>: Use card <code style={{ backgroundColor: '#F9E4CB', padding: '1px 5px', borderRadius: '4px', fontWeight: 600 }}>4242 4242 4242 4242</code> (any future MM/YY & CVC).</span>
                                 </div>
                               )}
@@ -2862,7 +2679,7 @@ export default function CheckoutModal({
                                   type="text"
                                   value={formData.cardName}
                                   onChange={(e) => handleChange('cardName', e.target.value)}
-                                  placeholder="Name as it appears on card (e.g. Amara Okafor)"
+                                  placeholder="Name as it appears on card"
                                   style={standardInputStyle}
                                 />
                               </div>
@@ -2937,8 +2754,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'revolut' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('revolut', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('revolut')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -2946,7 +2763,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'revolut'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('revolut')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -2961,19 +2778,19 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <RevolutPayBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'revolut' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                               <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
+                                <div style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
                                   Mobile Phone linked to Revolut
-                                </label>
+                                </div>
                                 <input
                                   type="tel"
                                   value={revolutData.phone || formData.phone}
                                   onChange={(e) => setRevolutData(prev => ({ ...prev, phone: e.target.value }))}
-                                  placeholder="+44 7776 759731"
+                                  placeholder={currentDestination?.phonePlaceholder || "+44 7000 000000"}
                                   style={standardInputStyle}
                                 />
                                 <span style={{ fontSize: '11px', color: '#8C8074' }}>
@@ -3020,72 +2837,7 @@ export default function CheckoutModal({
                           )}
                         </div>
         );
-      case 'amazon_pay':
-        return (
-          <div key="amazon_pay" style={{
-                          borderRadius: '10px',
-                          border: '1.5px solid',
-                          borderColor: formData.paymentMethod === 'amazon_pay' ? 'var(--color-deep-espresso)' : 'var(--color-border)',
-                          backgroundColor: formData.paymentMethod === 'amazon_pay' ? '#FAF8F5' : '#FFFFFF',
-                          overflow: 'hidden'
-                        }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('amazon_pay', e)}
-                            className="payment-option-label"
-                          >
-                            <div className="payment-option-info">
-                              <input
-                                type="radio"
-                                name="paymentMethod"
-                                checked={formData.paymentMethod === 'amazon_pay'}
-                                onChange={() => {}}
-                                className="payment-option-radio"
-                              />
-                              <div className="payment-option-text">
-                                <strong className="payment-option-title">Amazon Pay</strong>
-                                <span className="payment-option-subtitle">
-                                  Checkout with stored Amazon cards
-                                </span>
-                              </div>
-                            </div>
-                            <div className="payment-badge-container">
-                              <AmazonPayBadge />
-                            </div>
-                          </label>
 
-                          {formData.paymentMethod === 'amazon_pay' && (
-                            <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                              <div style={{ backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E0D4C8', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
-                                  <span>Amazon Account:</span>
-                                  <strong style={{ color: 'var(--color-deep-espresso)' }}>{formData.email || 'client@houseofnina.co.uk'}</strong>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
-                                  <span>Linked Method:</span>
-                                  <strong style={{ color: 'var(--color-deep-espresso)' }}>Amazon Prime Visa (•••• 9912)</strong>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handlePlaceOrder(null, 'amazon_pay')}
-                                disabled={isSubmitting}
-                                style={{
-                                  height: '44px',
-                                  backgroundColor: '#FF9900',
-                                  color: '#111111',
-                                  border: 'none',
-                                  borderRadius: '8px',
-                                  fontSize: '13px',
-                                  fontWeight: 700,
-                                  cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                                }}
-                              >
-                                Pay {formatPrice(total)} with Amazon Pay
-                              </button>
-                            </div>
-                          )}
-                        </div>
-        );
       case 'klarna':
         return (
           <div key="klarna" style={{
@@ -3095,8 +2847,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'klarna' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('klarna', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('klarna')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3104,7 +2856,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'klarna'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('klarna')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3119,7 +2871,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <KlarnaBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'klarna' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -3153,22 +2905,22 @@ export default function CheckoutModal({
                                 </div>
 
                                 <div>
-                                  <label style={formLabelStyle}>
+                                  <div style={formLabelStyle}>
                                     Mobile Phone for Klarna Approval <span style={{ color: '#C53030' }}>*</span>
-                                  </label>
+                                  </div>
                                   <input
                                     type="tel"
                                     value={klarnaData.phone || formData.phone}
                                     onChange={(e) => setKlarnaData(prev => ({ ...prev, phone: e.target.value }))}
-                                    placeholder="+44 7776 759731"
+                                    placeholder={currentDestination?.phonePlaceholder || "+44 7000 000000"}
                                     style={standardInputStyle}
                                   />
                                 </div>
 
                                 <div>
-                                  <label style={formLabelStyle}>
+                                  <div style={formLabelStyle}>
                                     Card for 3 Installments (charged on Day 1, 30, 60)
-                                  </label>
+                                  </div>
                                   <input
                                     type="text"
                                     value={klarnaData.cardNumber}
@@ -3177,7 +2929,7 @@ export default function CheckoutModal({
                                       const formatted = raw.match(/.{1,4}/g)?.join(' ') || raw;
                                       setKlarnaData(prev => ({ ...prev, cardNumber: formatted }));
                                     }}
-                                    placeholder="Installment card number (•••• •••• •••• 4892)"
+                                    placeholder="Installment card number"
                                     maxLength={19}
                                     style={standardInputStyle}
                                   />
@@ -3265,8 +3017,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'bancontact' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('bancontact', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('bancontact')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3274,7 +3026,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bancontact'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('bancontact')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3287,7 +3039,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <BancontactBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'bancontact' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3321,8 +3073,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'ideal' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('ideal', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('ideal')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3330,7 +3082,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'ideal'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('ideal')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3343,7 +3095,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <IdealBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'ideal' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3381,8 +3133,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'blik' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('blik', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('blik')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3390,7 +3142,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'blik'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('blik')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3403,13 +3155,13 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <BlikBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'blik' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                              <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
+                              <div style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
                                 Enter 6-digit BLIK Code:
-                              </label>
+                              </div>
                               <input
                                 type="text"
                                 placeholder="• • •  • • • (e.g. 729 481)"
@@ -3442,8 +3194,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'mbway' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('mbway', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('mbway')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3451,7 +3203,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'mbway'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('mbway')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3464,13 +3216,13 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <MbWayBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'mbway' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                              <label style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
+                              <div style={{ fontSize: '11px', color: '#685C50', fontWeight: 500 }}>
                                 Portuguese Mobile Phone Number (+351):
-                              </label>
+                              </div>
                               <input
                                 type="tel"
                                 placeholder="+351 912 345 678"
@@ -3499,8 +3251,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'eps' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('eps', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('eps')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3508,7 +3260,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'eps'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('eps')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3521,7 +3273,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <EpsBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'eps' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3557,8 +3309,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'satispay' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('satispay', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('satispay')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3566,7 +3318,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'satispay'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('satispay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3579,7 +3331,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <SatispayBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'satispay' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3612,8 +3364,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'kakao_pay' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('kakao_pay', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('kakao_pay')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3621,7 +3373,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'kakao_pay'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('kakao_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3634,7 +3386,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <KakaoPayBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'kakao_pay' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3660,8 +3412,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'naver_pay' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('naver_pay', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('naver_pay')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3669,7 +3421,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'naver_pay'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('naver_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3682,7 +3434,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <NaverPayBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'naver_pay' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3708,8 +3460,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'samsung_pay' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('samsung_pay', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('samsung_pay')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3717,7 +3469,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'samsung_pay'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('samsung_pay')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3730,7 +3482,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <SamsungPayBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'samsung_pay' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3755,8 +3507,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'payco' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('payco', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('payco')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3764,7 +3516,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'payco'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('payco')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3777,7 +3529,7 @@ export default function CheckoutModal({
                             <div className="payment-badge-container">
                               <PaycoBadge />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'payco' && (
                             <div style={{ padding: '16px', borderTop: '1px solid var(--color-border-light)', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -3802,8 +3554,8 @@ export default function CheckoutModal({
                           backgroundColor: formData.paymentMethod === 'bank' ? '#FAF8F5' : '#FFFFFF',
                           overflow: 'hidden'
                         }}>
-                          <label
-                            onClick={(e) => handleTogglePaymentMethod('bank', e)}
+                          <div
+                            onClick={() => handleTogglePaymentMethod('bank')}
                             className="payment-option-label"
                           >
                             <div className="payment-option-info">
@@ -3811,7 +3563,7 @@ export default function CheckoutModal({
                                 type="radio"
                                 name="paymentMethod"
                                 checked={formData.paymentMethod === 'bank'}
-                                onChange={() => {}}
+                                onChange={() => handleTogglePaymentMethod('bank')}
                                 className="payment-option-radio"
                               />
                               <div className="payment-option-text">
@@ -3819,14 +3571,14 @@ export default function CheckoutModal({
                                   Direct Studio Bank Wire
                                 </strong>
                                 <span className="payment-option-subtitle">
-                                  Monzo Bank UK &amp; International Wire
+                                  Barclays studio transfer with reference
                                 </span>
                               </div>
                             </div>
                             <div className="payment-badge-container">
                               <Building2 size={16} color="#8C8074" style={{ flexShrink: 0 }} />
                             </div>
-                          </label>
+                          </div>
 
                           {formData.paymentMethod === 'bank' && (
                             <div style={{
@@ -3838,7 +3590,7 @@ export default function CheckoutModal({
                               gap: '12px'
                             }}>
                               <span style={{ display: 'block', fontWeight: 700, color: 'var(--color-deep-espresso)', fontSize: '12.5px' }}>
-                                House of Nina Official Bank Details:
+                                House of Nina UK Studio Bank Details:
                               </span>
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
                                 <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)' }}>
@@ -3858,29 +3610,29 @@ export default function CheckoutModal({
                                   <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)' }}>HOUSEOFNINA LTD</strong>
                                 </div>
                                 <div style={{ background: '#FFFFFF', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--color-border)', gridColumn: '1 / -1' }}>
-                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>IBAN (UK / International / Wise)</span>
+                                  <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', textTransform: 'uppercase', letterSpacing: '0.04em' }}>IBAN (International / UK)</span>
                                   <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', letterSpacing: '0.05em' }}>GB23 MONZ 0400 0571 9901 44</strong>
                                 </div>
                               </div>
 
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
                                 <div>
-                                  <label style={formLabelStyle}>
+                                  <div style={formLabelStyle}>
                                     Sender Account Holder Name
-                                  </label>
+                                  </div>
                                   <input
                                     type="text"
                                     value={bankWireData.accountHolder}
                                     onChange={(e) => setBankWireData(prev => ({ ...prev, accountHolder: e.target.value }))}
-                                    placeholder="e.g. Amara Okafor (Monzo / UK Bank)"
+                                    placeholder="Account holder name as shown on bank account"
                                     style={standardInputStyle}
                                   />
                                 </div>
 
                                 <div>
-                                  <label style={formLabelStyle}>
+                                  <div style={formLabelStyle}>
                                     Transfer Reference Note
-                                  </label>
+                                  </div>
                                   <input
                                     type="text"
                                     value={bankWireData.referenceNote}
@@ -4148,53 +3900,59 @@ export default function CheckoutModal({
 
                         {/* Contact Fields: Email & Phone */}
                         <div className="checkout-row-2" style={{ marginBottom: '14px' }}>
-                          <div>
-                            <label style={formLabelStyle}>
-                              Email Address <span style={{ color: '#C53030' }}>*</span>
-                            </label>
-                            <input
-                              ref={emailInputRef}
-                              type="email"
-                              value={formData.email}
-                              onChange={(e) => handleChange('email', e.target.value)}
-                              onBlur={() => setTouchedFields(prev => ({ ...prev, email: true }))}
-                              placeholder="client@domain.com"
-                              required
-                              aria-invalid={Boolean(fieldErrors.email && (touchedFields.email || hasAttemptedStep1))}
-                              aria-describedby={fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? 'err-email' : undefined}
-                              style={{
-                                ...standardInputStyle,
-                                borderColor: fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
-                                backgroundColor: fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
-                              }}
-                            />
-                            {fieldErrors.email && (touchedFields.email || hasAttemptedStep1) && (
-                              <span id="err-email" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
-                                <AlertCircle size={11} /> {fieldErrors.email}
-                              </span>
-                            )}
-                          </div>
+                            <div>
+                              <label style={formLabelStyle}>
+                                Email Address <span style={{ color: '#C53030' }}>*</span>
+                              </label>
+                              <input
+                                ref={emailInputRef}
+                                type="email"
+                                name="email"
+                                autoComplete="email"
+                                id="checkout-email"
+                                value={formData.email}
+                                onChange={(e) => handleChange('email', e.target.value)}
+                                onBlur={() => setTouchedFields(prev => ({ ...prev, email: true }))}
+                                placeholder="client@domain.com"
+                                required
+                                aria-invalid={Boolean(fieldErrors.email && (touchedFields.email || hasAttemptedStep1))}
+                                aria-describedby={fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? 'err-email' : undefined}
+                                style={{
+                                  ...standardInputStyle,
+                                  borderColor: fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                  backgroundColor: fieldErrors.email && (touchedFields.email || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                                }}
+                              />
+                              {fieldErrors.email && (touchedFields.email || hasAttemptedStep1) && (
+                                <span id="err-email" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
+                                  <AlertCircle size={11} /> {fieldErrors.email}
+                                </span>
+                              )}
+                            </div>
 
-                          <div>
-                            <label style={formLabelStyle}>
-                              Phone Number <span style={{ color: '#C53030' }}>*</span>
-                            </label>
-                            <input
-                              ref={phoneInputRef}
-                              type="tel"
-                              value={formData.phone}
-                              onChange={(e) => handleChange('phone', e.target.value)}
-                              onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
-                              placeholder={currentDestination.phonePlaceholder}
-                              required
-                              aria-invalid={Boolean(fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1))}
-                              aria-describedby={fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? 'err-phone' : undefined}
-                              style={{
-                                ...standardInputStyle,
-                                borderColor: fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
-                                backgroundColor: fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
-                              }}
-                            />
+                            <div>
+                              <label style={formLabelStyle}>
+                                Phone Number <span style={{ color: '#C53030' }}>*</span>
+                              </label>
+                              <input
+                                ref={phoneInputRef}
+                                type="tel"
+                                name="tel"
+                                autoComplete="tel"
+                                id="checkout-tel"
+                                value={formData.phone}
+                                onChange={(e) => handleChange('phone', e.target.value)}
+                                onBlur={() => setTouchedFields(prev => ({ ...prev, phone: true }))}
+                                placeholder={currentDestination.phonePlaceholder}
+                                required
+                                aria-invalid={Boolean(fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1))}
+                                aria-describedby={fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? 'err-phone' : undefined}
+                                style={{
+                                  ...standardInputStyle,
+                                  borderColor: fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? '#C53030' : 'var(--color-border)',
+                                  backgroundColor: fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) ? '#FFFDFD' : '#FFFFFF'
+                                }}
+                              />
                             {fieldErrors.phone && (touchedFields.phone || hasAttemptedStep1) && (
                               <span id="err-phone" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: '#9B1C1C', marginTop: '3px', fontWeight: 500 }} role="alert">
                                 <AlertCircle size={11} /> {fieldErrors.phone}
@@ -4315,6 +4073,106 @@ export default function CheckoutModal({
                         {/* Address Input Fields */}
                         {(isEditingAddress || !activeSaved || activeSaved.countryCode !== selectedCountryCode || selectedAddressId === 'new') && (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+                            {/* UK Postcode Finder (Instant auto-population for UK customers) */}
+                            {selectedCountryCode === 'GB' && (
+                              <div style={{
+                                padding: '12px 14px',
+                                backgroundColor: '#FAF8F5',
+                                borderRadius: '10px',
+                                border: '1px solid var(--color-border)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '8px'
+                              }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <label style={{ ...formLabelStyle, marginBottom: 0, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                    <MapPin size={12} color="var(--color-gold-dark)" />
+                                    <span>UK Postcode Finder</span>
+                                  </label>
+                                  <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
+                                    Fast Auto-Fill
+                                  </span>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <input
+                                    type="text"
+                                    value={postcodeSearchQuery}
+                                    onChange={(e) => setPostcodeSearchQuery(e.target.value.toUpperCase())}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleUkPostcodeLookup();
+                                      }
+                                    }}
+                                    placeholder="Enter UK Postcode (e.g. W1B 3AG)"
+                                    autoComplete="postal-code"
+                                    style={{
+                                      ...standardInputStyle,
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.05em',
+                                      flex: 1
+                                    }}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUkPostcodeLookup()}
+                                    disabled={isPostcodeLoading}
+                                    style={{
+                                      height: '38px',
+                                      padding: '0 16px',
+                                      backgroundColor: 'var(--color-deep-espresso)',
+                                      color: '#FFFFFF',
+                                      border: 'none',
+                                      borderRadius: '8px',
+                                      fontSize: '11.5px',
+                                      fontWeight: 600,
+                                      cursor: isPostcodeLoading ? 'not-allowed' : 'pointer',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                      whiteSpace: 'nowrap',
+                                      flexShrink: 0
+                                    }}
+                                  >
+                                    {isPostcodeLoading ? (
+                                      <>
+                                        <Loader2 size={12} className="spinning" />
+                                        <span>Finding...</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Search size={12} />
+                                        <span>Find Address</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                {postcodeLookupMessage && (
+                                  <div style={{
+                                    fontSize: '11px',
+                                    color: postcodeLookupMessage.type === 'success' ? '#1E6B37' : '#9B1C1C',
+                                    backgroundColor: postcodeLookupMessage.type === 'success' ? '#F0FDF4' : '#FEF2F2',
+                                    padding: '6px 10px',
+                                    borderRadius: '6px',
+                                    border: `1px solid ${postcodeLookupMessage.type === 'success' ? '#BBF7D0' : '#FECACA'}`,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                  }}>
+                                    {postcodeLookupMessage.type === 'success' ? (
+                                      <CheckCircle2 size={12} />
+                                    ) : (
+                                      <AlertCircle size={12} />
+                                    )}
+                                    <span>{postcodeLookupMessage.text}</span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
                             <div>
                               <label style={formLabelStyle}>
                                 Recipient Full Name <span style={{ color: '#C53030' }}>*</span>
@@ -4322,6 +4180,9 @@ export default function CheckoutModal({
                               <input
                                 ref={fullNameInputRef}
                                 type="text"
+                                name="name"
+                                autoComplete="name"
+                                id="checkout-fullName"
                                 value={formData.fullName}
                                 onChange={(e) => handleChange('fullName', e.target.value)}
                                 onBlur={() => setTouchedFields(prev => ({ ...prev, fullName: true }))}
@@ -4349,6 +4210,9 @@ export default function CheckoutModal({
                               <input
                                 ref={addressInputRef}
                                 type="text"
+                                name="address"
+                                autoComplete="street-address"
+                                id="checkout-street-address"
                                 value={formData.address}
                                 onChange={(e) => handleChange('address', e.target.value)}
                                 onBlur={() => setTouchedFields(prev => ({ ...prev, address: true }))}
@@ -4377,6 +4241,9 @@ export default function CheckoutModal({
                                 <input
                                   ref={cityInputRef}
                                   type="text"
+                                  name="city"
+                                  autoComplete="address-level2"
+                                  id="checkout-city"
                                   value={formData.city}
                                   onChange={(e) => handleChange('city', e.target.value)}
                                   onBlur={() => setTouchedFields(prev => ({ ...prev, city: true }))}
@@ -4404,6 +4271,9 @@ export default function CheckoutModal({
                                 <input
                                   ref={stateInputRef}
                                   type="text"
+                                  name="state"
+                                  autoComplete="address-level1"
+                                  id="checkout-state"
                                   value={formData.state}
                                   onChange={(e) => handleChange('state', e.target.value)}
                                   onBlur={() => setTouchedFields(prev => ({ ...prev, state: true }))}
@@ -4431,6 +4301,9 @@ export default function CheckoutModal({
                                 <input
                                   ref={postalCodeInputRef}
                                   type="text"
+                                  name="postal-code"
+                                  autoComplete="postal-code"
+                                  id="checkout-postalCode"
                                   value={formData.postalCode}
                                   onChange={(e) => handleChange('postalCode', e.target.value)}
                                   onBlur={() => setTouchedFields(prev => ({ ...prev, postalCode: true }))}
@@ -4620,7 +4493,7 @@ export default function CheckoutModal({
                               const isFree = optCost === 0;
 
                               return (
-                                <label
+                                <div
                                   key={opt.id}
                                   onClick={() => handleChange('deliveryMethod', opt.id)}
                                   style={{
@@ -4660,7 +4533,7 @@ export default function CheckoutModal({
                                   <span style={{ fontSize: '12.5px', fontWeight: 700, color: isFree ? '#2E7D32' : 'var(--color-deep-espresso)', flexShrink: 0 }}>
                                     {isFree ? 'Free' : formatPrice(optCost)}
                                   </span>
-                                </label>
+                                </div>
                               );
                             })}
                           </div>
@@ -5417,7 +5290,7 @@ export default function CheckoutModal({
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
                   <span>Express Method</span>
                   <strong style={{ color: 'var(--color-deep-espresso)' }}>
-                    {activeExpressSheet === 'apple_pay' ? 'Apple Card (•••• 8821)' : 'Google Pay (Visa •••• 4012)'}
+                    {activeExpressSheet === 'apple_pay' ? 'Apple Pay (Biometric / Wallet)' : 'Google Pay (Google Wallet)'}
                   </strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: '#685C50' }}>
@@ -5647,7 +5520,7 @@ export default function CheckoutModal({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12px', color: '#685C50', lineHeight: 1.55 }}>
                 <div style={{ padding: '12px 14px', backgroundColor: '#FAF8F5', borderRadius: '10px', border: '1px solid #E8DBD0' }}>
                   <strong style={{ color: 'var(--color-deep-espresso)', display: 'block', marginBottom: '2px' }}>
-                    14-Day Statutory Return Period
+                    ✨ 14-Day Statutory Return Period
                   </strong>
                   <span>
                     You have 14 days from physical delivery to inspect your bespoke wig unit or silk styling accessories.
