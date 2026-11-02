@@ -64,6 +64,12 @@ export default async function handler(req, res) {
     return `${symbol}${Number(val || 0).toFixed(2)}`;
   };
 
+  // Base URL for admin dashboard
+  const siteUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : 'https://houseofnina.co.uk';
+  const adminUrl = `${siteUrl}/admin`;
+
   // Clean, Direct HTML Email Template (No large banners, no eyebrow text)
   const emailHtml = `
 <!DOCTYPE html>
@@ -85,6 +91,8 @@ export default async function handler(req, res) {
     .items-heading { font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #1C1614; margin-bottom: 12px; }
     .item-row { font-size: 13.5px; color: #3A302A; margin-bottom: 10px; line-height: 1.5; }
     .address-card { background-color: #FFFFFF; border: 1px dashed #D6C7B8; border-radius: 6px; padding: 14px 16px; margin: 18px 0; font-size: 13px; color: #4A3E39; line-height: 1.5; }
+    .btn-admin { display: inline-block; background-color: #1C1614; color: #FFFFFF !important; padding: 13px 26px; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 6px; letter-spacing: 0.04em; }
+    .cta-container { margin: 26px 0 20px 0; }
     .sign-off { margin-top: 26px; padding-top: 18px; border-top: 1px solid #EAE0D5; font-size: 13px; color: #6E6156; line-height: 1.5; }
   </style>
 </head>
@@ -126,6 +134,11 @@ export default async function handler(req, res) {
       </div>
     </div>
 
+    <!-- CTA to view order in admin -->
+    <div class="cta-container">
+      <a href="${adminUrl}" target="_blank" class="btn-admin">View Order in Admin &rarr;</a>
+    </div>
+
     <!-- Items Ordered -->
     ${items && items.length > 0 ? `
     <div class="items-list">
@@ -155,8 +168,7 @@ export default async function handler(req, res) {
     ` : ''}
 
     <div class="sign-off">
-      House of Nina Management &amp; Studio System<br>
-      Automated Order Notification
+      House of Nina London Studio
     </div>
   </div>
 </body>
