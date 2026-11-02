@@ -2362,10 +2362,109 @@ export default function CheckoutModal({
         return;
       }
     } else if (chosenPayment === 'klarna') {
-      if (!klarnaData.phone || klarnaData.phone.trim().length < 6) {
-        setStepError('Please provide your phone number for Klarna pay later authorization.');
+      if (!formData.email || !formData.email.trim()) {
+        setStepError('Please enter your email address for Klarna authorization.');
         return;
       }
+      if (!formData.address || !formData.postalCode) {
+        setStepError('Please enter your delivery address and postal code for Klarna verification.');
+        return;
+      }
+
+      setStepError('');
+      setPaymentError(null);
+      setIsSubmitting(true);
+      setPaymentState('processing');
+      setAuthStatus('Connecting to Klarna via Stripe gateway...');
+
+      const processKlarnaStripePayment = async () => {
+        try {
+          const orderRef = `HN-${Math.floor(1000 + Math.random() * 9000)}`;
+
+          // 1. Create PaymentIntent on serverless backend
+          const piResponse = await fetch('/api/create-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              cartItems: cartItems,
+              shippingOption: selectedShippingOption || {},
+              customer: {
+                name: formData.fullName || 'Valued Client',
+                email: formData.email || '',
+                phone: klarnaData.phone || formData.phone || '',
+                address: {
+                  line1: formData.address || '',
+                  postalCode: formData.postalCode || '',
+                  country: selectedCountryCode || 'GB'
+                }
+              },
+              orderReference: orderRef,
+              currency: formData.currency || 'GBP'
+            })
+          });
+
+          const piData = await piResponse.json();
+          if (!piResponse.ok || piData.error) {
+            throw new Error(piData.error || 'Failed to initialize Klarna gateway.');
+          }
+
+          setAuthStatus('Redirecting to Klarna authorization...');
+          const stripe = stripeInstanceRef.current || (window.Stripe && window.Stripe(stripeKey));
+
+          // 2. Authorize via Stripe Klarna Payment Method
+          const returnUrl = window.location.origin + window.location.pathname + '?payment=klarna_return&order=' + orderRef;
+          const { error: klarnaErr, paymentIntent } = await stripe.confirmKlarnaPayment(piData.clientSecret, {
+            payment_method: {
+              billing_details: {
+                name: formData.fullName || '',
+                email: formData.email || '',
+                phone: klarnaData.phone || formData.phone || '',
+                address: {
+                  line1: formData.address || '',
+                  postal_code: formData.postalCode || '',
+                  city: formData.city || '',
+                  country: selectedCountryCode || 'GB'
+                }
+              }
+            },
+            return_url: returnUrl
+          });
+
+          if (klarnaErr) {
+            setIsSubmitting(false);
+            setPaymentState('declined');
+            setPaymentError({
+              code: klarnaErr.code || 'klarna_declined',
+              title: 'Klarna Authorization Declined',
+              message: klarnaErr.message || 'Klarna could not authorize this installment payment.',
+              actionableAdvice: 'Please check your details or choose another payment method like Credit Card.'
+            });
+            return;
+          }
+
+          if (paymentIntent && (paymentIntent.status === 'succeeded' || paymentIntent.status === 'processing')) {
+            setIsPatientLoading(true);
+            setTimeout(() => {
+              setIsPatientLoading(false);
+              completeSuccessfulOrder('klarna', paymentIntent.id);
+            }, 2000);
+            return;
+          }
+        } catch (err) {
+          console.warn('[Klarna Stripe Error]:', err);
+          setIsSubmitting(false);
+          setPaymentState('network_error');
+          setPaymentError({
+            code: 'klarna_gateway_error',
+            title: 'Klarna Gateway Error',
+            message: err.message || 'Unable to connect to Klarna at this time.',
+            actionableAdvice: 'Please try again or select Credit Card or Bank Wire.'
+          });
+        }
+      };
+
+      processKlarnaStripePayment();
+      return;
     } else if (chosenPayment === 'blik') {
       if (!blikCode || blikCode.replace(/\s/g, '').length !== 6) {
         setStepError('Please enter your 6-digit BLIK banking code.');
