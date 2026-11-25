@@ -13,7 +13,10 @@ import SilkPairingAtelier from './components/SilkPairingAtelier';
 import CinematicVideoBanner from './components/CinematicVideoBanner';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
-import { FEATURED_PRODUCTS, NAV_LINKS, HOUSE_COLLECTIONS_CONFIG } from './data/wigData';
+import { NAV_LINKS, HOUSE_COLLECTIONS_CONFIG } from './data/wigData';
+import { detectVisitorLocation, subscribeToLocation, getStoredLocation, SUPPORTED_LOCATIONS } from './lib/location';
+import CookieConsentBanner from './components/CookieConsentBanner';
+import { useCatalog } from './lib/catalog';
 
 // Dynamic lazy imports for on-demand views, modals, and administrative workflows
 const CollectionsCatalogView = React.lazy(() => import('./components/CollectionsCatalogView'));
@@ -36,6 +39,8 @@ const WISHLIST_STORAGE_KEY = 'house_of_nina_wishlist_v1';
 const SEEN_HERO_STORAGE_KEY = 'house_of_nina_seen_welcome_v1';
 
 export default function App() {
+  const publicProducts = useCatalog();
+
   // Mobile drawer state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -83,6 +88,21 @@ export default function App() {
 
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminPath);
 
+  // Visitor location: detected on first visit, then kept in sync with header selector
+  const [visitorLocation, setVisitorLocation] = useState(() => getStoredLocation() || SUPPORTED_LOCATIONS[0]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    detectVisitorLocation({ signal: controller.signal })
+      .then(setVisitorLocation)
+      .catch(() => {});
+    const unsubscribe = subscribeToLocation(() => setVisitorLocation(getStoredLocation() || SUPPORTED_LOCATIONS[0]));
+    return () => {
+      controller.abort();
+      unsubscribe();
+    };
+  }, []);
+
   useEffect(() => {
     window.openOrderSuccessModal = () => setIsPreviewSuccessOpen(true);
     window.closeOrderSuccessModal = () => setIsPreviewSuccessOpen(false);
@@ -101,7 +121,7 @@ export default function App() {
         const params = new URLSearchParams(window.location.search);
         const prodId = params.get('product');
         if (prodId) {
-          const match = FEATURED_PRODUCTS.find(p => p.id === prodId || (p.slug && p.slug === prodId));
+          const match = publicProducts.find(p => p.id === prodId || (p.slug && p.slug === prodId));
           if (match) {
             setDetailsProduct(match);
           }
@@ -136,7 +156,7 @@ export default function App() {
       window.removeEventListener('hashchange', handleUrlChange);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [publicProducts]);
 
   const [cartItems, setCartItems] = useState(() => {
     try {
@@ -321,8 +341,8 @@ export default function App() {
       const prodQuery = params.get('product');
       if (prodQuery) {
         setShowHero(false);
-        const match = FEATURED_PRODUCTS.find(p => 
-          p.id.toLowerCase() === prodQuery.toLowerCase() || 
+        const match = publicProducts.find(p =>
+          p.id.toLowerCase() === prodQuery.toLowerCase() ||
           p.name.toLowerCase().includes(prodQuery.toLowerCase())
         );
         if (match) {
@@ -336,7 +356,7 @@ export default function App() {
     } catch (e) {
       console.warn('URL product param handling error', e);
     }
-  }, []);
+  }, [publicProducts]);
 
   const handleEnterStore = () => {
     if (!showHero || isHeroFadingOut) return;
@@ -457,7 +477,7 @@ export default function App() {
   };
 
   const handleInstagramQuickView = (instaPost) => {
-    const matchedProduct = FEATURED_PRODUCTS.find(p => p.category === instaPost.category) || FEATURED_PRODUCTS[0];
+    const matchedProduct = publicProducts.find(p => p.category === instaPost.category) || publicProducts[0];
     setQuickViewProduct({
       ...matchedProduct,
       name: instaPost.productName || matchedProduct.name,
@@ -520,6 +540,11 @@ export default function App() {
     } else {
       scrollToTarget();
     }
+  };
+
+  const leaveAdmin = () => {
+    setIsAdminOpen(false);
+    try { window.history.pushState(null, '', '/'); } catch (e) {}
   };
 
   // Standalone Admin Workspace: Never render or flash the live storefront when Admin is open or loading!
@@ -677,14 +702,8 @@ export default function App() {
         >
           <AdminDashboard
             isOpen={true}
-            onClose={() => {
-              setIsAdminOpen(false);
-              try { window.history.pushState(null, '', '/'); } catch (e) {}
-            }}
-            onSwitchToStorefront={() => {
-              setIsAdminOpen(false);
-              try { window.history.pushState(null, '', '/'); } catch (e) {}
-            }}
+            onClose={leaveAdmin}
+            onSwitchToStorefront={leaveAdmin}
           />
         </React.Suspense>
       </div>
@@ -717,6 +736,7 @@ export default function App() {
             </div>
           }>
             <CollectionsCatalogView 
+              products={publicProducts}
               initialCategory={collectionsActiveCategory}
               onBackToHome={handleBackFromCollectionsPage}
               onOpenDetails={(prod) => setDetailsProduct(prod)}
@@ -785,6 +805,7 @@ export default function App() {
               onFilterCategory={(cat) => {
                 handleOpenCollectionsPage(cat);
               }}
+              onOpenCookieSettings={() => window.dispatchEvent(new CustomEvent('house_of_nina_open_cookie_settings'))}
             />
           </div>
         )}
@@ -843,6 +864,7 @@ export default function App() {
               setIsTrackOrderOpen(true);
             }}
             onOpenLegal={(tab) => setLegalModalTab(tab)}
+            initialCountryCode={visitorLocation.code}
           />
         )}
 
@@ -964,37 +986,9 @@ export default function App() {
           />
         )}
 
-        {/* HOUSE OF NINA ADMIN DASHBOARD */}
-        {isAdminOpen && (
-          <AdminDashboard
-            isOpen={isAdminOpen}
-            onClose={() => {
-              setIsAdminOpen(false);
-              try {
-                if (window.location.pathname.toLowerCase().startsWith('/admin')) {
-                  window.history.pushState(null, '', '/');
-                } else if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
-                  window.history.pushState(null, '', window.location.pathname + window.location.search);
-                }
-              } catch (e) {
-                console.warn(e);
-              }
-            }}
-            onSwitchToStorefront={() => {
-              setIsAdminOpen(false);
-              try {
-                if (window.location.pathname.toLowerCase().startsWith('/admin')) {
-                  window.history.pushState(null, '', '/');
-                } else if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
-                  window.history.pushState(null, '', window.location.pathname + window.location.search);
-                }
-              } catch (e) {
-                console.warn(e);
-              }
-            }}
-          />
-        )}
       </React.Suspense>
+
+      <CookieConsentBanner onOpenLegal={(tab) => setLegalModalTab(tab)} />
     </div>
   );
 }

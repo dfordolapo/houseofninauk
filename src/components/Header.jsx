@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, ShoppingBag, Menu, Heart } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
+import VisitorLocation from './VisitorLocation';
 
 export default function Header({ 
   onOpenMobileMenu, 
@@ -55,6 +56,7 @@ export default function Header({
       {!isCollectionsActive && (
         <div className="top-bar">
           <span>{BRAND_INFO.announcement}</span>
+          <VisitorLocation />
         </div>
       )}
 

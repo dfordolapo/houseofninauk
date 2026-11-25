@@ -1067,7 +1067,8 @@ export default function CheckoutModal({
   checkoutData = {},
   onClearCart,
   onOpenCart,
-  onOpenLegal
+  onOpenLegal,
+  initialCountryCode
 }) {
   const [checkoutStep, setCheckoutStep] = useState(1); // 1: Delivery, 2: Payment
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -1127,11 +1128,35 @@ export default function CheckoutModal({
         return saved;
       }
     } catch (e) {}
+    if (initialCountryCode && SUPPORTED_DESTINATIONS.some(d => d.code === initialCountryCode)) {
+      return initialCountryCode;
+    }
     return 'GB'; // United Kingdom as default destination
+  });
+
+  const [hasChosenCountry, setHasChosenCountry] = useState(() => {
+    try {
+      return Boolean(sessionStorage.getItem('house_of_nina_checkout_destination'));
+    } catch (e) {
+      return false;
+    }
   });
 
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [showMorePaymentOptions, setShowMorePaymentOptions] = useState(false);
+
+  // Keep the detected visitor location in sync until the client chooses a destination manually
+  useEffect(() => {
+    if (hasChosenCountry || !initialCountryCode) return;
+    const destination = SUPPORTED_DESTINATIONS.find(d => d.code === initialCountryCode);
+    if (!destination) return;
+    setSelectedCountryCode(destination.code);
+    setFormData(prev => ({
+      ...prev,
+      countryCode: destination.phonePrefix,
+      currency: destination.currency
+    }));
+  }, [initialCountryCode, hasChosenCountry]);
 
   // Sync selected destination to session storage
   useEffect(() => {
@@ -1144,11 +1169,13 @@ export default function CheckoutModal({
     } catch {}
   }, [selectedCountryCode]);
 
+  const initialDestination = SUPPORTED_DESTINATIONS.find(d => d.code === selectedCountryCode) || SUPPORTED_DESTINATIONS[0];
+
   // Form State - Nothing auto-filled or pre-selected
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
-    countryCode: "+44",
+    countryCode: initialDestination.phonePrefix,
     fullName: "",
     address: "",
     city: "",
@@ -1156,7 +1183,7 @@ export default function CheckoutModal({
     postalCode: "",
     deliveryMethod: "standard", // standard | express | intl_standard | intl_express
     paymentMethod: "", // Empty by default: user chooses method themselves
-    currency: "GBP", // Synced to destination currency
+    currency: initialDestination.currency, // Synced to detected destination currency
     cardName: "",
     cardNumber: "",
     cardExpiry: "",
@@ -1803,6 +1830,7 @@ export default function CheckoutModal({
     if (!newDest) return;
 
     setSelectedCountryCode(countryCode);
+    setHasChosenCountry(true);
     setIsCountryDropdownOpen(false);
     setStepError('');
 

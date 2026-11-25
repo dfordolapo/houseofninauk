@@ -2,13 +2,27 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { 
   LayoutDashboard, ShoppingBag, Package, Star, Settings, 
-  LogOut, ChevronDown, ChevronLeft, ChevronRight, Menu, X, BellRing, Search, 
-  Plus, Trash2, Edit2, Truck, CheckCircle2, Printer, Download, 
+  ChevronDown, ChevronLeft, ChevronRight, Menu, X, BellRing, Search,
+  Plus, Trash2, Edit2, Truck, CheckCircle2, Printer, Download,
   Tag, Calendar, TrendingUp, MoreVertical, Store, ArrowRight,
   Layers, Check, Clock, Eye, RotateCcw, Copy, MessageCircle, Mail
 } from 'lucide-react';
 import { FEATURED_PRODUCTS, BRAND_INFO } from '../data/wigData';
-import { fetchOrdersFromDb, updateOrderInDb } from '../lib/supabase';
+import {
+  fetchOrdersFromDb,
+  updateOrderInDb,
+  fetchReviewsFromDb,
+  updateReviewStatusInDb,
+  deleteReviewInDb,
+  upsertReviewInDb,
+  fetchProductsFromDb,
+  upsertProductInDb,
+  deleteProductInDb,
+  uploadProductImages,
+  fileToOptimizedDataUrl
+} from '../lib/supabase';
+import { saveAdminInventory, markProductDeleted, restoreProduct } from '../lib/catalog';
+import ProductImagePicker from './ProductImagePicker';
 import '../styles/admin.css';
 
 const INVENTORY_STORAGE_KEY = 'house_of_nina_admin_inventory_v3';
@@ -19,6 +33,28 @@ const CATEGORIES_STORAGE_KEY = 'house_of_nina_admin_categories_v3';
 const SETTINGS_STORAGE_KEY = 'house_of_nina_admin_settings_v3';
 const REVIEWS_STORAGE_KEY = 'house_of_nina_admin_reviews_v3';
 const SHIPPING_RATES_STORAGE_KEY = 'house_of_nina_admin_shipping_rates_v4';
+
+const parseList = (value, separator = '\n') => String(value || '')
+  .split(separator)
+  .map(item => item.trim())
+  .filter(Boolean);
+
+const DEFAULT_PRODUCT_IMAGE = 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=800&q=80&fm=webp';
+
+const emptyProductForm = (category = 'Wigs') => ({
+  name: '',
+  categoryName: category,
+  price: '',
+  stockCount: 10,
+  images: [],
+  image: '',
+  description: '',
+  details: '',
+  tag: '',
+  lengths: '',
+  laceTypes: '',
+  densities: ''
+});
 
 // Initial Shipping Rates (Synchronized with Official Shipping & Delivery Policy)
 const INITIAL_SHIPPING_RATES = [
@@ -507,22 +543,36 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
 
   // Synchronize reviews when Admin Dashboard opens or when new review event fires
   useEffect(() => {
+    const mergeReviews = (incoming) => {
+      if (!Array.isArray(incoming) || incoming.length === 0) return;
+      setReviews(prev => {
+        const byId = new Map(prev.map(r => [r.id, r]));
+        incoming.forEach(review => {
+          const existing = byId.get(review.id);
+          byId.set(review.id, { ...(existing || {}), ...review });
+        });
+        return [...byId.values()];
+      });
+    };
+
     const syncReviews = () => {
       try {
         const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setReviews(parsed);
-          }
-        }
+        if (saved) mergeReviews(JSON.parse(saved));
       } catch (e) {
         console.warn('Failed to sync reviews from storage', e);
       }
     };
 
+    const syncReviewsFromDb = async () => {
+      const { data, error } = await fetchReviewsFromDb();
+      if (error) console.warn('[House of Nina] Could not load reviews from cloud', error);
+      else mergeReviews(data);
+    };
+
     if (isOpen) {
       syncReviews();
+      syncReviewsFromDb();
     }
 
     const handleNewReview = (e) => {
@@ -556,59 +606,61 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   const pendingReviewsCount = reviews.filter(r => r.status === 'pending' || r.status === 'awaiting_approval').length;
   const featuredReviewsCount = reviews.filter(r => r.status === 'featured').length;
 
-  const handleFeatureReview = (id) => {
-    setReviews(prev => {
-      const target = prev.find(r => r.id === id);
-      const updated = prev.map(r => r.id === id ? { ...r, status: 'featured' } : r);
-      try {
-        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updated));
-        if (target && target.productId) {
-          const prodKey = `house_of_nina_reviews_${target.productId}`;
-          const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
-          const updatedProd = currentProd.map(pr => pr.id === id ? { ...pr, status: 'featured', verified: true } : pr);
-          localStorage.setItem(prodKey, JSON.stringify(updatedProd));
+  const persistReviewModeration = (updatedReviews, target, status) => {
+    try {
+      localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updatedReviews));
+      if (target && target.productId) {
+        const prodKey = `house_of_nina_reviews_${target.productId}`;
+        const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
+        const updatedProd = currentProd.map(pr => pr.id === target.id
+          ? { ...pr, status, verified: status === 'featured' }
+          : pr);
+        if (!currentProd.some(pr => pr.id === target.id)) {
+          updatedProd.unshift({ ...target, status, verified: status === 'featured' });
         }
-        window.dispatchEvent(new CustomEvent('house_of_nina_review_approved', { detail: { id, status: 'featured' } }));
-      } catch (e) {}
-      return updated;
+        localStorage.setItem(prodKey, JSON.stringify(updatedProd));
+      }
+      window.dispatchEvent(new CustomEvent('house_of_nina_review_approved', { detail: { id: target?.id, status } }));
+    } catch (e) {}
+  };
+
+  const handleFeatureReview = (id) => {
+    const target = reviews.find(r => r.id === id);
+    const updated = reviews.map(r => r.id === id ? { ...r, status: 'featured' } : r);
+    setReviews(updated);
+    persistReviewModeration(updated, target, 'featured');
+    updateReviewStatusInDb(id, 'featured').then(({ error }) => {
+      if (error) console.warn('[House of Nina] Could not approve review in cloud', error);
     });
     triggerToast('✓ Review approved and featured on site');
   };
 
   const handleRemoveReviewFromSite = (id) => {
-    setReviews(prev => {
-      const target = prev.find(r => r.id === id);
-      const updated = prev.map(r => r.id === id ? { ...r, status: 'pending' } : r);
-      try {
-        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updated));
-        if (target && target.productId) {
-          const prodKey = `house_of_nina_reviews_${target.productId}`;
-          const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
-          const updatedProd = currentProd.map(pr => pr.id === id ? { ...pr, status: 'pending' } : pr);
-          localStorage.setItem(prodKey, JSON.stringify(updatedProd));
-        }
-        window.dispatchEvent(new CustomEvent('house_of_nina_review_approved', { detail: { id, status: 'pending' } }));
-      } catch (e) {}
-      return updated;
+    const target = reviews.find(r => r.id === id);
+    const updated = reviews.map(r => r.id === id ? { ...r, status: 'pending' } : r);
+    setReviews(updated);
+    persistReviewModeration(updated, target, 'pending');
+    updateReviewStatusInDb(id, 'pending').then(({ error }) => {
+      if (error) console.warn('[House of Nina] Could not unfeature review in cloud', error);
     });
     triggerToast('Review removed from featured site display (Awaiting approval)');
   };
 
   const handleDeleteReview = (id) => {
     if (window.confirm('Delete this review permanently?')) {
-      setReviews(prev => {
-        const target = prev.find(r => r.id === id);
-        const updated = prev.filter(r => r.id !== id);
-        try {
-          localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updated));
-          if (target && target.productId) {
-            const prodKey = `house_of_nina_reviews_${target.productId}`;
-            const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
-            const updatedProd = currentProd.filter(pr => pr.id !== id);
-            localStorage.setItem(prodKey, JSON.stringify(updatedProd));
-          }
-        } catch (e) {}
-        return updated;
+      const target = reviews.find(r => r.id === id);
+      const updated = reviews.filter(r => r.id !== id);
+      setReviews(updated);
+      try {
+        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(updated));
+        if (target && target.productId) {
+          const prodKey = `house_of_nina_reviews_${target.productId}`;
+          const currentProd = JSON.parse(localStorage.getItem(prodKey) || '[]');
+          localStorage.setItem(prodKey, JSON.stringify(currentProd.filter(pr => pr.id !== id)));
+        }
+      } catch (e) {}
+      deleteReviewInDb(id).then(({ error }) => {
+        if (error) console.warn('[House of Nina] Could not delete review in cloud', error);
       });
       triggerToast('Review deleted');
     }
@@ -688,13 +740,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   const [editingOrder, setEditingOrder] = useState(null);
 
   // Forms
-  const [productForm, setProductForm] = useState({
-    name: '',
-    categoryName: categories[0] || 'Wigs',
-    price: '',
-    stockCount: 10,
-    image: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=400&q=80&fm=webp'
-  });
+  const [productForm, setProductForm] = useState(() => emptyProductForm(categories[0] || 'Wigs'));
 
   const [discountForm, setDiscountForm] = useState({
     code: '',
@@ -772,8 +818,20 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   }, []);
 
   useEffect(() => {
-    try { localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(products)); } catch {}
+    saveAdminInventory(products);
   }, [products]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    fetchProductsFromDb().then(({ data, error }) => {
+      if (error || !Array.isArray(data) || data.length === 0) return;
+      setProducts(prev => {
+        const byId = new Map(prev.map(p => [p.id, p]));
+        data.forEach(product => byId.set(product.id, { ...(byId.get(product.id) || {}), ...product }));
+        return [...byId.values()];
+      });
+    }).catch(() => {});
+  }, [isOpen]);
 
   useEffect(() => {
     try { localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories)); } catch {}
@@ -1090,33 +1148,69 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       alert('Product name and price required.');
       return;
     }
+    const images = productForm.images?.length ? productForm.images : (productForm.image ? [productForm.image] : []);
+    const categoryName = productForm.categoryName || categories[0] || 'Wigs';
     const created = {
       id: `hn-${Date.now()}`,
-      name: productForm.name,
-      categoryName: productForm.categoryName || categories[0] || 'Wigs',
+      name: productForm.name.trim(),
+      categoryName,
+      category: categoryName,
       price: parseFloat(productForm.price) || 200,
       stockCount: parseInt(productForm.stockCount) || 10,
       inStock: true,
-      image: productForm.image || 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=400&q=80&fm=webp',
+      isActive: true,
+      images,
+      image: images[0] || DEFAULT_PRODUCT_IMAGE,
+      description: productForm.description.trim(),
+      details: parseList(productForm.details),
+      tag: productForm.tag.trim(),
+      options: {
+        lengths: parseList(productForm.lengths, ','),
+        laceTypes: parseList(productForm.laceTypes, ','),
+        densities: parseList(productForm.densities, ',')
+      },
       rating: 5.0,
-      reviewsCount: 1
+      reviewsCount: 0
     };
+    restoreProduct(created.id);
+    upsertProductInDb(created).then(({ error }) => {
+      if (error) console.warn('[House of Nina] Could not save product in cloud', error);
+    });
     setProducts([created, ...products]);
     setIsAddProductOpen(false);
-    setProductForm({ name: '', categoryName: categories[0] || 'Wigs', price: '', stockCount: 10, image: '' });
+    setProductForm(emptyProductForm(categoryName));
     triggerToast(`✓ "${created.name}" created`);
   };
 
   const handleUpdateProduct = (e) => {
     e.preventDefault();
     if (!editingProduct) return;
-    setProducts(products.map(p => p.id === editingProduct.id ? editingProduct : p));
+    const images = editingProduct.images?.length
+      ? editingProduct.images
+      : (editingProduct.image ? [editingProduct.image] : []);
+    const updated = {
+      ...editingProduct,
+      category: editingProduct.category || editingProduct.categoryName,
+      images,
+      image: images[0] || DEFAULT_PRODUCT_IMAGE,
+      details: Array.isArray(editingProduct.details)
+        ? editingProduct.details
+        : parseList(editingProduct.details)
+    };
+    upsertProductInDb(updated).then(({ error }) => {
+      if (error) console.warn('[House of Nina] Could not update product in cloud', error);
+    });
+    setProducts(products.map(p => p.id === updated.id ? updated : p));
     setEditingProduct(null);
-    triggerToast(`✓ "${editingProduct.name}" updated`);
+    triggerToast(`✓ "${updated.name}" updated`);
   };
 
   const handleDeleteProduct = (productId) => {
     if (confirm('Delete this product?')) {
+      markProductDeleted(productId);
+      deleteProductInDb(productId).then(({ error }) => {
+        if (error) console.warn('[House of Nina] Could not delete product in cloud', error);
+      });
       setProducts(products.filter(p => p.id !== productId));
       triggerToast('Product deleted');
     }
@@ -1124,23 +1218,25 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   };
 
   const handleStockChange = (productId, delta) => {
-    setProducts(prev => prev.map(p => {
-      if (p.id === productId) {
-        const next = Math.max(0, (p.stockCount || 0) + delta);
-        return { ...p, stockCount: next, inStock: next > 0 };
-      }
-      return p;
-    }));
+    const updated = products.map(p => {
+      if (p.id !== productId) return p;
+      const next = Math.max(0, (p.stockCount || 0) + delta);
+      return { ...p, stockCount: next, inStock: next > 0 };
+    });
+    setProducts(updated);
+    const changed = updated.find(p => p.id === productId);
+    if (changed) upsertProductInDb(changed).catch(() => {});
   };
 
   const handleToggleStockStatus = (productId) => {
-    setProducts(prev => prev.map(p => {
-      if (p.id === productId) {
-        const next = !p.inStock;
-        return { ...p, inStock: next, stockCount: next && p.stockCount === 0 ? 5 : p.stockCount };
-      }
-      return p;
-    }));
+    const updated = products.map(p => {
+      if (p.id !== productId) return p;
+      const next = !p.inStock;
+      return { ...p, inStock: next, stockCount: next && p.stockCount === 0 ? 5 : p.stockCount };
+    });
+    setProducts(updated);
+    const changed = updated.find(p => p.id === productId);
+    if (changed) upsertProductInDb(changed).catch(() => {});
   };
 
   // ══════════════════════════════════════════════════════════
@@ -1197,16 +1293,25 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
       triggerToast('Please provide a client name and feedback');
       return;
     }
+    const productName = reviewForm.productName.trim() || 'Signature Unit';
+    const matchedProduct = products.find(p => p.name === productName);
     const created = {
       id: `rev-${Date.now()}`,
       client: reviewForm.client.trim(),
-      productName: reviewForm.productName.trim() || 'Signature Unit',
+      author: reviewForm.client.trim(),
+      productId: matchedProduct?.id || null,
+      productName,
       rating: Number(reviewForm.rating) || 5,
       date: reviewForm.date || todayDate,
       text: reviewForm.text.trim(),
       status: reviewForm.status || 'featured'
     };
-    setReviews([created, ...reviews]);
+    upsertReviewInDb(created).then(({ error }) => {
+      if (error) console.warn('[House of Nina] Could not save review in cloud', error);
+    });
+    const nextReviews = [created, ...reviews];
+    setReviews(nextReviews);
+    if (created.status === 'featured') persistReviewModeration(nextReviews, created, 'featured');
     setIsAddReviewOpen(false);
     setReviewForm({
       client: '',
@@ -1222,7 +1327,18 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   const handleUpdateReview = (e) => {
     e.preventDefault();
     if (!editingReview) return;
-    setReviews(reviews.map(r => r.id === editingReview.id ? editingReview : r));
+    const matchedProduct = products.find(p => p.name === editingReview.productName);
+    const normalizedReview = {
+      ...editingReview,
+      author: editingReview.author || editingReview.client,
+      productId: editingReview.productId || matchedProduct?.id || null
+    };
+    upsertReviewInDb(normalizedReview).then(({ error }) => {
+      if (error) console.warn('[House of Nina] Could not update review in cloud', error);
+    });
+    const nextReviews = reviews.map(r => r.id === normalizedReview.id ? normalizedReview : r);
+    setReviews(nextReviews);
+    persistReviewModeration(nextReviews, normalizedReview, normalizedReview.status);
     setEditingReview(null);
     triggerToast('✓ Review updated');
   };
@@ -1560,6 +1676,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
             <Store size={15} />
             <span>Return to Live Site</span>
           </button>
+
         </div>
       </aside>
 
@@ -3937,68 +4054,119 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                 <h2 className="modalTitle">Add Product</h2>
                 <p className="modalText">Create a new hair unit or silk styling care product.</p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Product Title</label>
-                <input 
-                  type="text" 
-                  value={productForm.name}
-                  onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                  placeholder="e.g. The Chelsea Raw Straight 30''"
-                  required
-                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                />
-              </div>
+                <div className="product-admin-form">
+                  <div className="product-admin-field">
+                    <label>Product Title</label>
+                    <input
+                      type="text"
+                      value={productForm.name}
+                      onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                      placeholder="e.g. The Chelsea Raw Straight 30''"
+                      required
+                    />
+                  </div>
 
-              <div className="adminFormRowGrid">
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Category</label>
-                  <select 
-                    value={productForm.categoryName}
-                    onChange={(e) => setProductForm({ ...productForm, categoryName: e.target.value })}
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                  >
-                    {categories.map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Price (£ GBP)</label>
-                  <input 
-                    type="number" 
-                    value={productForm.price}
-                    onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-                    placeholder="280"
-                    required
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
+                  <div className="adminFormRowGrid">
+                    <div className="product-admin-field">
+                      <label>Category</label>
+                      <select
+                        value={productForm.categoryName}
+                        onChange={(e) => setProductForm({ ...productForm, categoryName: e.target.value })}
+                      >
+                        {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                    <div className="product-admin-field">
+                      <label>Price (£ GBP)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={productForm.price}
+                        onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                        placeholder="280"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="adminFormRowGrid">
+                    <div className="product-admin-field">
+                      <label>Stock Quantity</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={productForm.stockCount}
+                        onChange={(e) => setProductForm({ ...productForm, stockCount: e.target.value })}
+                      />
+                    </div>
+                    <div className="product-admin-field">
+                      <label>Badge / Tag</label>
+                      <input
+                        type="text"
+                        value={productForm.tag}
+                        onChange={(e) => setProductForm({ ...productForm, tag: e.target.value })}
+                        placeholder="Bestseller Wig"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="product-admin-field">
+                    <label>Product Description</label>
+                    <textarea
+                      rows={3}
+                      value={productForm.description}
+                      onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                      placeholder="Handcrafted unit with invisible HD lace..."
+                    />
+                  </div>
+
+                  <div className="product-admin-field">
+                    <label>Details <span>(one per line)</span></label>
+                    <textarea
+                      rows={3}
+                      value={productForm.details}
+                      onChange={(e) => setProductForm({ ...productForm, details: e.target.value })}
+                      placeholder={'Single-donor raw hair\nPre-plucked hairline\nAdjustable cap'}
+                    />
+                  </div>
+
+                  <div className="adminFormRowGrid">
+                    <div className="product-admin-field">
+                      <label>Lengths <span>(comma separated)</span></label>
+                      <input
+                        type="text"
+                        value={productForm.lengths}
+                        onChange={(e) => setProductForm({ ...productForm, lengths: e.target.value })}
+                        placeholder='12", 14", 16"'
+                      />
+                    </div>
+                    <div className="product-admin-field">
+                      <label>Lace / Material</label>
+                      <input
+                        type="text"
+                        value={productForm.laceTypes}
+                        onChange={(e) => setProductForm({ ...productForm, laceTypes: e.target.value })}
+                        placeholder="13x4 HD Lace Frontal, 5x5 Closure"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="product-admin-field">
+                    <label>Densities / Variants <span>(comma separated)</span></label>
+                    <input
+                      type="text"
+                      value={productForm.densities}
+                      onChange={(e) => setProductForm({ ...productForm, densities: e.target.value })}
+                      placeholder="180%, 200%"
+                    />
+                  </div>
+
+                  <ProductImagePicker
+                    images={productForm.images}
+                    onChange={(images) => setProductForm(prev => ({ ...prev, images, image: images[0] || '' }))}
                   />
                 </div>
-              </div>
-
-              <div className="adminFormRowGrid">
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Stock Quantity</label>
-                  <input 
-                    type="number" 
-                    value={productForm.stockCount}
-                    onChange={(e) => setProductForm({ ...productForm, stockCount: e.target.value })}
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Image URL</label>
-                  <input 
-                    type="url" 
-                    value={productForm.image}
-                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                    placeholder="https://..."
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                  />
-                </div>
-              </div>
-
-              </div>
               </div>
 
               <div className="modalActions">
@@ -4017,67 +4185,127 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
             <form onSubmit={handleUpdateProduct} className="modalFormFlex">
               <div className="modalScrollBody">
                 <h2 className="modalTitle">Edit Product</h2>
-                <p className="modalText">Update title, category, price, and stock count.</p>
+                <p className="modalText">Update images, description, details, price and stock.</p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Product Title</label>
-                <input 
-                  type="text" 
-                  value={editingProduct.name}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                  required
-                  style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                />
-              </div>
+                <div className="product-admin-form">
+                  <div className="product-admin-field">
+                    <label>Product Title</label>
+                    <input
+                      type="text"
+                      value={editingProduct.name}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                      required
+                    />
+                  </div>
 
-              <div className="adminFormRowGrid">
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Category</label>
-                  <select 
-                    value={editingProduct.categoryName}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, categoryName: e.target.value })}
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                  >
-                    {categories.map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Price (£ GBP)</label>
-                  <input 
-                    type="number" 
-                    value={editingProduct.price}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
-                    required
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
+                  <div className="adminFormRowGrid">
+                    <div className="product-admin-field">
+                      <label>Category</label>
+                      <select
+                        value={editingProduct.categoryName || editingProduct.category || 'Wigs'}
+                        onChange={(e) => setEditingProduct({
+                          ...editingProduct,
+                          categoryName: e.target.value,
+                          category: e.target.value
+                        })}
+                      >
+                        {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                    <div className="product-admin-field">
+                      <label>Price (£ GBP)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={editingProduct.price}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="adminFormRowGrid">
+                    <div className="product-admin-field">
+                      <label>Stock Quantity</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={editingProduct.stockCount ?? 0}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, stockCount: parseInt(e.target.value) || 0 })}
+                      />
+                    </div>
+                    <div className="product-admin-field">
+                      <label>Badge / Tag</label>
+                      <input
+                        type="text"
+                        value={editingProduct.tag || ''}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, tag: e.target.value })}
+                        placeholder="Bestseller Wig"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="product-admin-field">
+                    <label>Product Description</label>
+                    <textarea
+                      rows={3}
+                      value={editingProduct.description || ''}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="product-admin-field">
+                    <label>Details <span>(one per line)</span></label>
+                    <textarea
+                      rows={3}
+                      value={Array.isArray(editingProduct.details) ? editingProduct.details.join('\n') : (editingProduct.details || '')}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, details: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="adminFormRowGrid">
+                    <div className="product-admin-field">
+                      <label>Lengths <span>(comma separated)</span></label>
+                      <input
+                        type="text"
+                        value={(editingProduct.options?.lengths || []).join(', ')}
+                        onChange={(e) => setEditingProduct({
+                          ...editingProduct,
+                          options: { ...(editingProduct.options || {}), lengths: parseList(e.target.value, ',') }
+                        })}
+                      />
+                    </div>
+                    <div className="product-admin-field">
+                      <label>Lace / Material</label>
+                      <input
+                        type="text"
+                        value={(editingProduct.options?.laceTypes || []).join(', ')}
+                        onChange={(e) => setEditingProduct({
+                          ...editingProduct,
+                          options: { ...(editingProduct.options || {}), laceTypes: parseList(e.target.value, ',') }
+                        })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="product-admin-field">
+                    <label>Densities / Variants <span>(comma separated)</span></label>
+                    <input
+                      type="text"
+                      value={(editingProduct.options?.densities || []).join(', ')}
+                      onChange={(e) => setEditingProduct({
+                        ...editingProduct,
+                        options: { ...(editingProduct.options || {}), densities: parseList(e.target.value, ',') }
+                      })}
+                    />
+                  </div>
+
+                  <ProductImagePicker
+                    images={editingProduct.images?.length ? editingProduct.images : (editingProduct.image ? [editingProduct.image] : [])}
+                    onChange={(images) => setEditingProduct(prev => ({ ...prev, images, image: images[0] || '' }))}
                   />
                 </div>
-              </div>
-
-              <div className="adminFormRowGrid">
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Stock Quantity</label>
-                  <input 
-                    type="number" 
-                    value={editingProduct.stockCount}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, stockCount: parseInt(e.target.value) || 0 })}
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.70rem', fontWeight: 600, marginBottom: '2px' }}>Image URL</label>
-                  <input 
-                    type="url" 
-                    value={editingProduct.image}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, image: e.target.value })}
-                    style={{ width: '100%', padding: '5px 8px', border: '1px solid var(--color-border)', borderRadius: '7px', fontSize: '0.68rem' }}
-                  />
-                </div>
-              </div>
-
-              </div>
               </div>
 
               <div className="modalActions">

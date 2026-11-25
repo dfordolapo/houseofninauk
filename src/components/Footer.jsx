@@ -51,7 +51,8 @@ export default function Footer({
   onOpenLegal,
   onOpenTrackOrder,
   onOpenFaq,
-  onFilterCategory 
+  onFilterCategory,
+  onOpenCookieSettings
 }) {
   // Mobile accordion state (strictly mutually exclusive: at most one open at once)
   const [openAccordions, setOpenAccordions] = useState({
@@ -329,6 +330,18 @@ export default function Footer({
                   >
                     Privacy &amp; Cookies
                   </a>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className="footer-nav-link"
+                    onClick={() => {
+                      if (onOpenCookieSettings) onOpenCookieSettings();
+                      else window.dispatchEvent(new CustomEvent('house_of_nina_open_cookie_settings'));
+                    }}
+                  >
+                    Cookie settings
+                  </button>
                 </li>
                 <li>
                   <a 

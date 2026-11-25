@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Search, ChevronRight, Heart } from 'lucide-react';
-import { FEATURED_PRODUCTS } from '../data/wigData';
+import { useCatalog } from '../lib/catalog';
 
 const POPULAR_SEARCHES = ['All Wigs', 'Silk Scarves', 'Glass Bob', 'Bone Straight', 'Body Wave', 'HD Lace'];
 
@@ -13,13 +13,14 @@ export default function SearchModal({
   wishlist = []
 }) {
   const [query, setQuery] = useState('');
+  const catalogProducts = useCatalog();
 
   if (!isOpen) return null;
 
   const filteredProducts = query.trim() === '' 
     ? [] 
-    : FEATURED_PRODUCTS.filter(p => 
-        p.name.toLowerCase().includes(query.toLowerCase()) || 
+    : catalogProducts.filter(p =>
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
         p.category.toLowerCase().includes(query.toLowerCase()) ||
         (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
       );

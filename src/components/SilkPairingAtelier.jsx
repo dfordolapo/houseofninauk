@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Eye, Plus, Check, Heart } from 'lucide-react';
 import { FEATURED_PRODUCTS } from '../data/wigData';
+import { useCatalog } from '../lib/catalog';
 import GoldStroke from './GoldStroke';
-
-const WIGS = FEATURED_PRODUCTS.filter(p => p.category === 'Wigs');
-const SCARVES = FEATURED_PRODUCTS.filter(p => p.category === 'Scarves');
 
 export default function SilkPairingAtelier({ 
   onQuickView, 
@@ -15,9 +13,12 @@ export default function SilkPairingAtelier({
   const [selectedWigIndex, setSelectedWigIndex] = useState(0);
   const [selectedScarfIndex, setSelectedScarfIndex] = useState(0);
   const [isAdded, setIsAdded] = useState(false);
+  const catalogProducts = useCatalog();
 
-  const activeWig = WIGS[selectedWigIndex] || WIGS[0];
-  const activeScarf = SCARVES[selectedScarfIndex] || SCARVES[0];
+  const wigs = catalogProducts.filter(p => p.category === 'Wigs');
+  const scarves = catalogProducts.filter(p => p.category === 'Scarves');
+  const activeWig = wigs[selectedWigIndex] || wigs[0] || FEATURED_PRODUCTS[0];
+  const activeScarf = scarves[selectedScarfIndex] || scarves[0] || FEATURED_PRODUCTS.find(p => p.category === 'Scarves') || FEATURED_PRODUCTS[0];
 
   const isWigWishlisted = wishlist.some(item => item.id === activeWig.id);
   const isScarfWishlisted = wishlist.some(item => item.id === activeScarf.id);
@@ -107,7 +108,7 @@ export default function SilkPairingAtelier({
 
             {/* Wig Selector Thumbnails */}
             <div className="pairing-thumb-row">
-              {WIGS.map((wig, idx) => (
+              {wigs.map((wig, idx) => (
                 <button
                   key={wig.id}
                   type="button"
@@ -179,7 +180,7 @@ export default function SilkPairingAtelier({
 
             {/* Scarf Selector Thumbnails */}
             <div className="pairing-thumb-row">
-              {SCARVES.map((scarf, idx) => (
+              {scarves.map((scarf, idx) => (
                 <button
                   key={scarf.id}
                   type="button"

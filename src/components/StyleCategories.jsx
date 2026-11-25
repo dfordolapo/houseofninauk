@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Heart, MessageCircle, Send, MoreHorizontal, ShoppingBag, Tag, ChevronLeft, ChevronRight, Check } from 'lucide-react';
-import { INSTA_POSTS, FEATURED_PRODUCTS } from '../data/wigData';
+import { INSTA_POSTS } from '../data/wigData';
+import { useCatalog } from '../lib/catalog';
 import GoldStroke from './GoldStroke';
 
 export default function StyleCategories({ onSelectCategory, onQuickView, onToggleWishlist, onOpenReviews, wishlist = [] }) {
@@ -8,10 +9,11 @@ export default function StyleCategories({ onSelectCategory, onQuickView, onToggl
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [copiedPostId, setCopiedPostId] = useState(null);
   const sliderRef = useRef(null);
+  const catalogProducts = useCatalog();
 
   const handleShareProductLink = (post) => {
     // Match the corresponding product in the store
-    const matchingProduct = FEATURED_PRODUCTS.find(p => 
+    const matchingProduct = catalogProducts.find(p =>
       p.name?.toLowerCase() === post.productName?.toLowerCase()
     ) || post;
 

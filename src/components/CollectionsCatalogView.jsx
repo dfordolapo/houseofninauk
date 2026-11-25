@@ -111,6 +111,7 @@ const SORT_LABELS = {
 };
 
 export default function CollectionsCatalogView({
+  products,
   initialCategory = 'All',
   onBackToHome,
   onOpenDetails,
@@ -233,7 +234,8 @@ export default function CollectionsCatalogView({
   };
 
   // Filter products by collection and active filter parameters
-  const filteredProducts = FEATURED_PRODUCTS.filter(p => {
+  const catalogProducts = Array.isArray(products) && products.length ? products : FEATURED_PRODUCTS;
+  const filteredProducts = catalogProducts.filter(p => {
     // 1. Collection Tab Filter
     if (activeTab === 'Wigs' && p.category !== 'Wigs') {
       return false;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Check, CheckCircle2, ShoppingBag, X, ArrowRight, Star, Plus } from 'lucide-react';
-import { BAG_SUGGESTIONS, FEATURED_PRODUCTS } from '../data/wigData';
+import { BAG_SUGGESTIONS } from '../data/wigData';
 
 export default function AddedToBagModal({ 
   isOpen, 

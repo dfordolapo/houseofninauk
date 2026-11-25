@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Search, ShoppingBag } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
+import VisitorLocation from './VisitorLocation';
 
 export default function MobileMenu({ 
   isOpen, 
@@ -78,6 +79,9 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-drawer-footer">
+          <div className="mobile-drawer-location">
+            <VisitorLocation />
+          </div>
           <button 
             type="button" 
             className="btn-primary-editorial" 

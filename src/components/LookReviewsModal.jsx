@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Star, Heart, Send, Check, CheckCircle2, ShoppingBag } from 'lucide-react';
+import { fetchReviewsFromDb, submitReviewInDb } from '../lib/supabase';
+import { getStoredLocation, subscribeToLocation, SUPPORTED_LOCATIONS } from '../lib/location';
 
 export default function LookReviewsModal({
   isOpen,
@@ -14,6 +16,12 @@ export default function LookReviewsModal({
   const [reviewText, setReviewText] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [locationName, setLocationName] = useState(() => (getStoredLocation() || SUPPORTED_LOCATIONS[0]).name);
+
+  useEffect(() => subscribeToLocation(() => {
+    setLocationName((getStoredLocation() || SUPPORTED_LOCATIONS[0]).name);
+  }), []);
 
   // Initialize or update reviews whenever post/product changes
   useEffect(() => {
@@ -27,25 +35,51 @@ export default function LookReviewsModal({
         console.warn('Failed to parse stored reviews', e);
       }
 
-      setReviews(storedList || post.reviewsList || [
+      const fallback = post.reviewsList || [
         { id: `default-1-${post.id}`, author: "Maya T.", rating: 5, time: "30m ago", verified: true, text: "The lace melted seamlessly! Looks completely natural even in daylight." },
         { id: `default-2-${post.id}`, author: "Chloe B.", rating: 5, time: "2h ago", verified: true, text: "Best hair purchase I've made this year. High density and minimal shedding." }
-      ]);
+      ];
+      const localReviews = storedList || fallback;
+      setReviews(localReviews);
       setSuccessMessage(false);
       setReviewText('');
       setAuthorName('');
+
+      fetchReviewsFromDb({ productId: post.id, statuses: ['featured'] })
+        .then(({ data }) => {
+          if (!Array.isArray(data) || data.length === 0) return;
+          setReviews(prev => {
+            const ids = new Set(data.map(r => r.id));
+            const approved = data.map(r => ({
+              ...r,
+              author: r.author || r.client,
+              time: r.time || r.date,
+              verified: true
+            }));
+            return [...approved, ...prev.filter(r => !ids.has(r.id))];
+          });
+        })
+        .catch(() => {});
     }
   }, [post]);
 
   // Listen for admin review approvals to refresh live comments dynamically
   useEffect(() => {
     const handleApproved = () => {
-      if (post) {
-        try {
-          const raw = localStorage.getItem(`house_of_nina_reviews_${post.id}`);
-          if (raw) setReviews(JSON.parse(raw));
-        } catch (e) {}
-      }
+      if (!post) return;
+      try {
+        const raw = localStorage.getItem(`house_of_nina_reviews_${post.id}`);
+        if (raw) setReviews(JSON.parse(raw));
+      } catch (e) {}
+      fetchReviewsFromDb({ productId: post.id, statuses: ['featured'] })
+        .then(({ data }) => {
+          if (!Array.isArray(data) || data.length === 0) return;
+          setReviews(prev => {
+            const ids = new Set(data.map(r => r.id));
+            return [...data.map(r => ({ ...r, author: r.author || r.client, verified: true })), ...prev.filter(r => !ids.has(r.id))];
+          });
+        })
+        .catch(() => {});
     };
     window.addEventListener('house_of_nina_review_approved', handleApproved);
     return () => window.removeEventListener('house_of_nina_review_approved', handleApproved);
@@ -57,9 +91,10 @@ export default function LookReviewsModal({
   const priceFormatted = typeof post.price === 'number' ? `£${post.price}` : (post.price || '£10');
   const descriptionText = post.caption || post.description || "Crafted from verified single-donor raw hair with invisible Swiss HD lace.";
 
-  const handleSubmitReview = (e) => {
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
-    if (!reviewText.trim()) return;
+    if (!reviewText.trim() || isSubmitting) return;
+    setIsSubmitting(true);
 
     const newRev = {
       id: `rev-${Date.now()}`,
@@ -86,32 +121,38 @@ export default function LookReviewsModal({
     }
 
     // Direct synchronization to Admin Reviews portal for moderation
+    const adminEntry = {
+      id: newRev.id,
+      productId: post.id,
+      client: newRev.author,
+      author: newRev.author,
+      productName: title,
+      rating: newRev.rating,
+      date: newRev.date,
+      text: newRev.text,
+      status: 'pending' // Displays in Admin Dashboard under "Awaiting Approval"
+    };
     try {
       const adminKey = 'house_of_nina_admin_reviews_v3';
       const existingAdmin = JSON.parse(localStorage.getItem(adminKey) || '[]');
-      const adminEntry = {
-        id: newRev.id,
-        productId: post.id,
-        client: newRev.author,
-        productName: title,
-        rating: newRev.rating,
-        date: newRev.date,
-        text: newRev.text,
-        status: 'pending' // Displays in Admin Dashboard under "Awaiting Approval"
-      };
       const updatedAdmin = [adminEntry, ...existingAdmin.filter(r => r.id !== adminEntry.id)];
       localStorage.setItem(adminKey, JSON.stringify(updatedAdmin));
-
-      // Dispatch event so active admin session catches it immediately
       window.dispatchEvent(new CustomEvent('house_of_nina_new_review', { detail: adminEntry }));
     } catch (err) {
       console.warn('Failed to sync review to admin portal', err);
     }
 
-    setReviewText('');
-    setAuthorName('');
-    setSuccessMessage(true);
-    setTimeout(() => setSuccessMessage(false), 4500);
+    try {
+      // Persist remotely so the review reaches an admin on any device
+      const { error } = await submitReviewInDb(adminEntry);
+      if (error) console.warn('[House of Nina] Remote review submission failed', error);
+    } finally {
+      setReviewText('');
+      setAuthorName('');
+      setSuccessMessage(true);
+      setIsSubmitting(false);
+      setTimeout(() => setSuccessMessage(false), 4500);
+    }
   };
 
   return (
@@ -142,7 +183,7 @@ export default function LookReviewsModal({
               </div>
               <div>
                 <h3 className="look-author-title">houseofnina</h3>
-                <span className="look-author-sub">United Kingdom • {title}</span>
+                <span className="look-author-sub">{locationName} • {title}</span>
               </div>
             </div>
             <button 
@@ -167,7 +208,7 @@ export default function LookReviewsModal({
           <div className="look-reviews-stream-wrap">
             <div className="look-stream-title-row">
               <span className="look-stream-label">
-                Customer Reviews ({reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval').length})
+                Customer Reviews ({reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval' && r.status !== 'rejected').length})
               </span>
             </div>
 
@@ -179,12 +220,12 @@ export default function LookReviewsModal({
             )}
 
             <div className="look-comments-list">
-              {reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval').length === 0 ? (
+              {reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval' && r.status !== 'rejected').length === 0 ? (
                 <p style={{ fontSize: '12px', color: '#8C8074', fontStyle: 'italic', padding: '16px 0', margin: 0 }}>
                   Be the first to leave an approved review for this piece.
                 </p>
               ) : (
-                reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval').map((rev) => (
+                reviews.filter(r => r.status !== 'pending' && r.status !== 'awaiting_approval' && r.status !== 'rejected').map((rev) => (
                   <div key={rev.id} className="look-single-comment-card">
                     <div className="look-comment-header">
                       <div className="look-comment-author-wrap">
@@ -258,9 +299,9 @@ export default function LookReviewsModal({
                 <button 
                   type="submit" 
                   className="look-post-btn"
-                  disabled={!reviewText.trim()}
+                  disabled={!reviewText.trim() || isSubmitting}
                 >
-                  Post
+                  {isSubmitting ? 'Sending...' : 'Post'}
                 </button>
               </div>
             </form>
