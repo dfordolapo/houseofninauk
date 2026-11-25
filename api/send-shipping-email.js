@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 
   const subject = `Your House of Nina Order #${orderNumber} Has Shipped 📦`;
 
-  // Luxury Editorial HTML Email Template
+  // Clean Editorial HTML Email Template (No big banner header, no eyebrow text, straight to body)
   const emailHtml = `
 <!DOCTYPE html>
 <html lang="en">
@@ -62,79 +62,69 @@ export default async function handler(req, res) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${subject}</title>
   <style>
-    body { margin: 0; padding: 0; background-color: #FAF6F0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1C1614; }
-    .wrapper { width: 100%; max-width: 600px; margin: 0 auto; background-color: #FFFFFF; border-radius: 12px; overflow: hidden; margin-top: 24px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(28, 22, 20, 0.06); }
-    .header { background-color: #1C1614; padding: 36px 24px; text-align: center; }
-    .brand-title { color: #C5A059; font-size: 24px; letter-spacing: 0.12em; text-transform: uppercase; margin: 0; font-family: Georgia, serif; font-weight: normal; }
-    .tagline { color: #EFE6D8; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 6px; }
-    .body-content { padding: 36px 32px; }
-    .greeting { font-size: 18px; font-weight: 600; color: #1C1614; margin-bottom: 12px; }
-    .lead-text { font-size: 14px; line-height: 1.6; color: #4A3E39; margin-bottom: 24px; }
-    .tracking-card { background-color: #FAF6F0; border: 1px solid #EAE0D5; border-radius: 10px; padding: 22px; margin-bottom: 28px; }
-    .card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #8C8074; margin-bottom: 4px; }
-    .tracking-code { font-size: 20px; font-weight: 700; color: #1C1614; font-family: monospace; letter-spacing: 0.05em; margin-bottom: 12px; }
-    .courier-info { font-size: 13px; color: #5C4E47; display: flex; align-items: center; gap: 6px; }
-    .btn-track { display: inline-block; background-color: #1C1614; color: #FAF6F0 !important; padding: 14px 28px; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 14px; text-align: center; }
-    .items-list { margin-top: 24px; border-top: 1px solid #EAE0D5; padding-top: 20px; }
-    .items-heading { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #1C1614; margin-bottom: 12px; }
+    body { margin: 0; padding: 24px 16px; background-color: #FAF8F5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1C1614; -webkit-font-smoothing: antialiased; }
+    .wrapper { width: 100%; max-width: 580px; margin: 0 auto; background-color: #FFFFFF; border-radius: 8px; border: 1px solid #EAE0D5; padding: 36px 32px; box-sizing: border-box; }
+    .greeting { font-size: 17px; font-weight: 600; color: #1C1614; margin-bottom: 16px; }
+    .lead-text { font-size: 14.5px; line-height: 1.65; color: #3A302A; margin: 0 0 20px 0; }
+    .tracking-card { background-color: #FAF6F0; border: 1px solid #E5D9CC; border-radius: 8px; padding: 20px 22px; margin: 24px 0; }
+    .card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #7A6E62; margin-bottom: 4px; }
+    .tracking-code { font-size: 18px; font-weight: 700; color: #1C1614; font-family: 'Courier New', Courier, monospace; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .btn-track { display: inline-block; background-color: #1C1614; color: #FFFFFF !important; padding: 12px 24px; font-size: 12.5px; font-weight: 600; text-decoration: none; border-radius: 6px; letter-spacing: 0.04em; }
+    .items-list { margin-top: 24px; border-top: 1px solid #EAE0D5; padding-top: 18px; }
+    .items-heading { font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #1C1614; margin-bottom: 12px; }
     .item-row { font-size: 13.5px; color: #4A3E39; margin-bottom: 8px; }
-    .footer { background-color: #F5EFEB; padding: 24px; text-align: center; font-size: 12px; color: #8C8074; line-height: 1.6; }
-    .footer a { color: #C5A059; text-decoration: none; }
+    .note-text { font-size: 13px; color: #6E6156; line-height: 1.6; margin: 24px 0 0 0; }
+    .sign-off { margin-top: 28px; padding-top: 20px; border-top: 1px solid #EAE0D5; font-size: 13.5px; color: #3A302A; line-height: 1.5; }
+    .footer-links { margin-top: 12px; font-size: 12px; color: #8C8074; }
+    .footer-links a { color: #8C8074; text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <!-- Header -->
-    <div class="header">
-      <h1 class="brand-title">House of Nina</h1>
-      <div class="tagline">Welcome to our House • London &amp; UK Studio</div>
+    <div class="greeting">Dear ${clientName},</div>
+
+    <p class="lead-text">
+      Your bespoke House of Nina order (<strong>#${orderNumber}</strong>) has been hand-styled, carefully inspected, and dispatched from our UK studio.
+    </p>
+
+    <!-- Tracking Card -->
+    <div class="tracking-card">
+      <div class="card-label">Courier</div>
+      <div style="font-size: 14px; font-weight: 600; color: #1C1614; margin-bottom: 12px;">${courier}</div>
+
+      <div class="card-label">Tracking Reference</div>
+      <div class="tracking-code">${trackingNumber || 'Active In Transit'}</div>
+
+      <div>
+        <a href="${trackingUrl}" target="_blank" class="btn-track">Track Your Parcel &rarr;</a>
+      </div>
     </div>
 
-    <!-- Body -->
-    <div class="body-content">
-      <div class="greeting">Dear ${clientName},</div>
-      <p class="lead-text">
-        Wonderful news. Your bespoke House of Nina unit has finished hand-styling, passed quality inspection, and has officially been dispatched from our UK studio.
-      </p>
-
-      <!-- Tracking Card -->
-      <div class="tracking-card">
-        <div class="card-label">Courier Partner</div>
-        <div style="font-size: 14px; font-weight: 600; color: #1C1614; margin-bottom: 14px;">${courier}</div>
-
-        <div class="card-label">Tracking Number</div>
-        <div class="tracking-code">${trackingNumber || 'Active In Transit'}</div>
-
-        <div>
-          <a href="${trackingUrl}" target="_blank" class="btn-track">Track Your Delivery &rarr;</a>
+    ${items && items.length > 0 ? `
+    <!-- Items Summary -->
+    <div class="items-list">
+      <div class="items-heading">Order Contents</div>
+      ${items.map(it => `
+        <div class="item-row">
+          <strong>${it.name || it.title || 'Luxury Unit'}</strong>
+          ${it.selectedLength ? ` • ${it.selectedLength}` : ''}
+          ${it.selectedLace ? ` (${it.selectedLace})` : ''}
+          ${it.quantity ? ` × ${it.quantity}` : ''}
         </div>
-      </div>
-
-      ${items && items.length > 0 ? `
-      <!-- Items Summary -->
-      <div class="items-list">
-        <div class="items-heading">Dispatched Items</div>
-        ${items.map(it => `
-          <div class="item-row">
-            <strong>${it.name || it.title || 'Luxury Unit'}</strong>
-            ${it.selectedLength ? ` • ${it.selectedLength}` : ''}
-            ${it.selectedLace ? ` (${it.selectedLace})` : ''}
-            ${it.quantity ? ` × ${it.quantity}` : ''}
-          </div>
-        `).join('')}
-      </div>
-      ` : ''}
-
-      <p style="font-size: 13px; color: #7A6E62; line-height: 1.6; margin-top: 24px;">
-        Every House of Nina wig arrives wrapped in our bespoke signature satin ribbon, secured in our protective luxury coffer, complete with our hair care manual.
-      </p>
+      `).join('')}
     </div>
+    ` : ''}
 
-    <!-- Footer -->
-    <div class="footer">
-      <div>House of Nina Studio • United Kingdom</div>
-      <div>Hotline &amp; Concierge: <a href="https://wa.me/447776759731">+44 7776 759731</a> | <a href="mailto:houseofnina2026@gmail.com">houseofnina2026@gmail.com</a></div>
-      <div style="margin-top: 8px;">&copy; ${new Date().getFullYear()} House of Nina. All rights reserved.</div>
+    <p class="note-text">
+      Your piece has been wrapped in our signature satin ribbon and secured within our protective luxury coffer, complete with our hair care guide.
+    </p>
+
+    <div class="sign-off">
+      <strong>House of Nina</strong><br>
+      London Studio, United Kingdom<br>
+      <div class="footer-links">
+        Direct Concierge: <a href="https://wa.me/447776759731">+44 7776 759731</a> | <a href="mailto:houseofnina2026@gmail.com">houseofnina2026@gmail.com</a>
+      </div>
     </div>
   </div>
 </body>
@@ -145,7 +135,8 @@ export default async function handler(req, res) {
   const resendApiKey = process.env.RESEND_API_KEY;
   if (resendApiKey) {
     try {
-      const fromEmail = process.env.RESEND_FROM_EMAIL || 'House of Nina <orders@houseofnina.co.uk>';
+      // If custom domain is not yet verified on Resend, Resend requires onboarding@resend.dev
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'House of Nina <onboarding@resend.dev>';
       const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
