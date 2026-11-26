@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Play, Pause, Volume2, VolumeX, ArrowRight, Eye, Heart, ShoppingBag, Check } from 'lucide-react';
+import { useScrollLock } from '../lib/scrollLock';
 
 /**
  * ============================================================================
@@ -22,6 +23,7 @@ export default function ProductQuickViewModal({
   const [isMuted, setIsMuted] = useState(true);
   const [added, setAdded] = useState(false);
   const videoRef = useRef(null);
+  useScrollLock(isOpen);
 
   const handleQuickAdd = (e) => {
     e.stopPropagation();

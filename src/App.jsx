@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import MobileMenu from './components/MobileMenu';
 import WigverseHero from './components/WigverseHero';
@@ -215,58 +215,6 @@ export default function App() {
   const [isTrackOrderOpen, setIsTrackOrderOpen] = useState(false);
   const [isFaqOpen, setIsFaqOpen] = useState(false);
 
-  // Centralized Modal Background Scroll-Lock & Position Preservation:
-  // When ANY modal or drawer is open, freeze the background at the exact scroll position
-  // When closed, restore the exact scroll position seamlessly
-  const scrollPositionRef = useRef(0);
-  const isLockedRef = useRef(false);
-
-  const isAnyModalOpen = Boolean(
-    isMobileMenuOpen || 
-    isCartOpen || 
-    isWishlistOpen || 
-    isCheckoutOpen ||
-    quickViewProduct || 
-    detailsProduct || 
-    isCareGuideOpen || 
-    isSearchOpen || 
-    isAddedModalOpen || 
-    isReviewsModalOpen ||
-    legalModalTab ||
-    isTrackOrderOpen ||
-    isFaqOpen
-  );
-
-  useEffect(() => {
-    if (isAnyModalOpen) {
-      if (!isLockedRef.current) {
-        isLockedRef.current = true;
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        if (scrollbarWidth > 0) {
-          document.body.style.paddingRight = `${scrollbarWidth}px`;
-        }
-        document.body.classList.add('modal-scroll-locked');
-        document.documentElement.classList.add('modal-scroll-locked');
-      }
-    } else {
-      if (isLockedRef.current) {
-        isLockedRef.current = false;
-        document.body.style.paddingRight = '';
-        document.body.classList.remove('modal-scroll-locked');
-        document.documentElement.classList.remove('modal-scroll-locked');
-      }
-    }
-
-    return () => {
-      if (isLockedRef.current) {
-        isLockedRef.current = false;
-        document.body.style.paddingRight = '';
-        document.body.classList.remove('modal-scroll-locked');
-        document.documentElement.classList.remove('modal-scroll-locked');
-      }
-    };
-  }, [isAnyModalOpen]);
-
   // Wishlist state (saved looks) - loaded from localStorage per browser
   const [wishlist, setWishlist] = useState(() => {
     try {
@@ -370,7 +318,6 @@ export default function App() {
     setTimeout(() => {
       setShowHero(false);
       setIsHeroFadingOut(false);
-      window.scrollTo({ top: 0, behavior: 'instant' });
     }, 680);
   };
 

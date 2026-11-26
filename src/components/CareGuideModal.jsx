@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Droplets, Wind, ShieldCheck, Moon, ShoppingBag, ChevronLeft, ChevronRight, Pause } from 'lucide-react';
 import { CARE_GUIDE_DATA } from '../data/wigData';
+import { useScrollLock } from '../lib/scrollLock';
 
 const ICONS = [Droplets, ShieldCheck, Wind, Moon];
 
@@ -11,6 +12,7 @@ export default function CareGuideModal({ isOpen, onClose, onShopCollections }) {
   const timerRef = useRef(null);
   const touchStartRef = useRef(null);
   const lastToggleTimeRef = useRef(0);
+  useScrollLock(isOpen);
 
   const tips = CARE_GUIDE_DATA.tips;
   const currentTip = tips[activeIndex] || tips[0];

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Star, Heart, Send, Check, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { fetchReviewsFromDb, submitReviewInDb } from '../lib/supabase';
 import { getStoredLocation, subscribeToLocation, SUPPORTED_LOCATIONS } from '../lib/location';
+import { useScrollLock } from '../lib/scrollLock';
 
 export default function LookReviewsModal({
   isOpen,
@@ -18,6 +19,7 @@ export default function LookReviewsModal({
   const [successMessage, setSuccessMessage] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [locationName, setLocationName] = useState(() => (getStoredLocation() || SUPPORTED_LOCATIONS[0]).name);
+  useScrollLock(isOpen);
 
   useEffect(() => subscribeToLocation(() => {
     setLocationName((getStoredLocation() || SUPPORTED_LOCATIONS[0]).name);

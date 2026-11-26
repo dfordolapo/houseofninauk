@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Mail
 } from 'lucide-react';
+import { useScrollLock } from '../lib/scrollLock';
 
 /**
  * ============================================================================
@@ -35,6 +36,7 @@ export default function OrderSuccessReceipt({
   const [showDetails, setShowDetails] = useState(false);
   const [copiedOrderId, setCopiedOrderId] = useState(false);
   const [showEmailToast, setShowEmailToast] = useState(false);
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen) {

@@ -13,6 +13,8 @@ import {
   Truck
 } from 'lucide-react';
 import { BRAND_INFO } from '../data/wigData';
+import { getItemCustomizationSummary, validateDiscountCode } from '../lib/orderOptions';
+import { useScrollLock } from '../lib/scrollLock';
 
 export default function CartDrawer({ 
   isOpen, 
@@ -25,14 +27,47 @@ export default function CartDrawer({
   onProceedToCheckout,
   onOpenLegal 
 }) {
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedCode, setAppliedCode] = useState(null);
+  const [promoError, setPromoError] = useState('');
   const [showOrderNote, setShowOrderNote] = useState(false);
   const [orderNote, setOrderNote] = useState('');
   const [savePromptItem, setSavePromptItem] = useState(null); // item pending save decision
+  useScrollLock(isOpen);
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
+  const appliedPromo = appliedCode ? validateDiscountCode(appliedCode, subtotal) : null;
+  const discountAmount = appliedPromo?.ok ? appliedPromo.amount : 0;
   const remainingForFreeShipping = Math.max(0, BRAND_INFO.freeShippingThreshold - subtotal);
   const freeShippingProgress = Math.min(100, Math.round((subtotal / BRAND_INFO.freeShippingThreshold) * 100));
-  const finalTotal = subtotal;
+  const finalTotal = Math.max(0, subtotal - discountAmount);
+
+  useEffect(() => {
+    if (!appliedCode) return;
+    const result = validateDiscountCode(appliedCode, subtotal);
+    if (!result.ok) {
+      setAppliedCode(null);
+      setPromoError(result.message);
+    }
+  }, [subtotal, appliedCode]);
+
+  const handleApplyPromo = (e) => {
+    e.preventDefault();
+    const result = validateDiscountCode(promoCode, subtotal);
+    if (!result.ok) {
+      setPromoError(result.message);
+      return;
+    }
+    setAppliedCode(result.code);
+    setPromoCode(result.code);
+    setPromoError('');
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedCode(null);
+    setPromoCode('');
+    setPromoError('');
+  };
 
   const handleConfirmSave = (removeFromBag) => {
     if (!savePromptItem) return;
@@ -95,25 +130,6 @@ export default function CartDrawer({
           >
             <X size={18} strokeWidth={2} />
           </button>
-        </div>
-
-        {/* FREE UK DELIVERY TIER (COMPLIMENTARY FOR NOW) */}
-        <div style={{
-          padding: '10px 14px',
-          backgroundColor: '#F7FAF7',
-          borderRadius: '12px',
-          border: '1px solid #D2E7D6',
-          marginTop: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#1E7E34' }}>
-            Standard UK Delivery is currently Complimentary
-          </span>
-          <span style={{ fontSize: '11px', color: '#1E7E34', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            Free
-          </span>
         </div>
 
         {/* CART ITEMS BODY */}
@@ -246,6 +262,16 @@ export default function CartDrawer({
                           {item.selectedDensity && (
                             <span style={{ fontSize: '10.5px', padding: '2px 6px', borderRadius: '4px', backgroundColor: '#F7F3EE', color: '#685C50' }}>
                               {item.selectedDensity}
+                            </span>
+                          )}
+                          {getItemCustomizationSummary(item) && (
+                            <span style={{ fontSize: '10.5px', padding: '2px 6px', borderRadius: '4px', backgroundColor: '#F3EDE3', color: '#685C50', flexBasis: '100%', lineHeight: 1.4 }}>
+                              {getItemCustomizationSummary(item)}
+                            </span>
+                          )}
+                          {item.customization?.note && (
+                            <span style={{ fontSize: '10.5px', padding: '2px 6px', borderRadius: '4px', backgroundColor: '#F3EDE3', color: '#685C50', flexBasis: '100%', lineHeight: 1.4 }}>
+                              Note: {item.customization.note}
                             </span>
                           )}
                         </div>
@@ -412,12 +438,68 @@ export default function CartDrawer({
             borderTop: '1px solid var(--color-border)',
             flexShrink: 0
           }}>
+            {!appliedCode ? (
+              <form onSubmit={handleApplyPromo} style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
+                <input
+                  type="text"
+                  className="cart-promo-input"
+                  value={promoCode}
+                  onChange={(e) => {
+                    setPromoCode(e.target.value.toUpperCase());
+                    setPromoError('');
+                  }}
+                  placeholder="Discount code"
+                  aria-label="Discount code"
+                  style={{
+                    flexGrow: 1,
+                    minWidth: 0,
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: promoError ? '1px solid #D32F2F' : '1px solid var(--color-border)',
+                    fontSize: '12px',
+                    outline: 'none',
+                    backgroundColor: '#FFFFFF'
+                  }}
+                />
+                <button type="submit" className="btn-outline-editorial" style={{ padding: '8px 14px', fontSize: '11.5px', whiteSpace: 'nowrap' }}>
+                  Apply
+                </button>
+              </form>
+            ) : (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 12px', color: '#1E7E34', marginBottom: '12px' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11.5px' }}>
+                  <Tag size={12} />
+                  <span>Code <strong>{appliedCode}</strong> applied{appliedPromo?.label ? ` (${appliedPromo.label})` : ''}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleRemovePromo}
+                  style={{ background: 'none', border: 'none', color: '#1E7E34', cursor: 'pointer', padding: 0, fontSize: '11px', textDecoration: 'underline' }}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+
+            {promoError && (
+              <p style={{ margin: '-6px 0 10px', fontSize: '11px', color: '#D32F2F' }}>
+                {promoError}
+              </p>
+            )}
+
             {/* Financial Summary */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
                 <span>Subtotal</span>
-                <span>£{subtotal}</span>
+                <span>£{subtotal.toFixed(2)}</span>
               </div>
+
+              {discountAmount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#1E7E34' }}>
+                  <span>Discount ({appliedCode})</span>
+                  <span>−£{discountAmount.toFixed(2)}</span>
+                </div>
+              )}
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: '#685C50' }}>
                 <span>UK Standard Delivery</span>
@@ -436,7 +518,7 @@ export default function CartDrawer({
                   </span>
                 </div>
                 <strong style={{ fontSize: '19px', color: 'var(--color-deep-espresso)', fontFamily: 'var(--font-display)' }}>
-                  £{finalTotal}
+                  £{finalTotal.toFixed(2)}
                 </strong>
               </div>
             </div>
@@ -449,8 +531,8 @@ export default function CartDrawer({
               onClick={() => {
                 if (onProceedToCheckout) {
                   onProceedToCheckout({
-                    discountAmount: 0,
-                    promoCode: null,
+                    discountAmount,
+                    promoCode: appliedCode,
                     orderNote
                   });
                 }

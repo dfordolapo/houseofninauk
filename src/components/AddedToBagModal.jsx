@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Check, CheckCircle2, ShoppingBag, X, ArrowRight, Star, Plus } from 'lucide-react';
 import { BAG_SUGGESTIONS } from '../data/wigData';
+import { useScrollLock } from '../lib/scrollLock';
 
 export default function AddedToBagModal({ 
   isOpen, 
@@ -11,7 +12,7 @@ export default function AddedToBagModal({
   onOpenCart 
 }) {
   const [addedSuggestions, setAddedSuggestions] = useState({});
-
+  useScrollLock(isOpen && Boolean(addedProduct));
 
   if (!isOpen || !addedProduct) return null;
 

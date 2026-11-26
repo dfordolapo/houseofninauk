@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShieldCheck, FileText, Truck, AlertCircle, Mail, ExternalLink, Printer } from 'lucide-react';
+import { useScrollLock } from '../lib/scrollLock';
 
 export default function LegalModal({ isOpen, initialTab = 'terms', onClose }) {
   const [activeTab, setActiveTab] = useState(initialTab);
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (initialTab) {

@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import OrderSuccessReceipt from './OrderSuccessReceipt';
 import { createOrderInDb } from '../lib/supabase';
+import { getItemCustomizationSummary, getItemCustomizationText } from '../lib/orderOptions';
+import { useScrollLock } from '../lib/scrollLock';
 
 /** Authentic Official Apple Pay Mark (100% Vector Math - Official Apple Guidelines) */
 function ApplePayLogo({ height = 22, color = "#FFFFFF", className = "" }) {
@@ -1017,6 +1019,7 @@ export default function CheckoutModal({
   const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
   const [showReturnsModal, setShowReturnsModal] = useState(false);
   const [activeExpressSheet, setActiveExpressSheet] = useState(null); // 'apple_pay' | 'google_pay' | null
+  useScrollLock(isOpen);
 
   // Dedicated Field Validation & Form Error States
   const [fieldErrors, setFieldErrors] = useState({});
@@ -2134,6 +2137,10 @@ export default function CheckoutModal({
       discount,
       promoCode: checkoutData.promoCode || null,
       orderNote: checkoutData.orderNote || null,
+      notes: [
+        checkoutData.orderNote ? `Client note: ${checkoutData.orderNote}` : '',
+        cartItems.map(item => getItemCustomizationText(item)).filter(Boolean).join(' | ')
+      ].filter(Boolean).join(' | ') || null,
       total,
       currencySymbol
     };
@@ -2199,7 +2206,8 @@ export default function CheckoutModal({
         payment_method: paymentLabel,
         payment_status: 'paid',
         fulfillment_status: 'Confirmed',
-        stripe_payment_intent_id: stripePaymentIntentId || null
+        stripe_payment_intent_id: stripePaymentIntentId || null,
+        notes: newOrder.notes
       }).catch(err => console.warn('Supabase sync notice:', err));
 
       // Trigger automatic order email via Resend to client/owner
@@ -2223,6 +2231,9 @@ export default function CheckoutModal({
           total: newOrder.total || total,
           subtotal: newOrder.subtotal || subtotal,
           shippingCost: newOrder.shippingCost || shippingCost,
+          discount: newOrder.discount || 0,
+          promoCode: newOrder.promoCode || null,
+          orderNote: newOrder.orderNote || null,
           currency: 'GBP',
           paymentMethod: paymentLabel
         })
@@ -5079,6 +5090,11 @@ export default function CheckoutModal({
                         <span style={{ fontSize: '11px', color: '#8C8074' }}>
                           Qty: {item.quantity || 1} • {item.selectedLength || 'Standard'}
                         </span>
+                        {getItemCustomizationSummary(item) && (
+                          <span style={{ display: 'block', fontSize: '10px', color: '#8C8074', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={getItemCustomizationText(item)}>
+                            {getItemCustomizationSummary(item)}
+                          </span>
+                        )}
                       </div>
                       <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--color-deep-espresso)', flexShrink: 0 }}>
                         {formatPrice((item.price * (item.quantity || 1)) * rate)}
@@ -5086,6 +5102,12 @@ export default function CheckoutModal({
                     </div>
                   ))}
                 </div>
+
+                {checkoutData.orderNote && (
+                  <div style={{ fontSize: '10.5px', color: '#685C50', lineHeight: 1.4, marginBottom: '12px', padding: '8px 10px', borderRadius: '8px', backgroundColor: '#FAF7F2' }}>
+                    <strong>Your note:</strong> {checkoutData.orderNote}
+                  </div>
+                )}
 
                 {/* Financial Breakdown */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', borderTop: '1px solid var(--color-border-light)', paddingTop: '14px', width: '100%', boxSizing: 'border-box' }}>
@@ -5249,6 +5271,11 @@ export default function CheckoutModal({
                         <span style={{ fontSize: '10.5px', color: '#8C8074' }}>
                           {item.selectedLength || 'Standard'} {item.selectedLace ? `• ${item.selectedLace}` : ''}
                         </span>
+                        {getItemCustomizationSummary(item) && (
+                          <span style={{ display: 'block', fontSize: '9.5px', color: '#8C8074', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={getItemCustomizationText(item)}>
+                            {getItemCustomizationSummary(item)}
+                          </span>
+                        )}
                       </div>
                       <strong style={{ fontSize: '12px', color: 'var(--color-deep-espresso)', flexShrink: 0 }}>
                         {formatPrice((item.price * (item.quantity || 1)) * rate)}
@@ -5257,26 +5284,32 @@ export default function CheckoutModal({
                   ))}
                 </div>
 
-                <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#685C50' }}>
-                    <span>Subtotal</span>
-                    <strong>{formatPrice(subtotal)}</strong>
-                  </div>
-                  {discount > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#1E7E34' }}>
-                      <span>Discount ({checkoutData.promoCode})</span>
-                      <strong>−{formatPrice(discount)}</strong>
+                  {checkoutData.orderNote && (
+                    <div style={{ fontSize: '10px', color: '#685C50', lineHeight: 1.4 }}>
+                      <strong>Your note:</strong> {checkoutData.orderNote}
                     </div>
                   )}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#685C50' }}>
-                    <span>Delivery</span>
-                    <strong>{shippingCost === 0 ? 'Free' : formatPrice(shippingCost)}</strong>
+
+                  <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#685C50' }}>
+                      <span>Subtotal</span>
+                      <strong>{formatPrice(subtotal)}</strong>
+                    </div>
+                    {discount > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#1E7E34' }}>
+                        <span>Discount ({checkoutData.promoCode})</span>
+                        <strong>−{formatPrice(discount)}</strong>
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#685C50' }}>
+                      <span>Delivery</span>
+                      <strong>{shippingCost === 0 ? 'Free' : formatPrice(shippingCost)}</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-deep-espresso)', borderTop: '1px solid var(--color-border)', paddingTop: '8px', marginTop: '4px' }}>
+                      <strong>Total Due</strong>
+                      <strong style={{ fontSize: '16px', fontFamily: 'var(--font-display)' }}>{formatPrice(total)}</strong>
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--color-deep-espresso)', borderTop: '1px solid var(--color-border)', paddingTop: '8px', marginTop: '4px' }}>
-                    <strong>Total Due</strong>
-                    <strong style={{ fontSize: '16px', fontFamily: 'var(--font-display)' }}>{formatPrice(total)}</strong>
-                  </div>
-                </div>
               </div>
             )}
 

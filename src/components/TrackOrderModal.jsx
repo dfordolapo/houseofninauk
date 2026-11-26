@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Search, CheckCircle2, Clock, Truck, MapPin, ExternalLink } from 'lucide-react';
 import { lookupOrderByReference } from '../lib/supabase';
+import { useScrollLock } from '../lib/scrollLock';
 
 export default function TrackOrderModal({ isOpen, onClose }) {
   const [orderQuery, setOrderQuery] = useState('HN-8492');
@@ -12,6 +13,7 @@ export default function TrackOrderModal({ isOpen, onClose }) {
     itemTitle: 'The Victoria Glass Bob • 12" Swiss HD Lace',
     trackingNumber: 'RM-UK-8492100'
   });
+  useScrollLock(isOpen);
 
   if (!isOpen) return null;
 

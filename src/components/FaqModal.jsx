@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, ChevronDown, HelpCircle, MessageCircle, Mail } from 'lucide-react';
+import { useScrollLock } from '../lib/scrollLock';
 
 const FAQ_ITEMS = [
   {
@@ -36,6 +37,7 @@ const FAQ_ITEMS = [
 
 export default function FaqModal({ isOpen, onClose }) {
   const [openIndex, setOpenIndex] = useState(null);
+  useScrollLock(isOpen);
 
   if (!isOpen) return null;
 

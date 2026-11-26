@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Search, ShoppingBag } from 'lucide-react';
 import { BRAND_INFO, NAV_LINKS } from '../data/wigData';
+import { useScrollLock } from '../lib/scrollLock';
 import VisitorLocation from './VisitorLocation';
 
 export default function MobileMenu({ 
@@ -14,6 +15,7 @@ export default function MobileMenu({
   navLinks = NAV_LINKS 
 }) {
   const [activeLinkId, setActiveLinkId] = React.useState('shop');
+  useScrollLock(isOpen);
 
 
   const handleLinkClick = (link) => {

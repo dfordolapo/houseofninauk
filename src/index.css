@@ -14948,7 +14948,7 @@ video::-moz-media-controls {
    ========================================================================== */
 @media screen and (max-width: 768px) {
   input:not(.checkout-modal-dialog input),
-  textarea:not(.checkout-modal-dialog textarea):not(.cart-order-note-textarea),
+  textarea:not(.checkout-modal-dialog textarea):not(.cart-order-note-textarea):not(.customization-note-textarea),
   select:not(.checkout-modal-dialog select),
   .look-author-input,
   .look-comment-textarea,
@@ -14962,6 +14962,18 @@ video::-moz-media-controls {
   .cart-order-note-textarea::placeholder {
     font-size: 11px !important;
     line-height: 1.4 !important;
+  }
+
+  .customization-note-textarea {
+    font-size: 16px !important;
+  }
+
+  .customization-note-textarea::placeholder {
+    font-size: 12px !important;
+  }
+
+  .cart-promo-input::placeholder {
+    font-size: 11px !important;
   }
 
   .checkout-modal-dialog input,
@@ -15486,5 +15498,49 @@ video::-moz-media-controls {
     bottom: 10px;
     width: calc(100vw - 20px);
     padding: 14px;
+  }
+}
+
+@media (min-width: 821px) {
+  .product-details-dialog {
+    height: min(90vh, 760px);
+    max-height: min(90vh, 760px);
+    overflow: hidden;
+  }
+
+  .product-details-dialog .quickview-layout {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .product-details-dialog .quickview-media-wrap {
+    position: relative;
+    top: auto;
+    align-self: stretch;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .product-details-dialog .quickview-body {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .product-details-dialog .quickview-img-container {
+    padding: 0 3px;
+    box-sizing: border-box;
+    background-color: var(--color-sand-light);
+  }
+
+  .product-details-dialog .quickview-img {
+    position: static;
+    inset: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
   }
 }

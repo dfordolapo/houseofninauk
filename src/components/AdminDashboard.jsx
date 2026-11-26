@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useScrollLock } from '../lib/scrollLock';
 import { createPortal } from 'react-dom';
 import { 
   LayoutDashboard, ShoppingBag, Package, Star, Settings, 
@@ -22,6 +23,7 @@ import {
   fileToOptimizedDataUrl
 } from '../lib/supabase';
 import { saveAdminInventory, markProductDeleted, restoreProduct } from '../lib/catalog';
+import { getItemCustomizationSummary } from '../lib/orderOptions';
 import ProductImagePicker from './ProductImagePicker';
 import '../styles/admin.css';
 
@@ -1015,23 +1017,14 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
     triggerToast(`✓ Order moved to Confirmed lifeline!`);
   };
 
-  // Prevent background scrolling when ANY modal or drawer is open
   const isAnyModalOpen = Boolean(
     isAddProductOpen || editingProduct || isDispatchModalOpen || viewOrderDetails ||
     editingOrder || isAddDiscountOpen || editingDiscount || isAddCategoryOpen ||
     editingCategory || isAddSubscriberOpen || editingSubscriber || isAddReviewOpen ||
     isAddShippingRateOpen || recoveryOrderTarget || isMobileMenuOpen
   );
-
-  useEffect(() => {
-    if (isAnyModalOpen) {
-      const prevOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = prevOverflow;
-      };
-    }
-  }, [isAnyModalOpen]);
+  const portalRootRef = useRef(null);
+  useScrollLock(isAnyModalOpen, portalRootRef);
 
   // ══════════════════════════════════════════════════════════
   // ORDER LIFELINE ADVANCEMENT (confirmed -> processing -> shipped -> delivered)
@@ -1469,7 +1462,7 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
   if (!isOpen) return null;
 
   return (
-    <div className="adminPortalRoot">
+    <div className="adminPortalRoot" ref={portalRootRef}>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="adminToast">
@@ -4754,6 +4747,13 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
               </div>
             </div>
 
+            {(viewOrderDetails.orderNote || viewOrderDetails.notes) && (
+              <div style={{ marginBottom: '14px', padding: '10px 12px', borderRadius: '8px', backgroundColor: '#FAF7F2', fontSize: '0.82rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
+                <strong style={{ display: 'block', color: 'var(--color-primary)', marginBottom: '2px' }}>Client Instructions</strong>
+                {viewOrderDetails.orderNote || viewOrderDetails.notes}
+              </div>
+            )}
+
             <div className="tableContainer" style={{ marginBottom: '14px' }}>
               <table className="table" style={{ whiteSpace: 'normal' }}>
                 <thead>
@@ -4771,6 +4771,16 @@ export default function AdminDashboard({ isOpen, onClose, onSwitchToStorefront }
                         <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)' }}>
                           {it.selectedLength} • {it.selectedLace}
                         </div>
+                        {getItemCustomizationSummary(it) && (
+                          <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                            {getItemCustomizationSummary(it)}
+                          </div>
+                        )}
+                        {it.customization?.note && (
+                          <div style={{ fontSize: '0.76rem', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                            Note: {it.customization.note}
+                          </div>
+                        )}
                       </td>
                       <td style={{ textAlign: 'center' }}>{it.quantity}</td>
                       <td style={{ textAlign: 'right', fontWeight: 600 }}>£{(it.price * it.quantity).toFixed(2)}</td>

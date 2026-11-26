@@ -39,7 +39,10 @@ export default async function handler(req, res) {
     currency = 'GBP',
     paymentMethod = 'Online Card Payment',
     subtotal = 0,
-    shippingCost = 0
+    shippingCost = 0,
+    discount = 0,
+    promoCode = null,
+    orderNote = null
   } = req.body || {};
 
   const resendApiKey = process.env.RESEND_API_KEY;
@@ -128,6 +131,12 @@ export default async function handler(req, res) {
         <span class="card-label">Payment Method:</span>
         <span class="card-val">${paymentMethod}</span>
       </div>
+      ${discount > 0 ? `
+      <div class="card-row">
+        <span class="card-label">Discount${promoCode ? ` (${promoCode})` : ''}:</span>
+        <span class="card-val" style="color: #1E7E34;">−${formatMoney(discount)}</span>
+      </div>
+      ` : ''}
       <div class="card-row" style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #D6C7B8;">
         <span class="card-label" style="font-weight: 700; color: #1C1614;">Total Paid:</span>
         <span class="card-val" style="font-size: 16px; font-weight: 700; color: #1C1614;">${formatMoney(total)}</span>
@@ -143,17 +152,35 @@ export default async function handler(req, res) {
     ${items && items.length > 0 ? `
     <div class="items-list">
       <div class="items-heading">Items Ordered (${items.length})</div>
-      ${items.map(it => `
+      ${items.map(it => {
+        const customization = it.customization || {};
+        const trimLace = customization.trimLace || customization.ripOffLace;
+        const customDetails = [
+          customization.capSize ? `Cap: ${customization.capSize}` : '',
+          customization.parting ? `Parting: ${customization.parting}` : '',
+          customization.lagosHairline ? `Lagos hairline: ${customization.lagosHairline}` : '',
+          trimLace ? `Trim lace: ${trimLace}` : ''
+        ].filter(Boolean).join(' • ');
+
+        return `
         <div class="item-row">
           <strong>${it.name || it.title || 'Luxury Hair Unit'}</strong>
           ${it.selectedLength ? ` • ${it.selectedLength}` : ''}
           ${it.selectedLace ? ` (${it.selectedLace})` : ''}
           ${it.quantity ? ` × ${it.quantity}` : ' × 1'}
           <br>
+          ${customDetails ? `<span style="color: #7A6E62; font-size: 12.5px;">${customDetails}</span><br>` : ''}
+          ${customization.note ? `<span style="color: #7A6E62; font-size: 12.5px;">Note: ${customization.note}</span><br>` : ''}
           <span style="color: #7A6E62; font-size: 12.5px;">Price: ${formatMoney((it.price || 0) * (it.quantity || 1))}</span>
         </div>
-      `).join('')}
+        `;
+      }).join('')}
     </div>
+    ` : ''}
+
+    ${orderNote ? `
+    <div class="items-heading" style="margin-top: 20px;">Client Note</div>
+    <div class="address-card">${orderNote}</div>
     ` : ''}
 
     <!-- Delivery Address -->

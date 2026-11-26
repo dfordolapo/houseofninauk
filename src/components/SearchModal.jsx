@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Search, ChevronRight, Heart } from 'lucide-react';
 import { useCatalog } from '../lib/catalog';
+import { useScrollLock } from '../lib/scrollLock';
 
 const POPULAR_SEARCHES = ['All Wigs', 'Silk Scarves', 'Glass Bob', 'Bone Straight', 'Body Wave', 'HD Lace'];
 
@@ -14,6 +15,7 @@ export default function SearchModal({
 }) {
   const [query, setQuery] = useState('');
   const catalogProducts = useCatalog();
+  useScrollLock(isOpen);
 
   if (!isOpen) return null;
 

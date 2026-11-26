@@ -24,21 +24,19 @@ export default function WigverseHero({ onEnterStore }) {
       }
     };
 
+    let touchStartY = 0;
+
     const handleTouchStart = (e) => {
-      const touch = e.touches[0];
-      const startY = touch.clientY;
+      touchStartY = e.touches[0]?.clientY || 0;
+    };
 
-      const handleTouchMove = (moveEvt) => {
-        if (triggered) return;
-        const currentY = moveEvt.touches[0].clientY;
-        if (startY - currentY > 24) {
-          triggered = true;
-          window.removeEventListener('touchmove', handleTouchMove);
-          if (onEnterStore) onEnterStore();
-        }
-      };
-
-      window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    const handleTouchMove = (e) => {
+      if (triggered) return;
+      const currentY = e.touches[0]?.clientY || 0;
+      if (touchStartY - currentY > 24) {
+        triggered = true;
+        if (onEnterStore) onEnterStore();
+      }
     };
 
     const handleKeyDown = (e) => {
@@ -51,11 +49,13 @@ export default function WigverseHero({ onEnterStore }) {
 
     window.addEventListener('wheel', handleWheel, { passive: true });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onEnterStore]);

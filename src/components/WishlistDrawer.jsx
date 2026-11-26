@@ -10,6 +10,7 @@ import {
   MessageCircle,
   ExternalLink 
 } from 'lucide-react';
+import { useScrollLock } from '../lib/scrollLock';
 
 export default function WishlistDrawer({ 
   isOpen, 
@@ -21,6 +22,7 @@ export default function WishlistDrawer({
 }) {
   const [copiedShare, setCopiedShare] = useState(false);
   const [addedItemIds, setAddedItemIds] = useState({});
+  useScrollLock(isOpen);
 
   const handleAddSingleToBag = (item) => {
     if (onAddToCart) {

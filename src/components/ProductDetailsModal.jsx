@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, ShoppingBag, Heart, Star, MessageCircle, Share2 } from 'lucide-react';
+import { CAP_SIZES, PARTING_OPTIONS } from '../lib/orderOptions';
+import { useScrollLock } from '../lib/scrollLock';
 
 /**
  * ============================================================================
@@ -20,8 +22,14 @@ export default function ProductDetailsModal({
 }) {
   const [selectedLength, setSelectedLength] = useState('');
   const [selectedLace, setSelectedLace] = useState('');
+  const [capSize, setCapSize] = useState(CAP_SIZES[1]);
+  const [parting, setParting] = useState(PARTING_OPTIONS[0]);
+  const [lagosHairline, setLagosHairline] = useState(false);
+  const [trimLace, setTrimLace] = useState(false);
+  const [customizationNote, setCustomizationNote] = useState('');
   const [isAdded, setIsAdded] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  useScrollLock(isOpen);
 
   const handleCopyProductLink = () => {
     const productId = product?.id || 'product';
@@ -54,6 +62,11 @@ export default function ProductDetailsModal({
     if (product) {
       setSelectedLength(product.options?.lengths?.[0] || '');
       setSelectedLace(product.options?.laceTypes?.[0] || '');
+      setCapSize(CAP_SIZES[1]);
+      setParting(PARTING_OPTIONS[0]);
+      setLagosHairline(false);
+      setTrimLace(false);
+      setCustomizationNote('');
       setIsAdded(false);
       setIsCopied(false);
     }
@@ -61,14 +74,28 @@ export default function ProductDetailsModal({
 
   if (!isOpen || !product) return null;
 
+  const isWigProduct = String(product.category || '').toLowerCase().includes('wig');
+
   const handleAdd = () => {
     const defaultDensity = product.options?.densities?.[0] || '180%';
+    const customization = isWigProduct ? {
+      capSize,
+      parting,
+      lagosHairline: lagosHairline ? 'Yes' : 'No',
+      trimLace: trimLace ? 'Yes' : 'No',
+      note: customizationNote.trim()
+    } : null;
+    const customizationKey = customization
+      ? [capSize, parting, lagosHairline ? 'lagos-yes' : 'lagos-no', trimLace ? 'trim-yes' : 'trim-no', customizationNote.trim().slice(0, 24).replace(/\s+/g, '_') || 'no-note'].join('-')
+      : 'standard';
+
     onAddToCart({
       ...product,
       selectedLength,
       selectedLace,
       selectedDensity: defaultDensity,
-      cartId: `${product.id}-${selectedLength}-${selectedLace}`
+      ...(customization ? { customization } : {}),
+      cartId: `${product.id}-${selectedLength}-${selectedLace}-${customizationKey}`
     });
     setIsAdded(true);
     setTimeout(() => {
@@ -82,7 +109,7 @@ export default function ProductDetailsModal({
   return (
     <div className={`modal-backdrop ${isOpen ? 'open' : ''}`} onClick={onClose}>
       <div 
-        className="modal-dialog" 
+        className="modal-dialog product-details-dialog" 
         onClick={(e) => e.stopPropagation()}
         role="dialog" 
         aria-modal="true" 
@@ -146,7 +173,6 @@ export default function ProductDetailsModal({
                 fetchPriority="high"
                 loading="eager"
                 decoding="async"
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
               />
             </div>
           </div>
@@ -261,6 +287,116 @@ export default function ProductDetailsModal({
                       {lace}
                     </button>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {isWigProduct && (
+              <div className="customization-section" style={{ marginBottom: '12px', paddingTop: '10px', borderTop: '1px dashed var(--color-border-light)' }}>
+                <span style={{ display: 'block', fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-gold-dark)', marginBottom: '10px' }}>
+                  Bespoke Fit &amp; Finish
+                </span>
+
+                <div className="quickview-selector-group" style={{ marginBottom: '10px' }}>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
+                    Cap Size: <span style={{ color: 'var(--color-deep-espresso)' }}>{capSize}</span>
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {CAP_SIZES.map(size => (
+                      <button
+                        key={size}
+                        type="button"
+                        className={`option-chip ${capSize === size ? 'selected' : ''}`}
+                        onClick={() => setCapSize(size)}
+                        aria-pressed={capSize === size}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="quickview-selector-group" style={{ marginBottom: '10px' }}>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
+                    Parting: <span style={{ color: 'var(--color-deep-espresso)' }}>{parting}</span>
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {PARTING_OPTIONS.map(option => (
+                      <button
+                        key={option}
+                        type="button"
+                        className={`option-chip ${parting === option ? 'selected' : ''}`}
+                        onClick={() => setParting(option)}
+                        aria-pressed={parting === option}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="quickview-selector-group" style={{ marginBottom: '10px' }}>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
+                    Lagos Hairline Customization
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {[true, false].map(value => (
+                      <button
+                        key={String(value)}
+                        type="button"
+                        className={`option-chip ${lagosHairline === value ? 'selected' : ''}`}
+                        onClick={() => setLagosHairline(value)}
+                        aria-pressed={lagosHairline === value}
+                      >
+                        {value ? 'Yes' : 'No'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="quickview-selector-group" style={{ marginBottom: '10px' }}>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
+                    Trim Lace
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {[true, false].map(value => (
+                      <button
+                        key={String(value)}
+                        type="button"
+                        className={`option-chip ${trimLace === value ? 'selected' : ''}`}
+                        onClick={() => setTrimLace(value)}
+                        aria-pressed={trimLace === value}
+                      >
+                        {value ? 'Yes' : 'No'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="quickview-selector-group">
+                  <label htmlFor="product-customization-note" style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '5px', color: '#685C50' }}>
+                    Add a Note (Optional)
+                  </label>
+                  <textarea
+                    id="product-customization-note"
+                    rows={2}
+                    value={customizationNote}
+                    onChange={(e) => setCustomizationNote(e.target.value)}
+                    placeholder="e.g. Please make the hairline deeper at the temples."
+                    className="customization-note-textarea"
+                    style={{
+                      width: '100%',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      border: '1px solid var(--color-border)',
+                      fontSize: '11px',
+                      fontFamily: 'var(--font-sans)',
+                      boxSizing: 'border-box',
+                      outline: 'none',
+                      resize: 'none',
+                      lineHeight: 1.4
+                    }}
+                  />
                 </div>
               </div>
             )}
